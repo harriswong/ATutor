@@ -90,7 +90,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printAll();
 
-echo '<p><br />'._AT('send_private_message').'</p>';
 
 if ($_GET['reply'] != '') {
 
@@ -125,20 +124,19 @@ if ($reply_to) {
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
 <input type="hidden" name="replied" value="<?php echo $_GET['reply']; ?>" />
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-<tr>
-	<th colspan="2" align="left" class="cyan"><?php echo  _AT('send_message'); ?></th>
-</tr>
-<tr>
-	<td class="row1" align="right"><b><label for="to"><?php echo  _AT('to'); ?>:</label></b></td>
-	<td class="row1"><?php
 
+<div class="input-form">
+	<p><?php echo _AT('send_private_message'); ?></p>
+
+	<label for="to"><?php echo _AT('to'); ?></label><br />
+	<?php
 		if ($_GET['reply'] == '') {
+			echo '<small class="spacer">'._AT('same_course_users').'</small><br />';
 			$sql	= "SELECT DISTINCT M.* FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a')ORDER BY M.login";
 
 			$result = mysql_query($sql, $db);
 			$row	= mysql_fetch_assoc($result);
-			echo '<select class="formfield" name="to" size="1" id="to">';
+			echo '<select name="to" size="1" id="to">';
 			echo '<option value="0"></option>';
 			do {
 				echo '<option value="'.$row['member_id'].'"';
@@ -149,17 +147,15 @@ if ($reply_to) {
 				}
 				echo '>'.AT_print($row['login'], 'members.login').'</option>';
 			} while ($row = mysql_fetch_assoc($result));
-			echo '</select> <small class="spacer">'._AT('same_course_users').'</small>';
+			echo '</select>';
 		} else {
 			echo get_login($reply_to);
 			echo '<input type="hidden" name="to" value="'.$reply_to.'" />';
 		}
-	?></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" align="right"><b><label for="subject"><?php echo  _AT('subject'); ?>:</label></b></td>
-	<td class="row1"><input class="formfield" type="text" name="subject" id="subject" value="<?php
+	?>
+	<br />
+	<label for="subject"><?php echo _AT('subject'); ?></label><br />
+	<input type="text" name="subject" id="subject" value="<?php
 		if (($subject != '') && ($_POST['subject'] == '')) {
 			if (!(substr($subject, 0, 2) == 'Re')) {
 				$subject = "Re: $subject";
@@ -168,45 +164,39 @@ if ($reply_to) {
 		} else {
 			echo ContentManager::cleanOutput($_POST['subject']);
 		}
-		?>" size="40" maxlength="100" /></td>	
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" align="right" valign="top"><b><label for="body"><?php echo _AT('message'); ?>:</label></b></td>
-	<td class="row1"><textarea class="formfield" name="message" id="body" rows="15" cols="55"><?php
-	if ($body != '') {
-		if (strlen($body) > 400){
-			$body = substr($body,0,400);
-			$pos = strrpos($body,' ');
-			$body = substr($body,0,$pos);
-			$body .= ' ...';
+		?>" size="40" maxlength="100" />
+	<br />
+
+	<label for="body"><?php echo _AT('message'); ?></label><br />
+	<textarea name="message" id="body" rows="15" cols="55"><?php
+		if ($body != '') {
+			if (strlen($body) > 400){
+				$body = substr($body,0,400);
+				$pos = strrpos($body,' ');
+				$body = substr($body,0,$pos);
+				$body .= ' ...';
+			}
+			$body  = "\n\n\n"._AT('in_reply_to').":\n".$body;
+			echo $body;
+		} else {
+			echo $_POST['message'];
 		}
-		$body  = "\n\n\n"._AT('in_reply_to').":\n".$body;
-		echo $body;
-	} else {
-		echo $_POST['message'];
-	}
-	?></textarea><small class="bigspacer"><br />&middot; <?php echo _AT('html_disabled'); ?>.</small><br /><br /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" colspan="2"><a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a><?php 
+	?></textarea><small class="bigspacer"><br />&middot; <?php echo _AT('html_disabled'); ?>.</small>
+	<br />
+
+	<a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a><?php 
 		
 		$hide_learning_concepts = true;
-		require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?><br /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" colspan="2" align="center"><a name="jumpcodes"></a><input type="submit" name="submit" value="  <?php  echo _AT('send_message') ?> [Alt-s]  " class="button" accesskey="s" />&nbsp;&nbsp;<?php
-	if ($reply != '') {
-		echo '<input type="submit" name="submit_delete" value="'._AT('send_delete').' [Alt-n]" accesskey="n" class="button" />&nbsp;';
-	}
-	?>&nbsp;<input type="reset" value="<?php echo _AT('start_over'); ?>" class="button" /></td>
-</tr>
-</table>
+		require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?><br />
+		
+	<div align="right">
+		<a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('send_message'); ?>" accesskey="s" /><?php
+		if ($reply != '') {
+			echo '<input type="submit" name="submit_delete" value="'._AT('send_delete').'" accesskey="n" /> ';
+		}
+		?> <input type="reset" value="<?php echo _AT('start_over'); ?>" />
+	</div>
+</div>
 </form> 
 
-<?php
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
