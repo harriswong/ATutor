@@ -23,51 +23,44 @@ $_section[0][0] = _AT('browse_courses');
 require(AT_INCLUDE_PATH.'header.inc.php');
 $msg->printAll();
 
-$cat = $_GET['cat'];
+$cat			= $_GET['cat'];
+$course			= $_GET['course'];
+$current_cats	= array();
 
-$sql = "SELECT * from ".TABLE_PREFIX."course_cats ORDER BY cat_name ";
+$cats[0]  = _AT('all');
+$cats[-1] = _AT('cats_uncategorized');
+
+$sql = "SELECT * from ".TABLE_PREFIX."course_cats WHERE cat_parent=0 ORDER BY cat_name ";
 $result = mysql_query($sql,$db);
-if (mysql_num_rows($result) == 0) {
-	$empty = true;
-} 
-?>
-
-<!--table align="center" width="40%" border="1">
-	<tr>
-		<th><?php echo _AT('category'); ?></th>
-		<th><?php echo _AT('courses'); ?></th>
-	</tr>
-	<tr>
-	<td-->
-<div style="margin-left: auto; margin-right: auto; width:40%; ">
-	<div style="float: left;">
+while($row = mysql_fetch_array($result)) {
+	$cats[$row['cat_id']] = $row['cat_name'];
+}
+ ?>
+<div id="browse" >
+	<div style="float: left; width: 30%"">
 			<h3><?php echo _AT('cats_categories'); ?></h3>
 
-			<?php if (empty($cat)) { ?>
-				<img src="images/side_arrow.gif" alt="Selected Category" /><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br />
-			<?php } else { ?>
-				<div style="margin-left: 9px;"><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br /></div>
-			<?php }	?>
-			
 			<?php 
-			while($row = mysql_fetch_array($result)){
-				if ($row['cat_id'] == $cat) {
-					echo '<img src="images/side_arrow.gif" />';
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$row['cat_id'].'">'.$row['cat_name'].'</a><br />';
+			foreach ($cats as $cat_id => $cat_name) {
+				if ($cat_id == $cat) {
+					echo '<div class="browse-selected">';
 				} else {
-					echo '<div style="margin-left: 9px;">';
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$row['cat_id'].'">'.$row['cat_name'].'</a><br /></div>';
+					echo '<div class="browse-unselected">';
 				}
-				$current_cats[$row['cat_id']] = $row['cat_name'];
+
+				echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat_id.'">'.$cat_name.'</a>';
+				echo '<br /></div>';
 			}
 			?>
 			<br />
 	</div>
-	<div style="float: right; width:60%;">
-			<h3 style="border 1pt solid"><?php echo _AT('courses'); ?></h3>
+	<div style="float: left; width: 20%"">
+			<h3><?php echo $cats[$cat].' '._AT('courses'); ?></h3>
 			<?php
-			if (!empty($cat)) {
+			if ($cat > 0) {
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$_GET['cat']." ORDER BY title";
+			} else if ($cat == "-1") {
+				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=0 ORDER BY title";
 			} else {
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 ORDER BY title";
 			}
@@ -75,16 +68,46 @@ if (mysql_num_rows($result) == 0) {
 
 			if ($row = mysql_fetch_assoc($result)) {
 				do {
-				echo '<a href="bounce.php?course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
+					if (!empty($course) && $course==$row['course_id']) {
+						$course_row = $row;
+						echo '<div class="browse-selected">';
+					} else {
+						echo '<div class="browse-unselected">';
+					}
+					//echo '<a href="bounce.php?course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
+					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat.SEP.'course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
+					echo '</div>';
+
 				} while ($row = mysql_fetch_assoc($result));
 			} else {
 				echo _AT('no_courses');
 			}
 			?>
+			<br />
 	</div>
+
+	<?php if (isset($course_row)) { ?>
+	<div style="float: left; width: 50%">
+			<h3><?php echo $course_row['title'].' '._AT('info'); ?></h3>
+
+			<p><?php echo $course_row['description']; ?></p>
+
+			<p>Taught by 
+			<?php	
+				$sql = "SELECT login, first_name, last_name FROM ".TABLE_PREFIX."members WHERE member_id=".$course_row['member_id'];
+				$result = mysql_query($sql,$db);
+				if ($row = mysql_fetch_array($result)) {
+					echo $row['first_name'].' '.$row['last_name'];
+				}						
+			?>
+			, Access is <?php echo $course_row['access']; ?></p>
+
+			<p><a href="bounce.php?course=<?php echo $course_row['course_id']; ?>">Enter Course</a></p>
+			<br />
+	</div>
+	<?php } ?>
 </div>
 <br />
-
 <?php
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

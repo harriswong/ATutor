@@ -992,9 +992,20 @@ table.data input[type=submit]:hover {
 div#browse {
 	margin-left: auto; 
 	margin-right: auto; 
-	width: 40%; 
-	white-space: nowrap;
+	width: 50%;
 }
+
+div.browse-selected {
+	background-image: url('../../images/side_arrow.gif'); 
+	background-repeat: no-repeat; 
+	padding-left: 9px; 
+	background-position: center left;
+}
+
+div.browse-unselected {
+	padding-left: 9px; 
+}
+
 
 /* used for static tables with no form elements: */
 table.data.static tbody tr:hover {
