@@ -83,7 +83,7 @@ if (isset($_REQUEST['catid'])) {
 
 	<div class="row buttons">
 		<input type="submit" value="<?php echo _AT('save'); ?>"   name="submit" accesskey="s" />
-		<input type="submit" value="<?php echo _AT('cancel'); ?>" name="cancel" />
+		<input type="cancel" value="<?php echo _AT('cancel'); ?>" name="cancel" />
 	</div>
 
 </div>
