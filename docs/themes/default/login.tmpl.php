@@ -15,10 +15,10 @@ global $msg;
 
 <div class="input-form">
 	<label for="login"><?php echo _AT('login_name'); ?></label><br />
-	<input type="text" name="form_login" id="login" /><br /><br />
+	<input type="text" name="form_login" id="login" /><br />
 
 	<label for="pass"><?php echo _AT('password'); ?></label><br />
-	<input type="password" class="formfield" name="form_password" id="pass" /><br /><br />
+	<input type="password" class="formfield" name="form_password" id="pass" /><br />
 
 	<input type="checkbox" name="auto" value="1" id="auto" /><label for="auto"><?php echo _AT('auto_login2'); ?></label><br />
 

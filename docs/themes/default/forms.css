@@ -1,36 +1,55 @@
-	div.input-form {
-width:70%; margin-left:auto; margin-right:auto;
-line-height:200%;
+div.input-form {
+	width:60%; 
+	margin-left:auto; 
+	margin-right:auto;
+	border: 1px solid #f0f0f0;
+	padding: 8px;
+	background-color: #fcfcfc;
 }
-div.input-form h3 {
-	border-bottom:blue 1pt solid;  font-size:large; margin-bottom:5px;
+
+div.input-form div.row {
+	margin-bottom: 15px;
 }
+
 div.input-form p {
 	margin-left: 0px;
-	line-height:140%;
 }
+
 div.input-form textarea {
-	width: 100%;
+	border: 1px solid #999;
+	width: 99%;
+	background-color: white;
+	padding: 2px;
+	margin-bottom: 15px;
+	margin-right: 2px;
+}
+
+div.input-form textarea:focus {
+	border:1px solid blue;
 	background-color: white;
 	padding: 2px;
 }
 
-div.input-form textarea:focus {
-	background-color: #efefef;
-}
-
-
-div.input-form label {
-	margin-top: 20px;
-}
-
 div.input-form input {
-	border:solid 1px #cccccc;
+	border: 1px solid #999;
 	background-color: white;
 	padding: 2px;
 }
 
 div.input-form input:focus {
-	border:solid 1px blue;
+	border: 1px solid blue;
 	padding: 2px
+}
+
+
+div.input-form div.buttons {
+	text-align: right;
+}
+div.input-form div.buttons input {
+	background-color: white;
+	padding: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	min-width: 100px;
+	margin-left: 5px;
 }

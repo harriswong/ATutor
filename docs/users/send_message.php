@@ -81,7 +81,7 @@ if ($row['cnt'] == 0) {
 
 
 if ($_GET['reply'] == '') {
-	$onload = 'onload="document.form.subject.focus()"';
+	$onload = 'onload="document.form.to.focus()"';
 } else {
 	$onload = 'onload="document.form.body.focus()"';
 }
@@ -126,71 +126,71 @@ if ($reply_to) {
 <input type="hidden" name="replied" value="<?php echo $_GET['reply']; ?>" />
 
 <div class="input-form">
-	<p><?php echo _AT('send_private_message'); ?></p>
+	<div class="row">
+		<label for="to"><?php echo _AT('to'); ?></label><br />
+		<?php
+			if ($_GET['reply'] == '') {
+				//echo '<small class="spacer">'._AT('same_course_users').'</small><br />';
+				$sql	= "SELECT DISTINCT M.* FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a')ORDER BY M.login";
 
-	<label for="to"><?php echo _AT('to'); ?></label><br />
-	<?php
-		if ($_GET['reply'] == '') {
-			echo '<small class="spacer">'._AT('same_course_users').'</small><br />';
-			$sql	= "SELECT DISTINCT M.* FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a')ORDER BY M.login";
+				$result = mysql_query($sql, $db);
+				$row	= mysql_fetch_assoc($result);
+				echo '<select name="to" size="1" id="to">';
+				do {
+					echo '<option value="'.$row['member_id'].'"';
+					if ($reply_to == $row['member_id']){
+						echo ' selected="selected"';
+					} else if (isset ($_POST ['to']) && $_POST['to'] == $row['member_id']) {
+						echo ' selected="selected"';
+					}
+					echo '>'.AT_print($row['login'], 'members.login').'</option>';
+				} while ($row = mysql_fetch_assoc($result));
+				echo '</select>';
+			} else {
+				echo '<strong>'.get_login($reply_to).'</strong>';
+				echo '<input type="hidden" name="to" value="'.$reply_to.'" />';
+			} ?>
+	</div>
 
-			$result = mysql_query($sql, $db);
-			$row	= mysql_fetch_assoc($result);
-			echo '<select name="to" size="1" id="to">';
-			echo '<option value="0"></option>';
-			do {
-				echo '<option value="'.$row['member_id'].'"';
-				if ($reply_to == $row['member_id']){
-					echo ' selected="selected"';
-				} else if (isset ($_POST ['to']) && $_POST['to'] == $row['member_id']) {
-					echo ' selected="selected"';
+	<div class="row">
+		<label for="subject"><?php echo _AT('subject'); ?></label><br />
+		<input type="text" name="subject" id="subject" value="<?php
+			if (($subject != '') && ($_POST['subject'] == '')) {
+				if (!(substr($subject, 0, 2) == 'Re')) {
+					$subject = "Re: $subject";
 				}
-				echo '>'.AT_print($row['login'], 'members.login').'</option>';
-			} while ($row = mysql_fetch_assoc($result));
-			echo '</select>';
-		} else {
-			echo get_login($reply_to);
-			echo '<input type="hidden" name="to" value="'.$reply_to.'" />';
-		}
-	?>
-	<br />
-	<label for="subject"><?php echo _AT('subject'); ?></label><br />
-	<input type="text" name="subject" id="subject" value="<?php
-		if (($subject != '') && ($_POST['subject'] == '')) {
-			if (!(substr($subject, 0, 2) == 'Re')) {
-				$subject = "Re: $subject";
+				echo ContentManager::cleanOutput($subject);
+			} else {
+				echo ContentManager::cleanOutput($_POST['subject']);
 			}
-			echo ContentManager::cleanOutput($subject);
-		} else {
-			echo ContentManager::cleanOutput($_POST['subject']);
-		}
-		?>" size="40" maxlength="100" />
-	<br />
+			?>" size="40" maxlength="100" />
+	</div>
 
-	<label for="body"><?php echo _AT('message'); ?></label><br />
-	<textarea name="message" id="body" rows="15" cols="55"><?php
-		if ($body != '') {
-			if (strlen($body) > 400){
-				$body = substr($body,0,400);
-				$pos = strrpos($body,' ');
-				$body = substr($body,0,$pos);
-				$body .= ' ...';
+	<div class="row">
+		<label for="body"><?php echo _AT('message'); ?></label><br />
+		<textarea name="message" id="body" rows="15" cols="55"><?php
+			if ($body != '') {
+				if (strlen($body) > 400){
+					$body = substr($body,0,400);
+					$pos = strrpos($body,' ');
+					$body = substr($body,0,$pos);
+					$body .= ' ...';
+				}
+				$body  = "\n\n\n"._AT('in_reply_to').":\n".$body;
+				echo $body;
+			} else {
+				echo $_POST['message'];
 			}
-			$body  = "\n\n\n"._AT('in_reply_to').":\n".$body;
-			echo $body;
-		} else {
-			echo $_POST['message'];
-		}
-	?></textarea><small class="bigspacer"><br />&middot; <?php echo _AT('html_disabled'); ?>.</small>
-	<br />
+		?></textarea>
+	</div>
 
-	<a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a><?php 
+	<!--a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a--><?php 
 		
 		$hide_learning_concepts = true;
-		require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?><br />
+		//require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?><br />
 		
-	<div align="right">
-		<a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('send_message'); ?>" accesskey="s" /><?php
+	<div class="buttons">
+		<a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('send'); ?>" accesskey="s" /><?php
 		if ($reply != '') {
 			echo '<input type="submit" name="submit_delete" value="'._AT('send_delete').'" accesskey="n" /> ';
 		}
