@@ -83,35 +83,9 @@ $_section = 'home';
 	save_last_cid($cid);
 	$parent_headings = '';
 	$num_in_path = count($path)-1;
-	for ($i=0; $i<$num_in_path; $i++) {
-		$content_info = $path[$i];
-		$h = ($i>5) ? 6 : $i+1;
-		$parent_headings .= '<h'.$h.'>';
-		$parent_headings .= '<a href="'.$_base_href.'index.php?cid='.$content_info['content_id'].SEP.'g=11">';
-		if ($_SESSION['prefs'][PREF_NUMBERING]) {
-			if ($contentManager->_menu_info[$content_info['content_id']]['content_parent_id'] == 0) {
-				$top_num = $contentManager->_menu_info[$content_info['content_id']]['ordering'];
-				$parent_headings .= $top_num;
-			} else {
-				$top_num = $top_num.'.'.$contentManager->_menu_info[$content_info['content_id']]['ordering'];
-				$parent_headings .= $top_num;
-			}
-			$parent_headings .= ' ';
-		}
-		$parent_headings .= $content_info['title'].'</a>'."\n";
-		$parent_headings .= '</h'.$h.'>'."\n";
-	}
-
-	if ($_SESSION['prefs'][PREF_HEADINGS] && ($parent_headings != '')) {
-		echo $parent_headings;
-		echo '<hr />'."\n";
-	}
 
 	/* the page title: */
 	echo '<h2>';
-	if($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2){
-		echo '<img src="'.$_base_path.'images/icons/default/square-large-content.gif" width="42" height="40" hspace="3" vspace="3" class="menuimage" border="0" alt="" />';
-	}
 
 	if ($_SESSION['prefs'][PREF_NUMBERING]) {
 		if ($top_num != '') {

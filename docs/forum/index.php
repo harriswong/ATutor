@@ -56,21 +56,6 @@ if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT
 }
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<img src="images/icons/default/square-large-discussions.gif" width="42" height="38" hspace="2" vspace="2" border="0" alt="" class="menuimage" /> ';
-}
-
-echo '<a href="discussions/index.php?g=11">'._AC('discussions').'</a>';
-echo '</h2>';
-
-echo'<h3>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<img src="images/icons/default/forum-large.gif" width="42" height="38" border="0" alt="" class="menuimageh3" />';
-}
-echo '<a href="forum/list.php">'._AT('forums').'</a>';
-echo ' - '.AT_print(get_forum_name($fid), 'forums.title');
-echo '</h3>';
 
 $msg->printAll();
 

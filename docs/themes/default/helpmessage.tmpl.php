@@ -20,6 +20,7 @@ if ($this->a) {
 	return;
 }
 ?>
+
 <br />
 <table border="0" class="hlpbox" cellpadding="3" cellspacing="2" width="90%" summary="" align="center">
 <tr class="hlpbox">

@@ -814,7 +814,9 @@ table.tabbed-table th.tab {
 table.tabbed-table th.tab:hover {
 	background-color: #EAF2FE;
 }
-
+table.tabbed-table th.tab a:focus {
+	color: white;
+}
 table.tabbed-table th.selected {
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -823,16 +825,6 @@ table.tabbed-table th.selected {
 	border-left: 1px solid black;
 	border-top: 1px solid black;
 	border-right: 1px solid black;
-}
-
-
-table.tabbed-table td.content {
-	border-bottom: 1px solid black;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
-	padding: 5px;
-	padding-bottom: 20px;
-	background-color: white;
 }
 
 a#my-start-page {

@@ -28,7 +28,7 @@ define('AT_NAV_ADMIN',  4);
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'login.php', 'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
-$_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php');
+$_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php', 'forum/list.php', 'resources/links/index.php');
 $_pages[AT_NAV_ADMIN] = array('admin/index.php', 'admin/users.php', 'admin/courses.php', 'admin/config_info.php');
 
 /* admin pages */
@@ -130,13 +130,23 @@ $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['tools/index.php']['title']    = _AT('tools');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
-$_pages['tools/index.php']['children'] = array('forum/list.php');
+//$_pages['tools/index.php']['children'] = array('forum/list.php');
 
 $_pages['forum/list.php']['title']  = _AT('forums');
-$_pages['forum/list.php']['parent'] = 'tools/index.php';
+$_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
+
+	$_pages['forum/index.php']['title']  = 'forum_name';
+	$_pages['forum/index.php']['parent'] = 'forum/list.php';
+
+	$_pages['forum/view.php']['title']  = 'thread_name';
+	$_pages['forum/view.php']['parent'] = 'forum/index.php';
+
+
+$_pages['resources/links/index.php']['title']  = _AT('resource_links');
+$_pages['resources/links/index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
-$_pages['editor/edit_content.php']['parent'] = 'index.php';
+//$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
 /* global pages */
 $_pages['help/index.php']['title']  = _AT('help');
@@ -399,135 +409,4 @@ if ($_SESSION['course_id'] > 0) {
 		<p>And here</p>
 	</div>
 	-->
-	
-
-<?php return; ?>
-
-<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="maintable" summary="">
-<tr>
-	<td id="top-heading" style="background-image: url('<?php echo $this->tmpl_base_path . HEADER_IMAGE; ?>'); background-repeat: no-repeat; background-position: 0px 0px;" nowrap="nowrap" align="right" valign="top">
-		<table border="0" align="right" cellpadding="0" cellspacing="0" summary="">
-			<tr>
-				<td align="right"><?php echo $this->tmpl_bypass_links; ?><br /><br />
-					<?php if (HEADER_LOGO): ?>
-						<img src="<?php echo $this->tmpl_base_path.HEADER_LOGO; ?>" border="0" alt="<?php echo SITE_NAME; ?>" />&nbsp;
-					<?php endif; ?>
-					<br /><h4><?php echo stripslashes(SITE_NAME); ?>&nbsp;</h4><br />
-				</td>
-				<td align="left" class="login-box">
-					» <small><?php echo _AT('logged_in_as'); ?>: <?php echo $this->tmpl_user_name; ?>&nbsp;<br /></small>
-					» <small><?php echo $this->tmpl_log_link; ?></small>
-				</td>
-			</tr>	
-		</table>
-	</td>
-</tr>
-<tr>
-	<td class="cyan">
-	<!-- page top navigation links: -->
-	<table border="0" cellspacing="0" cellpadding="0" align="right" class="navmenu">
-		<tr>			
-			<?php foreach ($this->tmpl_user_nav as $page => $link): ?>
-				<?php if ($page == 'jump_menu'): ?>
-					<!-- course select drop down -->
-					<td align="right" valign="middle" class="navmenu"><form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top"><label for="jumpmenu" accesskey="j"></label>
-						<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  ALT-j">							
-							<option value="0"><?php echo _AT('my_courses'); ?></option>
-							<?php if ($_SESSION['valid_user']): ?>								
-								<optgroup label="<?php echo _AT('courses_below'); ?>">
-									<?php foreach ($this->tmpl_nav_courses as $this_course_id => $this_course_title): ?>
-										<?php if ($this_course_id == $_SESSION['course_id']): ?>
-											<option value="<?php echo $this_course_id; ?>" selected="selected"><?php echo $this_course_title; ?></option>
-										<?php else: ?>
-											<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
-										<?php endif; ?>
-									<?php endforeach; ?>
-								</optgroup>
-							<?php endif; ?>
-						</select>&nbsp;<input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /><input type="hidden" name="g" value="22" /></form></td>
-					<!-- end course select drop down -->
-
-				<?php else: ?>
-
-					<!-- regular menu item -->			
-
-					<?php if ($this->tmpl_page == $page): ?>
-						<td valign="middle" class="navmenu selected" onclick="window.location.href='<?php echo $link['url'];?>'">
-						<?php if (!$this->tmpl_main_text_only && $link['image']): ?>
-							<a href="<?php echo $link['url']; ?>" <?php echo $link['attributes']; ?>><img src="<?php echo $link['image']; ?>" alt="<?php echo $link['name']; ?>" title="<?php echo $link['name']; ?>" class="menuimage17" border="0" /></a>
-						<?php endif; ?>
-						<?php if (!$this->tmpl_main_icons_only): ?>
-							<small><a href="<?php echo $link['url'] ?>" <?php echo $link['attributes']; ?>><?php echo $link['name'] ?></a></small>
-						<?php endif; ?>	
-						
-						</td>
-
-					<?php else: ?>
-						<td valign="middle" class="navmenu" onmouseover="this.className='navmenu selected';" onmouseout="this.className='navmenu';" onclick="window.location.href='<?php echo $link['url'];?>'">
-						<?php if (!$this->tmpl_main_text_only && $link['image']): ?>
-							<a href="<?php echo $link['url']; ?>" <?php echo $link['attributes']; ?>><img src="<?php echo $link['image'] ?>" alt="<?php echo $link['name']; ?>" title="<?php echo $link['name']; ?>" class="menuimage17" border="0" /></a>
-						<?php endif; ?>
-						<?php if (!$this->tmpl_main_icons_only): ?>
-							<small><a href="<?php echo $link['url'] ?>" <?php echo $link['attributes']; ?>><?php echo $link['name'] ?></a></small>
-						<?php endif; ?>	
-						</td>
-					<?php endif; ?>
-
-					<!-- end regular menu item -->
-
-				<?php endif; ?>
-			<?php endforeach; ?>
-		</tr>
-		</table></td>
-</tr>
-<!-- the course banner (or section title) -->
-	<tr> 
-		<td id="course-banner"><?php echo $this->tmpl_section; ?></td>
-	</tr>
-<!-- end course banner -->
-
-<!-- course navigation elements: ( course nav links, instructor nav links) -->
-<?php if ($this->tmpl_course_nav): ?>
-	<tr>
-		<td id="course-nav"><a name="navigation"></a>
-		<!-- course navigation links: -->
-		<table border="0" cellspacing="0" cellpadding="0" align="center">
-			<tr>			
-				<?php foreach ($this->tmpl_course_nav as $page => $link): ?>
-					<!-- regular menu item -->					
-					<td class="cat2" valign="top" nowrap="nowrap" onclick="window.location.href='<?php echo $link['url'];?>'">				
-					<?php if (!$this->tmpl_course_text_only): ?>
-						<a href="<?php echo $link['url']; ?>" <?php echo $link['attribs']; ?>><img src="<?php echo $link['image'] ?>" alt="<?php echo $link['title']; ?>" title="<?php echo $link['title']; ?>" class="menuimage" border="0" /></a>
-					<?php endif; ?>
-					<?php if (!$this->tmpl_course_icons_only): ?>
-						<small><a href="<?php echo $link['url']; ?>" <?php echo $link['attribs']; ?> title="<?php echo $link['title']; ?>" ><?php echo $link['name'] ?></a></small>
-					<?php endif; ?>
-					</td>
-					<td width="10"></td>
-					<!-- end regular menu item -->
-				<?php endforeach; ?>
-			</tr>
-		</table>
-		<!-- end course navigation links -->
-		</td>
-	</tr>
-<?php endif; ?>
-<!-- end course navigation elements -->
-<!-- the breadcrumb navigation -->
-<?php if ($this->tmpl_breadcrumbs): ?>
-	<tr>
-		<td valign="middle" class="breadcrumbs">
-				<?php foreach($this->tmpl_breadcrumbs as $item): ?>
-					<?php if ($item['link']): ?>
-						<a href="<?php echo $item['link']; ?>" class="breadcrumbs"><?php echo $item['title']; ?></a> » 
-					<?php else: ?>
-						<!-- the last item in the list is not a link. current location -->
-						<?php echo $item['title']; ?>
-					<?php endif; ?>
-				<?php endforeach; ?>
-		</td>
-	</tr>
-<?php endif; ?>
-<!-- end the breadcrumb navigation -->
-<tr>
-	<td><a name="content"></a>
+<a name="content"></a>
