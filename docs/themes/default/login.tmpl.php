@@ -13,7 +13,7 @@ global $msg;
 
 <h4><?php echo _AT('login'); ?> <?php echo $this->tmpl_title; ?></h4>
 
-<div class="input-form" style="max-width: 370px">
+<div class="input-form" style="max-width: 400px">
 	<div class="row">
 		<label for="login"><?php echo _AT('login_name'); ?></label><br />
 		<input type="text" name="form_login" id="login" />
