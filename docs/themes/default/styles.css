@@ -1,14 +1,6 @@
-/****************************************************************/
-/* Modify this style sheet by entering your own values */
-/* Here is a good CSS reference if you need help:      */
-/* http://www.htmlhelp.com/reference/css/              */
-
 /* main body attributes */
 body {
 	font-family: Verdana, Arial, sans-serif;
-	color: black;
-	background: white;
-	margin-bottom: 0px;
 	margin-top: 5px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -16,35 +8,9 @@ body {
 }
 
 /* heading attributes */
-h1 {
+h1, h2, h3, h4, h5, h6 {
 	font-family: Verdana, Arial, sans-serif;
-	color: black;
 	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-right: 0px;
-}
-h3 {
-	font-family: Verdana, Arial, sans-serif;
-	color: black;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-left: 10px;
-	margin-right: 0px;
-}
-h4 {
-	font-family: Verdana, Arial, sans-serif;
-	color: black;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-left: 10px;
-	margin-right: 0px;
-}
-
-h5 {
-	font-family: Verdana, Arial, sans-serif;
-	color: black;
-	margin-bottom: 5px;
 	margin-top: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -53,7 +19,6 @@ h5 {
 /* paragraph attributes */
 p {
 	font-family: Verdana, Arial, sans-serif;
-	color: black;
 	margin-bottom: 10px;
 	margin-top: 0px;
 	margin-left: 5px;
@@ -71,11 +36,6 @@ p.toc{
 	margin-right: 3em;
 	border: 1px #98AAB1 solid;
 } 
-
-th {
-	background-color: #B8B8BC;
-	color: black;
-}
 
 /* list attributes */
 ul {

@@ -5,8 +5,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 global $msg;
 ?>
 
-<h3><?php echo _AT('login'); ?></h3>
-
 <?php $msg->printAll();?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
