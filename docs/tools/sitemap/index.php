@@ -23,25 +23,7 @@ $_section[1][0] = _AT('sitemap');
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<a href="tools/index.php?g=11"><img src="images/icons/default/square-large-tools.gif" border="0" vspace="2" class="menuimageh2" width="41" height="40" alt="" /></a> ';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo '<a href="tools/index.php?g=11">'._AT('tools').'</a>';
-}
-echo '</h2>';
-
-echo '<h3>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '&nbsp;<img src="images/icons/default/sitemap-large.gif" class="menuimageh3" width="42" height="38" alt="" /> ';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo _AT('sitemap');
-}
-echo '</h3>';
-
-echo '<p><small><img src="themes/default/images/nav-home.gif" alt="" class="menuimage8" /> <a href="index.php">'._AT('home').'</a><br />';
+echo '<p><a href="index.php">'._AT('home').'</a><br />';
 
 $contentManager->printSiteMapMenu();
 
@@ -72,7 +54,7 @@ echo '<img src="images/'.$rtl.'tree/tree_'.$spacer.'.gif" alt="" class="menuimag
 echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-echo '<img src="images/icons/default/search-small.gif" alt="" class="menuimage8" /> <a href="users/search.php?g=20">'._AT('search').'</a>';
+echo ' <a href="users/search.php?g=20">'._AT('search').'</a>';
 
 echo '<br />';
 echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -96,7 +78,7 @@ echo '<img src="images/'.$rtl.'tree/tree_'.$spacer.'.gif" alt="" class="menuimag
 echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-echo '<img src="images/icons/default/package-small.gif" alt="" class="menuimage8" /> <a href="tools/ims/index.php?g=27">'._AT('export_content').'</a>';
+echo ' <a href="tools/ims/index.php?g=27">'._AT('export_content').'</a>';
 
 echo '<br />';
 echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -104,7 +86,7 @@ echo '<img src="images/'.$rtl.'tree/tree_'.$spacer.'.gif" alt="" class="menuimag
 echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-echo '<img src="images/icons/default/course-tracker-small.gif" alt="" class="menuimage8" /> <a href="tools/tracker.php?g=28">'._AT('my_tracker').'</a>';
+echo ' <a href="tools/tracker.php?g=28">'._AT('my_tracker').'</a>';
 
 echo '<br />';
 echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -112,7 +94,7 @@ echo '<img src="images/'.$rtl.'tree/tree_'.$spacer.'.gif" alt="" class="menuimag
 echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_end.gif" alt="" class="menuimage8" />';
 echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-echo '<img src="images/icons/default/my-tests-small.gif" alt="" class="menuimage8" /> <a href="tools/my_tests.php?g=32">'._AT('my_tests').'</a>';
+echo ' <a href="tools/my_tests.php?g=32">'._AT('my_tests').'</a>';
 
 
 // Instructor Tools
@@ -143,7 +125,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_'.$priv1.'.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/course_mail-small.gif" alt="" class="menuimage8" /> <a href="tools/course_email.php">'._AT('course_email').'</a>';
+		echo ' <a href="tools/course_email.php">'._AT('course_email').'</a>';
 	}
 	if (authenticate(AT_PRIV_ENROLLMENT, AT_PRIV_RETURN)) {
 		echo '<br />';
@@ -152,7 +134,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_'.$priv2.'.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/enrol_mng-small.gif" alt="" class="menuimage8" /> <a href="tools/enrollment/index.php">'._AT('course_enrolment').'</a>';
+		echo ' <a href="tools/enrollment/index.php">'._AT('course_enrolment').'</a>';
 	}
 
 	if (authenticate(AT_PRIV_FILES, AT_PRIV_RETURN)){
@@ -162,7 +144,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_'.$priv3.'.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/file-manager-small.gif" alt="" class="menuimage8" /> <a href="tools/file_manager.php">'._AT('file_manager').'</a>';
+		echo ' <a href="tools/file_manager.php">'._AT('file_manager').'</a>';
 	}
 
 	if (authenticate(AT_PRIV_TEST_CREATE, AT_PRIV_RETURN) || authenticate(AT_PRIV_TEST_MARK, AT_PRIV_RETURN)) {
@@ -172,7 +154,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_'.$priv4.'.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/test-manager-small.gif" alt="" class="menuimage8" /> <a href="tools/tests/">'._AT('test_manager').'</a>';
+		echo ' <a href="tools/tests/">'._AT('test_manager').'</a>';
 	}
 
 	if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) { 
@@ -182,7 +164,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/package-small.gif" alt="" class="menuimage8" /> <a href="tools/ims/">'._AT('content_packaging').'</a>';
+		echo ' <a href="tools/ims/">'._AT('content_packaging').'</a>';
 
 		echo '<br />';
 		echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -190,7 +172,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/backup-small.gif" alt="" class="menuimage8" /> <a href="tools/backup/">'._AT('backup_course').'</a>';
+		echo ' <a href="tools/backup/">'._AT('backup_course').'</a>';
 
 		echo '<br />';
 		echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -198,7 +180,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/course-tracker-small.gif" alt="" class="menuimage8" /> <a href="tools/course_tracker.php">'._AT('course_tracker').'</a>';
+		echo ' <a href="tools/course_tracker.php">'._AT('course_tracker').'</a>';
 
 		echo '<br />';
 		echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -206,7 +188,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_'.$priv5.'.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/course-properties-small.gif" alt="" class="menuimage8" /> <a href="tools/course_properties.php">'._AT('course_properties').'</a>';
+		echo ' <a href="tools/course_properties.php">'._AT('course_properties').'</a>';
 	}
 
 	if (authenticate(AT_PRIV_STYLES, AT_PRIV_RETURN)) { 
@@ -216,7 +198,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/edit-preferences-small.gif" alt="" class="menuimage8" /> <a href="tools/course_preferences.php">'._AT('course_default_prefs').'</a>';
+		echo ' <a href="tools/course_preferences.php">'._AT('course_default_prefs').'</a>';
 
 		echo '<br />';
 		echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -224,7 +206,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/banner-small.gif" alt="" class="menuimage8" /> <a href="tools/banner.php">'._AT('course_banner').'</a>';
+		echo ' <a href="tools/banner.php">'._AT('course_banner').'</a>';
 
 		echo '<br />';
 		echo '<img src="images/'.$rtl.'tree/tree_vertline.gif" alt="" class="menuimage8" />';
@@ -232,7 +214,7 @@ if (strcmp ($spacer, "vertline") == 0) {
 		echo '<img src="images/'.$rtl.'tree/tree_space.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_split.gif" alt="" class="menuimage8" />';
 		echo '<img src="images/'.$rtl.'tree/tree_horizontal.gif" alt="" class="menuimage8" />';
-		echo '<img src="images/icons/default/copyright-small.gif" alt="" class="menuimage8" /> <a href="tools/edit_header.php">'._AT('course_copyright2').'</a>';
+		echo ' <a href="tools/edit_header.php">'._AT('course_copyright2').'</a>';
 	}
 }
 
@@ -294,7 +276,7 @@ if (defined('AC_PATH') && AC_PATH) {
 echo '<br />';
 echo '<img src="images/'.$rtl.'tree/tree_end.gif" alt="" class="menuimage8" /><img src="images/help3.gif" alt="" class="menuimage8" /> <a href="help/">'._AT('help').'</a>';
 
-echo '</small></p>';
+echo '</p>';
 
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>
