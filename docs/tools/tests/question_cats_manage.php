@@ -66,22 +66,6 @@ if (isset($_GET['catid'])) {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<a href="tools/" class="hide"><img src="images/icons/default/square-large-tools.gif"  class="menuimageh2" border="0" vspace="2" width="42" height="40" alt="" /></a>';
-}
-echo ' <a href="tools/" class="hide">'._AT('tools').'</a>';
-echo '</h2>';
-
-echo '<h3>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '&nbsp;<img src="images/icons/default/test-manager-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-}
-echo '<a href="tools/tests/">'._AT('test_manager').'</a>';
-echo '</h3>';
-
-echo '<h4><a href="tools/tests/question_db.php">' . _AT('question_database') . '</h4>';
-
 $msg->printErrors();
 
 ?>

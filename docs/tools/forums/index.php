@@ -68,7 +68,6 @@ $result = mysql_query($sql, $db); */
 	<?php foreach($all_forums['nonshared'] as $row): ?>
 		<tr onmousedown="document.form['f<?php echo $row['forum_id']; ?>'].checked = true;">
 			<td><input type="radio" name="id" value="<?php echo $row['forum_id']; ?>" id="f<?php echo $row['forum_id']; ?>"></td>
-
 			<td><?php echo AT_print($row['title'], 'forums.title'); ?></td>
 		</tr>
 	<?php endforeach; ?>

@@ -21,7 +21,7 @@ require (AT_INCLUDE_PATH.'lib/forums.inc.php');
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'forum/list.php');
+	header('Location: '.$_base_href.'tools/forums/index.php');
 	exit;
 } else if (isset($_POST['edit_forum'])) {
 	$_POST['fid'] = intval($_POST['fid']);
@@ -41,7 +41,7 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('FORUM_NO_EDIT_SHARE');
 		}
 		
-		header('Location: ../forum/list.php');
+		header('Location: '.$_base_href.'tools/forums/index.php');
 		exit;
 	}
 }

@@ -26,29 +26,13 @@ authenticate(AT_PRIV_TEST_CREATE, AT_PRIV_TEST_MARK);
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<a href="tools/" class="hide"><img src="images/icons/default/square-large-tools.gif"  class="menuimageh2" border="0" vspace="2" width="42" height="40" alt="" /></a>';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo ' <a href="tools/" class="hide">'._AT('tools').'</a>';
-}
-echo '</h2>';
-
-echo '<h3>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '&nbsp;<img src="images/icons/default/test-manager-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo _AT('test_manager');
-}
-echo '</h3>';
-$msg->addHelp('TEST_MANAGER1');
-$msg->printAll();
+//$msg->addHelp('TEST_MANAGER1');
+//$msg->printAll();
 /* this session thing is a hack to temporarily prevent the en/dis editor link from affecting 'add poll' */
 $old = $_SESSION['prefs']['PREF_EDIT'];
 $_SESSION['prefs']['PREF_EDIT'] =1;
 
+/*
 unset($editors);
 $editors[] = array('priv' => AT_PRIV_TEST_CREATE, 'title' => _AT('create_test'), 'url' => 'tools/tests/create_test.php');
 $editors[] = array('priv' => AT_PRIV_TEST_CREATE, 'title' => _AT('question_database'), 'url' => 'tools/tests/question_db.php');
@@ -56,7 +40,7 @@ echo '<div align="center">';
 print_editor($editors , $large = false);
 echo '</div>';
 $_SESSION['prefs']['PREF_EDIT'] = $old;
-
+*/
 
 
 /* get a list of all the tests we have, and links to create, edit, delete, preview */

@@ -165,6 +165,30 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['editor/add_forum.php']['title']  = _AT('add_forum');
 	$_pages['editor/add_forum.php']['parent'] = 'tools/forums/index.php';
 
+	$_pages['editor/delete_forum.php']['title']  = _AT('delete_forum');
+	$_pages['editor/delete_forum.php']['parent'] = 'tools/forums/index.php';
+
+	$_pages['editor/edit_forum.php']['title']  = _AT('edit_forum');
+	$_pages['editor/edit_forum.php']['parent'] = 'tools/forums/index.php';
+
+	// tests
+	$_pages['tools/tests/index.php']['title']  = _AT('tests');
+	$_pages['tools/tests/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/tests/index.php']['children'] = array('tools/tests/create_test.php', 'tools/tests/question_db.php', 'tools/tests/question_cats.php');
+
+	$_pages['tools/tests/create_test.php']['title']  = _AT('create_test');
+	$_pages['tools/tests/create_test.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/question_db.php']['title']  = _AT('question_database');
+	$_pages['tools/tests/question_db.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/question_cats.php']['title']  = _AT('question_categories');
+	$_pages['tools/tests/question_cats.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/question_cats.php']['children'] = array('tools/tests/question_cats_manage.php');
+
+	$_pages['tools/tests/question_cats_manage.php']['title']  = _AT('add');
+	$_pages['tools/tests/question_cats_manage.php']['parent'] = 'tools/tests/question_cats.php';
+
 
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
