@@ -51,6 +51,9 @@ if (isset($this_login, $this_password)) {
 		$_SESSION['login']		= $this_login;
 		$_SESSION['valid_user'] = true;
 		$_SESSION['course_id']  = -1;
+
+		$msg->addFeedback('LOGIN_SUCCESS');
+
 		header('Location: admin/index.php');
 		exit;
 	}

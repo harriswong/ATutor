@@ -36,6 +36,6 @@ global $db; // must be global to validate sql-link resoruce below
 	   COPYRIGHT LINES MAY NOT BE ALTERED IN ANY WAY.
 	*/
 		?>
-	<small><small><?php echo _AT('copyright').'. '; echo '<a href="'.$_base_path.'about.php">'._AT('about_atutor').'</a>.'; ?><br />
-	<span id="howto"><?php echo _AT('general_help'); ?></span></small></small>
+	<small><?php echo _AT('copyright').'. '; echo '<a href="'.$_base_path.'about.php">'._AT('about_atutor').'</a>.'; ?><br />
+	<span id="howto"><?php echo _AT('general_help'); ?></span></small>
 </div>
