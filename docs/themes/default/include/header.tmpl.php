@@ -110,7 +110,35 @@ if (!$_SESSION['course_id']) {
 </head>
 <body <?php echo $this->tmpl_onload; ?>><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
+<script>
 
+function toggleToc() {
+	//var tocmain = document.getElementById('help');
+	var toc = document.getElementById('help');
+	var showlink=document.getElementById('showlink');
+	var hidelink=document.getElementById('hidelink');
+	if(toc.style.display == 'none') {
+		toc.style.display = tocWas;
+		hidelink.style.display='';
+		showlink.style.display='none';
+		//tocmain.className = '';
+
+		var help = document.getElementById('help-title');
+		help.className = '';
+
+	} else {
+		tocWas = toc.style.display;
+		toc.style.display = 'none';
+		hidelink.style.display='none';
+		showlink.style.display='';
+		//tocmain.className = 'tochidden';
+
+		var help = document.getElementById('help-title');
+		help.className = 'line';
+	}
+}
+
+</script>
 <div id="search-help-links">
 	<a href="">Search</a> | <a href="">Help</a><br><form><select><option>course name</option></select><input type="submit" value="jump"></form>
 </div>
@@ -154,7 +182,21 @@ if (!$_SESSION['course_id']) {
 		<?php endif; ?>
 	</div>
 
-	<h2><?php echo $_page_title; ?></h2>
+	<h2 id="page-title"><?php echo $_page_title; ?></h2>
+	<script type="text/javascript">
+	if (document.getElementById) {
+		document.writeln('<div id=\'toctoggle\'>[<a href="javascript:toggleToc()" class="internal">' +
+		'<span id="showlink" style="display:none;">show</span>' +
+		'<span id="hidelink">hide</span>'
+		+ '</a>]</div>');
+	}
+	</script></div>
+
+	<h3 id="help-title">Help</h3>
+	<div id="help">
+		<p>this is a help message. what do you think?</p>
+		<p>this is a really long stupid help message.</p>
+	</div>
 	
 
 <?php return; ?>
