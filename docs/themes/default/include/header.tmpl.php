@@ -187,6 +187,11 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['tools/backup/restore.php']['title']  = _AT('restore');
 		$_pages['tools/backup/restore.php']['parent'] = 'tools/backup/index.php';
 
+		$_pages['tools/backup/edit.php']['title']  = _AT('edit');
+		$_pages['tools/backup/edit.php']['parent'] = 'tools/backup/index.php';
+
+		$_pages['tools/backup/delete.php']['title']  = _AT('delete');
+		$_pages['tools/backup/delete.php']['parent'] = 'tools/backup/index.php';
 
 	$_pages['tools/news/index.php']['title']  = _AT('announcements');
 	$_pages['tools/news/index.php']['parent'] = 'tools/index.php';
