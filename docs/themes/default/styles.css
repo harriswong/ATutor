@@ -901,18 +901,18 @@ div.news span.date {
 
 /* home page links */
 div.home-link {
-	padding: 4px;
+	padding: 2px;
 	float: left;
 	text-align: center;
-	margin: 5px;
+	margin: 2px;
 }
 div.home-link:hover {
-	padding: 3px;
+	padding: 1px;
 	background-color: #efefef;
 	border: 1px solid #afafaf;
 	float: left;
 	text-align: center;
-	margin: 5px;
+	margin: 2px;
 }
 div.home-link a {
 	text-decoration: none;
