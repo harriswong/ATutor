@@ -36,12 +36,14 @@ if (isset($cat_id)) {
 <input type="hidden" name="form_submit" value="1" />
 
 <div class="input-form">
-	<div class="row"><?php 
+	<div class="row">
+		<h3><?php 
 		if (isset($cat_id)) {
 			echo _AT('cats_edit_categories'); 
 		} else {
 			echo _AT('cats_add_categories'); 
-		}?></div>
+		}?></h3>
+	</div>
 
 	<div class="row">
 		<label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br ?>
