@@ -28,7 +28,7 @@ if ($_SESSION['valid_user'] !== true) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$info = array('INVALID_USER', $_SESSION['course_id']);
-	$msg->printInfos('$info)';
+	$msg->printInfos('$info');
 
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
@@ -112,7 +112,7 @@ if ($_POST['submit']) {
 	}
 		
 	$login = strtolower($_POST['login']);
-	if (!msg->containsErrors()) {			
+	if (!$msg->containsErrors()) {			
 		if (($_POST['web_site']) && (!ereg('://',$_POST['web_site']))) { $_POST['web_site'] = 'http://'.$_POST['web_site']; }
 		if ($_POST['web_site'] == 'http://') { $_POST['web_site'] = ''; }
 

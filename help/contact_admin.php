@@ -55,7 +55,7 @@
 	}
 
 	if (!defined('ADMIN_EMAIL')) {
-		$msg->printError('ADMIN_INFO_NOT_FOUND');
+		$msg->printErrors('ADMIN_INFO_NOT_FOUND');
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}

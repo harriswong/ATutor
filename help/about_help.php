@@ -38,7 +38,7 @@ echo '<h2><img src="images/icons/default/square-large-help.gif" width="42" heigh
 <ul>
 	<li><?php
 		echo _AT('atutor_help_boxes');
-		$msg->printHelp('DEMO_HELP2'); 
+		$msg->printHelps('DEMO_HELP2'); 
 
 	?><br /></li>
 

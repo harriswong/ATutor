@@ -13,6 +13,8 @@
 
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
+require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
+
 $_section[0][0] = _AT('resources');
 $_section[0][1] = 'resources/';
 $_section[1][0] = _AT('links_db');
@@ -28,14 +30,12 @@ $SITE_URL = 'resources/links/index.php';
 $FULL_ADMIN_ACCESS = true;		// True to allow admin to create categories
 $TOP_CAT_NAME = _AT('newest_links');			// Name of the top "category"
 
-require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
-
-global $savant;
-$msg =& new Message($savant);
-
 if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
 	$ADMIN_MODE = true;
 }
+
+global $savant;
+$msg =& new Message($savant);
 
 // Open the database
 $db2 = new MySQL;
@@ -131,12 +131,15 @@ function show_submissions_list($CatID)
 	return;
 }
 
-function start_page($CatID="",$title="",$msg="")
+function start_page($CatID="",$title="",$msgs="")
 {
+	global $savant;
+	$msg =& new Message($savant);
+
 	global $_my_uri;
 	
-	if(!empty($msg)) {
-		$msg->printNoLookupFeedback($msg);
+	if(!empty($msgs)) {
+		$msg->printNoLookupFeedback($msgs);
 	}
 
 	$msg->printWarnings();
@@ -436,13 +439,16 @@ function show_edit_link($LinkID="",$title="",$msg="")
 
 function show_add_link($add = "NULL", $CatName = "unknown")
 {
+	global $savant;
+	$msg =& new Message($savant);
+
 	global $db2;
 	global $TOP_CAT_NAME;
 	global $FULL_ADMIN_ACCESS;
 	global $UserName;		// Cookie
 	global $UserEmail;		// Cookie
-0
-	$msg->addHelp('ADD_RESOURCE'):
+
+	$msg->addHelp('ADD_RESOURCE');
 	$msg->addHelp('ADD_RESOURCE1');
 	$msg->printHelps();
 	?><h3><?php echo _AT('add_link_in'); ?> <?php echo $CatName ?>:</h3>
