@@ -21,11 +21,19 @@ authenticate(AT_PRIV_ADMIN);
 
 // 'search.php',  removed
 if (isset($_POST['submit'])) {
-	$_POST['main'] = array_intersect($_POST['main'], $_modules);
-	$_POST['home'] = array_intersect($_POST['home'], $_modules);
+	if (isset($_POST['main'])) {
+		$_POST['main'] = array_intersect($_POST['main'], $_modules);
+		$main_links = implode('|', $_POST['main']);
+	} else {
+		$main_links = '';
+	}
 
-	$main_links = implode('|', $_POST['main']);
-	$home_links = implode('|', $_POST['home']);
+	if (isset($_POST['home'])) {
+		$_POST['home'] = array_intersect($_POST['home'], $_modules);
+		$home_links = implode('|', $_POST['home']);
+	} else {
+		$home_links = '';
+	}
 
 	if ((strlen($main_sections) < 256) && (strlen($home_sections) < 256)) {
 		$sql    = "UPDATE ".TABLE_PREFIX."courses SET home_links='$home_links', main_links='$main_links' WHERE course_id=$_SESSION[course_id]";
