@@ -300,6 +300,19 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['editor/delete_news.php']['title']  = _AT('delete_announcement');
 		$_pages['editor/delete_news.php']['parent'] = 'tools/news/index.php';
 
+	$_pages['tools/glossary/index.php']['title']  = _AT('glossary');
+	$_pages['tools/glossary/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/glossary/index.php']['children'] = array('tools/glossary/add.php');
+
+		$_pages['tools/glossary/add.php']['title']  = _AT('add_glossary');
+		$_pages['tools/glossary/add.php']['parent'] = 'tools/glossary/index.php';
+
+		$_pages['tools/glossary/edit.php']['title']  = _AT('edit_glossary');
+		$_pages['tools/glossary/edit.php']['parent'] = 'tools/glossary/index.php';
+
+		$_pages['tools/glossary/delete.php']['title']  = _AT('delete_glossary');
+		$_pages['tools/glossary/delete.php']['parent'] = 'tools/glossary/index.php';
+
 	$_pages['tools/forums/index.php']['title']  = _AT('forums');
 	$_pages['tools/forums/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/forums/index.php']['children'] = array('editor/add_forum.php');
