@@ -171,7 +171,7 @@ if (isset($_POST['form_course'])) {
 <div class="input-form">
 
 <?php if ($isadmin): ?>
-	<div class="rowA">
+	<div class="row">
 		<label for="inst"><?php echo  _AT('instructor'); ?></label><br />
 		<select name="instructor" id="inst"><?php 
 			//see include/lib/filemanager.inc.php
@@ -180,21 +180,21 @@ if (isset($_POST['form_course'])) {
 	</div>
 <?php endif; ?>
 
-	<div class="rowA">
+	<div class="row">
 		<label for="title"><?php echo _AT('title'); ?></label><br />
 		<input type="text" id="title" name="title" size="40" value="<?php echo stripslashes(htmlspecialchars($row['title'])); ?>" />
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<label for="pri_lang"><?php  echo _AT('primary_language'); ?></label><br />
 		<?php $languageManager->printDropdown($row['primary_language'], 'pri_lang', 'pri_lang'); ?>
 	</div>
-	<div class="rowA">
+	<div class="row">
 		<label for="description"><?php echo _AT('description'); ?></label><br />
 		<textarea id="description" cols="45" rows="4" name="description"><?php echo $row['description']; ?></textarea>
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<label for="cat"><?php echo _AT('category'); ?></label><br />
 		<?php
 		$categories = get_categories();
@@ -213,7 +213,7 @@ if (isset($_POST['form_course'])) {
 		} ?>
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<?php  echo _AT('content_packaging'); ?><br />
 		<?php
 			switch ($row['content_packaging']) {
@@ -235,7 +235,7 @@ if (isset($_POST['form_course'])) {
 		<label><input type="radio" name="content_packaging" value="all" id="all" <?php echo $all; ?> /><?php  echo _AT('content_packaging_all'); ?></label>
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<?php echo _AT('syndicate_announcements'); ?><br />
 		<?php
 				$rss_no = $rss_yes = '';
@@ -250,7 +250,7 @@ if (isset($_POST['form_course'])) {
 		<label><input type="radio" name="rss" value="0" id="rss_n"  <?php echo $rss_no; ?> /><?php  echo _AT('disable_syndicate'); ?></label>
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<?php echo _AT('access'); ?><br />
 		<?php
 				switch ($row['access']) {
@@ -292,7 +292,7 @@ if (isset($_POST['form_course'])) {
 	</div>
 
 <?php if (!$course_id) : ?>
-	<div class="rowA">
+	<div class="row">
 		<label for="initial_content"><?php echo _AT('initial_content'); ?></label><br />
 		<select name="initial_content" id="initial_content" size="5">
 			<option value="0"><?php echo _AT('empty'); ?></option>
@@ -328,7 +328,7 @@ if (isset($_POST['form_course'])) {
 <?php endif; // !$course_id ?>
 
 <?php if ($isadmin) : ?>
-	<div class="rowA">
+	<div class="row">
 		<?php  echo _AT('course_quota'); ?><br />
 		<?php 
 			if ($row['max_quota'] == AT_COURSESIZE_UNLIMITED) { 
@@ -360,7 +360,7 @@ if (isset($_POST['form_course'])) {
 
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<?php  echo _AT('max_file_size'); ?><br />
 		<?php 
 			$max_allowed = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
@@ -382,7 +382,7 @@ if (isset($_POST['form_course'])) {
 		<input type="text" id="filesize_entered" name="filesize_entered" class="formfieldR" <?php echo $f_oth2?> value="<?php if ($row['max_file_size']!=AT_FILESIZE_DEFAULT && $row['max_file_size']!=AT_FILESIZE_SYSTEM_MAX) { echo bytes_to_megabytes($row['max_file_size']); } ?>" size="4" /> MB
 	</div>
 
-	<div class="rowA">
+	<div class="row">
 		<?php echo _AT('tracking'); ?><br />
 		<?php
 			if($row['tracking'] == 'on'){

@@ -8,9 +8,8 @@ div.input-form {
 }
 
 
-div.input-form div.rowA, div.input-form div.rowB {
+div.input-form div.row {
 	background-color: #fdfdfd;
-	/* margin-bottom: 15px; */
 	padding:8px;
 }
 

@@ -26,7 +26,7 @@ $msg->printAll();
 
 <div class="input-form">
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
 			<?php echo _AT('themes_disabled'); ?>
 		<?php else: ?>
@@ -52,7 +52,7 @@ $msg->printAll();
 		<?php endif; ?>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="seq"><?php echo _AT('seq_links'); ?></label><br />
 		<?php
 		/* sequence links preference */
@@ -68,7 +68,7 @@ $msg->printAll();
 		<input type="radio" name="seq" id="seq_both" value="<?php echo BOTH; ?>" <?php echo $neither; ?> /><label for="seq_both"><?php echo _AT('top_bottom');  ?></label>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="toc"><?php echo _AT('table_of_contents'); ?></label><br />
 		<?php
 			// table of contents preference
@@ -86,7 +86,7 @@ $msg->printAll();
 		
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="numbering"><?php echo _AT('show_numbers');  ?></label><br />
 		<?php
 			$num = '';  $num2 = '';
@@ -99,7 +99,7 @@ $msg->printAll();
 			<input type="radio" name ="numbering" id="num_dis" value="0" <?php echo $num2; ?> /><label for="num_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="use_help"><?php echo _AT('help'); ?></label><br />
 		<?php
 			$num = '';  $num2 = '';
@@ -112,7 +112,7 @@ $msg->printAll();
 			<input type="radio" name ="use_help" id="help_dis" value="0" <?php echo $num2; ?> /><label for="help_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="use_mini_help"><?php echo _AT('show_mini_help'); ?></label><br />
 		<?php
 			$num = '';  $num2 = '';
@@ -125,7 +125,7 @@ $msg->printAll();
 			<input type="radio" name ="use_mini_help" id="mhelp_dis" value="0" <?php echo $num2; ?> /><label for="mhelp_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="use_jump_redirect"><?php echo _AT('jump_redirect');  ?>:</label><br />
 		<?php
 			$num = '';  $num2 = '';
@@ -138,7 +138,7 @@ $msg->printAll();
 			<input type="radio" name ="use_jump_redirect" id="jump_dis" value="0" <?php echo $num2; ?> /><label for="jump_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
-	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
+	<div class="row">
 		<label for="seq_icons"><?php echo _AT('menus'); ?>:</label><br />
 		<?php
 			$num_stack = count($_stacks);
