@@ -144,14 +144,14 @@ $_pages['forum/list.php']['parent'] = 'tools/index.php';
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
 function get_main_navigation($current_page) {
-	global $_pages;
+	global $_pages, $_base_path;
 
 	$parent_page = $_pages[$current_page]['parent'];
 	$_top_level_pages = array();
 
 	if (isset($parent_page) && is_numeric($parent_page)) {
 		foreach($_pages[$parent_page] as $page) {
-			$_top_level_pages[] = array('url' => $page, 'title' => $_pages[$page]['title']);
+			$_top_level_pages[] = array('url' => $_base_path . $page, 'title' => $_pages[$page]['title']);
 		}
 	} else if (isset($parent_page)) {
 		return get_main_navigation($parent_page);
@@ -161,27 +161,27 @@ function get_main_navigation($current_page) {
 }
 
 function get_current_main_page($current_page) {
-	global $_pages;
+	global $_pages, $_base_path;
 
 	$parent_page = $_pages[$current_page]['parent'];
 
 	if (isset($parent_page) && is_numeric($parent_page)) {
-		return $current_page;
+		return $_base_path . $current_page;
 	} else if (isset($parent_page)) {
 		return get_current_main_page($parent_page);
 	}
 }
 
 function get_sub_navigation($current_page) {
-	global $_pages;
+	global $_pages, $_base_path;
 
 	if (isset($current_page) && is_numeric($current_page)) {
 		// reached the top
 		return array();
 	} else if (isset($_pages[$current_page]['children'])) {
-		$_sub_level_pages[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		$_sub_level_pages[] = array('url' => $_base_path . $current_page, 'title' => $_pages[$current_page]['title']);
 		foreach ($_pages[$current_page]['children'] as $child) {
-			$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
+			$_sub_level_pages[] = array('url' => $_base_path . $child, 'title' => $_pages[$child]['title']);
 		}
 	} else if (isset($_pages[$current_page]['parent'])) {
 		// no children
@@ -194,27 +194,27 @@ function get_sub_navigation($current_page) {
 }
 
 function get_current_sub_navigation_page($current_page) {
-	global $_pages;
+	global $_pages, $_base_path;
 
 	$parent_page = $_pages[$current_page]['parent'];
 
 	if (isset($parent_page) && is_numeric($parent_page)) {
-		return $current_page;
+		return $_base_path . $current_page;
 	} else {
-		return $current_page;
+		return $_base_path . $current_page;
 	}
 }
 
 function get_path($current_page) {
-	global $_pages;
+	global $_pages, $_base_path;
 
 	$parent_page = $_pages[$current_page]['parent'];
 
 	if (isset($parent_page) && is_numeric($parent_page)) {
-		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		$path[] = array('url' => $_base_path . $current_page, 'title' => $_pages[$current_page]['title']);
 		return $path;
 	} else if (isset($parent_page)) {
-		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		$path[] = array('url' => $_base_path . $current_page, 'title' => $_pages[$current_page]['title']);
 		$path = array_merge($path, get_path($parent_page));
 	} else {
 		$path = array();
@@ -321,20 +321,20 @@ function toggleToc() {
 <?php endif; ?>
 
 <div id="breadcrumbs">
-	<?php echo $_section_title; ?> : <?php foreach ($_path as $page): ?>
-										<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
-									<?php endforeach; ?> <?php echo $_page_title; ?>
+	<?php echo $_section_title; ?> : 
+	<?php foreach ($_path as $page): ?>
+		<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
+	<?php endforeach; ?> <?php echo $_page_title; ?>
 </div>
-
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
 	<?php foreach ($_top_level_pages as $page): ?>
 		<?php if ($page['url'] == $_current_top_level_page): ?>
-			<th class="selected"><?php echo $page['title']; ?></th>
+			<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php else: ?>
-			<th class="tab"><a href="<?php echo $_base_path . $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
+			<th class="tab"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php endif; ?>
 	<?php endforeach; ?>
@@ -350,7 +350,7 @@ function toggleToc() {
 				<?php if ($page['url'] == $_current_sub_level_page): ?>
 					<strong><?php echo $page['title']; ?></strong>
 				<?php else: ?>
-					<a href="<?php echo $_base_path . $page['url']; ?>"><?php echo $page['title']; ?></a>
+					<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a>
 				<?php endif; ?>
 				|
 			<?php endforeach; ?>
