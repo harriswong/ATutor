@@ -146,6 +146,4 @@ echo '<a href="'.$_SERVER['PHP_SELF'].'">'._AT('cats_add_categories').'</a><br /
 </tr>
 </table>
 
-<?php
-require(AT_INCLUDE_PATH.'footer.inc.php'); 
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
