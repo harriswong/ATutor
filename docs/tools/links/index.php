@@ -92,6 +92,7 @@ if (!isset($_GET['cat_parent_id'])) {
 	<th scope="col">&nbsp;</th>
 	<th scope="col"><?php echo _AT('title'); ?></th>
 	<th scope="col"><?php echo _AT('category'); ?></th>
+	<th scope="col"><?php echo _AT('submitter'); ?></th>
 	<th scope="col"><?php echo _AT('approved'); ?></th>
 	<th scope="col"><?php echo _AT('num_hits'); ?></th>
 
@@ -105,9 +106,9 @@ if (!isset($_GET['cat_parent_id'])) {
 <tbody>
 <?php
 	if ($parent_id) {
-		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links WHERE CatID=$parent_id";
+		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links L, ".TABLE_PREFIX."resource_categories C WHERE L.CatID=C.CatID AND C.course_id=$_SESSION[course_id] AND L.CatID=$parent_id";
 	} else {
-		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links";
+		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links L, ".TABLE_PREFIX."resource_categories C WHERE L.CatID=C.CatID AND C.course_id=$_SESSION[course_id]";  
 	}
 	$sql .= " ORDER BY $col $order";
 
@@ -123,8 +124,10 @@ if (!isset($_GET['cat_parent_id'])) {
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['LinkID']; ?>'].checked = true;">
 				<td width="10"><input type="radio" name="link_id" value="<?php echo $row['LinkID']; ?>" id="m<?php echo $row['LinkID']; ?>"></td>
-				<td><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></td>
+				<td><a href="<?php echo $row['Url']; ?>" title=""><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
 				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
+
+				<td><?php echo AT_print($row['SubmitName'], 'resource_links.SubmitName'); ?></td>
 				<td align="center"><?php 
 						if($row['Approved']) { 
 							echo _AT('yes1'); 

@@ -18,6 +18,10 @@ authenticate(AT_PRIV_LINKS);
 
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
+if ($_POST['url'] == '') {
+	$_POST['url'] = "http://";
+}
+
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 	header('Location: '.$_base_href.'tools/links/index.php');
