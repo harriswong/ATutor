@@ -38,6 +38,10 @@ $_pages['admin/index.php']['parent']   = AT_NAV_ADMIN;
 
 $_pages['admin/users.php']['title']    = _AT('users');
 $_pages['admin/users.php']['parent']   = AT_NAV_ADMIN;
+$_pages['admin/users.php']['children'] = array('admin/admin_email.php');
+
+	$_pages['admin/admin_email.php']['title']    = _AT('admin_email');
+	$_pages['admin/admin_email.php']['parent']   = 'admin/users.php';
 
 $_pages['admin/courses.php']['title']    = _AT('courses');
 $_pages['admin/courses.php']['parent']   = AT_NAV_ADMIN;
@@ -48,6 +52,14 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 
 	$_pages['admin/backup/index.php']['title']    = _AT('backups');
 	$_pages['admin/backup/index.php']['parent']   = 'admin/courses.php';
+	//$_pages['admin/backup/index.php']['children'] = array('admin/backup/restore.php');
+
+	// this item is a bit iffy:
+	$_pages['admin/backup/restore.php']['title']    = _AT('restore');
+	$_pages['admin/backup/restore.php']['parent']   = 'admin/backup/index.php';
+
+	$_pages['admin/backup/create.php']['title']    = _AT('create');
+	$_pages['admin/backup/create.php']['parent']   = 'admin/backup/index.php';
 
 	$_pages['admin/forums.php']['title']    = _AT('forums');
 	$_pages['admin/forums.php']['parent']   = 'admin/courses.php';
@@ -57,13 +69,20 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 
 $_pages['admin/config_info.php']['title']    = _AT('configuration');
 $_pages['admin/config_info.php']['parent']   = AT_NAV_ADMIN;
-$_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admin/themes/index.php');
+$_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admin/themes/index.php', 'admin/error_logging.php');
 
 	$_pages['admin/language.php']['title']    = _AT('language');
 	$_pages['admin/language.php']['parent']   = 'admin/config_info.php';
 
 	$_pages['admin/themes/index.php']['title']    = _AT('themes');
 	$_pages['admin/themes/index.php']['parent']   = 'admin/config_info.php';
+	//$_pages['admin/themes/index.php']['children'] = array('admin/themes/delete.php');
+
+	$_pages['admin/themes/delete.php']['title']    = _AT('delete');
+	$_pages['admin/themes/delete.php']['parent']   = 'admin/themes/index.php';
+
+	$_pages['admin/error_logging.php']['title']    = _AT('error_logging');
+	$_pages['admin/error_logging.php']['parent']   = 'admin/config_info.php';
 
 
 /* public pages */
@@ -81,7 +100,6 @@ $_pages['login.php']['parent']   = AT_NAV_PUBLIC;
 
 $_pages['password_reminder.php']['title']    = _AT('password_reminder');
 $_pages['password_reminder.php']['parent']   = AT_NAV_PUBLIC;
-
 
 
 /* my start page pages */

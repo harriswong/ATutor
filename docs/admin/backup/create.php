@@ -40,7 +40,6 @@ if (isset($_POST['cancel'])) {
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-echo '<h3>'._AT('backups').'</h3><br />';
 
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
