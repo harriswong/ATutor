@@ -99,6 +99,12 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 		$_pages['admin/create_category.php']['title']    = _AT('create_category');
 		$_pages['admin/create_category.php']['parent']   = 'admin/course_categories.php';
 
+		$_pages['admin/edit_category.php']['title']    = _AT('edit_category');
+		$_pages['admin/edit_category.php']['parent']   = 'admin/course_categories.php';
+
+		$_pages['admin/delete_category.php']['title']    = _AT('delete_category');
+		$_pages['admin/delete_category.php']['parent']   = 'admin/course_categories.php';
+
 $_pages['admin/config_info.php']['title']    = _AT('configuration');
 $_pages['admin/config_info.php']['parent']   = AT_NAV_ADMIN;
 $_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admin/themes/index.php', 'admin/error_logging.php');
