@@ -23,8 +23,6 @@ if (isset($_POST['submit'])) {
 	$cat_parent_id = intval($_POST['cat_parent_id']);
 
 	$sql = "UPDATE ".TABLE_PREFIX."resource_categories SET CatParent=$cat_parent_id, CatName='$cat_name' WHERE course_id=$_SESSION[course_id] AND CatID=$cat_id";
-debug($sql);
-exit;
 	$result = mysql_query($sql, $db);
 	$msg->addFeedback('CAT_UPDATE_SUCCESSFUL');
 
