@@ -110,11 +110,122 @@ if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 
 	$msg->printAll();
 
+
+$sql = "SELECT E.approved, E.role, E.last_cid, C.* FROM ".TABLE_PREFIX."course_enrollment E, ".TABLE_PREFIX."courses C WHERE E.member_id=$_SESSION[member_id] AND E.course_id=C.course_id ORDER BY C.title";
+$result = mysql_query($sql,$db);
+
+while ($row = mysql_fetch_assoc($result)):
+	$count++;
+?>
+	<div class="course<?php echo (!($count % 2)) ? '' : ' break'; ?>">
+		<h2><a href="bounce.php?couse=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h2>
+
+		<a href=""><img src="/a/themes/default/images/courses/tree.gif" class="icon" border="0" /></a>
+		<p>Instructor: <a href=""><?php echo get_login($row['member_id']); ?></a><br />
+			My Role: <?php echo $row['role']; ?><br /></p>
+
+		<div class="shortcuts">
+			<a href="bounce.php?course=<?php echo $row['course_id'].SEP.'cid='.$row['last_cid']; ?>"><img src="http://marathonman.sourceforge.net/docs/images/ug/resume.gif" border="0" title="Resume Shortcut" /></a>
+		</div>
+	</div>
+<?php endwhile; ?>
+
+<?php
+require(AT_INCLUDE_PATH.'footer.inc.php');
+?>
+<style>
+div.course {
+	position: relative;
+	width: 400px;
+	min-height: 130px;
+	border: rgb(204, 204, 204) 1px solid;
+	background-color: #FFFCE5;
+	float: left;
+	margin: 5px;
+	padding: 5px;
+}
+
+div.course.break {
+	clear: left;
+}
+
+div.course h2 {
+	border: 0px;
+	font-weight: normal;
+	font-size: large;
+
+}
+
+div.course:hover {
+	background-color: #FFF8C8;
+	border: #AAAAAA 1px solid;
+}
+
+div.course a {
+	text-decoration: none;
+}
+
+div.course:hover a {
+	color: #006699;
+}
+
+div.course a:hover {
+	color: #000000;
+}
+
+div.course p {
+	font-size: small;
+}
+
+div.course p a {
+	font-weight: bold;
+}
+
+div.course img.icon	{
+	float: left;
+	border: rgb(234, 234, 234) 1px solid;
+	background-color: #FFF8C8;
+	margin: 3px;
+}
+
+
+div.course div.shortcuts {
+	text-align: right;
+	clear: left;
+	vertical-align: middle;
+}
+
+#tips {
+	float: right;
+	background-color: #FAFAFA;
+	border: 1px solid #AAAAAA;
+	margin-bottom: 100px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	width: 200px;
+	margin-right: 10px;
+	font-size: small;
+}
+
+legend {
+	padding-right: 10px;
+	padding-left: 10px;
+	color: orange;
+	font-weight: bold;
+	background-color: white;
+}
+</style>
+<?php
+exit;
+
+	/*
 	$msg->addHelp('CONTROL_CENTER1');
-	if (get_instructor_status( )) { /* see vitals */
+	if (get_instructor_status( )) {
 		$msg->addHelp('CONTROL_CENTER2');
 	}
 	$msg->printHelps();
+	*/
 
 if (get_instructor_status( )) { /* see vitals */
 	// this user is a teacher

@@ -120,7 +120,7 @@ $msg->printErrors();
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('send_email'); ?>" /> 
+		<input type="submit" name="submit" value="<?php echo _AT('send'); ?>" /> 
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 </div>
