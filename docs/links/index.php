@@ -13,6 +13,24 @@
 define('AT_INCLUDE_PATH', '../include/');
 
 require (AT_INCLUDE_PATH.'vitals.inc.php');
+
+if(isset($_GET['view'])) {
+
+	//add to the num hits
+	$sql = "SELECT Url, hits FROM ".TABLE_PREFIX."resource_links WHERE LinkID=$_GET[view]";
+	$results = mysql_query($sql,$db);
+
+	if ($row = mysql_fetch_assoc($results)) { 
+		$row['hits']++;
+		$sql = "UPDATE ".TABLE_PREFIX."resource_links SET hits=$row[hits] WHERE LinkID=$_GET[view]";
+		mysql_query($sql,$db);
+
+		//redirect
+		Header("Location: $row[Url]");
+		exit;
+	}
+}
+
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
 require (AT_INCLUDE_PATH.'header.inc.php');
@@ -88,7 +106,7 @@ if (!isset($_GET['cat_parent_id'])) {
 			 
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['LinkID']; ?>'].checked = true;">
-				<td><a href="<?php echo $row['Url']; ?>" target="_new" title="<?php echo _AT('links_windows'); ?>"><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
+				<td><a href="links/index.php?view=<?php echo $row['LinkID']; ?>" target="_new" title="<?php echo _AT('links_windows'); ?>"><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
 				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
 			</tr>
 <?php 
