@@ -134,15 +134,15 @@ $msg->printAll();
 
 	<div class="row"><label for="postal"><?php   echo _AT('postal_code'); ?></label><br /><input id="postal" class="formfield" name="postal" size="7" type="text"   value="<?php echo stripslashes(htmlspecialchars($this->row['postal']));?>" /></div>
 
-	<div class="row"><label for="city"><?php   echo _AT('city'); ?>:</label><br /><input id="city" class="formfield" name="city" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['city'])); ?>" /></div>
+	<div class="row"><label for="city"><?php   echo _AT('city'); ?></label><br /><input id="city" class="formfield" name="city" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['city'])); ?>" /></div>
 
-	<div class="row"><label for="province"><?php   echo _AT('province'); ?>:</label><br /><input id="province" class="formfield" name="province" type="text"   value="<?php echo stripslashes(htmlspecialchars($this->row['province']));?>" /></div>
+	<div class="row"><label for="province"><?php   echo _AT('province'); ?></label><br /><input id="province" class="formfield" name="province" type="text"   value="<?php echo stripslashes(htmlspecialchars($this->row['province']));?>" /></div>
 
-	<div class="row"><label for="country"><?php   echo _AT('country'); ?>:</label><br /><input id="country" class="formfield" name="country" type="text"   value="<?php echo stripslashes(htmlspecialchars($this->row['country']));?>" /></div>
+	<div class="row"><label for="country"><?php   echo _AT('country'); ?></label><br /><input id="country" class="formfield" name="country" type="text"   value="<?php echo stripslashes(htmlspecialchars($this->row['country']));?>" /></div>
 
 	<div class="row"><label for="phone"><?php   echo _AT('phone'); ?></label><br /><input class="formfield" size="11" name="phone" id="phone" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['phone']));?>" /> <small>(Eg. 123-456-7890)</small></div>
 
-	<div class="row"><label for="website"><?php   echo _AT('web_site'); ?>:</label><br /><input id="website" class="formfield" name="website" size="40" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['website']));?>" /></div>
+	<div class="row"><label for="website"><?php   echo _AT('web_site'); ?></label><br /><input id="website" class="formfield" name="website" size="40" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['website']));?>" /></div>
 
 	<div class="row buttons"><input type="submit" value=" <?php   echo _AT('save'); ?>" name="submit" accesskey="s" /> <input type="submit" name="cancel" value=" <?php echo  _AT('cancel'); ?>" /></div>
 

@@ -126,7 +126,7 @@ $msg->printAll();
 	</div>
 
 	<div class="row">
-		<label for="use_jump_redirect"><?php echo _AT('jump_redirect');  ?>:</label><br />
+		<label for="use_jump_redirect"><?php echo _AT('jump_redirect');  ?></label><br />
 		<?php
 			$num = '';  $num2 = '';
 			if ($_SESSION['prefs'][PREF_JUMP_REDIRECT] == 1) {
@@ -139,7 +139,7 @@ $msg->printAll();
 	</div>
 
 	<div class="row">
-		<label for="seq_icons"><?php echo _AT('menus'); ?>:</label><br />
+		<label for="seq_icons"><?php echo _AT('menus'); ?></label><br />
 		<?php
 			$num_stack = count($_stacks);
 
