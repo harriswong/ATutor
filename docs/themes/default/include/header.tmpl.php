@@ -122,6 +122,8 @@ $_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admi
 	$_pages['admin/error_logging.php']['title']    = _AT('error_logging');
 	$_pages['admin/error_logging.php']['parent']   = 'admin/config_info.php';
 
+	$_pages['admin/error_logging_details.php']['title']    = _AT('viewing_profile_bugs');
+	$_pages['admin/error_logging_details.php']['parent']   = 'admin/config_info.php';
 
 /* public pages */
 $_pages['registration.php']['title']    = _AT('register');
@@ -186,8 +188,15 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/course_email.php']['title']  = _AT('course_email');
 	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
 
-	$_pages['tools/edit_header.php']['title']  = _AT('course_copyright2');
-	$_pages['tools/edit_header.php']['parent'] = 'tools/index.php';
+	$_pages['tools/content/index.php']['title']    = _AT('content');
+	$_pages['tools/content/index.php']['parent']   = 'tools/index.php';
+	$_pages['tools/content/index.php']['children'] = array('tools/content/add.php');
+
+		$_pages['tools/content/add.php']['title']    = _AT('add_content');
+		$_pages['tools/content/add.php']['parent']   = 'tools/content/index.php';
+
+		$_pages['editor/delete_content.php']['title']    = _AT('delete_content');
+		$_pages['editor/delete_content.php']['parent']   = 'tools/content/index.php';
 
 	$_pages['tools/backup/index.php']['title']  = _AT('backups');
 	$_pages['tools/backup/index.php']['parent'] = 'tools/index.php';
