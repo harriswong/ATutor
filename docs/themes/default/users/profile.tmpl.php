@@ -65,9 +65,9 @@ $msg->printAll();
 	<td class="row1">
 	<?php
 		if ( ($_COOKIE['ATLogin'] != '') && ($_COOKIE['ATPass'] != '') ) {
-			echo _AT('auto_enable');
+			echo _AT('auto_enabled').' - <a href="users/profile.php?auto=disable">'._AT('auto_disable').'</a>';
 		} else {
-			echo _AT('auto_disable');
+			echo _AT('auto_disabled').' - <a href="users/profile.php?auto=enable">'._AT('auto_enable').'</a>';
 		}
 	?>
 	<br /><br />

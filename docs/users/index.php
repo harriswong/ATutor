@@ -78,6 +78,8 @@ if(mysql_num_rows($result) != 0){
 		$cat_cats[$row['cat_id']] = $row['cat_id'];
 	}
 }
+
+//is this section used on this page?
 if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 
 	$parts = parse_url($_base_href);
@@ -102,6 +104,7 @@ if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 	header('Location: index.php');
 	exit;
 }
+// ?
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
