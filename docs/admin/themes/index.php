@@ -21,20 +21,14 @@ require(AT_INCLUDE_PATH.'lib/themes.inc.php');
 
 if (isset($_POST['export'])) {
 	export_theme($_POST['theme_name']);
-} 
-
-else if(isset($_POST['delete'])) {
+} else if(isset($_POST['delete'])) {
 	header('Location: delete.php?theme_code='.$_POST['theme_name']);
 	exit;
-}
-
-else if(isset($_POST['default'])) {
+} else if(isset($_POST['default'])) {
 	set_theme_as_default ($_POST['theme_name']);
 	$feedback = array('THEME_DEFAULT', $_POST['theme_name']);
 	$msg->addFeedback($feedback);
-}
-
-else if(isset($_POST['enable'])) {
+} else if(isset($_POST['enable'])) {
 	$version = get_version($_POST['theme_name']);
 	if ($version != VERSION) {
 		$str = $_POST['theme_name'] . ' - version: ' . $version;
@@ -45,21 +39,15 @@ else if(isset($_POST['enable'])) {
 	$feedback = array('THEME_ENABLED', $_POST['theme_name']);
 	$msg->addFeedback($feedback);
 	enable_theme($_POST['theme_name']);
-}
-
-else if(isset($_POST['disable'])) {
+} else if(isset($_POST['disable'])) {
 	$feedback = array('THEME_DISABLED', $_POST['theme_name']);
 	$msg->addFeedback($feedback);
 	disable_theme($_POST['theme_name']);
-}
-
-else if(isset($_POST['import'])) {
+} else if(isset($_POST['import'])) {
 	import_theme();
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-
-echo '<br />';
 
 //if themes directory is not writeable
 if (!is_writable('../../themes/')) {
@@ -156,27 +144,25 @@ endforeach;
 ?>
 
 <form name="importForm" method="post" action="admin/themes/import.php"  enctype="multipart/form-data">
-	<table cellspacing="1" cellpadding="0" border="0" class="bodyline" width="80%" summary="" align="center">
-		<tr>
-			<th class="cyan"><?php echo _AT('import_theme'); ?></th>
-		</tr>
-		<tr><td height="1" class="row2"></td></tr>
-		<tr>
-			<td class="row1"><label><strong><?php echo _AT('upload_theme_package'); ?>:</strong>
-			<input type="file" name="file" class="formfield" size = "40" /></label></td>
-		</tr>	
-		<tr><td height="1" class="row2"></td></tr>
-		<tr>
-			<td class="row1"><label><strong><?php echo _AT('specify_url_to_theme_package'); ?>:</strong>
-			<input type="text" name="url" value="http://" size="40" class="formfield" /></label></td>
-		</tr>
-		<tr><td height="1" class="row2"></td></tr>
-		<tr>
-			<td class="row1" align="center">
-			<input type= "submit" name="import" value="<?php echo _AT('import_theme'); ?>" class="button" />
-			</td>
-		</tr>
-	</table>
+<div class="input-form">
+	<div class="row">
+		<h3><?php echo _AT('import_theme'); ?></h3>
+	</div>
+
+	<div class="row">
+		<label for="file"><?php echo _AT('upload_theme_package'); ?></label><br />
+		<input type="file" name="file" size="40" id="file" />
+	</div>
+
+	<div class="row">
+		<label for="url"><?php echo _AT('specify_url_to_theme_package'); ?></label><br />
+		<input type="text" name="url" value="http://" size="40" id="url" />
+	</div>
+	
+	<div class="row buttons">
+	<input type= "submit" name="import" value="<?php echo _AT('import_theme'); ?>" />
+	</div>
+</div>
 </form>
 
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
