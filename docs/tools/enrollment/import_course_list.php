@@ -146,33 +146,34 @@ if ($_POST['submit']=='' || $msg_error) {
 	<input type="hidden" name="MAX_FILE_SIZE" value="30000" />
 	<input type="hidden" name="course" value="<?php echo $course; ?>" />
 
-	<table align="center" cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" width="90%">
-	<tr><td class="row1"><?php echo _AT('list_import_howto'); ?></td></tr>
-	<tr><td height="1" class="row2"></td></tr>
+<div class="input-form">
+	<div class="row">
+		<p><?php echo _AT('list_import_howto'); ?></p>
+	</div>
 
-	<tr><td class="row1" colspan="6" align="left"><?php echo _AT('import_sep_txt'); ?><br /><label><input type="radio" name="sep_choice" class="radio" value="_"
-	<?php		
-		if (($_POST['sep_choice'] == '_') || empty($_POST['sep_choice'])) { 
-			echo ' checked="checked"'; 
-		}
-
-		echo ' />'._AT('underscore').'</label> <label><input type="radio" name="sep_choice" class="radio" value="."';
-		if ($_POST['sep_choice'] == '.') { 
-			echo ' checked="checked"'; 
-		}
-		echo ' />'._AT('period').'</label>';
+	<div class="row">
+		<?php echo _AT('import_sep_txt'); ?><label><br />
+		<input type="radio" name="sep_choice" class="radio" value="_" <?php		
+			if (($_POST['sep_choice'] == '_') || empty($_POST['sep_choice'])) { 
+				echo ' checked="checked"'; 
+			}
+			echo ' />'._AT('underscore').'</label> <label><input type="radio" name="sep_choice" class="radio" value="."';
+			if ($_POST['sep_choice'] == '.') { 
+				echo ' checked="checked"'; 
+			}
+			echo ' />'._AT('period').'</label>';
 	?>
-	</td></tr>
-	<tr><td height="1" class="row2"></td></tr>
-	<tr><td class="row1" align="center">
-		<label for="course_list"><?php echo _AT('import_course_list'); ?>: </label>
+	</div>
+	<div class="row">
+		<label for="course_list"><?php echo _AT('import_course_list'); ?></label><br />
 		<input type="file" name="file" id="course_list" class="formfield" />
-		<input type="submit" name="submit" value="<?php echo _AT('list_import_course_list');  ?>" class="button" />
-	</td></tr>
-	
-	<tr><td height="1" class="row2"></td></tr>
-	<tr><td class="row1" align="center"></td></tr>
-	</table>	</form>
+	</div>
+
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('list_import_course_list');  ?>" />
+	</div>
+</div>
+</form>
 
 <?php
 

@@ -87,51 +87,18 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 ?>
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="selectform">
-	<div align="left">
-	<table cellspacing="1" cellpadding="0" border="0" class="bodyline" width="70%" summary="" align="center">
-		<tr><th class="cyan" scope="col"><?php echo _AT('list_export_course_list'); ?></th></tr>
+<div class="input-form">
+	<div class="row">
+		<label><input type="checkbox" name="enrolled" value="1" id="enrolled" /><?php echo _AT('enrolled_list_includes_assistants'); ?></label><br />
+		<label><input type="checkbox" name="unenrolled" value="1" id="unenrolled" /><?php echo _AT('unenrolled_list'); ?></label><br />
+		<label><input type="checkbox" name="alumni" value="1" id="alumni" /><?php echo _AT('alumni'); ?></label>
+	</div>
 
-		<tr>
-			<td class="row1" align="left">
-				<label>
-					<input type="checkbox" name="enrolled" value="1" id="enrolled" />
-					<?php echo _AT('enrolled_list_includes_assistants'); ?>
-				</label>
-			</td>
-		</tr>
-		
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		
-		<tr>
-			<td class="row1" align="left">
-				<label>				
-					<input type="checkbox" name="unenrolled" value="1" id="unenrolled" />
-					<?php echo _AT('unenrolled_list'); ?>
-				</label>
-			</td>
-		</tr>
-
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		
-		<tr>
-			<td class="row1" align="left">
-				<label>				
-					<input type="checkbox" name="alumni" value="1" id="alumni" />
-					<?php echo _AT('alumni'); ?>
-				</label>
-			</td>
-		</tr>		
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-
-		<tr>
-			<td align="center" scope="col" class="row1">
-				<input type="submit" class="button" name="export" value="<?php echo _AT('export'); ?>" /> |
-				<input type="submit" class="button" name="cancel" value="<?php echo _AT('cancel'); ?>" />
-			</td>
-		</tr>
-		</table>
-		</div>
-
+	<div class="row buttons">
+		<input type="submit" name="export" value="<?php echo _AT('export'); ?>" /> 
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
+	</div>
+</div>
 </form>
 
 <?php 
