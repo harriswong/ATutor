@@ -300,20 +300,7 @@ if (defined('AC_PATH') && AC_PATH) {
 			?>
 	</td>
 </tr>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/copyright-small.gif" border="0" width="28"  class="menuimage" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="tools/edit_header.php">'._AT('course_copyright2').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('copyright_text');
-			?>
-	</td>
-</tr>
+
 <?php } ?>
 </table>
 
