@@ -155,7 +155,7 @@ if (($_SESSION['prefs_saved'] === false) && !$action && $_SESSION['valid_user'])
 }
 
 //$msg->addHelp('PREFERENCES1');
-$msg->addHelp('PREFERENCES2');
+//$msg->addHelp('PREFERENCES2');
 
 $savant->assign('cycle_input_rows', array('rowA', 'rowB'));
 
