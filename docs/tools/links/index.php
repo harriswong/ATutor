@@ -51,7 +51,7 @@ if (!isset($_GET['cat_parent_id'])) {
 <form method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <div class="input-form">
 	<div class="row">
-		<h3>[ Select Category ]</h3>
+		<h3><?php echo _AT('select_cat'); ?></h3>
 	</div>
 
 	<div class="row">
@@ -73,7 +73,7 @@ if (!isset($_GET['cat_parent_id'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="cat_links" value="[ view category links ]" />
+		<input type="submit" name="cat_links" value="<?php _AT('view_cat_links'); ?>" />
 	</div>
 </div>
 </form>
@@ -97,8 +97,13 @@ if (!isset($_GET['cat_parent_id'])) {
 </tfoot>
 <tbody>
 <?php
+	if ($parent_id) {
+		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links WHERE CatID=$parent_id";
+	} else {
+		$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links";
+	}
+	$sql .= " ORDER BY $col $order";
 
-	$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_links ORDER BY $col $order";
 	$result = mysql_query($sql, $db);
 	if ($row = mysql_fetch_assoc($result)) { 
 		do {
