@@ -24,6 +24,7 @@ define('AT_NAV_ADMIN',  5);
 	5 sections: public, my_start_page, course, admin, home
 */
 
+$_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php');
@@ -53,8 +54,6 @@ if ($_SESSION['course_id']) {
 		$_pages[AT_NAV_COURSE][] = 'tools/index.php';
 	}
 }
-
-$_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 
 /* admin pages */
 $_pages['admin/index.php']['title']    = _AT('home');
