@@ -17,61 +17,10 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 // will have to be moved to the header.inc.php
 global $system_courses, $_base_path, $_pages, $_my_uri;
 
-require(AT_INCLUDE_PATH . 'lib/menu_pages.php');
-
-
-$_top_level_pages        = get_main_navigation($current_page);
-$_current_top_level_page = get_current_main_page($current_page);
-if (empty($_top_level_pages)) {
-	if (!$_SESSION['valid_user']) {
-		$_top_level_pages = get_main_navigation($_pages[AT_NAV_PUBLIC][0]);
-	} else if ($_SESSION['course_id'] < 0) {
-		//$_section_title = 'Administration';
-		$_top_level_pages = get_main_navigation($_pages[AT_NAV_ADMIN][0]);
-	} else if (!$_SESSION['course_id']) {
-		//$_section_title = _AT('my_start_page');
-		$_top_level_pages = get_main_navigation($_pages[AT_NAV_START][0]);
-	} else {
-		//$_section_title = $_SESSION['course_title'];
-		$_top_level_pages = get_main_navigation($_pages[AT_NAV_COURSE][0]);
-	}
-}
-
-$_sub_level_pages        = get_sub_navigation($current_page);
-$_current_sub_level_page = get_current_sub_navigation_page($current_page);
-
-$_path = get_path($current_page);
-unset($_path[0]);
-if ($_path[1]['url'] == $_sub_level_pages[0]['url']) {
-	$back_to_page = $_path[2];
-	//debug('back to : '.$_path[2]['title']);
-} else {
-	$back_to_page = $_path[1];
-	//debug('back to : '.$_path[1]['title']);
-}
-$_path = array_reverse($_path);
-
-
-$_page_title = $_pages[$current_page]['title'];
-
-if ($_SESSION['course_id'] > 0) {
-	$_section_title = $_SESSION['course_title'];
-} else if (!$_SESSION['valid_user']) {
-	$_section_title = SITE_NAME;
-	if (defined('HOME_URL') && HOME_URL) {
-		$_top_level_pages[] = array('url' => HOME_URL, 'title' => _AT('home'));
-	}
-} else if ($_SESSION['course_id'] < 0) {
-	$_section_title = _AT('administration');
-} else if (!$_SESSION['course_id']) {
-	$_section_title = _AT('my_start_page');
-}
-
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
 <head>
-	<title><?php echo SITE_NAME; ?> : <?php echo $_page_title; ?></title>
+	<title><?php echo SITE_NAME; ?> : <?php echo $this->_page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->tmpl_charset; ?>" />
 	<meta name="Generator" content="ATutor - Copyright 2005 by http://atutor.ca" />
 	<base href="<?php echo $this->tmpl_content_base_href; ?>" />
@@ -91,7 +40,7 @@ if ($_SESSION['course_id'] > 0) {
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div>
 
 <!-- section title -->
-	<h1 id="section-title"><?php echo $_section_title; ?></h1>
+	<h1 id="section-title"><?php echo $this->section_title; ?></h1>
 
 <!-- top help/search/login links -->
 <div align="right" id="top-links">
@@ -119,26 +68,25 @@ if ($_SESSION['course_id'] > 0) {
 <?php endif; ?>
 </div>
 
-
 <!-- back to the current section -->
 	<?php if ($_SESSION['valid_user'] && ($_SESSION['course_id'] > 0)): ?>
-		<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">Back to My Start Page</a>
+		<a href="<?php echo $this->tmpl_base_path; ?>bounce.php?course=0" id="my-start-page">Back to My Start Page</a>
 	<?php endif; ?>
 
 <!-- the bread crumbs -->
 	<div id="breadcrumbs">
-		<?php echo $_section_title; ?> : 
-		<?php foreach ($_path as $page): ?>
+		<?php echo $this->section_title; ?> : 
+		<?php foreach ($this->path as $page): ?>
 			<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
-		<?php endforeach; ?> <?php echo $_page_title; ?>
+		<?php endforeach; ?> <?php echo $this->page_title; ?>
 	</div>
 
 <!-- the main navigation. in our case, tabs -->
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
-	<?php foreach ($_top_level_pages as $page): ?>
-		<?php if ($page['url'] == $_current_top_level_page): ?>
+	<?php foreach ($this->top_level_pages as $page): ?>
+		<?php if ($page['url'] == $this->current_top_level_page): ?>
 			<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php else: ?>
@@ -160,7 +108,7 @@ if ($_SESSION['course_id'] > 0) {
 </div>
 <!-- the sub navigation -->
 
-<?php if ($_sub_level_pages): ?>
+<?php if ($this->sub_level_pages): ?>
 	<div id="sub-navigation">
 		<?php if (($_SESSION['course_id'] > 0) && show_pen()): ?>
 			<!--div style="float: right; color: black;">
@@ -168,16 +116,16 @@ if ($_SESSION['course_id'] > 0) {
 			</div-->
 		<?php endif; ?>
 
-		<?php if (isset($back_to_page)): ?>
-			<a href="<?php echo $back_to_page['url']; ?>" id="back-to">Back to <?php echo $back_to_page['title']; ?></a> | 
+		<?php if (isset($this->back_to_page)): ?>
+			<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to">Back to <?php echo $this->back_to_page['title']; ?></a> | 
 		<?php endif; ?>
 
-		<?php $num_pages = count($_sub_level_pages); ?>
+		<?php $num_pages = count($this->sub_level_pages); ?>
 		<?php for($i=0; $i<$num_pages; $i++): ?>
-			<?php if ($_sub_level_pages[$i]['url'] == $_current_sub_level_page): ?>
-				<strong><?php echo $_sub_level_pages[$i]['title']; ?></strong>
+			<?php if ($this->sub_level_pages[$i]['url'] == $this->current_sub_level_page): ?>
+				<strong><?php echo $this->sub_level_pages[$i]['title']; ?></strong>
 			<?php else: ?>
-				<a href="<?php echo $_sub_level_pages[$i]['url']; ?>"><?php echo $_sub_level_pages[$i]['title']; ?></a>
+				<a href="<?php echo $this->sub_level_pages[$i]['url']; ?>"><?php echo $this->sub_level_pages[$i]['title']; ?></a>
 			<?php endif; ?>
 			<?php if ($i < $num_pages-1): ?>
 				|
@@ -196,7 +144,7 @@ if ($_SESSION['course_id'] > 0) {
 <?php endif; ?>
 
 <!-- the page title -->
-	<h2 id="page-title"><?php echo $_page_title; ?></h2>
+	<h2 id="page-title"><?php echo $this->page_title; ?></h2>
 	<!-- div style="float: right">
 	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
 	</div-->
