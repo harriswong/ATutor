@@ -40,8 +40,7 @@
 	<li><a href="tools/forums/index.php"><?php echo _AT('forums'); ?></a></li>
 	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a></li>
 	<li><a href="tools/backup/index.php"><?php echo _AT('backups'); ?></a></li>
-
-	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrollment'); ?></a> ( send email, enrollment manager, tracker)</li>
+	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrolment'); ?></a> ( send email, enrollment manager, tracker)</li>
 </tr>
 </ul>
 <?php

@@ -77,7 +77,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	<th colspan="2" class="cyan"><?php echo _AT('groups'); ?> </th>
 </tr>
 <tr><td height="1" class="row2" colspan="2"></td></tr>
-<?php 
+<?php
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE course_id=$_SESSION[course_id] ORDER BY title";
 	$result	= mysql_query($sql, $db);
 	if ($row = mysql_fetch_assoc($result)) {
