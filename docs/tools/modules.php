@@ -131,7 +131,7 @@ $count = 0;
 
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table class="data static" rules="rows" summary="" style="width: 90%;">
+<table class="data static" rules="rows" summary="">
 <thead>
 <tr>
 	<th scope="cols"><?php echo _AT('section'); ?></th>
@@ -162,17 +162,19 @@ $count = 0;
 			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
 		<?php endif; ?>
 	</td>
-	<td>
+	<td align="right">
 		<?php if (!in_array($module, $_pages[AT_NAV_HOME]) && !in_array($module, $_pages[AT_NAV_COURSE])): ?>
 			&nbsp;
 		<?php else: ?>
 			<?php if (($count != $num_main+1) && ($count > 1)): ?>
-				<input type="submit" name="up[<?php echo $module; ?>]" value="/\" />
+				<input type="submit" name="up[<?php echo $module; ?>]" value="" title="move up" style="color: white; background-color: white; width: 10px; background-image: url('images/move-up.gif'); background-repeat: no-repeat; background-position: 0px 6px; border: 0;" />
 			<?php else: ?>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<img src="images/clr.gif" alt="" width="12" />
 			<?php endif; ?>
 			<?php if (($count != $num_main) && ($count < $num_modules)): ?>
-				<input type="submit" name="down[<?php echo $module; ?>]" value="\/" />
+				<input type="submit" name="down[<?php echo $module; ?>]" value="" title="move down" style="background-color: white; width: 10px; background-image: url('images/move-down.gif'); background-repeat: no-repeat; background-position: -3px 6px; border: 0;"/>
+			<?php else: ?>
+				<img src="images/clr.gif" alt="" width="12" />
 			<?php endif; ?>
 		<?php endif; ?>
 	</td>

@@ -52,7 +52,7 @@ if ($_SESSION['course_id']) {
 
 //	debug($_pages[AT_NAV_HOME]);
 
-	if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
+	if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) {
 		$_pages[AT_NAV_COURSE][] = 'tools/index.php';
 	}
 }
