@@ -18,8 +18,12 @@ authenticate(AT_PRIV_LINKS);
 
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
-if ($_POST['url'] == '') {
+if (!isset($_POST['url'])) {
 	$_POST['url'] = "http://";
+}
+
+if (!isset($_POST['approved'])) {
+	$_POST['approved'] = 1;
 }
 
 if (isset($_POST['cancel'])) {
@@ -88,8 +92,6 @@ $msg->printErrors();
 				$current_cat_id = $cat_id;
 				$exclude = true; /* exclude the children */
 			}
-			echo '<option value="0">&nbsp;&nbsp;&nbsp;[ '._AT('cats_none').' ]&nbsp;&nbsp;&nbsp;</option>';
-			echo '<option value="0"></option>';
 			select_link_categories($categories, 0, $_POST['cat'], FALSE);
 			?>
 		</select>
@@ -103,6 +105,20 @@ $msg->printErrors();
 	<div class="row">
 		<label for="description"><?php echo _AT('description'); ?></label><br />
 		<textarea name="description" cols="55" rows="5" id="description" ><?php echo $_POST['description']; ?></textarea>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('approve'); ?><br />
+		<?php
+			if ($_POST['approved']) {
+				$y = 'checked="checked"';
+				$n = '';
+			} else {
+				$n = 'checked="checked"';
+				$y = '';
+			}
+		?>
+		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?>><label for="yes"><?php echo _AT('yes1'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?>><label for="no"><?php echo _AT('no1'); ?></label>
 	</div>
 	
 	<div class="row buttons">
