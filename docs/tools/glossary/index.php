@@ -95,7 +95,7 @@ if(!empty($gloss_results)) {
 
 		$def_trunc = substr($row['definition'], 0, 70);
 		if (strlen($def_trunc) < strlen($row['definition'])) {
-			$def_trunc .= "...";
+			$def_trunc .= ' &#8230;';
 		}
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['word_id']; ?>'].checked = true;">

@@ -415,6 +415,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/delete_test.php']['title']  = _AT('delete_test');
 	$_pages['tools/tests/delete_test.php']['parent'] = 'tools/tests/index.php';
 
+$_pages['tools/tracker/index.php']['title']  = _AT('tracker');
+$_pages['tools/tracker/index.php']['parent'] = 'tools/index.php';
 
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['img'] = 'images/courses/fort.gif';

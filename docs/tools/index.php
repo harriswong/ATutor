@@ -34,6 +34,7 @@
 	<li><a href="tools/course_stats.php"><?php echo _AT('course_stats'); ?></a></li>
 	<li><a href="tools/modules.php"><?php echo _AT('modules'); ?></a></li>
 	<li><a href="tools/glossary/index.php"><?php echo _AT('glossary'); ?></a></li>
+	<li><a href="tools/tracker/index.php"><?php echo _AT('tracker'); ?></a> *new*</li>
 </ol>
 <?php
 	
