@@ -743,11 +743,10 @@ p.search-description {
 	padding: 2px;
 }
 
-########## NEW STUFF ###
+/* NEW STUFF */
 
 table.tabbed-table {
 	width: 100%;
-	margin-left: -5px;
 }
 table.tabbed-table th#left-empty-tab {
 	background-color: transparent;
@@ -904,12 +903,7 @@ a#editor-link.on {
 }
 
 
-###### for data tables ###
-
-table {
-	border: solid;
-}
-
+/* for data tables */
 table.data {
 	border: 1px solid #f0f0f0;
 	width: 60%; 
@@ -976,7 +970,7 @@ table.data input[type=submit]:hover {
 	background-color: #f5f5ff;
 }
 
-##### course browser:
+/* course browser: */
 
 div#browse {
 	margin-left: auto; 
@@ -1000,8 +994,7 @@ ul.browse-list {
 	padding:0px;
 }
 
-###### feedback /errors
-
+/* feedback /errors */
 div#error {
 	width: 50%;
 	margin-left: auto;
@@ -1041,5 +1034,4 @@ div#feedback ul {
 	margin-left: 0px;
 	padding-left: 0px;
 }
-
 
