@@ -37,18 +37,22 @@ else {
 $sql	= "SELECT *, last_comment + 0 AS stamp FROM ".TABLE_PREFIX."forums_threads WHERE parent_id=0 AND forum_id=$fid AND member_id>0 ORDER BY sticky DESC, $col $order LIMIT $start,$num_per_page";
 $result	= mysql_query($sql, $db);
 
-if ($row = mysql_fetch_assoc($result)) {
-	echo '<table class="data static" summary="" rules="cols" style="width: 90%;">';
-	echo '<thead>';
-	echo '<tr>';
-	echo '<th class="cat">'._AT('topic').' <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
+if (!($row = mysql_fetch_assoc($result))) {
+	$msg->printInfos('NO_POSTS_FOUND');
+	return;
+}
+?>
+<table class="data static" summary="" rules="cols" style="width: 90%;">
+<thead>
+<tr>
+	<th><?php echo _AT('topic').' <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" border="0" height="7" width="11" /></a></th>'; ?>
 
-	echo '<th class="cat">'._AT('replies').' <a href="'.$_SERVER['PHP_SELF'].'?col=num_comments'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=num_comments'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
+	<th><?php echo _AT('replies').' <a href="'.$_SERVER['PHP_SELF'].'?col=num_comments'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=num_comments'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" border="0" height="7" width="11" /></a></th>'; ?>
 
-	echo '<th nowrap="nowrap" class="cat">'._AT('started_by').' <a href="'.$_SERVER['PHP_SELF'].'?col=login'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=login'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
+	<th><?php echo _AT('started_by').' <a href="'.$_SERVER['PHP_SELF'].'?col=login'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=login'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" border="0" height="7" width="11" /></a></th>'; ?>
 
-	echo '<th nowrap="nowrap" class="cat">'._AT('last_comment').' <a href="'.$_SERVER['PHP_SELF'].'?col=last_comment'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=last_comment'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
-
+	<th><?php echo _AT('last_comment'); ?> <a href="<?php echo $_SERVER['PHP_SELF'].'?col=last_comment'.SEP.'fid='.$fid.SEP; ?>order=asc#list" title="<?php echo _AT('id_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('id_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF'].'?col=last_comment'.SEP.'order=desc'.SEP.'fid='.$fid; ?>#list" title="<?php echo _AT('id_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('id_descending'); ?>" border="0" height="7" width="11" /></a></th>
+<?php
 	$colspan = 4;
 	if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
 		echo '<th class="cat">&nbsp;</th>';
@@ -57,6 +61,7 @@ if ($row = mysql_fetch_assoc($result)) {
 
 	echo '</tr>';
 	echo '</thead>';
+	echo '<tfoot>';
 	echo '<tr>';
 	echo '<td class="row1" colspan="'.$colspan.'" align="right">'._AT('page').': ';
 
@@ -74,6 +79,8 @@ if ($row = mysql_fetch_assoc($result)) {
 	
 	echo '</td>';
 	echo '</tr>';
+	echo '</tfoot>';
+	echo '<tbody>';
 
 	$current_thread = $row['thread_id'];
 	do {
@@ -93,7 +100,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		}
 
 		if ($row['num_comments'] > 10) {
-			echo '<i style="color: red; font-weight: bold; font-size: .7em;" title="'._AT('hot_thread').'">'._AT('hot').'</i> ';
+			echo '<em style="color: red; font-weight: bold; font-size: .7em;" title="'._AT('hot_thread').'">'._AT('hot').'</em> ';
 		}
 
 		if ($row['locked'] != 0) {
@@ -161,30 +168,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		echo '</tr>';
 
 	} while ($row = mysql_fetch_assoc($result));
-
-	echo '<tr>';
-	echo '<td class="row1" colspan="'.$colspan.'" align="right">'._AT('page').': ';
-
-	for ($i=1; $i<=$num_pages; $i++) {
-		if ($i == $page) {
-			echo $i;
-		} else {
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'page='.$i.'">'.$i.'</a>';
-		}
-
-		if ($i<$num_pages){
-			echo ' <span class="spacer">|</span> ';
-		}
-	}
-	
-	echo '</td>';
-	echo '</tr>';
-
+	echo '</tbody>';
 	echo '</table>';
-
-} else {
-	$msg->printInfos('NO_POSTS_FOUND');
-}
-
 
 ?>

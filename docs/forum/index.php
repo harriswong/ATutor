@@ -54,12 +54,9 @@ if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT
 	$msg->addHelp('FORUM_LOCK');
 }
 */
-require(AT_INCLUDE_PATH.'header.inc.php');
+require(AT_INCLUDE_PATH . 'header.inc.php');
 
+require(AT_INCLUDE_PATH . 'html/forum.inc.php');
 
-$msg->printAll();
-
-require(AT_INCLUDE_PATH.'html/forum.inc.php');
-
-require(AT_INCLUDE_PATH.'footer.inc.php');
+require(AT_INCLUDE_PATH . 'footer.inc.php');
 ?>
