@@ -329,11 +329,11 @@ if (isset($_POST['form_course'])) {
 	<div class="row">
 		<label for="icons"><?php echo _AT('select_icon'); ?></label><br />
 		<select name="icon" id="icons" onChange="SelectImg()">
-			<option value="clr.gif"><?php echo _AT('no_icon'); ?></option>
+			<option value=""><?php echo _AT('no_icon'); ?></option>
 			<?php
 				if ($dir = opendir('../images/courses/')) {
 					while (false !== ($file = readdir($dir)) ) {
-						if( ($file == '.') || ($file == '..') ) { continue;	}
+						if( ($file == '.') || ($file == '..')) { continue;	}
 						echo '<option value="' . $file . '" ';
 						if ($file == $row['icon']) { echo 'selected="selected"'; }
 						echo ' >' . $file . '</option>';	
@@ -351,7 +351,7 @@ if (isset($_POST['form_course'])) {
 			if ($row['icon'] != '') {
 				echo '<img id="0" src="images/courses/'. $row['icon'] .'" alt="'. $row['icon'] .'">';
 			} else {
-				echo '<img id="0" src="images/courses/clr.gif" alt="'. _AT('no_icon') .'">';
+				echo '<img id="0" src="" alt="">';
 			}
 		?>
 	</div>
