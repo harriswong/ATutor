@@ -148,6 +148,6 @@ $msg->printAll();
 
 $savant->assign('row', $row);
 
-$savant->display('users/profile_edit.tmpl.php');
+$savant->display('users/profile.tmpl.php');
 
 ?>
