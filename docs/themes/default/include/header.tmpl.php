@@ -12,7 +12,7 @@
 /************************************************************************/
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-global $system_courses;
+global $system_courses, $_base_path;
 
 
 $_pages[0] = array('index.php', 'profile.php', 'prefs.php');
@@ -22,10 +22,10 @@ $_pages['browse.php']  = array('name', 'index.php');
 $_pages['create.php']  = array('create', 'index.php');
 $_pages['profile.php'] = array('profile', '0');
 
-for ($_pages[0] => $page_name) {
-
-}
-
+$_top_level_pages[] = array('users/index.php',       _AT('my_courses'));
+$_top_level_pages[] = array('users/edit.php',        _AT('profile'));
+$_top_level_pages[] = array('users/preferences.php', _AT('preferences'));
+$_top_level_pages[] = array('users/inbox.php',       _AT('inbox'));
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
@@ -56,13 +56,15 @@ for ($_pages[0] => $page_name) {
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
-	<th class="selected">My Courses</th>
-	<th class="tab-spacer">&nbsp;</th>
-	<th class="tab"><a href="users/edit.php"><div>Profile</div></a></th>
-	<th class="tab-spacer">&nbsp;</th>
-	<th class="tab"><a href="users/preferences.php"><div>Preferences</div></a></th>
-	<th class="tab-spacer">&nbsp;</th>
-	<th class="tab"><a href="users/inbox.php"><div>Inbox</div></a></th>
+	<?php foreach ($_top_level_pages as $page): ?>
+		<?php if ($_base_path . $page[0] == $_SERVER['PHP_SELF']): ?>
+			<th class="selected"><?php echo $page[1]; ?></th>
+			<th class="tab-spacer">&nbsp;</th>
+		<?php else: ?>
+			<th class="tab"><a href="<?php echo $page[0]; ?>"><div><?php echo $page[1]; ?></div></a></th>
+			<th class="tab-spacer">&nbsp;</th>
+		<?php endif; ?>
+	<?php endforeach; ?>
 	<th id="right-empty-tab">&nbsp;</th>
 </tr>
 <tr>
