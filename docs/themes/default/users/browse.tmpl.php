@@ -18,52 +18,70 @@ global $msg;
 $msg->printAll();
 ?>
 
-<div id="browse">
-	<div style="float: left;">
+<div id="browse" >
+	<div style="float: left; white-space:nowrap; padding-right:30px;">
 			<h3><?php echo _AT('cats_categories'); ?></h3>
 
-			<?php if (empty($cat)) { ?>
-				<img src="images/side_arrow.gif" alt="Selected Category" /><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br />
-			<?php } else { ?>
-				<div style="margin-left: 9px;"><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br /></div>
-			<?php }	?>
-			
-			<?php 
-			while($row = mysql_fetch_array($result)){
-				if ($row['cat_id'] == $cat) {
-					echo '<img src="images/side_arrow.gif" />';
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$row['cat_id'].'">'.$row['cat_name'].'</a><br />';
-				} else {
-					echo '<div style="margin-left: 9px;">';
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$row['cat_id'].'">'.$row['cat_name'].'</a><br /></div>';
-				}
-				$current_cats[$row['cat_id']] = $row['cat_name'];
-			}
+			<ul class="browse-list">
+				<?php 
+				foreach ($this->cats as $cat_id => $cat_name): 
+					if ($cat_id == $this->cat): ?>
+						<div class="browse-selected">
+					<?php else: ?>
+						<div class="browse-unselected">
+					<?php endif; ?>
+							<li><a href="<?php echo $_SERVER['PHP_SELF'].'?cat='.$cat_id; ?>#courses"><?php echo $cat_name ?></a></li>
+						</div>
+				<?php endforeach; ?>		
+			</ul>			<br />
+
+	</div>
+	<a name="courses"></a>
+	<div style="float: left; white-space:nowrap; padding-right:30px;">
+			<h3><?php echo $this->cats[$this->cat].' '._AT('courses'); ?></h3>
+
+			<?php
+			if (isset($this->course_cats)):
+				$cur_sub_cat = '';
+				echo '<ul class="browse-list">';
+				foreach ($this->course_cats as $course_id=>$cat_id):
+
+					if (isset($this->sub_cats) && array_key_exists($cat_id, $this->sub_cats) && ($cur_sub_cat != $this->sub_cats[$cat_id])):
+						$cur_sub_cat = $this->sub_cats[$cat_id];
+						echo '</ul><br /><h4>'.$cur_sub_cat.'</h4><ul class="browse-list">';
+					endif;
+
+					if (!empty($this->course) && $this->course==$course_id):
+						echo '<div class="browse-selected">';
+					else:
+						echo '<div class="browse-unselected">';
+					endif;
+
+					echo '<li><a href="'.$_SERVER['PHP_SELF'].'?cat='.$this->cat.SEP.'course='.$course_id.'#info">'.$system_courses[$course_id]['title'].'</a></li>';
+					echo '</div>';
+				endforeach;
+				echo '</ul>';
+			else:
+				echo _AT('no_courses');
+			endif;
 			?>
 			<br />
 	</div>
-	<div style="float: right; width:60%;">
-			<h3 style="border 1pt solid"><?php echo _AT('courses'); ?></h3>
-			<?php
-			if (!empty($cat)) {
-				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$_GET['cat']." ORDER BY title";
-			} else {
-				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 ORDER BY title";
-			}
-			$result = mysql_query($sql,$db);
 
-			if ($row = mysql_fetch_assoc($result)) {
-				do {
-				echo '<a href="bounce.php?course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
-				} while ($row = mysql_fetch_assoc($result));
-			} else {
-				echo _AT('no_courses');
-			}
-			?>
-	</div>
+	<?php if (isset($this->course_row)): ?>
+		<a name="info"></a>
+		<div style="float: left; width: 50%;">
+				<h3><?php echo $this->course_row['title'].' '._AT('info'); ?></h3>
+
+				<p><?php echo $this->course_row['description']; ?></p>
+				<p><?php echo _AT('instructor').': '. $this->course_row['login']; ?></p>
+				<p><?php echo _AT('access').': '.$this->course_row['access']; ?></p>
+
+				<p><a href="bounce.php?course=<?php echo $this->course_row['course_id']; ?>"><?php echo _AT('enter_course'); ?></a></p>
+				<br />
+		</div>
+	<?php endif; ?>
 </div>
 <br />
 
-<?php
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
