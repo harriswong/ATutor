@@ -939,7 +939,6 @@ table.data {
 table.data th {
 	background-color: #f0f0f0;
 	padding: 3px;
-	font-size: smaller;
 	white-space: nowrap;
 }
 
@@ -949,7 +948,6 @@ table.data tbody {
 
 table.data td {
 	padding: 3px;
-	font-size: smaller;
 }
 
 table.data tbody tr:hover {
@@ -974,5 +972,4 @@ table.data input[type=submit] {
 	max-width: 60%;
 	min-width: 100px;
 	margin-left: 5px;
-	font-size: smaller;
 }
