@@ -643,3 +643,15 @@ CREATE TABLE `users_online` (
   PRIMARY KEY  (`member_id`)
 ) TYPE=HEAP MAX_ROWS=500;
 
+
+# --------------------------------------------------------
+# Table structure for table `member_track`
+
+CREATE TABLE `member_track` (
+  `member_id` mediumint(8) unsigned NOT NULL default '0',
+  `course_id` mediumint(8) unsigned NOT NULL default '0',
+  `content_id` mediumint(8) unsigned NOT NULL default '0',
+  `counter` mediumint(8) unsigned NOT NULL default '0',
+  `last_accessed` datetime default NULL,
+  PRIMARY KEY  (`member_id`,`course_id`,`content_id`)
+);
