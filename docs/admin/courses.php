@@ -58,7 +58,14 @@ if ($_GET['id']) {
 	$and .= ' AND C.member_id='.intval($_GET['id']);
 }
 
-${'highlight_'.$col} = ' style="font-size: 1em;"';
+${'highlight_'.$col} = ' style="background-color: #fff;"';
+
+
+$sql	  = "SELECT COUNT(*)-1 AS cnt, course_id FROM ".TABLE_PREFIX."course_enrollment WHERE approved='y' OR approved='a' GROUP BY course_id";
+$result = mysql_query($sql, $db);
+while ($row = mysql_fetch_assoc($result)) {
+	$enrolled[$row['course_id']] = $row['cnt'];
+}
 
 $sql	= "SELECT C.*, M.login FROM ".TABLE_PREFIX."courses C, ".TABLE_PREFIX."members M WHERE C.member_id=M.member_id $and ORDER BY $col $order";
 $result = mysql_query($sql, $db);
@@ -85,23 +92,25 @@ if (!($row = mysql_fetch_assoc($result))) {
 <tr>
 	<th scope="col">&nbsp;</th>
 
-	<th scope="col"><small<?php echo $highlight_title; ?>><?php echo _AT('title'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('title_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('title_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
+	<th scope="col"><?php echo _AT('title'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('title_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('title_descending'); ?>" border="0" height="7" width="11" /></a></th>
 
-	<th scope="col"><small<?php echo $highlight_login; ?>><?php echo _AT('instructor'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('instructor_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('instructor_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></small></th>
+	<th scope="col"><?php echo _AT('instructor'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('instructor_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('instructor_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>
 
-	<th scope="col"><small<?php echo $highlight_access; ?>><?php echo _AT('access'); ?>  <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('access_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('access_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
+	<th scope="col"><?php echo _AT('access'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('access_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('access_descending'); ?>" border="0" height="7" width="11" /></a></th>
 	
-	<th scope="col"><small<?php echo $highlight_access; ?>><?php echo _AT('category'); ?></small></th>
+	<th scope="col"><?php echo _AT('category'); ?></th>
 
-	<th scope="col"><small<?php echo $highlight_created_date; ?>><?php echo _AT('created_date'); ?>  <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('create_date_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('create_date_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
+	<th scope="col"><?php echo _AT('enrolled'); ?></th>
 
-	<th scope="col"><small<?php echo $highlight_tracking; ?>><?php echo _AT('tracking'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('tracking_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('tracking_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
+	<th scope="col"><?php echo _AT('created_date'); ?>  <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('create_date_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('create_date_descending'); ?>" border="0" height="7" width="11" /></a></th>
+
+	<th scope="col"><?php echo _AT('tracking'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('tracking_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('tracking_descending'); ?>" border="0" height="7" width="11" /></a></th>
 
 </tr>
 </thead>
 <tfoot>
 <tr>
-	<td colspan="7"><input type="submit" name="view" value="View" /> <input type="submit" name="edit" value="Edit" /> <input type="submit" name="backups" value="Backups" /> <input type="submit" name="delete" value="Delete" /></td>
+	<td colspan="8"><input type="submit" name="view" value="View" /> <input type="submit" name="edit" value="Edit" /> <input type="submit" name="backups" value="Backups" /> <input type="submit" name="delete" value="Delete" /></td>
 </tr>
 </tfoot>
 <tbody>
@@ -117,7 +126,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 		echo '</td>';
 
 		echo '<td>'.AT_print($row['login'],'members.login').'</td>';
-		echo '<td>'._AT($row['access']).'&nbsp;</small></td>';
+		echo '<td>'._AT($row['access']).'&nbsp;</td>';
 		echo '<td>';
 		if($current_cats[$row['cat_id']] != ''){
 			echo $current_cats[$row['cat_id']];
@@ -126,6 +135,8 @@ if (!($row = mysql_fetch_assoc($result))) {
 		}
 		echo '</td>';
 
+		echo '<td>'.$enrolled[$row['course_id']].'</td>';
+
 		echo '<td>'.$row['created_date'].'</td>';
 		echo '<td>';
 		if ($row['tracking']) {
@@ -133,7 +144,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 		} else {
 			echo _AT('off');
 		}
-		echo '</small></td>';
+		echo '</td>';
 		echo '</tr>';
 
 	} while ($row = mysql_fetch_assoc($result));
