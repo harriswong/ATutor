@@ -962,8 +962,8 @@ class ContentManager
 		return false;
 	}
 
-	function getTrackerInfo() {
-		$sql	= "SELECT title, content_id, counter FROM ".TABLE_PREFIX."content WHERE course_id=$this->course_id";
+	function getTrackerInfo($col, $order) {
+		$sql	= "SELECT title, content_id, counter FROM ".TABLE_PREFIX."content WHERE course_id=$this->course_id ORDER BY $col $order";
 		$result = mysql_query($sql, $this->db);
 
 		return $result;
