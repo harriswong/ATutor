@@ -628,7 +628,7 @@ function print_editor( $links, $large ) {
 		if (!is_array($args[0])) {
 			
 				/**
-				 * Added functionality for translating language code String (AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK).*
+				 * Added functionality for translating language code String (AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK|AT_HELP).*
 				 * to its text and returning the result. No caching needed.
 				 * @author Jacek Materna
 				 */
