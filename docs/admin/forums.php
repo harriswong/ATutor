@@ -40,7 +40,7 @@ $msg->printAll();
 
 <p align="center"><a href="admin/forum_add.php"><?php echo _AT('add_forum'); ?></a></p>
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table class="data" summary="" rules="groups">
+<table class="data" summary="" rules="groups" style="width: 90%">
 <thead>
 <tr>
 	<th scope="col">&nbsp;</th>

@@ -203,6 +203,19 @@ if (defined('AC_PATH') && AC_PATH) {
 </tr>
 <?php } ?>
 
+<?php if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN)) { ?>
+<tr>
+	<?php
+			echo '<td rowspan="2" valign="top">*</td>';
+			echo '<td>';
+				echo ' <a href="tools/links/index.php">'._AT('links').'</a>';
+			echo '</td></tr><tr><td>';
+			echo _AT('links_text');
+			?>
+	</td>
+</tr>
+<?php } ?>
+
 <?php if (authenticate(AT_PRIV_COURSE_EMAIL, AT_PRIV_RETURN)) { ?>
 <tr>
 	<?php

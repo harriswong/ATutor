@@ -97,20 +97,17 @@ if (!($row = mysql_fetch_assoc($result))) {
 	<th scope="col"><?php echo _AT('instructor'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('instructor_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('instructor_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('instructor_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>
 
 	<th scope="col"><?php echo _AT('access'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('access_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=access<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('access_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('access_descending'); ?>" border="0" height="7" width="11" /></a></th>
-	
-	<th scope="col"><?php echo _AT('category'); ?></th>
-
-	<th scope="col"><?php echo _AT('enrolled'); ?></th>
 
 	<th scope="col"><?php echo _AT('created_date'); ?>  <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('create_date_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('created_date_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('create_date_descending'); ?>" border="0" height="7" width="11" /></a></th>
 
-	<th scope="col"><?php echo _AT('tracking'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('tracking_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=tracking<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('tracking_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('tracking_descending'); ?>" border="0" height="7" width="11" /></a></th>
+	<th scope="col"><?php echo _AT('category'); ?></th>
 
+	<th scope="col"><?php echo _AT('enrolled'); ?></th>
 </tr>
 </thead>
 <tfoot>
 <tr>
-	<td colspan="8"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" /> 
+	<td colspan="7"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" /> 
 					<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
 					<input type="submit" name="backups" value="<?php echo _AT('backups'); ?>" /> 
 					<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
@@ -130,6 +127,8 @@ if (!($row = mysql_fetch_assoc($result))) {
 
 		echo '<td>'.AT_print($row['login'],'members.login').'</td>';
 		echo '<td>'._AT($row['access']).'&nbsp;</td>';
+		echo '<td>'.$row['created_date'].'</td>';
+
 		echo '<td>';
 		if($current_cats[$row['cat_id']] != ''){
 			echo $current_cats[$row['cat_id']];
@@ -140,14 +139,6 @@ if (!($row = mysql_fetch_assoc($result))) {
 
 		echo '<td>'.$enrolled[$row['course_id']].'</td>';
 
-		echo '<td>'.$row['created_date'].'</td>';
-		echo '<td>';
-		if ($row['tracking']) {
-			echo _AT($row['tracking']);
-		} else {
-			echo _AT('off');
-		}
-		echo '</td>';
 		echo '</tr>';
 
 	} while ($row = mysql_fetch_assoc($result));

@@ -42,9 +42,15 @@ $_pages['admin/users.php']['children'] = array('admin/admin_email.php');
 	$_pages['admin/admin_email.php']['title']    = _AT('admin_email');
 	$_pages['admin/admin_email.php']['parent']   = 'admin/users.php';
 
+	$_pages['admin/profile.php']['title']    = _AT('profile');
+	$_pages['admin/profile.php']['parent']   = 'admin/users.php';
+
 $_pages['admin/courses.php']['title']    = _AT('courses');
 $_pages['admin/courses.php']['parent']   = AT_NAV_ADMIN;
 $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'admin/backup/index.php', 'admin/forums.php', 'admin/course_categories.php');
+
+	$_pages['admin/instructor_login.php']['title']    = _AT('view');
+	$_pages['admin/instructor_login.php']['parent']   = 'admin/courses.php';
 
 	$_pages['admin/edit_course.php']['title']    = _AT('course_properties');
 	$_pages['admin/edit_course.php']['parent']   = 'admin/courses.php';
