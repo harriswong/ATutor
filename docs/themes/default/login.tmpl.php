@@ -32,13 +32,14 @@ global $msg;
 		<input type="checkbox" name="auto" value="1" id="auto" /><label for="auto"><?php echo _AT('auto_login2'); ?></label>
 	</div>
 
-	<div class="row buttons"><input type="submit" name="submit" value="<?php echo _AT('login'); ?>" /> 
-						<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('login'); ?>" /> 
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 		
 	<div class="row footer">&middot; <a href="password_reminder.php"><?php echo _AT('forgot'); ?></a><br />
-		&middot; <?php echo _AT('no_account'); ?> <a href="registration.php"><?php echo _AT('free_account'); ?></a></div>
-
+		&middot; <?php echo _AT('no_account'); ?> <a href="registration.php"><?php echo _AT('free_account'); ?></a>
+	</div>
 </div>
 </form>
 
