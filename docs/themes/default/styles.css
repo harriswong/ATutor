@@ -1203,3 +1203,7 @@ div#toctoggle {
 	font-size: smaller;
 	padding-left: 10px;
 }
+
+fieldset {
+	font-size: smaller;
+}
