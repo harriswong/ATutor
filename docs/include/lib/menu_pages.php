@@ -442,8 +442,8 @@ $_pages['discussions/achat/index.php']['img'] = 'images/courses/bomb.gif';
 $_pages['resources/tile/index.php']['title'] = _AT('tile_search');
 $_pages['resources/tile/index.php']['img'] = 'images/courses/domino.gif';
 
-$_pages['tools/tracker.php']['title'] = _AT('my_tracker');
-$_pages['tools/tracker.php']['img'] = 'images/courses/fish.gif';
+$_pages['my_stats.php']['title'] = _AT('my_tracker');
+$_pages['my_stats.php']['img'] = 'images/courses/fish.gif';
 
 $_pages['tools/my_tests.php']['title'] = _AT('my_tests');
 $_pages['tools/my_tests.php']['img'] = 'images/courses/rubiks.gif';
