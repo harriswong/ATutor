@@ -222,6 +222,8 @@ $_field_formatting['content.keywords']			= AT_FORMAT_NONE;
 $_field_formatting['content.title']				= AT_FORMAT_ALL & ~AT_FORMAT_HTML | AT_FORMAT_QUOTES;
 $_field_formatting['content.text']				= AT_FORMAT_ALL;
 
+$_field_formatting['course_cats.cat_name']		= AT_FORMAT_NONE;
+
 $_field_formatting['courses.*']				    = AT_FORMAT_ALL & ~AT_FORMAT_EMOTICONS & ~AT_FORMAT_ATCODES & ~AT_FORMAT_LINKS & ~AT_FORMAT_IMAGES;
 
 $_field_formatting['forums.title']				= AT_FORMAT_NONE;
@@ -243,7 +245,7 @@ $_field_formatting['messages.body']				= AT_FORMAT_EMOTICONS + AT_FORMAT_LINKS +
 $_field_formatting['news.title']				= AT_FORMAT_EMOTICONS | AT_FORMAT_LINKS & ~AT_FORMAT_HTML;
 $_field_formatting['news.body']					= AT_FORMAT_ALL;
 
-$_field_formatting['resource_categories.CatName']	= AT_FORMAT_NONE;
+$_field_formatting['resource_categories.CatName']= AT_FORMAT_NONE;
 $_field_formatting['resource_categories.Url']	= AT_FORMAT_NONE;
 $_field_formatting['resource_links.LinkName']	= AT_FORMAT_NONE;
 $_field_formatting['resource_links.Description']= AT_FORMAT_NONE;

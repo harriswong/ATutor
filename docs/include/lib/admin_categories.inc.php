@@ -102,7 +102,6 @@ function get_categories() {
 			$categories[0][] = $row['cat_id'];
 		}
 	}
-
 	return $categories;
 }
 

@@ -51,7 +51,7 @@ if (isset($cat_id)) {
 	</div>
 
 	<div class="row">
-		<label for="category_parent"><?php echo _AT('cats_parent_category'); ?></label><br ?>
+		<label for="category_parent"><?php echo _AT('cats_parent_category'); ?></label><br />
 		<select name="cat_parent_id" id="category_parent"><?php
 
 				if ($pcat_id) {
@@ -68,6 +68,7 @@ if (isset($cat_id)) {
 				/* @See: include/lib/admin_categories */
 				select_categories($categories, 0, $current_cat_id, $exclude);
 			?></select>
+			<?php debug($categories); ?>
 	</div>
 
 <?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES) : ?>
