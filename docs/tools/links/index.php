@@ -78,7 +78,7 @@ if (!isset($_GET['cat_parent_id'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="cat_links" value="<?php echo _AT('view_cat_links'); ?>" />
+		<input type="submit" name="cat_links" value="<?php echo _AT('cats_view_links'); ?>" />
 	</div>
 </div>
 </form>
@@ -124,10 +124,11 @@ if (!isset($_GET['cat_parent_id'])) {
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['LinkID']; ?>'].checked = true;">
 				<td width="10"><input type="radio" name="link_id" value="<?php echo $row['LinkID']; ?>" id="m<?php echo $row['LinkID']; ?>"></td>
-				<td><a href="<?php echo $row['Url']; ?>" title=""><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
+				<td><a href="<?php echo $row['Url']; ?>" target="_new" title="<?php echo _AT('links_windows'); ?>"><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
 				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
 
 				<td><?php echo AT_print($row['SubmitName'], 'resource_links.SubmitName'); ?></td>
+
 				<td align="center"><?php 
 						if($row['Approved']) { 
 							echo _AT('yes1'); 
