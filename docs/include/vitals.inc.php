@@ -464,10 +464,6 @@ if (isset($_GET['enable'])) {
 	unset($_SESSION['menu'][intval($_GET['collapse'])]);
 }
 
-if (isset($_GET['cid'])) {
-	$_SESSION['s_cid'] = intval($_GET['cid']);
-}
-
 function save_prefs( ) {
 	global $db;
 
@@ -509,9 +505,36 @@ function save_last_cid($cid) {
 	}
 	global $db;
 
+	$_SESSION['s_cid']    = intval($_GET['cid']);
+	if (!$_SEESION['cid_time']) {
+		$_SESSION['cid_time'] = time();
+	}
+
 	$sql = "UPDATE ".TABLE_PREFIX."course_enrollment SET last_cid=$cid WHERE course_id=$_SESSION[course_id]";
 	mysql_query($sql, $db);
 }
+
+
+if (!$_SESSION['is_admin'] && !$_SESSION['privileges'] && !isset($in_get) && $_SESSION['s_cid'] && ($_SESSION['s_cid'] != $_GET['cid']) && $_SESSION['cid_time'] && ($_SESSION['course_id'] > 0) && ($_SESSION['enroll'] != AT_ENROLL_NO) ) {
+	//update databse
+
+	$diff = time() - $_SESSION['cid_time'];
+	if ($diff > 0) {
+		$sql = "UPDATE ".TABLE_PREFIX."member_track SET counter=counter+1, duration=duration+$diff WHERE member_id=$_SESSION[member_id] AND content_id=$_SESSION[s_cid]";
+
+		$result = mysql_query($sql, $db);
+
+		if (mysql_affected_rows($db) == 0) {
+			$sql = "INSERT INTO ".TABLE_PREFIX."member_track VALUES ($_SESSION[member_id], $_SESSION[s_cid], 1, $diff, NOW())";
+			$result = mysql_query($sql, $db);
+		}
+
+	}
+
+	$_SESSION['cid_time'] = 0;
+
+}
+
 
 /**
 * Checks if the $_SESSION[member_id] is an instructor (true) or not (false)
@@ -586,47 +609,6 @@ function get_instructor_status() {
 		$_my_uri .= SEP;
 	}
 	$_my_uri = $_SERVER['PHP_SELF'].$_my_uri;
-
-/****************************************************/
-/* update the g database							*/
-if (!isset($_GET['cid'])) {
-	$_GET['cid'] = 0;
-}
-if (!isset($_POST['g'])) {
-	$_POST['g'] = 0;
-}
-if (!isset($_GET['g'])) {
-	$_GET['g'] = 0;
-}
-
-	$new_cid = intval($_GET['cid']);
-	$g		 = intval($_POST['g']);
-	if ($g === 0) {
-		$g = intval($_GET['g']);
-	}
-
-	if ($_SESSION['track_me']
-		&& $_SESSION['valid_user']
-		&& !authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN) 
-		&& ($g !== 0)
-		&& $_SESSION['course_id'])
-	{
-		$now = time();
-		$sql	= 'INSERT INTO '.TABLE_PREFIX.'g_click_data VALUES ('.$_SESSION['member_id'].','.
-					$_SESSION['course_id'].','.$_SESSION['from_cid'].','.$new_cid.','.$g.','.$now.',0)';
-
-		$result = @mysql_query($sql, $db);
-		if (isset($_SESSION['pretime'])){
-			// calculate duration and update the previous record
-			$sql = 'UPDATE '.TABLE_PREFIX.'g_click_data SET duration=('.$now.' - timestamp) WHERE timestamp='.$_SESSION['pretime'].' AND member_id='.$_SESSION['member_id'];
-			@mysql_query($sql, $db);
-		}
-		$_SESSION['pretime'] = $now;
-
-	}
-/****************************************************/
-
-$_SESSION['from_cid'] = intval($_GET['cid']);
 
 function my_add_null_slashes( $string ) {
     return ( $string );
