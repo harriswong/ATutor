@@ -30,7 +30,7 @@ else if (isset($_POST['edit'])) {
 	if ($_POST['poll'] == '') {
 		$msg->addError('POLL_NOT_FOUND');
 	} else {
-		header('Location: ../../editor/edit_poll.php?poll_id=' . $_POST['poll']);
+		header('Location: edit.php?poll_id=' . $_POST['poll']);
 	}
 }
 
@@ -38,7 +38,7 @@ else if (isset($_POST['delete'])) {
 	if ($_POST['poll'] == '') {
 		$msg->addError('POLL_NOT_FOUND');
 	} else {
-		header('Location: ../../editor/delete_poll.php?pid=' . $_POST['poll'] );
+		header('Location: delete.php?pid=' . $_POST['poll'] );
 	}
 }
 
