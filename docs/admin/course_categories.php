@@ -16,7 +16,7 @@ $_user_location = 'admin';
 
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-//require(AT_INCLUDE_PATH.'lib/themes.inc.php');
+require(AT_INCLUDE_PATH.'lib/themes.inc.php');
 
 if ($_SESSION['course_id'] > -1) { exit; }
 //require(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
@@ -93,10 +93,10 @@ $msg->printAll();
 	?>
 		<tr onmousedown="document.form['m<?php echo $row['cat_id']; ?>'].checked = true;">
 			<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['cat_id']; ?>" id="m<?php echo $row['cat_id']; ?>"></td>
-			<td><?php echo AT_print($row['cat_name'], 'members.first_name'); ?></td>
-			<td><?php echo AT_print($parent_cat_name, 'members.last_name'); ?></td>
+			<td><?php echo AT_print($row['cat_name'], 'course_cats.cat_name'); ?></td>
+			<td><?php echo AT_print($parent_cat_name, 'course_cats.cat_name'); ?></td>
 			<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES) : ?>
-				<td><?php echo AT_print($row['theme'], 'members.email'); ?></td>
+				<td><?php echo AT_print(get_theme_name($row['theme']), 'themes.title'); ?></td>
 			<?php endif; ?>
 
 		</tr>

@@ -23,7 +23,7 @@ if (isset($_POST['submit'])) {
 
 	$sql = "INSERT INTO ".TABLE_PREFIX."resource_categories VALUES (0, $_SESSION[course_id], '$cat_name', $cat_parent_id)";
 	$result = mysql_query($sql, $db);
-	//$cat_id = mysql_insert_id($db);
+
 	$msg->addFeedback('CAT_ADDED');
 	
 	header('Location: categories.php');
