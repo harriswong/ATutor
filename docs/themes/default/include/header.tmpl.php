@@ -33,18 +33,18 @@ $_pages['users/index.php']['title']    = _AT('my_courses');
 $_pages['users/index.php']['parent']   = AT_NAV_START;
 $_pages['users/index.php']['children'] = array('users/browse.php', 'users/create_course.php');
 
-$_pages['users/browse.php']['title']  = _AT('browse_courses');
-$_pages['users/browse.php']['parent'] = 'users/index.php';
+	$_pages['users/browse.php']['title']  = _AT('browse_courses');
+	$_pages['users/browse.php']['parent'] = 'users/index.php';
 
-$_pages['users/create_course.php']['title']  = _AT('create_course');
-$_pages['users/create_course.php']['parent'] = 'users/index.php';
+	$_pages['users/create_course.php']['title']  = _AT('create_course');
+	$_pages['users/create_course.php']['parent'] = 'users/index.php';
 
 $_pages['users/profile.php']['title']    = _AT('profile');
 $_pages['users/profile.php']['parent']   = AT_NAV_START;
 $_pages['users/profile.php']['children'] = array('users/profile_edit.php');
 
-$_pages['users/profile_edit.php']['title']  = _AT('edit_profile');
-$_pages['users/profile_edit.php']['parent'] = 'users/profile.php';
+	$_pages['users/profile_edit.php']['title']  = _AT('edit_profile');
+	$_pages['users/profile_edit.php']['parent'] = 'users/profile.php';
 
 $_pages['users/preferences.php']['title']  = _AT('preferences');
 $_pages['users/preferences.php']['parent'] = AT_NAV_START;
@@ -53,9 +53,10 @@ $_pages['users/inbox.php']['title']    = _AT('inbox');
 $_pages['users/inbox.php']['parent']   = AT_NAV_START;
 $_pages['users/inbox.php']['children'] = array('users/send_message.php');
 
-$_pages['users/send_message.php']['title']  = _AT('send_message');
-$_pages['users/send_message.php']['parent'] = 'users/inbox.php';
+	$_pages['users/send_message.php']['title']  = _AT('send_message');
+	$_pages['users/send_message.php']['parent'] = 'users/inbox.php';
 
+/* course pages */
 $_pages['index.php']['title']  = _AT('home');
 $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
@@ -65,6 +66,8 @@ $_pages['tools/index.php']['children'] = array('forum/list.php');
 
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = 'tools/index.php';
+
+
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
@@ -128,7 +131,22 @@ function get_current_sub_navigation_page($current_page) {
 	} else {
 		return $current_page;
 	}
+}
 
+function get_path($current_page) {
+	global $_pages;
+
+	$parent_page = $_pages[$current_page]['parent'];
+
+	if (isset($parent_page) && is_numeric($parent_page)) {
+		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		return $path;
+	} else {
+		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		$path = array_merge($path, get_path($parent_page));
+	}
+	
+	return $path;
 }
 
 $_top_level_pages = get_main_navigation($current_page);
@@ -136,6 +154,9 @@ $_current_top_level_page = get_current_main_page($current_page);
 
 $_sub_level_pages = get_sub_navigation($current_page);
 $_current_sub_level_page = get_current_sub_navigation_page($current_page);
+
+$_path = get_path($current_page);
+$_path = array_reverse($_path);
 
 //debug($_current_top_level_page);
 
@@ -210,7 +231,9 @@ function toggleToc() {
 <h1><?php echo $_section_title; ?></h1>
 
 <div id="breadcrumbs">
-	<?php echo $_section_title; ?> : <a href="tools.html">Tools</a> > Tests &amp; Surveys
+	<?php echo $_section_title; ?> : <?php foreach ($_path as $page): ?>
+										<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> > 
+									<?php endforeach; ?>
 </div>
 
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
