@@ -22,7 +22,6 @@ define('AT_NAV_ADMIN',  5);
 
 /*
 	5 sections: public, my_start_page, course, admin, home
-
 */
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');

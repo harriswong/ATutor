@@ -916,6 +916,7 @@ div.home-link:hover {
 }
 div.home-link a {
 	text-decoration: none;
+	font-weight: bold;
 }
 
 div.home-link img {
