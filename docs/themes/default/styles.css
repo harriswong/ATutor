@@ -2,8 +2,8 @@
 body {
 	font-family: Helvetica, Arial, sans-serif;
 	margin-top: 0px;
-	margin-left: 0px;
-	margin-right: 0px;
+	margin-left: auto;
+	margin-right: auto;
 	font-size: small;
 }
 
@@ -224,16 +224,6 @@ hr {
 
 /* message box styles */
 
-/* error box */
-table.errbox{
-	font-family: Helvetica, Arial, sans-serif;
-	background-color: #FF0000;
-}
-tr.errbox {
-	font-family: Helvetica, Arial, sans-serif;
-	background-color: #FEF1F1;
-	vertical-align:top;
-}
 
 /* confirm box */
 table.cnfrmbox{
@@ -289,16 +279,7 @@ tr.wrnbox{
 	vertical-align:top;
 }
 
-/* feedback box */
-table.fbkbox{
-	font-family: Helvetica, Arial, sans-serif;
-	background-color: #30B626;
-}
-tr.fbkbox{
-	font-family: Helvetica, Arial, sans-serif;
-	background-color:#EBFDE9;
-	vertical-align:top;
-}
+
 select.dropdown {
 	font-family: Helvetica, Arial, sans-serif;
     background-color: #F1F3F1;
@@ -985,9 +966,17 @@ table.data input[type=submit] {
 	margin-left: 5px;
 }
 
+/* used for static tables with no form elements: */
+table.data.static tbody tr:hover {
+	background-color: transparent;
+	cursor: auto;
+}
+
 table.data input[type=submit]:hover {
 	background-color: #f5f5ff;
 }
+
+##### course browser:
 
 div#browse {
 	margin-left: auto; 
@@ -1011,10 +1000,43 @@ ul.browse-list {
 	padding:0px;
 }
 
-/* used for static tables with no form elements: */
-table.data.static tbody tr:hover {
-	background-color: transparent;
-	cursor: auto;
+###### feedback /errors
+div#feedback {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 1px solid green;
+	padding: 5px;
+	background-color: #c3fffc;
+	color: green;
+	font-weight: bold;
 }
 
+div#feedback ul {
+	position: relative;
+	list-style: none;
+	margin-left: 0px;
+	padding-left: 0px;
+}
 
+div#error {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 1px solid red;
+	padding: 5px;
+	background-color: #fffcf3;
+	color: red;
+	font-weight: bold;
+}
+
+div#error ul {
+	position: relative;
+	list-style: none;
+	margin-left: 0px;
+	padding-left: 0px;
+}

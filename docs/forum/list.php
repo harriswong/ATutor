@@ -38,7 +38,7 @@ $msg->printHelps();
 
 $msg->printAll(); // print everything but the Helps which were printed first, above
 
-echo '<table class="data" summary="" rules="cols">';
+echo '<table class="data static" summary="" rules="groups">';
 echo '<thead><tr>';
 echo '	<th scope="col" class="cat"><a name="list"></a><small>'._AT('forum').'</small> ';
 /*

@@ -104,7 +104,6 @@ if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 	header('Location: index.php');
 	exit;
 }
-// ?
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
