@@ -20,10 +20,13 @@ authenticate(AT_PRIV_LINKS);
 
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
-if (isset($_GET['show_links'])) {
-	header('Location: '.$_base_href.'editor/edit_forum.php?fid='.$_GET['id']);
+if (isset($_POST['edit'])) {
+	header('Location: edit.php?lid='.$_POST['link_id']);
 	exit;
-} 
+} else if (isset($_POST['edit'])) {
+	header('Location: delete.php?lid='.$_POST['link_id']);
+	exit;
+}
 
 $categories = get_link_categories();
 
@@ -73,13 +76,13 @@ if (!isset($_GET['cat_parent_id'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="cat_links" value="<?php _AT('view_cat_links'); ?>" />
+		<input type="submit" name="cat_links" value="'view_cat_links'" />
 	</div>
 </div>
 </form>
 
 
-<form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+<form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
 <table class="data" summary="" rules="cols">
 <thead>
@@ -114,10 +117,10 @@ if (!isset($_GET['cat_parent_id'])) {
 			$cat_name = $row_cat['CatName'];
 			 
 	?>
-			<tr onmousedown="document.form['m<?php echo $row['CatID']; ?>'].checked = true;">
-				<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['CatID']; ?>" id="m<?php echo $row['CatID']; ?>"></td>
-				<td><?php echo AT_print($row['LinkName'], 'members.first_name'); ?></td>
-				<td><?php echo AT_print($cat_name, 'members.last_name'); ?></td>
+			<tr onmousedown="document.form['m<?php echo $row['LinkID']; ?>'].checked = true;">
+				<td width="10"><input type="radio" name="link_id" value="<?php echo $row['LinkID']; ?>" id="m<?php echo $row['LinkID']; ?>"></td>
+				<td><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></td>
+				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
 			</tr>
 <?php 
 		} while ($row = mysql_fetch_assoc($result));					
