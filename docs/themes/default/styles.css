@@ -985,6 +985,10 @@ table.data input[type=submit] {
 	margin-left: 5px;
 }
 
+table.data input[type=submit]:hover {
+	background-color: #f5f5ff;
+}
+
 div#browse {
 	margin-left: auto; 
 	margin-right: auto; 

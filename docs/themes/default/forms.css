@@ -67,3 +67,6 @@ div.input-form div.buttons input {
 	min-width: 100px;
 	margin-left: 5px;
 }
+div.input-form div.buttons input:hover {
+	background-color: #f5f5ff;
+}
