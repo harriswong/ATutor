@@ -37,7 +37,6 @@ CREATE TABLE `content` (
   `title` varchar(150) NOT NULL default '',
   `text` text NOT NULL,
   `inherit_release_date` TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-  `counter` MEDIUMINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL,
   PRIMARY KEY  (`content_id`),
   KEY `course_id` (`course_id`)
 ) TYPE=MyISAM ;
@@ -649,9 +648,10 @@ CREATE TABLE `users_online` (
 
 CREATE TABLE `member_track` (
   `member_id` mediumint(8) unsigned NOT NULL default '0',
-  `course_id` mediumint(8) unsigned NOT NULL default '0',
   `content_id` mediumint(8) unsigned NOT NULL default '0',
   `counter` mediumint(8) unsigned NOT NULL default '0',
+  `duration` mediumint(8) unsigned NOT NULL default '0',
   `last_accessed` datetime default NULL,
-  PRIMARY KEY  (`member_id`,`course_id`,`content_id`)
-);
+  KEY `member_id` (`member_id`),
+  KEY `content_id` (`content_id`)
+) TYPE=MyISAM;
