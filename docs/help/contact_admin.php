@@ -18,14 +18,10 @@
 	define('AT_INCLUDE_PATH', '../include/');
 	require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-	$_section[0][0] = _AT('help');
-	$_section[0][1] = 'help/';
-	$_section[1][0] = _AT('contact_admin');
-	
 
 	if ($_POST['cancel']) {
 		$msg->addFeedback('CANCELLED');
-		Header('Location: index.php?cid='.$_POST['pid']);
+		header('Location: index.php');
 		exit;
 	}
 

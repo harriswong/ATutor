@@ -24,7 +24,7 @@ if (isset($_GET['edit'])) {
 	header('Location: '.$_base_href.'editor/delete_content.php?cid='.$_GET['id']);
 	exit;
 } else if (isset($_GET['view'])) {
-	header('Location: '.$_base_href.'index.php?cid='.$_GET['id']);
+	header('Location: '.$_base_href.'content.php?cid='.$_GET['id']);
 	exit;
 }
 

@@ -18,10 +18,6 @@ $_user_location	= 'users';
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-$_section[0][0] = _AT('my_courses');
-$_section[0][1] = 'users/index.php';
-
-
 if ($_SESSION['valid_user'] !== true) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
@@ -127,7 +123,7 @@ while ($row = mysql_fetch_assoc($result)): $count++; ?>
 			My Role: <?php echo $row['role']; ?><br /></p>
 
 		<div class="shortcuts">
-			<a href="bounce.php?course=<?php echo $row['course_id'].SEP.'p='.urlencode('index.php?cid='.$row['last_cid']); ?>"><img src="http://marathonman.sourceforge.net/docs/images/ug/resume.gif" border="0" title="Resume Shortcut" /></a>
+			<a href="bounce.php?course=<?php echo $row['course_id'].SEP.'p='.urlencode('content.php?cid='.$row['last_cid']); ?>"><img src="http://marathonman.sourceforge.net/docs/images/ug/resume.gif" border="0" title="Resume Shortcut" /></a>
 		</div>
 	</div>
 <?php endwhile; ?>

@@ -44,7 +44,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			$row1    = mysql_fetch_assoc($result1);
 
 			echo '<tr>';
-				echo '<td><a href='.$_base_href.'?cid='.$row['content_id']. '>' . AT_print($row1['title'], 'content.title') . '</a></td>';
+				echo '<td><a href='.$_base_href.'content.php?cid='.$row['content_id']. '>' . AT_print($row1['title'], 'content.title') . '</a></td>';
 				echo '<td>' . $row['counter'] . '</td>';
 				echo '<td>' . AT_date('%h:%i:%s  %d %M, %Y', $row['last_accessed'], AT_DATE_MYSQL_DATETIME) . '</td>';
 			echo '</tr>';

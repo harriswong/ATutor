@@ -89,6 +89,6 @@ if ($row = mysql_fetch_assoc($result)) {
 $savant->assign('announcements', $news);
 $savant->assign('num_pages', $num_pages);
 $savant->assign('current_page', $page);
-$savant->display('announcements.tmpl.php');
+$savant->display('index.tmpl.php');
 
 ?>

@@ -480,7 +480,7 @@ class ContentManager
 				$resume['title'] = $this->getNumbering($_SESSION['s_cid']).' ' . $resume['title'];
 			}
 
-			$resume['url'] = $_base_path.'index.php?cid='.$_SESSION['s_cid'];
+			$resume['url'] = $_base_path.'content.php?cid='.$_SESSION['s_cid'];
 
 			$sequence_links['resume'] = $resume;
 		} else {
@@ -492,8 +492,8 @@ class ContentManager
 				$next['title'] = $this->getNumbering($next['content_id']).' '.$next['title'];
 			}
 
-			$next['url'] = $_base_path.'index.php?cid='.$next['content_id'];
-			$previous['url'] = $_base_path.'index.php?cid='.$previous['content_id'];
+			$next['url'] = $_base_path.'content.php?cid='.$next['content_id'];
+			$previous['url'] = $_base_path.'content.php?cid='.$previous['content_id'];
 			
 			if ($previous['content_id']) {
 				$sequence_links['previous'] = $previous;
@@ -623,7 +623,7 @@ class ContentManager
 						
 					}
 
-					$link .= ' <a href="'.$_base_path.'?cid='.$content['content_id'].SEP.'g='.$g.'" title="';
+					$link .= ' <a href="'.$_base_path.'content.php?cid='.$content['content_id'].SEP.'g='.$g.'" title="';
 					if ($_SESSION['prefs'][PREF_NUMBERING]) {
 						$link .= $path.$counter.' ';
 					}

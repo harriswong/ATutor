@@ -25,10 +25,10 @@
 		}
 		
 		if ($_REQUEST['cid'] == 0) {
-			header('Location: ../index.php?cid='.$_REQUEST['new_pid']);
+			header('Location: '.$_base_path.'content.php?cid='.$_REQUEST['new_pid']);
 			exit;
 		}
-		header('Location: ../index.php?cid='.$_REQUEST['cid']);
+		header('Location: '.$_base_path.'content.php?cid='.$_REQUEST['cid']);
 		exit;
 	}
 	
