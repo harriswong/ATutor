@@ -20,7 +20,7 @@ authenticate(AT_PRIV_LINKS);
 
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
-if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['link_id'])) {
+if ((isset($_POST)) && !isset($_POST['link_id'])) {
 		$msg->addError('NO_LINK_SELECTED');
 } else if (isset($_POST['edit'])) {
 	header('Location: edit.php?lid='.$_POST['link_id']);
@@ -28,6 +28,8 @@ if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['link_id
 } else if (isset($_POST['delete'])) {
 	header('Location: delete.php?lid='.$_POST['link_id']);
 	exit;
+} else if (isset($_POST['view'])) {
+	$onload = "onload=\"window.open('".$_POST['url'][$_POST['link_id']]."','link');\"";
 }
 
 $categories = get_link_categories();
@@ -100,7 +102,7 @@ if (!isset($_GET['cat_parent_id'])) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="3"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
+	<td colspan="3"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /> <input type="submit" name="view" value="<?php echo _AT('view'); ?>" /></td>
 </tr>
 </tfoot>
 <tbody>
@@ -124,7 +126,7 @@ if (!isset($_GET['cat_parent_id'])) {
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['LinkID']; ?>'].checked = true;">
 				<td width="10"><input type="radio" name="link_id" value="<?php echo $row['LinkID']; ?>" id="m<?php echo $row['LinkID']; ?>"></td>
-				<td><a href="<?php echo $row['Url']; ?>" target="_new" title="<?php echo _AT('links_windows'); ?>"><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></a></td>
+				<td><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></td>
 				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
 
 				<td><?php echo AT_print($row['SubmitName'], 'resource_links.SubmitName'); ?></td>
@@ -137,6 +139,9 @@ if (!isset($_GET['cat_parent_id'])) {
 						} ?></td>
 				<td align="center"><?php echo $row['hits']; ?></td>
 			</tr>
+
+			<input type="hidden" name="url[<?php echo $row['LinkID']; ?>]" value="<?php echo $row['Url']; ?>" />
+
 <?php 
 		} while ($row = mysql_fetch_assoc($result));					
 } else {
