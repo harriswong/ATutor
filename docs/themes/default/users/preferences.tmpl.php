@@ -160,7 +160,7 @@ $msg->printAll();
 
 	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?> buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('apply'); ?>" accesskey="s" />
-		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 </div>
 </form>
