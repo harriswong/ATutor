@@ -176,7 +176,7 @@ if ($_user_location == 'public') {
 
 	$savant->assign('tmpl_user_nav', $theme_info['pub_nav']);
 	$myLang->sendContentTypeHeader();
-	$savant->display('header.tmpl.php');
+	$savant->display('include/header.tmpl.php');
 
 } else if ($_user_location == 'admin') {
 	/* the /admin/ section */
@@ -294,7 +294,7 @@ if ($_user_location == 'public') {
 	}
 
 	$myLang->sendContentTypeHeader();
-	$savant->display('header.tmpl.php');
+	$savant->display('include/header.tmpl.php');
 
 	/* course specific elements: */
 	/* != 'public' special case for the about.php page, which is available from a course but hides the content menu */

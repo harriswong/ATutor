@@ -7,7 +7,7 @@
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	color: black;
-	background: #E9EDFF;
+	background: white;
 	background-image: url();
 	margin-bottom: 0px;
 	margin-top: 5px;
@@ -1093,4 +1093,103 @@ p.search-description {
 }
 optgroup {
 	font-size: x-small;
+}
+
+
+########## NEW STUFF ###
+
+body {
+	width: 760px;
+	font-family: sans-serif;
+}
+div#search-help-links {
+	text-align: right;
+}
+
+table.tabbed-table th#left-empty-tab {
+	background-color: white;
+	width: 10px;
+	border-bottom: 1px solid black;
+}
+table.tabbed-table th#right-empty-tab {
+	background-color: white;
+	border-bottom: 1px solid black;
+	width: 420;
+}
+table.tabbed-table th.tab-spacer {
+	background-color: white;
+	width: 5px;
+	border-bottom: 1px solid black;
+}
+table.tabbed-table th.tab {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	width: 130px;
+	background-color: #D4E5FD;
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+}
+table.tabbed-table th.tab:hover {
+	background-color: #EAF2FE;
+}
+
+table.tabbed-table th.selected {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	width: 130px;
+	background-color: white;
+	border-left: 1px solid black;
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+}
+
+
+table.tabbed-table td.content {
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	padding: 10px;
+	padding-bottom: 20px;
+	background-color: white;
+}
+
+a#my-start-page {
+	background-color: #EFEFEF;
+	padding: 4px;
+	border: 1px solid #cccccc;
+}
+a#my-start-page:hover {
+	background-color: #fafafa;
+	border: 1px solid #aaaaaa;
+}
+
+input#editor-switch {
+	background-color: #EFEFEF;
+	padding: 1px;
+	margin: 2px;
+	border: 1px solid #cccccc;
+}
+
+input#editor-switch:hover {
+	background-color: #fafafa;
+	border: 1px solid #aaaaaa;
+}
+
+div#bc {
+	margin-bottom: 5px;
+	border-top: 1px dashed #cccccc;
+	border-bottom: 1px dashed #cccccc;
+	padding: 5px;
+	font-size: smaller;
+	font-weight: bold;
+	color: #888888;
+}
+h2 {
+	border-bottom: 1px solid green;
+}
+
+h1 {
+	margin-bottom: 5px;
 }
