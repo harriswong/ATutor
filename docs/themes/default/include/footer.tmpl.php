@@ -12,9 +12,20 @@
 /************************************************************************/
 if (!defined('AT_INCLUDE_PATH')) { exit; } 
 ?>
-	<br />
-	<br />
-	<?php require(AT_INCLUDE_PATH.'html/languages.inc.php'); ?>
-	<?php require(AT_INCLUDE_PATH.'html/copyright.inc.php'); ?>
+	</td>
+<?php if ($_SESSION['course_id'] > 0): ?>
+	<td>
+		<?php require(AT_INCLUDE_PATH.'html/dropdowns.inc.php'); ?>
+	</td>
+<?php endif; ?>
+
+</tr>
+</table>
+
+<br />
+<br />
+<?php require(AT_INCLUDE_PATH.'html/languages.inc.php'); ?>
+<?php require(AT_INCLUDE_PATH.'html/copyright.inc.php'); ?>
+
 </body>
 </html>

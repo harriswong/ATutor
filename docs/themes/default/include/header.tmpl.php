@@ -137,6 +137,15 @@ global $system_courses;
 	</div>
 <?php endif; ?>
 
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<?php if ($_SESSION['course_id'] > 0): ?>
+			<td valign="top" width="100%">
+		<?php else: ?>
+			<td valign="top" width="100%" colspan="2">
+		<?php endif; ?>
+
+
 <!-- the page title -->
 	<h2 id="page-title"><?php echo $this->page_title; ?></h2>
 	<!-- div style="float: right">
