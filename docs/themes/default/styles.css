@@ -885,6 +885,8 @@ table.data {
 	width: 60%; 
 	margin-left: auto; 
 	margin-right: auto;
+	border-spacing: 0px;
+	border-collapse: collapse;
 } 
 
 table.data th {
@@ -925,7 +927,7 @@ table.data tfoot td {
 	padding: 5px;
 }
 
-table.data input[type=submit] {
+table.data tfoot input {
 	border: 1px solid #999;
 	background-color: white;
 	padding: 2px;
@@ -942,7 +944,7 @@ table.data.static tbody tr:hover {
 	cursor: auto;
 }
 
-table.data input[type=submit]:hover {
+table.data tfoot input[type=submit]:hover {
 	background-color: #f5f5ff;
 }
 
