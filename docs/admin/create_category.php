@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2003 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -10,13 +10,13 @@
 /* modify it under the terms of the GNU General Public License				*/
 /* as published by the Free Software Foundation.							*/
 /****************************************************************************/
+// $Id$
 
 $page = 'categories';
 $_user_location = 'admin';
 
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-//require(AT_INCLUDE_PATH.'lib/themes.inc.php');
 
 if ($_SESSION['course_id'] > -1) { exit; }
 require(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
