@@ -16,13 +16,13 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 require_once(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 require_once(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
 
-if (!isset($isadmin, $course_id, $db)) {
+if (!isset($isadmin, $course, $db)) {
 	return;	
 }
 
 if (isset($_POST['form_course'])) {
 
-	$row['course_id']			= $_POST['course_id'];
+	$row['course_id']			= $_POST['course'];
 	$row['title']				= $_POST['title'];
 	$row['primary_language']	= $_POST['primary_language'];
 	$row['member_id']			= $_POST['member_id'];
@@ -41,8 +41,8 @@ if (isset($_POST['form_course'])) {
 	$row['primary_language']    = $_POST['pri_lang'];
 	$row['rss']                 = $_POST['rss'];
 
-} else if ($course_id) {
-	$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$course_id";
+} else if ($course) {
+	$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
 	$result = mysql_query($sql, $db);
 	if (!($row	= mysql_fetch_assoc($result))) {
 		echo _AT('no_course_found');
@@ -68,13 +68,13 @@ if (isset($_POST['form_course'])) {
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="course_form">
 	<input type="hidden" name="form_course" value="true" />
-	<input type="hidden" name="course_id" value="<?php echo $course_id; ?>" />
+	<input type="hidden" name="course_id" value="<?php echo $course; ?>" />
 	<input type="hidden" name="old_access" value="<?php echo $row['access']; ?>" />
 	<input type="hidden" name="created_date" value="<?php echo $row['created_date']; ?>" />
 	<input type="hidden" name="show_courses" value="<?php echo $_GET['show_courses']; ?>" />
 	<input type="hidden" name="current_cat" value="<?php echo $_GET['current_cat']; ?>" />
 
-<?php if ($isadmin && $course_id) : ?>
+<?php if ($isadmin && $course) : ?>
 
 <?php
 	$sql_instructor	= "SELECT * FROM ".TABLE_PREFIX."members WHERE member_id=".$row['member_id'];
@@ -291,7 +291,7 @@ if (isset($_POST['form_course'])) {
 		echo $hide; ?> /><label for="hide"><?php echo  _AT('hide_course'); ?></label>.
 	</div>
 
-<?php if (!$course_id) : ?>
+<?php if (!$course) : ?>
 	<div class="row">
 		<label for="initial_content"><?php echo _AT('initial_content'); ?></label><br />
 		<select name="initial_content" id="initial_content" size="5">
@@ -308,19 +308,19 @@ if (isset($_POST['form_course'])) {
 
 			$result = mysql_query($sql, $db);
 
-			if ($course = mysql_fetch_assoc($result)) {
+			if ($course_row = mysql_fetch_assoc($result)) {
 				do {
-					$Backup->setCourseID($course['course_id']);
+					$Backup->setCourseID($course_row['course_id']);
 					$list = $Backup->getAvailableList();
 
 					if (!empty($list)) { 
-						echo '<optgroup label="'. _AT('restore').': '.$course['title'].'">';
+						echo '<optgroup label="'. _AT('restore').': '.$course_row['title'].'">';
 						foreach ($list as $list_item) {
 							echo '<option value="'.$list_item['backup_id'].'_'.$list_item['course_id'].'">'.$list_item['file_name'].' - '.get_human_size($list_item['file_size']).'</option>';
 						}
 						echo '</optgroup>';
 					}
-				} while ($course = mysql_fetch_assoc($result));
+				} while ($course_row = mysql_fetch_assoc($result));
 			}
 			?>
 			</select>
@@ -342,13 +342,13 @@ if (isset($_POST['form_course'])) {
 				$c_oth2 = '';
 			}
 
-			if ($course_id > 0) {
-				$course_size = dirsize(AT_CONTENT_DIR . $course_id.'/');
+			if ($course > 0) {
+				$course_size = dirsize(AT_CONTENT_DIR . $course.'/');
 			} else {
 				$course_size = 0;
 			}
 
-			if ($course_id) {
+			if ($course) {
 				echo _AT('current_course_size') .': '.get_human_size($course_size).'<br />'; 
 			}
 		?>

@@ -22,7 +22,7 @@ if (isset($_GET['view'])) {
 	header('Location: instructor_login.php?course='.$_GET['id']);
 	exit;
 } else if (isset($_GET['edit'])) {
-	header('Location: edit_course.php?course_id='.$_GET['id']);
+	header('Location: edit_course.php?course='.$_GET['id']);
 	exit;
 } else if (isset($_GET['backups'])) {
 	header('Location: backup/index.php?course='.$_GET['id']);
