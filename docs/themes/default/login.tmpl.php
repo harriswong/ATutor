@@ -13,7 +13,7 @@ global $msg;
 
 <h4><?php echo _AT('login'); ?> <?php echo $this->tmpl_title; ?></h4>
 
-<div class="input-form">
+<div class="input-form" style="max-width: 370px">
 	<div class="row">
 		<label for="login"><?php echo _AT('login_name'); ?></label><br />
 		<input type="text" name="form_login" id="login" />
@@ -32,7 +32,7 @@ global $msg;
 						<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 		
-	<div class="row">&middot; <a href="password_reminder.php"><?php echo _AT('forgot'); ?></a><br />
+	<div class="row footer">&middot; <a href="password_reminder.php"><?php echo _AT('forgot'); ?></a><br />
 		&middot; <?php echo _AT('no_account'); ?> <a href="registration.php"><?php echo _AT('free_account'); ?></a></div>
 
 </div>
