@@ -23,7 +23,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
 <form name="form" method="post" action="admin/error_logging_details.php">
-
 <table class="data" summary="" rules="cols">
 <thead>
 <tr>
@@ -75,9 +74,8 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 		if (empty($logdirs)) { ?>
 			<tr>
-				<td class="row1" align="center" colspan="3"><small><?php echo _AT('none_found'); ?></small></td>
+				<td colspan="3"><?php echo _AT('none_found'); ?></td>
 			</tr>
-			<tr><td height="1" class="row2" colspan="3"></td></tr>
 		<?php
 		} else {
 		
