@@ -125,10 +125,8 @@ if (!($row = mysql_fetch_assoc($result))) {
 <?php
 	do {
 		echo '<tr onmousedown="document.form[\'p_' . $row['poll_id'] . '\'].checked = true;">';
-		echo '<td>';
-		echo '<input type="radio" id="p_' . $row['poll_id'] . '" name="poll" value="' . $row['poll_id'] . '" /></td>';
-		echo '<td><label for="p_' . $row['poll_id'] . '">' . AT_print($row['question'], 'polls.question') . '</label>';
-		echo '</td>';
+		echo '<td><input type="radio" id="p_' . $row['poll_id'] . '" name="poll" value="' . $row['poll_id'] . '" /></td>';
+		echo '<td><label for="p_' . $row['poll_id'] . '">' . AT_print($row['question'], 'polls.question') . '</label></td>';
 		echo '<td>' . $row['created_date'] . '</td>';
 
 	} while ($row = mysql_fetch_assoc($result));
