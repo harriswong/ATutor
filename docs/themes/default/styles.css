@@ -814,6 +814,7 @@ table.tabbed-table th.tab {
 table.tabbed-table th.tab:hover {
 	background-color: #EAF2FE;
 }
+
 table.tabbed-table th.tab a:focus {
 	color: white;
 }
