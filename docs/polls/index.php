@@ -40,6 +40,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$sql = "SELECT * FROM ".TABLE_PREFIX."polls WHERE course_id=$_SESSION[course_id]";
 	$result = mysql_query($sql, $db);
+
 	while ($row = mysql_fetch_assoc($result)) {
 		echo '<form method="post" action="'.$_SERVER['REQUEST_URI'].'">';
 		echo '<table width="70%" border="0" cellspacing="0" cellpadding="0" summary="" class="dropdown" align="center">';
@@ -47,11 +48,13 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		echo '<td valign="top" class="dropdown-heading" nowrap="nowrap" align="left"><strong>' . AT_print($row['question'], 'polls.question') . '</strong>';
 		echo '<input type="hidden" name="poll_id" value="'.$row['poll_id'].'" /></td></tr>';
 
+
 		if (!authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN)) {
 			$sql = "SELECT * FROM ".TABLE_PREFIX."polls_members WHERE poll_id=$row[poll_id] AND member_id=$_SESSION[member_id]";
-			$result = mysql_query($sql, $db);
+			$my_result = mysql_query($sql, $db);
 		}
-		if (authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN) || ($my_row = mysql_fetch_assoc($result))) {
+
+		if (authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN) || ($my_row = mysql_fetch_assoc($my_result))) {
 			for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++) {
 				if ($row['choice' . $i]) {
 					if ($row['total']) {
@@ -72,7 +75,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 				if ($row['choice' . $i]) {
 					echo '<tr>';
 					echo '<td valign="top" class="dropdown" nowrap="nowrap" align="left">';
-					echo '<small><input type="radio" name="choice" value="'.$i.'" id="xc'.$i.'" /><label for="xc'.$i.'">' . AT_print($row['choice' . $i], 'polls.choice') . '</label></small></td></tr>';
+					echo '<small><input type="radio" name="choice" value="'.$i.'" id="xc'.$i.$row['poll_id'].'" /><label for="xc'.$i.$row['poll_id'].'">' . AT_print($row['choice' . $i], 'polls.choice') . '</label></small></td></tr>';
 				}
 			}
 
