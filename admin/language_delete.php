@@ -44,7 +44,8 @@ if (isset($_POST['submit'])) {
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
 echo '<h3>'._AT('language').'</h3>';
-include(AT_INCLUDE_PATH . 'html/feedback.inc.php');
+
+$msg->printAll();
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
