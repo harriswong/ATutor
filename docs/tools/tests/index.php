@@ -102,7 +102,8 @@ $cols=6;
 	<td colspan="6">
 		<input type="submit" name="submissions" value="<?php echo _AT('submissions'); ?>" />
 		<input type="submit" name="statistics" value="<?php echo _AT('statistics'); ?>" />
-		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
+		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+	</td>
 </tr>
 </tfoot>
 <tbody>
