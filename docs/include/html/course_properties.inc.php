@@ -335,7 +335,7 @@ if (isset($_POST['form_course'])) {
 
 		<label for="icons"><?php echo _AT('icon'); ?></label><br />
 		<select name="icon" id="icons" onChange="SelectImg()">
-			<option value="../clr.gif"><?php echo _AT('no_icon'); ?></option>
+			<option value=""><?php echo _AT('no_icon'); ?></option>
 			<?php
 				if ($dir = opendir('../images/courses/')) {
 					while (false !== ($file = readdir($dir)) ) {
@@ -387,8 +387,13 @@ function enableOther2()		{ document.course_form.filesize_entered.disabled = fals
 function disableOther2()	{ document.course_form.filesize_entered.disabled = true; }
 
 function SelectImg() {
-	document.getElementById(0).src = "images/courses/" + document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
-	document.getElementById(0).alt = document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
+	if (document.course_form.icon.options[document.course_form.icon.selectedIndex].value == "") {
+		document.getElementById(0).src = "images/clr.gif";
+		document.getElementById(0).alt = "";
+	} else {
+		document.getElementById(0).src = "images/courses/" + document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
+		document.getElementById(0).alt = document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
+	}
 }
 
 // -->
