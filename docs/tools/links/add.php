@@ -56,8 +56,6 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 	}
 }
 
-$_section[0][0] = _AT('add_link');
-
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 $categories = get_link_categories();

@@ -14,15 +14,13 @@
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-$_section[0][0] = _AT('link_categories');
-
 if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['cat_id'])) {
 		$msg->addError('NO_CAT_SELECTED');
 } else if (isset($_POST['delete'])) {
-	header('Location: delete_category.php?cat_id='.$_POST['cat_id']);
+	header('Location: categories_delete.php?cat_id='.$_POST['cat_id']);
 	exit;
 } else if (isset($_POST['edit'])) {
-	header('Location: edit_category.php?cat_id='.$_POST['cat_id']);
+	header('Location: categories_edit.php?cat_id='.$_POST['cat_id']);
 	exit;
 }
 
@@ -55,12 +53,6 @@ $msg->printAll();
 
 	<th scope="col"><small<?php echo $highlight_first_name; ?>><?php echo _AT('parent'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=cat_parent<?php echo SEP; ?>order=asc#list" title="<?php echo _AT('parent_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('parent_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=cat_parent<?php echo SEP; ?>order=desc#list" title="<?php echo _AT('parent_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('parent_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
 
-<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES) : ?>
-	<th scope="col"><small<?php echo $highlight_last_name; ?>><?php echo _AT('theme'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=theme<?php echo SEP; ?>order=asc#list" title="<?php echo _AT('theme_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('theme_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=theme<?php echo SEP; ?>order=desc#list" title="<?php echo _AT('theme_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('theme_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
-<?php endif; ?>
-
-	<?php //num courses?>
-
 </tr>
 </thead>
 <tfoot>
@@ -77,21 +69,27 @@ $msg->printAll();
 
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."resource_categories WHERE course_id=$_SESSION[course_id] ORDER BY $col $order";
 	$result = mysql_query($sql, $db);
-	while ($row = mysql_fetch_assoc($result)) : 
-		$parent_cat_name = '';
-		if ($row['CatParent']) {
-			$sql_cat	= "SELECT cat_name FROM ".TABLE_PREFIX."resource_categories WHERE CatID=".$row['CatParent'];
-			$result_cat = mysql_query($sql_cat, $db);
-			$row_cat = mysql_fetch_assoc($result_cat);
-			$parent_cat_name = $row_cat['CatName'];
-		} 
-	?>
-		<tr onmousedown="document.form['m<?php echo $row['cat_id']; ?>'].checked = true;">
-			<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['cat_id']; ?>" id="m<?php echo $row['cat_id']; ?>"></td>
-			<td><?php echo AT_print($row['CatName'], 'members.first_name'); ?></td>
-			<td><?php echo AT_print($parent_cat_name, 'members.last_name'); ?></td>
+    if ($row = mysql_fetch_assoc($result)) {
+		do {
+			$parent_cat_name = '';
+			if ($row['CatParent']) {
+				$sql_cat	= "SELECT CatName FROM ".TABLE_PREFIX."resource_categories WHERE course_id=$_SESSION[course_id] AND CatID=".$row['CatParent'];
+				$result_cat = mysql_query($sql_cat, $db);
+				$row_cat = mysql_fetch_assoc($result_cat);
+				$parent_cat_name = $row_cat['CatName'];
+			} 
+		?>
+			<tr onmousedown="document.form['m<?php echo $row['CatID']; ?>'].checked = true;">
+				<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['CatID']; ?>" id="m<?php echo $row['CatID']; ?>"></td>
+				<td><?php echo AT_print($row['CatName'], 'members.first_name'); ?></td>
+				<td><?php echo AT_print($parent_cat_name, 'members.last_name'); ?></td>
+			</tr>
+<?php	} 	while ($row = mysql_fetch_assoc($result));
+	} else { ?>
+		<tr>
+			<td colspan="3"><?php echo _AT('cats_no_categories'); ?></td>
 		</tr>
-<?php endwhile; ?>
+<?php } ?>
 </tbody>
 </table>
 

@@ -31,6 +31,9 @@ if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 	if ($_POST['title'] == '') {		
 		$msg->addError('TITLE_EMPTY');
 	}
+	if ($_POST['cat'] == 0) {		
+		$msg->addError('CAT_EMPTY');
+	}
 	if ($_POST['url'] == '') {		
 		$msg->addError('URL_EMPTY');
 	}

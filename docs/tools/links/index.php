@@ -20,7 +20,9 @@ authenticate(AT_PRIV_LINKS);
 
 require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
-if (isset($_POST['edit'])) {
+if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['link_id'])) {
+		$msg->addError('NO_LINK_SELECTED');
+} else if (isset($_POST['edit'])) {
 	header('Location: edit.php?lid='.$_POST['link_id']);
 	exit;
 } else if (isset($_POST['delete'])) {
