@@ -13,6 +13,8 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
+require(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
+
 $cat	= intval($_GET['cat']);
 $course = intval($_GET['course']);
 
@@ -26,16 +28,22 @@ while($row = mysql_fetch_array($result)) {
 	$cats[$row['cat_id']] = $row['cat_name'];
 }
 
-$sql_sub	= "SELECT * FROM ".TABLE_PREFIX."course_cats WHERE cat_parent=".$cat." ORDER BY cat_name";
+//gets all subcats
+$subs = recursive_get_subcategories($cat);
+
+//gets 2nd level subcats only
+$sql_sub	= "SELECT cat_id, cat_name FROM ".TABLE_PREFIX."course_cats WHERE cat_parent=".$cat." ORDER BY cat_name";
 $result_sub = mysql_query($sql_sub,$db);
+do {
+	$sub_cats[$row['cat_id']] = $row['cat_name'];
+} while ($row = mysql_fetch_assoc($result_sub));
 
 if ($cat > 0) {
 	if ($row = mysql_fetch_assoc($result_sub)) {
 		$sql = "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND (cat_id=".$cat;
-		do {
-			$sql .= " OR cat_id=".$row['cat_id'];
-			$sub_cats[$row['cat_id']] = $row['cat_name'];
-		} while ($row = mysql_fetch_assoc($result_sub));
+		foreach ($subs as $sub) {
+			$sql .= " OR cat_id=".$sub;
+		}
 		$sql .= ") ORDER BY cat_id, title";
 	} else {
 		$sql = "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$cat." ORDER BY title";
