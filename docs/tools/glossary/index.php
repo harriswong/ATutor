@@ -92,12 +92,17 @@ if(!empty($gloss_results)) {
 				$related_word = $row_related['word'];			
 			}
 		}
+
+		$def_trunc = substr($row['definition'], 0, 70);
+		if (strlen($def_trunc) < strlen($row['definition'])) {
+			$def_trunc .= "...";
+		}
 	?>
 			<tr onmousedown="document.form['m<?php echo $row['word_id']; ?>'].checked = true;">
-				<td width="10"><input type="radio" name="word_id" value="<?php echo $row['word_id']; ?>" id="m<?php echo $row['word_id']; ?>"></td>
-				<td><?php echo AT_print($row['word'],		'glossary.word'); ?></td>
-				<td><?php echo AT_print($row['definition'], 'glossary.definition'); ?></td>
-				<td><?php echo AT_print($related_word,		'glossary.word'); ?></td>
+				<td valign="top" width="10"><input type="radio" name="word_id" value="<?php echo $row['word_id']; ?>" id="m<?php echo $row['word_id']; ?>"></td>
+				<td valign="top"><?php echo AT_print($row['word'],	'glossary.word'); ?></td>
+				<td style="whitespace:nowrap;"><?php echo AT_print($def_trunc,		'glossary.definition'); ?></td>
+				<td valign="top"><?php echo AT_print($related_word,	'glossary.word'); ?></td>
 			</tr>
 <?php 
 	} 				
