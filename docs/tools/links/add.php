@@ -43,20 +43,12 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 		$_POST['url'] == $addslashes($_POST['url']);
 		$_POST['description']  = $addslashes($_POST['description']);
 
-		$sql	= "INSERT INTO ".TABLE_PREFIX."resources_links VALUES (0, $_POST[cat], '$_POST[title]', $_POST[url], '$_POST[description]', 0, $name, $email, NOW(), 0)";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."resource_links VALUES (0, $_POST[cat], '$_POST[title]', '$_POST[url]', '$_POST[description]', 0, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
-		$msg->addFeedback('NEWS_ADDED');
+		$msg->addFeedback('LINK_ADDED');
 
-		/* update announcement RSS: */
-		if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml')) {
-			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml');
-		}
-		if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml')) {
-			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
-		}
-
-		header('Location: '.$_base_href.'tools/news/index.php');
+		header('Location: '.$_base_href.'tools/links/index.php');
 		exit;
 	}
 }
@@ -76,7 +68,7 @@ $msg->printErrors();
 <div class="input-form">
 	<div class="row">
 		<label for="title"><?php echo _AT('title'); ?></label><br />
-		<input type="text" name="title" size="40" id="title" />
+		<input type="text" name="title" size="40" id="title" value="<?php echo $_POST['title']; ?>"/>
 	</div>
 
 	<div class="row">
@@ -90,19 +82,19 @@ $msg->printErrors();
 				$exclude = true; /* exclude the children */
 			}
 			echo '<option value="0"></option>';
-			select_link_categories($categories, 0, 0, FALSE);
+			select_link_categories($categories, 0, $_POST['cat'], FALSE);
 			?>
 		</select>
 	</div>
 	
 	<div class="row">
 		<label for="url"><?php echo _AT('url'); ?></label><br />
-		<input type="text" name="title" size="40" id="url" />
+		<input type="text" name="url" size="40" id="url" value="<?php echo $_POST['url']; ?>" />
 	</div>
 
 	<div class="row">
 		<label for="description"><?php echo _AT('description'); ?></label><br />
-		<textarea name="description" cols="55" rows="5" id="description"></textarea>
+		<textarea name="description" cols="55" rows="5" id="description" ><?php echo $_POST['description']; ?></textarea>
 	</div>
 	
 	<div class="row buttons">
