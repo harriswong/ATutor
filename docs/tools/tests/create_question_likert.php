@@ -182,9 +182,9 @@ $msg->printAll();
 	</div>
 
 	<div class="row">
-		<?php echo _AT('option_alignment'); ?>
-		<label><input type="radio" name="properties" value="5" checked="checked" /><?php echo _AT('vertical'); ?></label>
-		<label><input type="radio" name="properties" value="6" /><?php echo _AT('horizontal'); ?></label>
+		<label for="properties"><?php echo _AT('option_alignment'); ?></label><br />
+		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" checked="checked" /><?php echo _AT('vertical'); ?></label>
+		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" /><?php echo _AT('horizontal'); ?></label>
 	</div>
 
 <?php for ($i=0; $i<10; $i++) { ?>

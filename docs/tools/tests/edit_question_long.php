@@ -128,7 +128,7 @@ $msg->printErrors();
 		<label for="question"><?php echo _AT('question'); ?></label><br />
 		<a onclick="javascript:window.open('<?php echo $_base_href; ?>/tools/tests/form_editor.php?area=question','newWin1','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,copyhistory=0,width=640,height=480')" style="cursor: pointer" ><?php echo _AT('use_visual_editor'); ?></a>
 
-		<textarea id="question" cols="50" rows="6" name="question" class="formfield"><?php 
+		<textarea id="question" cols="50" rows="6" name="question"><?php 
 		echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
 	</div>
 	
