@@ -147,9 +147,25 @@ global $system_courses;
 
 
 <!-- the page title -->
-	<div id="sequence-links">
-		<?php echo $this->sequence_links; ?>
-	</div>
+	<?php if ($this->sequence_links): ?>
+		<div id="sequence-links">
+			<?php if ($this->sequence_links['resume']): ?>
+				<a href="<?php echo $this->sequence_links['resume']['url']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a>
+			<?php else: ?>
+				<?php if ($this->sequence_links['previous'] && $this->sequence_links['next']): ?>
+					<a href="<?php echo $this->sequence_links['previous']['url']; ?>">« <?php echo $this->sequence_links['previous']['title']; ?></a>
+					|
+					<a href="<?php echo $this->sequence_links['next']['url']; ?>"><?php echo $this->sequence_links['next']['title']; ?> »</a>
+				<?php elseif ($this->sequence_links['previous']): ?>
+					<a href="<?php echo $this->sequence_links['previous']['url']; ?>">« <?php echo $this->sequence_links['previous']['title']; ?></a>
+				<?php elseif ($this->sequence_links['next']): ?>
+					<a href="<?php echo $this->sequence_links['next']['url']; ?>"><?php echo $this->sequence_links['next']['title']; ?> »</a>
+				<?php endif; ?>
+
+
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
 
 <a name="content"></a>

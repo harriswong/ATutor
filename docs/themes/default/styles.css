@@ -926,4 +926,5 @@ div.home-link img {
 div#sequence-links {
 	float: right;
 	margin-top: 10px;
+	padding-right: 5px;
 }

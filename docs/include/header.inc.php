@@ -200,12 +200,11 @@ if ($_user_location == 'public') {
 
 	/* course specific elements: */
 	/* != 'public' special case for the about.php page, which is available from a course but hides the content menu */
+	$sequence_links = array();
 	if ($_SESSION['course_id'] > 0) {
-		$next_prev_links = $contentManager->generateSequenceCrumbs($cid);
+		$sequence_links = $contentManager->generateSequenceCrumbs($cid);
 
-		$savant->assign('sequence_links', $next_prev_links);
-	} else {
-		$savant->assign('sequence_links', '');
+		$savant->assign('sequence_links', $sequence_links);
 	}
 
 	$savant->display('include/header.tmpl.php');
