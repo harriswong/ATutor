@@ -121,15 +121,15 @@ if (isset($_POST['submit'])) {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-$_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); // also removes index.php and tools/index.php
+$_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); // removes index.php and tools/index.php
+$num_main    = count($_current_modules);
 $_current_modules = array_merge($_current_modules, array_diff($_pages[AT_NAV_HOME],$_pages[AT_NAV_COURSE]) );
+$num_modules = count($_current_modules);
 $_current_modules = array_merge($_current_modules, array_diff($_modules, $_current_modules));
 
 $count = 0;
-$num_modules = count($_current_modules);
 
 ?>
-
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <table class="data static" rules="rows" summary="" style="width: 90%;">
 <thead>
@@ -163,13 +163,17 @@ $num_modules = count($_current_modules);
 		<?php endif; ?>
 	</td>
 	<td>
-		<?php if ($count > 1): ?>
-			<input type="submit" name="up[<?php echo $module; ?>]" value="/\" />
+		<?php if (!in_array($module, $_pages[AT_NAV_HOME]) && !in_array($module, $_pages[AT_NAV_COURSE])): ?>
+			&nbsp;
 		<?php else: ?>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<?php endif; ?>
-		<?php if ($count < $num_modules): ?>
-			<input type="submit" name="down[<?php echo $module; ?>]" value="\/" />
+			<?php if (($count != $num_main+1) && ($count > 1)): ?>
+				<input type="submit" name="up[<?php echo $module; ?>]" value="/\" />
+			<?php else: ?>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<?php endif; ?>
+			<?php if (($count != $num_main) && ($count < $num_modules)): ?>
+				<input type="submit" name="down[<?php echo $module; ?>]" value="\/" />
+			<?php endif; ?>
 		<?php endif; ?>
 	</td>
 </tr>
