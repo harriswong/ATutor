@@ -15,6 +15,8 @@
 define('AT_INCLUDE_PATH', './include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
+$_SECTION[0][0] = _AT('my_tracker');
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 	//Table displays all content pages with no. of hits by user
@@ -22,10 +24,13 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	echo '<thead>';
 	echo '<tr>';
 		echo '<th scope="col">';
-			echo _AT('page_title');
+			echo _AT('page');
 		echo '</th>';
 		echo '<th scope="col">';
-			echo _AT('no_of_hits');
+			echo _AT('visits');
+		echo '</th>';
+		echo '<th scope="col">';
+			echo _AT('duration_sec');
 		echo '</th>';
 		echo '<th scope="col">';
 			echo _AT('last_accessed');
@@ -34,19 +39,26 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	echo '</thead>';
 	echo '<tbody>';
 
-	$sql = "SELECT counter, last_accessed, content_id FROM ".TABLE_PREFIX."member_track WHERE member_id=$_SESSION[member_id] AND course_id=$_SESSION[course_id]";
+	$sql = "SELECT MT.counter, MT.content_id, MT.last_accessed, SEC_TO_TIME(MT.duration) AS total, C.title 
+			FROM ".TABLE_PREFIX."content C LEFT JOIN ".TABLE_PREFIX."member_track MT
+			ON MT.content_id=C.content_id AND MT.member_id=$_SESSION[member_id]
+			WHERE C.course_id=$_SESSION[course_id] ORDER BY counter DESC";
 	$result = mysql_query($sql, $db);
 
 	if (mysql_num_rows($result) > 0) {
 		while ($row = mysql_fetch_assoc($result)) {
-			$sql1    = "SELECT title FROM ".TABLE_PREFIX."content WHERE content_id=$row[content_id]";
-			$result1 = mysql_query($sql1, $db);
-			$row1    = mysql_fetch_assoc($result1);
+			if ($row['total'] == '')
+				$row['total'] = '00:00:00';
 
 			echo '<tr>';
-				echo '<td><a href='.$_base_href.'content.php?cid='.$row['content_id']. '>' . AT_print($row1['title'], 'content.title') . '</a></td>';
-				echo '<td>' . $row['counter'] . '</td>';
-				echo '<td>' . AT_date('%h:%i:%s  %d %M, %Y', $row['last_accessed'], AT_DATE_MYSQL_DATETIME) . '</td>';
+				echo '<td><a href='.$_base_href.'content.php?cid='.$row['content_id']. '>' . AT_print($row['title'], 'content.title') . '</a></td>';
+				echo '<td>' . intval($row['counter']) . '</td>';
+				echo '<td>' . $row['total'] . '</td>';
+				if ($row['last_accessed'] == '') {
+					echo '<td> - </td>';
+				} else {
+					echo '<td>' . AT_date(_AT('forum_date_format'), $row['last_accessed'], AT_DATE_MYSQL_DATETIME) . '</td>';
+				}
 			echo '</tr>';
 		} //end while
 
