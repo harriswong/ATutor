@@ -32,35 +32,62 @@ else {
 }
 
 /*create a table that lists all the content pages and the number of time they were viewed*/
-$result = $contentManager->getTrackerInfo($col, $order);
+$sql = "SELECT MT.counter, C.content_id, MT.last_accessed, C.title,
+		SEC_TO_TIME(MT.duration) AS total, SEC_TO_TIME(MT.duration/counter) AS average
+		FROM ".TABLE_PREFIX."content C LEFT JOIN ".TABLE_PREFIX."member_track MT
+		USING (content_id)
+		WHERE C.course_id=$_SESSION[course_id]
+		ORDER BY $col $order";
+$result = mysql_query($sql, $db);
 
 echo '<table class="data static" rules="cols" summary="">';
 echo '<thead>';
 echo '<tr>';
-
 	echo '<th scope="col">';
-		echo _AT('page_title');
+		echo _AT('page');
 		echo '<a href="' . $_SERVER['PHP_SELF'] . '?col=title' . SEP . 'order=asc" title="' . _AT('title_ascending') . '"><img src="images/asc.gif" alt="' . _AT('title_ascending') . '" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>';
 
 		echo '<a href="' . $_SERVER['PHP_SELF'] . '?col=title' . SEP . 'order=desc" title="' . _AT('title_descending') . '"><img src="images/desc.gif" alt="' . _AT('title_descending') . '" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>';
 	echo '</th>';
 
 	echo '<th scope="col">';
-		echo _AT('no_of_hits');
+		echo _AT('hit_count');
 		echo '<a href="' . $_SERVER['PHP_SELF'] . '?col=counter' . SEP . 'order=asc" title="' . _AT('hits_ascending') . '"><img src="images/asc.gif" alt="' . _AT('hits_ascending') . '" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>';
 
 		echo '<a href="' . $_SERVER['PHP_SELF'] . '?col=counter' . SEP . 'order=desc" title="' . _AT('hits_descending') . '"><img src="images/desc.gif" alt="' . _AT('hits_descending') . '" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>';
 	echo '</th>';
-
+	echo '<th scope="col">';
+		echo _AT('avg_duration');
+	echo '</th>';
+	echo '<th scope="col">';
+		echo _AT('duration_sec');
+	echo '</th>';
+	echo '<th scope="col">';
+		echo _AT('details');
+	echo '</th>';
 echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
 if (mysql_num_rows($result) > 0) {
 	while ($row = mysql_fetch_assoc($result)) {
+		if ($row['average'] == '')
+			$row['average'] = _AT('na');
+
+		if ($row['total'] == '') {
+			$row['total'] = _AT('na');
+			$data_text = _AT('na');
+		} else {
+			$data_text = '<a href=tools/tracker/page_student_stats.php?content_id='.$row['content_id']. '>' . _AT('raw_data') . '</a>';
+		}
+
 		echo '<tr>';
-			echo '<td><a href='.$_base_href.'?cid='.$row['content_id']. '>' . AT_print($row['title'], 'content.title') . '</a></td>';
-			echo '<td>' . $row['counter'] . '</td>';
+			echo '<td><a href='.$_base_href.'content.php?cid='.$row['content_id']. '>' . AT_print($row['title'], 'content.title') . '</a></td>';
+			echo '<td>' . intval($row['counter']) . '</td>';
+
+			echo '<td>' . ($row['average']) . '</td>';
+			echo '<td>' . ($row['total']) . '</td>';
+			echo '<td>' . $data_text . '</td>';
 		echo '</tr>';
 	} //end while
 
