@@ -61,7 +61,7 @@ if (!$_GET['d']) {
 	
 	
 	$msg->addFeedback('CANCELLED');
-	echo '<p align="center"><a href="'.$_SERVER['PHP_SELF'].'?course='.$course.SEP.'d=1'.'">'._AT('yes_delete').'</a> | <a href="users/index.php?f='.urlencode_feedback(AT_FEEDBACK_CANCELLED).'">'._AT('no_cancel').'</a></p>';
+	echo '<p align="center"><a href="'.$_SERVER['PHP_SELF'].'?course='.$course.SEP.'d=1'.'">'._AT('yes_delete').'</a> | <a href="users/index.php">'._AT('no_cancel').'</a></p>';
 
 } else {
 	$msg->deleteFeedback('CANCELLED');
@@ -70,7 +70,7 @@ if (!$_GET['d']) {
 	$msg->printWarnings($warnings);
 	
 	$msg->addFeedback('CANCELLED');
-	echo '<p align="center"><a href="'.$_SERVER['PHP_SELF'].'?course='.$course.SEP.'d=2'.'">'._AT('yes_delete').'</a> | <a href="users/index.php?f='.urlencode_feedback(AT_FEEDBACK_CANCELLED).'">'._AT('no_cancel').'</a></p>';
+	echo '<p align="center"><a href="'.$_SERVER['PHP_SELF'].'?course='.$course.SEP.'d=2'.'">'._AT('yes_delete').'</a> | <a href="users/index.php">'._AT('no_cancel').'</a></p>';
 }
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

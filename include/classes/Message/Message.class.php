@@ -359,10 +359,11 @@ class Message {
 	* @author  Jacek Materna
 	*/
 	function printAll() {
-		$this->printAbstract('error');
-		$this->printAbstract('warning');
-		$this->printAbstract('info');
 		$this->printAbstract('feedback');
+		$this->printAbstract('errors');
+		$this->printAbstract('warning');
+		$this->printAbstract('help');
+		$this->printAbstract('info');
 	}
 	
 	/**
