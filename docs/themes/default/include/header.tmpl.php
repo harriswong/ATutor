@@ -234,14 +234,41 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/forums/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/forums/index.php']['children'] = array('editor/add_forum.php');
 
-	$_pages['editor/add_forum.php']['title']  = _AT('create_forum');
-	$_pages['editor/add_forum.php']['parent'] = 'tools/forums/index.php';
+		$_pages['editor/add_forum.php']['title']  = _AT('create_forum');
+		$_pages['editor/add_forum.php']['parent'] = 'tools/forums/index.php';
 
-	$_pages['editor/delete_forum.php']['title']  = _AT('delete_forum');
-	$_pages['editor/delete_forum.php']['parent'] = 'tools/forums/index.php';
+		$_pages['editor/delete_forum.php']['title']  = _AT('delete_forum');
+		$_pages['editor/delete_forum.php']['parent'] = 'tools/forums/index.php';
 
-	$_pages['editor/edit_forum.php']['title']  = _AT('edit_forum');
-	$_pages['editor/edit_forum.php']['parent'] = 'tools/forums/index.php';
+		$_pages['editor/edit_forum.php']['title']  = _AT('edit_forum');
+		$_pages['editor/edit_forum.php']['parent'] = 'tools/forums/index.php';
+
+	$_pages['tools/links/index.php']['title']  = _AT('links');
+	$_pages['tools/links/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/links/index.php']['children'] = array('tools/links/add.php', 'tools/links/categories.php');
+
+		$_pages['tools/links/add.php']['title']  = _AT('add_link');
+		$_pages['tools/links/add.php']['parent'] = 'tools/links/index.php';
+
+		$_pages['tools/links/edit.php']['title']  = _AT('edit_link');
+		$_pages['tools/links/edit.php']['parent'] = 'tools/links/index.php';
+
+		$_pages['tools/links/delete.php']['title']  = _AT('delete_link');
+		$_pages['tools/links/delete.php']['parent'] = 'tools/links/index.php';
+
+		$_pages['tools/links/categories.php']['title']  = _AT('categories');
+		$_pages['tools/links/categories.php']['parent'] = 'tools/links/index.php';
+		$_pages['tools/links/categories.php']['children'] = array('tools/links/categories_add.php');
+
+		$_pages['tools/links/categories_add.php']['title']  = _AT('add_category');
+		$_pages['tools/links/categories_add.php']['parent'] = 'tools/links/categories.php';
+
+		$_pages['tools/links/categories_edit.php']['title']  = _AT('edit_category');
+		$_pages['tools/links/categories_edit.php']['parent'] = 'tools/links/categories.php';
+
+		$_pages['tools/links/categories_delete.php']['title']  = _AT('delete_category');
+		$_pages['tools/links/categories_delete.php']['parent'] = 'tools/links/categories.php';
+
 
 	// tests
 	$_pages['tools/tests/index.php']['title']  = _AT('tests');

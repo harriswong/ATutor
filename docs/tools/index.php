@@ -35,7 +35,11 @@
 <hr />
 
 <ul>
-	<li><a href="tools/content/index.php">[ Content ]</li>
+	<li><a href="tools/content/index.php">[ Content ]</a></li>
+	<li><a href="tools/news/index.php"><?php echo _AT('announcements'); ?></a></li>
+	<li><a href="tools/forums/index.php"><?php echo _AT('forums'); ?></a></li>
+	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a>
+</tr>
 </ul>
 <?php
 	
@@ -87,49 +91,6 @@ if (defined('AC_PATH') && AC_PATH) {
 	}
 ?>
 <table border="0" cellspacing="0" cellpadding="3" summary="">
-<?php if (authenticate(AT_PRIV_COURSE_EMAIL, AT_PRIV_RETURN)) { ?>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/content_editor-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="editor/edit_content.php">'._AT('content_editor').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('content_editor_text', '');
-			?>
-	</td>
-</tr>
-<?php } ?>
-
-<?php if (authenticate(AT_PRIV_ANNOUNCEMENTS, AT_PRIV_RETURN)) { ?>
-<tr>
-	<?php
-			echo '<td rowspan="2" valign="top">*</td>';
-			echo '<td>';
-				echo ' <a href="tools/news/index.php">'._AT('announcements').'</a>';
-			echo '</td></tr><tr><td>';
-			echo _AT('announcement_text');
-			?>
-	</td>
-</tr>
-<?php } ?>
-
-<?php if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN)) { ?>
-<tr>
-	<?php
-			echo '<td rowspan="2" valign="top">*</td>';
-			echo '<td>';
-				echo ' <a href="tools/forums/index.php">'._AT('forums').'</a>';
-			echo '</td></tr><tr><td>';
-			echo _AT('forums_text');
-			?>
-	</td>
-</tr>
-<?php } ?>
-
 <?php if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN)) { ?>
 <tr>
 	<?php
@@ -252,20 +213,7 @@ if (defined('AC_PATH') && AC_PATH) {
 			?>
 	</td>
 </tr>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/course-properties-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="tools/course_properties.php">'._AT('course_properties').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('course_properties_text');
-			?>
-	</td>
-</tr>
+
 <tr>
 	<td rowspan="2" valign="top">*</td>
 	<td><a href="tools/course_stats.php"><?php echo _AT('course_stats'); ?></a></td>
