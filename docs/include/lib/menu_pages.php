@@ -381,6 +381,10 @@ $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['resources/links/index.php']['title']  = _AT('links');
 $_pages['resources/links/index.php']['parent'] = AT_NAV_COURSE;
+$_pages['resources/links/index.php']['children'] = array('resources/links/add.php');
+
+	$_pages['resources/links/add.php']['title']  = _AT('add_link');
+	$_pages['resources/links/add.php']['parent'] = 'resources/links/index.php';
 
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 //$_pages['editor/edit_content.php']['parent'] = 'index.php';
