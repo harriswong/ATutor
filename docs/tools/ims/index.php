@@ -75,7 +75,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 		<label for="select_cid"><?php echo _AT('export_content_package_what'); ?></label><br />
 		<select name="cid" id="select_cid">
 			<option value="0"><?php echo _AT('export_entire_course_or_chap'); ?></option>
-			<option>--------------------------</option>
+			<option value="0"></option>
 			<?php
 				print_menu_sections($_main_menu);
 			?>
@@ -115,7 +115,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 		<label for="select_cid2"><?php echo _AT('import_content_package_where'); ?></label><br />
 		<select name="cid" id="select_cid2">
 			<option value="0"><?php echo _AT('import_content_package_bottom_subcontent'); ?></option>
-			<option>--------------------------</option>
+			<option value="0"></option>
 			<?php
 				print_menu_sections($_main_menu);
 			?>
@@ -129,7 +129,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 
 	<div class="row">
 		<label for="to_url"><?php echo _AT('specify_url_to_content_package'); ?></label><br />
-		<input type="input" name="url" value="http://" size="40" id="to_url" />
+		<input type="text" name="url" value="http://" size="40" id="to_url" />
 	</div>
 
 	<div class="row buttons">
@@ -154,6 +154,4 @@ function openWindow(page) {
 }
 </script>
 
-<?php
-	require (AT_INCLUDE_PATH.'footer.inc.php'); 
-?>
+<?php require (AT_INCLUDE_PATH.'footer.inc.php'); ?>
