@@ -17,10 +17,9 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_FORUMS);
 
 if ($_POST['cancel']) {
-	
-		$msg->addFeedback('CANCELLED');
-		Header('Location: '.$_base_href.'forum/list.php');
-		exit;
+	$msg->addFeedback('CANCELLED');
+	header('Location: '.$_base_href.'tools/forums/index.php');
+	exit;
 }
 
 if ($_POST['add_forum'] && (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN))) {
@@ -33,7 +32,7 @@ if ($_POST['add_forum'] && (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN))) {
 		add_forum($_POST);
 		
 		$msg->addFeedback('FORUM_ADDED');
-		header('Location: '.$_base_href.'forum/list.php');
+		header('Location: '.$_base_href.'tools/forums/index.php');
 		exit;
 	}
 }

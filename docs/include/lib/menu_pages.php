@@ -171,6 +171,20 @@ $_pages['tools/index.php']['title']    = _AT('tools');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 //$_pages['tools/index.php']['children'] = array('forum/list.php');
 
+	$_pages['discussions/polls.php']['title']  = _AT('polls');
+	$_pages['discussions/polls.php']['parent'] = 'tools/index.php';
+	$_pages['discussions/polls.php']['children'] = array('editor/add_poll.php');
+
+		$_pages['editor/add_poll.php']['title']  = _AT('add_poll');
+		$_pages['editor/add_poll.php']['parent'] = 'discussions/polls.php';
+
+		$_pages['editor/edit_poll.php']['title']  = _AT('edit_poll');
+		$_pages['editor/edit_poll.php']['parent'] = 'discussions/polls.php';
+
+		$_pages['editor/delete_poll.php']['title']  = _AT('delete_poll');
+		$_pages['editor/delete_poll.php']['parent'] = 'discussions/polls.php';
+
+
 	$_pages['tools/filemanager/index.php']['title']  = _AT('file_manager');
 	$_pages['tools/filemanager/index.php']['parent'] = 'tools/index.php';
 

@@ -188,8 +188,6 @@ $onload = 'onload="document.form.subject.focus()"';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 	
-echo '<h3><a href="forum/index.php?fid='.$fid.SEP.'g=11">'.AT_print(get_forum_name($fid), 'forums.title').'</a></h3>';
-
 $parent_id = 0;
 $new_thread = TRUE;
 require(AT_INCLUDE_PATH.'lib/new_thread.inc.php');

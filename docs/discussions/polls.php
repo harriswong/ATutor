@@ -63,22 +63,6 @@ $sql	= "SELECT * FROM ".TABLE_PREFIX."polls WHERE course_id=$_SESSION[course_id]
 $result = mysql_query($sql, $db);
 
 
-/* admin editing options: */
-/* this session thing is a hack to temporarily prevent the en/dis editor link from affecting 'add poll' */
-if (authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN)) {
-	unset($editors);
-	$editors[] = array('priv' => AT_PRIV_POLLS, 'title' => _AT('add_poll'), 'url' => $_base_path.'editor/add_poll.php');
-	print_editor($editors , $large = true);
-
-	if (!$_SESSION['prefs'][PREF_EDIT]) {
-		
-		$help = array('ENABLE_EDITOR', $_my_uri);
-		$msg->printHelps($help);
-	}
-}
-
-
-
 if (!($row = mysql_fetch_assoc($result))) {
 	echo '<p>'._AT('no_polls_found').'</p>';
 } else {

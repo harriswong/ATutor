@@ -43,16 +43,7 @@ if ($_POST['add_poll'] && (authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN))) {
 	}
 }
 
-$_section[0][0] = _AT('discussions');
-$_section[0][1] = 'discussions/index.php';
-$_section[1][0] = _AT('polls');
-$_section[1][1] = 'discussions/polls.php';
-$_section[2][0] = _AT('add_poll');
-
 require(AT_INCLUDE_PATH.'header.inc.php');
-
-$msg->printErrors();
-
 
 ?>
 
@@ -61,27 +52,22 @@ $msg->printErrors();
 
 <div class="input-form">	
 	<div class="row">
-		<label for="question"><?php  echo _AT('question'); ?>:</label><br />
+		<label for="question"><?php  echo _AT('question'); ?></label><br />
 		<textarea name="question" cols="45" rows="3" id="question"></textarea>
 	</div>
 
-<?php 
-	
-	for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
-		<div class="row">
-			<label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?>:</label><br />
-			<input type="text" name="c<?php echo $i; ?>" size="40" id="c<?php echo $i; ?>" />
-		</div>
+<?php for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
+	<div class="row">
+		<label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?></label><br />
+		<input type="text" name="c<?php echo $i; ?>" size="40" id="c<?php echo $i; ?>" />
+	</div>
 <?php endfor; ?>
 
 	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
-		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" /></td>
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
-
 </div>
 </form>
 
-<?php
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

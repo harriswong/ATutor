@@ -11,8 +11,6 @@
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
 
-echo '<p><b><a href="forum/new_thread.php?fid='.$fid.SEP.'g=33">'._AT('new_thread').'</a></b></p>';
-
 $sql	= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."forums_threads WHERE parent_id=0 AND forum_id=$fid";
 $result	= mysql_query($sql, $db);
 $num_threads = mysql_fetch_assoc($result);
@@ -40,7 +38,7 @@ $sql	= "SELECT *, last_comment + 0 AS stamp FROM ".TABLE_PREFIX."forums_threads 
 $result	= mysql_query($sql, $db);
 
 if ($row = mysql_fetch_assoc($result)) {
-	echo '<table class="data static" summary="" rules="cols">';
+	echo '<table class="data static" summary="" rules="cols" style="width: 90%;">';
 	echo '<thead>';
 	echo '<tr>';
 	echo '<th class="cat">'._AT('topic').' <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
@@ -143,20 +141,20 @@ if ($row = mysql_fetch_assoc($result)) {
 
 		echo '<td class="row1" width="10%"><a href="users/send_message.php?l='.$row['member_id'].'">'.AT_print($row['login'], 'members.login').'</a></td>';
 
-		echo '<td class="row1" width="20%" align="right" nowrap="nowrap"><small>';
+		echo '<td class="row1" width="20%" align="right" nowrap="nowrap">';
 		echo AT_date(_AT('forum_date_format'), $row['last_comment'], AT_DATE_MYSQL_DATETIME);
-		echo '</small></td>';
+		echo '</td>';
 
 		if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
 			echo '<td class="row1" nowrap="nowrap">';
-			echo ' <a href="forum/stick.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/forum/sticky.gif" border="0" class="menuimage6"  alt="'._AT('sticky_thread').'" title="'._AT('sticky_thread').'" /></a> ';
+			echo ' <a href="forum/stick.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/forum/sticky.gif" border="0" alt="'._AT('sticky_thread').'" title="'._AT('sticky_thread').'" /></a> ';
 
 			if ($row['locked'] != 0) {
-				echo '<a href="forum/lock_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'unlock='.$row['locked'].'"><img src="images/unlock.gif" border="0"  class="menuimage6" alt="'._AT('unlock_thread').'" title="'._AT('unlock_thread').'"/></a>';
+				echo '<a href="forum/lock_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'unlock='.$row['locked'].'"><img src="images/unlock.gif" border="0"  alt="'._AT('unlock_thread').'" title="'._AT('unlock_thread').'"/></a>';
 			} else {
-				echo '<a href="forum/lock_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/lock.gif" border="0" alt="'._AT('lock_thread').'"   class="menuimage6" title="'._AT('lock_thread').'"/></a>';
+				echo '<a href="forum/lock_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/lock.gif" border="0" alt="'._AT('lock_thread').'"   title="'._AT('lock_thread').'"/></a>';
 			}
-			echo ' <a href="forum/delete_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'ppid=0"><img src="images/icon_delete.gif" border="0" alt="'._AT('delete_thread').'"   class="menuimage6" title="'._AT('delete_thread').'"/></a>';
+			echo ' <a href="forum/delete_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'ppid=0"><img src="images/icon_delete.gif" border="0" alt="'._AT('delete_thread').'" title="'._AT('delete_thread').'"/></a>';
 			
 			echo '</td>';
 		}
