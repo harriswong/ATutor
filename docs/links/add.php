@@ -22,7 +22,7 @@ if (!isset($_POST['url'])) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'resources/links/index.php');
+	header('Location: '.$_base_href.'links/index.php');
 	exit;
 } 
 
@@ -31,7 +31,7 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 	if ($_POST['title'] == '') {		
 		$msg->addError('TITLE_EMPTY');
 	}
-	if ($_POST['url'] == '') {		
+	if (($_POST['url'] == 'http://') || $_POST['url'] == '') {		
 		$msg->addError('URL_EMPTY');
 	}
 	if ($_POST['description'] == '') {		
@@ -55,7 +55,7 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 	
 		$msg->addFeedback('LINK_ADDED');
 
-		header('Location: '.$_base_href.'resources/links/index.php');
+		header('Location: '.$_base_href.'links/index.php');
 		exit;
 	}
 }

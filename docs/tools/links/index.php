@@ -92,9 +92,9 @@ if (!isset($_GET['cat_parent_id'])) {
 	<th scope="col">&nbsp;</th>
 	<th scope="col"><?php echo _AT('title'); ?></th>
 	<th scope="col"><?php echo _AT('category'); ?></th>
-	<th scope="col"><?php echo _AT('submitter'); ?></th>
+	<th scope="col"><?php echo _AT('submitted_by'); ?></th>
 	<th scope="col"><?php echo _AT('approved'); ?></th>
-	<th scope="col"><?php echo _AT('num_hits'); ?></th>
+	<th scope="col"><?php echo _AT('hit_count'); ?></th>
 
 </tr>
 </thead>
