@@ -32,7 +32,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 if ($_GET['col']) {
 	$col = addslashes($_GET['col']);
 } else {
-	$col = 'content_parent_id, ordering';
+	$col = 'LinkName';
 }
 
 if ($_GET['order']) {
@@ -44,7 +44,7 @@ if ($_GET['order']) {
 if (!isset($_GET['cat_parent_id'])) {
 	$parent_id = 0;	
 } else {
-	$parent_id = intval($_GET['id']);
+	$parent_id = intval($_GET['cat_parent_id']);
 }
 ?>
 
@@ -102,18 +102,17 @@ if (!isset($_GET['cat_parent_id'])) {
 	$result = mysql_query($sql, $db);
 	if ($row = mysql_fetch_assoc($result)) { 
 		do {
-			$parent_cat_name = '';
-			if ($row['cat_parent']) {
-				$sql_cat	= "SELECT cat_name FROM ".TABLE_PREFIX."course_cats WHERE cat_id=".$row['cat_parent'];
-				$result_cat = mysql_query($sql_cat, $db);
-				$row_cat = mysql_fetch_assoc($result_cat);
-				$parent_cat_name = $row_cat['cat_name'];
-			} 
+			$cat_name = '';			
+			$sql_cat	= "SELECT CatName FROM ".TABLE_PREFIX."resource_categories WHERE CatID=".$row['CatID'];
+			$result_cat = mysql_query($sql_cat, $db);
+			$row_cat = mysql_fetch_assoc($result_cat);
+			$cat_name = $row_cat['CatName'];
+			 
 	?>
-			<tr onmousedown="document.form['m<?php echo $row['cat_id']; ?>'].checked = true;">
-				<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['cat_id']; ?>" id="m<?php echo $row['cat_id']; ?>"></td>
-				<td><?php echo AT_print($row['cat_name'], 'members.first_name'); ?></td>
-				<td><?php echo AT_print($parent_cat_name, 'members.last_name'); ?></td>
+			<tr onmousedown="document.form['m<?php echo $row['CatID']; ?>'].checked = true;">
+				<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['CatID']; ?>" id="m<?php echo $row['CatID']; ?>"></td>
+				<td><?php echo AT_print($row['LinkName'], 'members.first_name'); ?></td>
+				<td><?php echo AT_print($cat_name, 'members.last_name'); ?></td>
 			</tr>
 <?php 
 		} while ($row = mysql_fetch_assoc($result));					
