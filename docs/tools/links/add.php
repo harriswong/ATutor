@@ -43,6 +43,9 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 		$_POST['url'] == $addslashes($_POST['url']);
 		$_POST['description']  = $addslashes($_POST['description']);
 
+		$name = $_SESSION['login'];
+		$email = '';
+
 		$sql	= "INSERT INTO ".TABLE_PREFIX."resource_links VALUES (0, $_POST[cat], '$_POST[title]', '$_POST[url]', '$_POST[description]', 0, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
