@@ -334,7 +334,9 @@ if (isset($_POST['form_course'])) {
 				if ($dir = opendir('../images/courses/')) {
 					while (false !== ($file = readdir($dir)) ) {
 						if( ($file == '.') || ($file == '..') ) { continue;	}
-						echo '<option value="' . $file . '">' . $file . '</option>';	
+						echo '<option value="' . $file . '" ';
+						if ($file == $row['icon']) { echo 'selected="selected"'; }
+						echo ' >' . $file . '</option>';	
 					}		
 					closedir($dir);	
 				}
@@ -345,7 +347,13 @@ if (isset($_POST['form_course'])) {
 	<div class="row">
 		<?php echo _AT('howto_preview'); ?><br />
 		<label for="0"><?php echo _AT('thumbnail_preview'); ?></label><br />
-		<img id="0" src="images/courses/clr.gif" alt="<?php echo _AT('no_image'); ?>">
+		<?php
+			if ($row['icon'] != '') {
+				echo '<img id="0" src="images/courses/'. $row['icon'] .'" alt="'. $row['icon'] .'">';
+			} else {
+				echo '<img id="0" src="images/courses/clr.gif" alt="'. _AT('no_icon') .'">';
+			}
+		?>
 	</div>
 
 	<div class="buttons">
