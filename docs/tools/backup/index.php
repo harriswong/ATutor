@@ -97,17 +97,17 @@ $list = $Backup->getAvailableList();
 	if (!$list) {
 		?>
 	<tr>
-		<td class="row1" align="center" colspan="4"><small><?php echo _AT('none_found'); ?></small></td>
+		<td colspan="4"><?php echo _AT('none_found'); ?></td>
 	</tr>
 	<?php
 	} else {
 		foreach ($list as $row) {
 			echo '<tr onmousedown="document.form[\'b'.$row['backup_id'].'\'].checked = true;">';
 			echo '<td class="row1"><label><input type="radio" value="'.$row['backup_id'].'" name="backup_id" id="b'.$row['backup_id'].'" />';
-			echo '<small>'.$row['file_name'].'</small></label></td>';
-			echo '<td class="row1"><small>'.AT_date(_AT('filemanager_date_format'), $row['date_timestamp'], AT_DATE_UNIX_TIMESTAMP).'</small></td>';
-			echo '<td class="row1" align="right"><small>'.get_human_size($row['file_size']).'</small></td>';
-			echo '<td class="row1"><small>'.$row['description'].'</small></td>';
+			echo $row['file_name'].'</label></td>';
+			echo '<td>'.AT_date(_AT('filemanager_date_format'), $row['date_timestamp'], AT_DATE_UNIX_TIMESTAMP).'</td>';
+			echo '<td align="right">'.get_human_size($row['file_size']).'</td>';
+			echo '<td>'.AT_Print($row['description'], 'backups.description').'</td>';
 			echo '</tr>';
 		}
 ?>
