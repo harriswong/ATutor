@@ -3,23 +3,34 @@
 Jacek Materna<br/>
 
 TODO:<br/>
-Implement popup_help messages into messaging system and update those<br/>
-/discussions/Achat conversion
-print_popup_help calls (alot in /themes)
-install section
-/resources/links/index.php line 135, printfeedbacks, $msg is not a prefixed lang code
-The system cannot handle this. Contents of $msg must be translated to lang codes
-i.e $msg = _AT('suggestion_submitted_approval'); Must be a lang code
-
-FileManager related files (/tools, /tools/filemanager)<br/>
-
-Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes<br/>
- - /help/contact_instructor.php<br/>
- - /users/private_enroll.php<br/>
- - /users/request_instructor.php<br/>
- - /include/html/editor_tabs/accessibility.inc.php<br/>
- - /tools/tests/edit_question.php<br/>
- - /include/lib/new_thread.inc.php<br/>
+<ul>
+	<li>/discussions/Achat conversion</li>
+	
+	<li>print_popup_help calls system wide</li>
+	
+	<li>install section</li>
+	
+	<li>/resources/links/index.php line 135, printfeedbacks, $msg is not a prefixed lang code
+	The system cannot handle this. Contents of $msg must be translated to lang codes
+	i.e $msg = _AT('suggestion_submitted_approval'); Must be a lang code</li>
+	
+	<li>FileManager related files (/tools, /tools/filemanager)</li>
+	
+	<li>/include/course_header.inc.php <- line 58</li>
+	<li>/include/footer.inc.php 	   <- line 50</li>
+	<li>/include/html/dropdowns/*</li>
+	
+	<li>Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes
+		<ul>
+			<li>/help/contact_instructor.php</li>
+			<li>/users/private_enroll.php</li>
+			<li>/users/request_instructor.php</li>
+			<li>/include/html/editor_tabs/accessibility.inc.php</li>
+			<li>/tools/tests/edit_question.php</li>
+			<li>/include/lib/new_thread.inc.php</li>
+		</ul>
+	</li>
+</ul>
 
 
 <h3>Files converted to new Message system</h3>
