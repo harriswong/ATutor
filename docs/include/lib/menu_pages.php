@@ -242,6 +242,9 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/course_preferences.php']['title']  = _AT('preferences');
 	$_pages['tools/course_preferences.php']['parent'] = 'tools/index.php';
 
+	$_pages['tools/tile/index.php']['title']  = _AT('tile_search');
+	$_pages['tools/tile/index.php']['parent'] = 'tools/index.php';
+
 	$_pages['tools/course_properties.php']['title']    = _AT('properties');
 	$_pages['tools/course_properties.php']['parent']   = 'tools/index.php';
 	$_pages['tools/course_properties.php']['children'] = array('tools/delete_course.php');
@@ -441,8 +444,8 @@ $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 $_pages['discussions/achat/index.php']['title'] = _AT('chat');
 $_pages['discussions/achat/index.php']['img'] = 'images/courses/bomb.gif';
 
-$_pages['resources/tile/index.php']['title'] = _AT('tile_search');
-$_pages['resources/tile/index.php']['img'] = 'images/courses/domino.gif';
+$_pages['tile.php']['title'] = _AT('tile_search');
+$_pages['tile.php']['img'] = 'images/courses/domino.gif';
 
 $_pages['my_stats.php']['title'] = _AT('my_tracker');
 $_pages['my_stats.php']['img'] = 'images/courses/fish.gif';

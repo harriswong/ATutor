@@ -229,7 +229,7 @@ function debug($var, $title='') {
 	echo '</pre>';
 }
 
-$_modules = array('sitemap.php', 'export.php', 'discussions/achat/index.php', 'links/index.php', 'resources/tile/index.php', 'glossary/index.php', 'my_stats.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab.php');
+$_modules = array('sitemap.php', 'export.php', 'discussions/achat/index.php', 'links/index.php', 'tile.php', 'glossary/index.php', 'my_stats.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab.php');
 
 
 /********************************************************************/
@@ -498,7 +498,7 @@ function urlencode_feedback($f) {
 * @return  none
 * @see     $db			in include/vitals.inc.php
 * @author  Joel Kronenberg
-*/	
+*/
 function save_last_cid($cid) {
 	if ($_SESSION['enroll'] == AT_ENROLL_NO) {
 		return;
