@@ -26,10 +26,9 @@ define('AT_NAV_ADMIN',  4);
 
 */
 
+$_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'login.php', 'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php');
-$_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'search.php', 'login.php', 'password_reminder.php');
-
 $_pages[AT_NAV_ADMIN] = array('admin/index.php', 'admin/users.php', 'admin/courses.php', 'admin/config_info.php');
 
 /* admin pages */
@@ -92,9 +91,6 @@ $_pages['registration.php']['parent']   = AT_NAV_PUBLIC;
 $_pages['browse.php']['title']    = _AT('browse_courses');
 $_pages['browse.php']['parent']   = AT_NAV_PUBLIC;
 
-$_pages['search.php']['title']    = _AT('search');
-$_pages['search.php']['parent']   = AT_NAV_PUBLIC;
-
 $_pages['login.php']['title']    = _AT('login');
 $_pages['login.php']['parent']   = AT_NAV_PUBLIC;
 
@@ -142,6 +138,20 @@ $_pages['forum/list.php']['parent'] = 'tools/index.php';
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 $_pages['editor/edit_content.php']['parent'] = 'index.php';
 
+/* global pages */
+$_pages['help/index.php']['title']  = _AT('help');
+$_pages['help/index.php']['children'] = array('help/accessibility.php', 'help/about_help.php', 'help/contact_admin.php');
+
+	$_pages['help/accessibility.php']['title']  = _AT('accessibility');
+	$_pages['help/accessibility.php']['parent'] = 'help/index.php';
+
+	$_pages['help/about_help.php']['title']  = _AT('about_atutor_help');
+	$_pages['help/about_help.php']['parent'] = 'help/index.php';
+
+	$_pages['help/contact_admin.php']['title']  = _AT('contact_admin');
+	$_pages['help/contact_admin.php']['parent'] = 'help/index.php';
+
+$_pages['search.php']['title']      = _AT('search');
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
@@ -219,7 +229,7 @@ function get_path($current_page) {
 		$path[] = array('url' => $_base_path . $current_page, 'title' => $_pages[$current_page]['title']);
 		$path = array_merge($path, get_path($parent_page));
 	} else {
-		$path = array();
+		$path[] = array('url' => $_base_path . $current_page, 'title' => $_pages[$current_page]['title']);
 	}
 	
 	return $path;
@@ -227,6 +237,20 @@ function get_path($current_page) {
 
 $_top_level_pages        = get_main_navigation($current_page);
 $_current_top_level_page = get_current_main_page($current_page);
+if (empty($_top_level_pages)) {
+	if (!$_SESSION['valid_user']) {
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_PUBLIC][0]);
+	} else if ($_SESSION['course_id'] < 0) {
+		//$_section_title = 'Administration';
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_ADMIN][0]);
+	} else if (!$_SESSION['course_id']) {
+		//$_section_title = _AT('my_start_page');
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_START][0]);
+	} else {
+		//$_section_title = $_SESSION['course_title'];
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_COURSE][0]);
+	}
+}
 
 $_sub_level_pages        = get_sub_navigation($current_page);
 $_current_sub_level_page = get_current_sub_navigation_page($current_page);
@@ -237,14 +261,14 @@ array_pop($_path);
 
 $_page_title = $_pages[$current_page]['title'];
 
-if (!$_SESSION['valid_user']) {
+if ($_SESSION['course_id'] > 0) {
+	$_section_title = $_SESSION['course_title'];
+} else if (!$_SESSION['valid_user']) {
 	$_section_title = 'Welcome';
 } else if ($_SESSION['course_id'] < 0) {
 	$_section_title = 'Administration';
 } else if (!$_SESSION['course_id']) {
 	$_section_title = _AT('my_start_page');
-} else {
-	$_section_title = $_SESSION['course_title'];
 }
 
 
@@ -274,27 +298,31 @@ if (!$_SESSION['valid_user']) {
 
 <!-- top help/search/login links -->
 <div align="right" id="top-links">
-	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a> | <a href="<?php echo $this->tmpl_base_path; ?>logout.php"><?php echo _AT('logout'); ?></a><br />
+	<a href="<?php echo $this->tmpl_base_path; ?>search.php"><?php echo _AT('search'); ?></a> | <a href="<?php echo $this->tmpl_base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
+<?php if ($_SESSION['valid_user']): ?>
+	 | <a href="<?php echo $this->tmpl_base_path; ?>logout.php"><?php echo _AT('logout'); ?></a><br />
 	<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
 		<label for="jumpmenu" accesskey="j"></label>
 			<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  ALT-j">							
 				<option value="0"><?php echo _AT('my_start_page'); ?></option>
-					<?php if ($_SESSION['valid_user']): ?>								
-						<optgroup label="<?php echo _AT('courses_below'); ?>">
-							<?php foreach ($this->tmpl_nav_courses as $this_course_id => $this_course_title): ?>
-								<?php if ($this_course_id == $_SESSION['course_id']): ?>
-									<option value="<?php echo $this_course_id; ?>" selected="selected"><?php echo $this_course_title; ?></option>
-								<?php else: ?>
-									<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</optgroup>
-					<?php endif; ?>
+				<optgroup label="<?php echo _AT('courses_below'); ?>">
+					<?php foreach ($this->tmpl_nav_courses as $this_course_id => $this_course_title): ?>
+						<?php if ($this_course_id == $_SESSION['course_id']): ?>
+							<option value="<?php echo $this_course_id; ?>" selected="selected"><?php echo $this_course_title; ?></option>
+						<?php else: ?>
+							<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</optgroup>
 			</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /><input type="hidden" name="g" value="22" /></form>
+<?php else: ?>
+	 | <a href="<?php echo $this->tmpl_base_path; ?>login.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('login'); ?></a><br /><br />
+<?php endif; ?>
+
 </div>
 
 <!-- back to the current section -->
-	<?php if ($_SESSION['course_id'] > 0): ?>
+	<?php if ($_SESSION['valid_user'] && ($_SESSION['course_id'] > 0)): ?>
 		<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
 	<?php endif; ?>
 
@@ -331,23 +359,25 @@ if (!$_SESSION['valid_user']) {
 	</table>
 
 <!-- the page title -->
-	<div style="float: right">
+	<!-- div style="float: right">
 	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
-	</div>
+	</div-->
 	<h2 id="page-title"><?php echo $_page_title; ?></h2>
-
 
 <!-- the sub navigation -->
 	<div id="sub-navigation">
 		<?php if (isset($_sub_level_pages)): ?>
-			<?php foreach ($_sub_level_pages as $page): ?>
-				<?php if ($page['url'] == $_current_sub_level_page): ?>
-					<strong><?php echo $page['title']; ?></strong>
+			<?php $num_pages = count($_sub_level_pages); ?>
+			<?php for($i=0; $i<$num_pages; $i++): ?>
+				<?php if ($_sub_level_pages[$i]['url'] == $_current_sub_level_page): ?>
+					<strong><?php echo $_sub_level_pages[$i]['title']; ?></strong>
 				<?php else: ?>
-					<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a>
+					<a href="<?php echo $_sub_level_pages[$i]['url']; ?>"><?php echo $_sub_level_pages[$i]['title']; ?></a>
 				<?php endif; ?>
-				|
-			<?php endforeach; ?>
+				<?php if ($i < $num_pages-1): ?>
+					|
+				<?php endif; ?>
+			<?php endfor; ?>
 		<?php endif; ?>
 	</div>
 	<br />

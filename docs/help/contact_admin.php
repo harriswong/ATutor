@@ -56,14 +56,6 @@
 		exit;
 	}
 
-	echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<img src="images/icons/default/square-large-help.gif" width="42" hspace="3" vspace="3" height="38"  class="menuimage" border="0" alt="" />';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="help/">'._AT('help').'</a>';
-	}
-	echo '</h2>';
 	if ($_POST['submit']) {
 		$_POST['subject'] = trim($_POST['subject']);
 		$_POST['body']	  = trim($_POST['body']);
