@@ -34,7 +34,11 @@ if (!$_SESSION['valid_user']) {
 	exit;
 }
 
-if (($_POST['submit']) || ($_POST['submit_delete'])) {
+if (isset($_POST['cancel'])) {
+	$msg->addFeedback('CANCELLED');
+	header('Location: inbox.php');
+	exit;
+} else if (($_POST['submit']) || ($_POST['submit_delete'])) {
 	if (($_POST['to'] == '') || ($_POST['to'] == 0)) {
 		 $msg->addError('NO_RECIPIENT');
 	}
@@ -184,17 +188,12 @@ if ($reply_to) {
 		?></textarea>
 	</div>
 
-	<!--a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a--><?php 
-		
-		$hide_learning_concepts = true;
-		//require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?>
-		
 	<div class="row buttons">
 		<a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('send'); ?>" accesskey="s" /><?php
 		if ($reply != '') {
 			echo '<input type="submit" name="submit_delete" value="'._AT('send_delete').'" accesskey="n" /> ';
 		}
-		?> <input type="reset" value="<?php echo _AT('start_over'); ?>" />
+		?> <input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 </div>
 </form> 

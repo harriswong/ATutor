@@ -12,23 +12,23 @@
 /****************************************************************/
 // $Id$
 
-	$page = 'inbox';
-	$_user_location	= 'users';
-	define('AT_INCLUDE_PATH', '../include/');
-	require (AT_INCLUDE_PATH.'vitals.inc.php');
-	$_section[0][0] = _AT('inbox');
-	$_section[0][1] = 'inbox.php';
+$page = 'inbox';
+$_user_location	= 'users';
+define('AT_INCLUDE_PATH', '../include/');
+require (AT_INCLUDE_PATH.'vitals.inc.php');
+$_section[0][0] = _AT('inbox');
+$_section[0][1] = 'inbox.php';
 	
-	$_GET['view'] = intval($_GET['view']);
+$_GET['view'] = intval($_GET['view']);
 
-	if ($_GET['view']) {
-		$result = mysql_query("UPDATE ".TABLE_PREFIX."messages SET new=0 WHERE to_member_id=$_SESSION[member_id] AND message_id=$_GET[view]",$db);
-	}
+if ($_GET['view']) {
+	$result = mysql_query("UPDATE ".TABLE_PREFIX."messages SET new=0 WHERE to_member_id=$_SESSION[member_id] AND message_id=$_GET[view]",$db);
+}
 
-	$current_path = 'users/';
-	$title = _AT('inbox');
+$current_path = 'users/';
+$title = _AT('inbox');
 
-	require(AT_INCLUDE_PATH.'header.inc.php');
+require(AT_INCLUDE_PATH.'header.inc.php');
 
 
 if (!$_SESSION['valid_user']) {

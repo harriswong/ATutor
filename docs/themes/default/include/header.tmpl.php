@@ -26,10 +26,10 @@ define('AT_NAV_ADMIN',  4);
 
 */
 
-$_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'login.php', 'password_reminder.php');
-$_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
-$_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php', 'forum/list.php', 'resources/links/index.php');
-$_pages[AT_NAV_ADMIN] = array('admin/index.php', 'admin/users.php', 'admin/courses.php', 'admin/config_info.php');
+$_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
+$_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
+$_pages[AT_NAV_COURSE] = array('index.php',        'tools/index.php',   'forum/list.php',        'resources/links/index.php');
+$_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 
 /* admin pages */
 $_pages['admin/index.php']['title']    = _AT('home');
@@ -431,7 +431,7 @@ if ($_SESSION['course_id'] > 0) {
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
 <head>
-	<title><?php echo $this->tmpl_title; ?></title>
+	<title><?php echo SITE_NAME; ?> : <?php echo $_page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->tmpl_charset; ?>" />
 	<meta name="Generator" content="ATutor - Copyright 2005 by http://atutor.ca" />
 	<base href="<?php echo $this->tmpl_content_base_href; ?>" />

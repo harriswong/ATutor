@@ -111,7 +111,7 @@ $sql = "SELECT E.approved, E.role, E.last_cid, C.* FROM ".TABLE_PREFIX."course_e
 $result = mysql_query($sql,$db);
 
 while ($row = mysql_fetch_assoc($result)): $count++; ?>
-	<div class="course<?php echo (!($count % 2)) ? '' : ' break'; ?>" onmousedown="document.location='bounce.php?course=<?php echo $row['course_id']; ?>'">
+	<div class="course" onmousedown="document.location='bounce.php?course=<?php echo $row['course_id']; ?>'">
 		<h2><a href="bounce.php?course=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h2>
 
 		<a href="bounce.php?course=<?php echo $row['course_id']; ?>"><img src="themes/default/images/courses/shapes.gif" class="icon" border="0" /></a>
@@ -130,13 +130,12 @@ require(AT_INCLUDE_PATH.'footer.inc.php');
 <style>
 div.course {
 	position: relative;
-	width: 400px;
-	min-height: 130px;
+	width: 300px;
 	border: rgb(204, 204, 204) 1px solid;
 	background-color: #FFFCE5;
 	float: left;
-	margin: 5px;
-	padding: 5px;
+	margin: 3px;
+	padding: 3px;
 }
 
 div.course.break {
@@ -180,7 +179,7 @@ div.course img.icon	{
 	float: left;
 	border: rgb(234, 234, 234) 1px solid;
 	background-color: #FFF8C8;
-	margin: 3px;
+	margin: 2px;
 }
 
 
@@ -190,26 +189,6 @@ div.course div.shortcuts {
 	vertical-align: middle;
 }
 
-#tips {
-	float: right;
-	background-color: #FAFAFA;
-	border: 1px solid #AAAAAA;
-	margin-bottom: 100px;
-	padding-right: 5px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	width: 200px;
-	margin-right: 10px;
-	font-size: small;
-}
-
-legend {
-	padding-right: 10px;
-	padding-left: 10px;
-	color: orange;
-	font-weight: bold;
-	background-color: white;
-}
 </style>
 <?php
 exit;
