@@ -68,7 +68,7 @@ if (isset($_POST['form_course'])) {
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="course_form">
 	<input type="hidden" name="form_course" value="true" />
-	<input type="hidden" name="course_id" value="<?php echo $course; ?>" />
+	<input type="hidden" name="course" value="<?php echo $course; ?>" />
 	<input type="hidden" name="old_access" value="<?php echo $row['access']; ?>" />
 	<input type="hidden" name="created_date" value="<?php echo $row['created_date']; ?>" />
 	<input type="hidden" name="show_courses" value="<?php echo $_GET['show_courses']; ?>" />
@@ -182,7 +182,7 @@ if (isset($_POST['form_course'])) {
 
 	<div class="row">
 		<label for="title"><?php echo _AT('title'); ?></label><br />
-		<input type="text" id="title" name="title" size="40" value="<?php echo stripslashes(htmlspecialchars($row['title'])); ?>" />
+		<input type="text" id="title" name="title" size="40" value="<?php echo htmlspecialchars($row['title']); ?>" />
 	</div>
 
 	<div class="row">

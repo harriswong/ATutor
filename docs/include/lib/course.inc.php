@@ -38,7 +38,7 @@ function add_update_course($_POST, $isadmin = FALSE) {
 	$_POST['pri_lang']	  = $addslashes($_POST['pri_lang']);
 	$_POST['created_date']= $addslashes($_POST['created_date']);
 
-	$_POST['course_id']	= intval($_POST['course_id']);
+	$_POST['course']	= intval($_POST['course']);
 	$_POST['notify']	= intval($_POST['notify']);
 	$_POST['hide']		= intval($_POST['hide']);
 	$_POST['instructor']= intval($_POST['instructor']);
@@ -78,7 +78,7 @@ function add_update_course($_POST, $isadmin = FALSE) {
 
 	} else {
 		$instructor = $_SESSION['member_id'];
-		if (!$_POST['course_id'])	{
+		if (!$_POST['course'])	{
 			$quota    = AT_COURSESIZE_DEFAULT;
 			$filesize = AT_FILESIZE_DEFAULT;
 			$tracking = 'off';
@@ -107,7 +107,7 @@ function add_update_course($_POST, $isadmin = FALSE) {
 		return FALSE;
 	}
 
-	$sql	= "REPLACE INTO ".TABLE_PREFIX."courses SET course_id=$_POST[course_id], member_id='$_POST[instructor]', access='$_POST[access]', title='$_POST[title]', description='$_POST[description]', cat_id='$_POST[category_parent]', content_packaging='$_POST[content_packaging]', notify=$_POST[notify], hide=$_POST[hide], max_quota=$quota, max_file_size=$filesize, tracking='$tracking', primary_language='$_POST[pri_lang]', created_date='$_POST[created_date]', rss=$_POST[rss]";
+	$sql	= "REPLACE INTO ".TABLE_PREFIX."courses SET course_id=$_POST[course], member_id='$_POST[instructor]', access='$_POST[access]', title='$_POST[title]', description='$_POST[description]', cat_id='$_POST[category_parent]', content_packaging='$_POST[content_packaging]', notify=$_POST[notify], hide=$_POST[hide], max_quota=$quota, max_file_size=$filesize, tracking='$tracking', primary_language='$_POST[pri_lang]', created_date='$_POST[created_date]', rss=$_POST[rss]";
 
 	$result = mysql_query($sql, $db);
 	if (!$result) {
@@ -153,18 +153,18 @@ function add_update_course($_POST, $isadmin = FALSE) {
 		$sql = "INSERT INTO ".TABLE_PREFIX."forums_courses values (LAST_INSERT_ID(), $new_course_id)";
 		$result = mysql_query($sql,$db);
 
-	} else if (!$_POST['course_id'] && (count($initial_content_info) == 2)){
+	} else if (!$_POST['course'] && (count($initial_content_info) == 2)){
 
 		$Backup->setCourseID($new_course_id);
 		$Backup->restore($material = TRUE, 'append', $initial_content_info[0], $initial_content_info[1]);
 	}
  
 	/* delete the RSS feeds just in case: */
-	if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_POST['course_id'] . '/RSS1.0.xml')) {
-		@unlink(AT_CONTENT_DIR . 'feeds/' . $_POST['course_id'] . '/RSS1.0.xml');
+	if (file_exists(AT_CONTENT_DIR . 'feeds/' . $new_course_id . '/RSS1.0.xml')) {
+		@unlink(AT_CONTENT_DIR . 'feeds/' . $_POST['course'] . '/RSS1.0.xml');
 	}
-	if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_POST['course_id'] . '/RSS2.0.xml')) {
-		@unlink(AT_CONTENT_DIR . 'feeds/' . $_POST['course_id'] . '/RSS2.0.xml');
+	if (file_exists(AT_CONTENT_DIR . 'feeds/' . $new_course_id . '/RSS2.0.xml')) {
+		@unlink(AT_CONTENT_DIR . 'feeds/' . $new_course_id . '/RSS2.0.xml');
 	}
 
 	cache_purge('system_courses','system_courses');
