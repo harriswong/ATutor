@@ -484,6 +484,4 @@ if($_GET['g_id']){
 	echo '</tbody>';
 	echo '</table>';
 }
-
-
 ?>
