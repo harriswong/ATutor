@@ -165,6 +165,26 @@ $_pages['tools/index.php']['title']    = _AT('tools');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 //$_pages['tools/index.php']['children'] = array('forum/list.php');
 
+	$_pages['tools/sitemap/index.php']['title']  = _AT('sitemap');
+	$_pages['tools/sitemap/index.php']['parent'] = 'tools/index.php';
+
+	$_pages['tools/course_email.php']['title']  = _AT('course_email');
+	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
+
+	$_pages['tools/backup/index.php']['title']  = _AT('backups');
+	$_pages['tools/backup/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/backup/index.php']['children'] = array('tools/backup/create.php', 'tools/backup/upload.php');
+
+		$_pages['tools/backup/create.php']['title']  = _AT('create');
+		$_pages['tools/backup/create.php']['parent'] = 'tools/backup/index.php';
+
+		$_pages['tools/backup/upload.php']['title']  = _AT('upload');
+		$_pages['tools/backup/upload.php']['parent'] = 'tools/backup/index.php';
+
+		$_pages['tools/backup/restore.php']['title']  = _AT('restore');
+		$_pages['tools/backup/restore.php']['parent'] = 'tools/backup/index.php';
+
+
 	$_pages['tools/news/index.php']['title']  = _AT('announcements');
 	$_pages['tools/news/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/news/index.php']['children'] = array('editor/add_news.php');
@@ -474,8 +494,13 @@ if ($_SESSION['course_id'] > 0) {
 	</table>
 </div>
 <!-- the sub navigation -->
+
 <?php if ($_sub_level_pages): ?>
 	<div id="sub-navigation">
+		<div style="float: right; color: black;">
+			Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
+		</div>
+
 		<?php if (isset($back_to_page)): ?>
 			<a href="<?php echo $back_to_page['url']; ?>" id="back-to">Back to <?php echo $back_to_page['title']; ?></a> | 
 		<?php endif; ?>
@@ -494,6 +519,9 @@ if ($_SESSION['course_id'] > 0) {
 	</div>
 <?php else: ?>
 	<div id="sub-navigation">
+		<div style="float: right; color: black;">
+			Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
+		</div>
 		&nbsp;
 	</div>
 <?php endif; ?>

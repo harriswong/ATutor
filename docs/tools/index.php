@@ -23,93 +23,16 @@
 	$msg->printAll();
 
 ?>
+<ul>
+	<li><a href="search.php"><?php echo _AT('search'); ?></a><br /><?php echo _AT('search_text'); ?></li>
+	<li><a href="tools/sitemap/index.php"><?php echo _AT('sitemap'); ?></a><br /><?php echo _AT('sitemap_text'); ?></li>
+	<li><a href="glossary/index.php"><?php echo _AT('glossary'); ?></a><br /><?php echo _AT('glossary_text'); ?></li>
+	<li><a href="tools/ims/index.php"><?php echo _AT('export_content'); ?></a><br /><?php echo _AT('export_content_text'); ?></li>
+	<li><a href="tools/tracker.php"><?php echo _AT('my_tracker'); ?></a><br /><?php echo _AT('my_tracker_text'); ?></li>
+	<li><a href="tools/my_tests.php"><?php echo _AT('my_tests'); ?></a><br /><?php echo _AT('my_tests_text'); ?></li>
+</ul>
 
-<table border="0" cellspacing="0" cellpadding="3" summary="">
-<tr>
-	<?php
-		if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-			echo '<td rowspan="2" valign="top"><img src="images/icons/default/search-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-		}
-		echo '<td>';
-		if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-			echo ' <a href="users/search.php?g=20">'._AT('search').'</a>';
-		}
-		echo '</td></tr><tr><td>';
-		echo _AT('search_text');
-		?>
-	</td>
-</tr>
-<tr>
-	<?php 
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-				echo '<td rowspan="2" valign="top"><img src="images/icons/default/sitemap-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-			}
-			echo '<td>';
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-				echo ' <a href="tools/sitemap/index.php?g=23">'._AT('sitemap').'</a>';
-			}
-			echo '</td></tr><tr><td>';
-			echo _AT('sitemap_text');
-			?>
-	</td>
-</tr>
-<tr>
-	<?php 
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-				echo '<td rowspan="2" valign="top"><img src="images/icons/default/glossary-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-			}
-			echo '<td>';
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-				echo ' <a href="glossary/index.php?g=25">'._AT('glossary').'</a>';
-			}
-			echo '</td></tr><tr><td>';
-			echo _AT('glossary_text');
-		?>
-	</td>
-</tr>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/package-small.gif" border="0" class="menuimage" width="28" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="tools/ims/index.php?g=27">'._AT('export_content').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('export_content_text');
-			?>
-	</td>
-</tr>
-<tr>
-	<?php 
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-				echo '<td rowspan="2" valign="top"><img src="images/icons/default/course-tracker-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-			}
-			echo '<td>';
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-				echo ' <a href="tools/tracker.php?g=28">'._AT('my_tracker').'</a>';
-			}
-			echo '</td></tr><tr><td>';
-			echo _AT('my_tracker_text');
-		?>
-	</td>
-</tr>
-<tr>
-	<?php 
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-				echo '<td rowspan="2" valign="top"><img src="images/icons/default/my-tests-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-			}
-			echo '<td>';
-			if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-				echo ' <a href="tools/my_tests.php?g=32">'._AT('my_tests').'</a>';
-			}
-			echo '</td></tr><tr><td>';
-			echo _AT('my_tests_text');
-		?>
-	</td>
-</tr>
-</table> 
+
 <?php
 	
 if (defined('AC_PATH') && AC_PATH) {
