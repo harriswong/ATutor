@@ -34,11 +34,10 @@ if (!$_SESSION['course_id']) {
 	$_top_level_pages[] = array('url' => 'index.php',                   'title' => _AT('home'));
 	$_top_level_pages[] = array('url' => 'tools/index.php',             'title' => _AT('tools'));
 	$_top_level_pages[] = array('url' => 'resources/links/index.php',   'title' => _AT('links'));
-	$_top_level_pages[] = array('url' => 'resources/tile/index.php',    'title' => _AT('tile'));
+	//$_top_level_pages[] = array('url' => 'resources/tile/index.php',    'title' => _AT('tile'));
 	$_top_level_pages[] = array('url' => 'forum/list.php',              'title' => _AT('forums'));
 	$_top_level_pages[] = array('url' => 'discussions/achat/index.php', 'title' => _AT('chat'));
 	$_top_level_pages[] = array('url' => 'discussions/polls.php',       'title' => _AT('polls'));
-	$_top_level_pages[] = array('url' => 'discussions/achat/index.php', 'title' => _AT('chat'));
 	
 	$_section_title = $_SESSION['course_title'];
 }
