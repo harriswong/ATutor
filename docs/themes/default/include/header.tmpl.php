@@ -55,7 +55,7 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 	$_pages['admin/course_categories.php']['title']    = _AT('cats_categories');
 	$_pages['admin/course_categories.php']['parent']   = 'admin/courses.php';
 
-$_pages['admin/config_info.php']['title']    = _AT('server_configuration');
+$_pages['admin/config_info.php']['title']    = _AT('configuration');
 $_pages['admin/config_info.php']['parent']   = AT_NAV_ADMIN;
 $_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admin/themes/index.php');
 
