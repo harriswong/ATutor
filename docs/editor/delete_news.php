@@ -44,9 +44,6 @@ if ($_POST['submit_yes']) {
 $_section[0][0] = _AT('delete_announcement');
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-?>
-<h2><?php echo _AT('delete_announcement'); ?></h2>
-<?php
 
 	$_GET['aid'] = intval($_GET['aid']); 
 

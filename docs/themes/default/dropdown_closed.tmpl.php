@@ -14,7 +14,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 ?>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="">
+<table width="300" border="0" cellspacing="0" cellpadding="0" summary="">
 	<tr>
 		<td><img src="<?php echo $this->tmpl_base_path; ?>images/clr.gif" height="4" width="4" alt="" /></td>
 	</tr>
