@@ -107,7 +107,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		<textarea cols="55" rows="18" name="body" id="body"><?php echo $_POST['body']; ?></textarea>
 	</div>
 
-	<div class="row">
+	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('send'); ?>" accesskey="s" /> 
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
