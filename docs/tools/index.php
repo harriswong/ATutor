@@ -23,15 +23,7 @@
 	$msg->printAll();
 
 ?>
-	<h2><?php 
-		if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-			echo '<img src="images/icons/default/square-large-tools.gif" class="menuimageh2" width="42" height="40" alt="" /> ';
-		}
-		if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-			echo _AT('tools');
-		}
-	?></h2><br />
-<h3><?php echo _AT('student').' '._AT('tools'); ?></h3><br />
+
 <table border="0" cellspacing="0" cellpadding="3" summary="">
 <tr>
 	<?php

@@ -105,7 +105,7 @@
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" value=" <?php echo _AT('submit'); ?>" name="submit" /> <input type="submit" name="cancel" value=" <?php echo _AT('cancel'); ?> " />
+		<input type="submit" value=" <?php echo _AT('save'); ?>" name="submit" /> <input type="submit" name="cancel" value=" <?php echo _AT('cancel'); ?> " />
 	</div>
 </div>
 

@@ -128,7 +128,7 @@ $_pages['users/inbox.php']['children'] = array('users/send_message.php');
 	$_pages['users/send_message.php']['parent'] = 'users/inbox.php';
 
 /* course pages */
-$_pages['index.php']['title']  = _AT('home');
+$_pages['index.php']['title']  = _AT('announcements');
 $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['tools/index.php']['title']    = _AT('tools');
