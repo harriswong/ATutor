@@ -61,16 +61,18 @@ $msg->printAll();
 ?>
 	</td>
 </tr>
-<?php
-	echo '<tr><td class="row1">'._AT('auto_login1').':</td><td class="row1">';
-	if ( ($_COOKIE['ATLogin'] != '') && ($_COOKIE['ATPass'] != '') ) {
-		echo _AT('auto_enable');
-	} else {
-		echo _AT('auto_disable');
-	}
-	
-	echo '<br /><br /></td></tr>'."\n";
-?>
+	<tr><td class="row1"><?php echo _AT('auto_login1'); ?>:</td>
+	<td class="row1">
+	<?php
+		if ( ($_COOKIE['ATLogin'] != '') && ($_COOKIE['ATPass'] != '') ) {
+			echo _AT('auto_enable');
+		} else {
+			echo _AT('auto_disable');
+		}
+	?>
+	<br /><br />
+	</td>
+</tr>
 </table>
 </fieldset><br />
 

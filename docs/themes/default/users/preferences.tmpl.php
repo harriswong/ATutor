@@ -23,10 +23,9 @@ $msg->printAll();
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" name="prefs">
 
-<table border="0" class="bodyline" cellspacing="1" cellpadding="0">
-<tr>
-<th colspan="2" class="cyan"><?php print_popup_help('POSITION_OPTIONS'); echo _AT('pos_options')?></th>
-</tr>
+<fieldset><strong><legend><?php print_popup_help('DISPLAY_OPTIONS'); ?><?php echo _AT('disp_options');  ?></legend></strong>
+
+<table border="0" cellspacing="1" cellpadding="0">
 <tr>
 <td class="row1"><label for="seq"><?php echo _AT('seq_links');  ?>:</label></td>
 <td class="row1"><?php
@@ -64,10 +63,9 @@ $msg->printAll();
 </tr>
 </table>
 
-<table border="0" class="bodyline" cellspacing="1" cellpadding="0">
-<tr>
-	<th colspan="2" class="cyan"><?php print_popup_help('DISPLAY_OPTIONS'); ?><?php echo _AT('disp_options');  ?></th>
-</tr>
+<br />
+
+<table border="0" cellspacing="1" cellpadding="0">
 <tr>
 	<td class="row1"><?php
 	/* Show Topic Numbering Preference */
@@ -76,16 +74,6 @@ $msg->printAll();
 	}
 	?> <input type="checkbox" name="numering" value="1" <?php echo $num;?> id="numbering" /></td>
 	<td class="row1"><label for="numbering"><?php echo _AT('show_numbers');  ?></label></td>
-</tr>
-<tr>
-	<td class="row1"><?php
-		/* Show Breadcrumbs Preference */
-		$num = '';
-		if ($_SESSION['prefs'][PREF_BREADCRUMBS] == 1) {
-			$num = ' checked="checked"';
-		}
-		?><input type="checkbox" name="breadcrumbs" value="1" <?php echo $num;?> id="breadcrumbs" /></td>
-	<td class="row1"><label for="breadcrumbs"><?php echo _AT('show_breadcrumbs');  ?></label></td>
 </tr>
 <tr>
 	<td class="row1"><?php
@@ -125,37 +113,9 @@ $msg->printAll();
 </tr>
 </table>
 
-<table border="0" class="bodyline" cellspacing="1" cellpadding="0">
-<tr>
-	<th colspan="2" class="cyan"><?php print_popup_help('MENU_OPTIONS'); ?><?php  echo _AT('menus'); ?></th>
-</tr>
-<tr>
-	<td class="row1" align="center"><?php
+<br /> 
 
-		$num_stack = count($_stacks);
-
-		for ($i = 0; $i< 8; $i++) {
-			echo '<select name="stack'.$i.'">'."\n";
-			echo '<option value="">'._AT('empty').'</option>'."\n";
-			for ($j = 0; $j<$num_stack; $j++) {
-				echo '<option value="'.$j.'"';
-				if (isset($_SESSION['prefs'][PREF_STACK][$i]) && ($j == $_SESSION[prefs][PREF_STACK][$i])) {
-					echo ' selected="selected"';
-				}
-				echo '>'._AT($_stacks[$j]['file']).'</option>'."\n";
-			}
-			echo '</select>'."\n";
-			echo '<br />'; 
-		}
-
-	?></td>
-	</tr>
-	</table>
-
-<table border="0"  class="bodyline" cellspacing="1" cellpadding="0">
-<tr>
-	<th colspan="2" class="cyan"><?php print_popup_help('THEME_OPTIONS');  echo _AT('theme'); ?></th>
-</tr>
+<table border="0"  cellspacing="1" cellpadding="0">
 <?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
 	<tr>
 		<td><?php echo _AT('themes_disabled'); ?></td>
@@ -185,8 +145,36 @@ $msg->printAll();
 	</tr>
 <?php endif; ?>
 </table>
+</fieldset>
 <br />
-<input type="submit" name="submit" value="<?php echo _AT('set_prefs'); ?>" title="<?php echo _AT('set_prefs'); ?>" accesskey="s" class="button" />
+<fieldset><strong><legend><?php print_popup_help('MENU_OPTIONS'); ?><?php  echo _AT('menus'); ?></legend></strong>
+
+<table border="0" cellspacing="1" cellpadding="0">
+<tr>
+	<td class="row1" align="center"><?php
+
+		$num_stack = count($_stacks);
+
+		for ($i = 0; $i< 8; $i++) {
+			echo '<select name="stack'.$i.'">'."\n";
+			echo '<option value="">'._AT('empty').'</option>'."\n";
+			for ($j = 0; $j<$num_stack; $j++) {
+				echo '<option value="'.$j.'"';
+				if (isset($_SESSION['prefs'][PREF_STACK][$i]) && ($j == $_SESSION[prefs][PREF_STACK][$i])) {
+					echo ' selected="selected"';
+				}
+				echo '>'._AT($_stacks[$j]['file']).'</option>'."\n";
+			}
+			echo '</select>'."\n";
+			echo '<br />'; 
+		}
+
+	?></td>
+</tr>
+</table>
+</fieldset>
+
+<br /><p align="center"><input type="submit" name="submit" value="<?php echo _AT('set_prefs'); ?>" title="<?php echo _AT('set_prefs'); ?>" accesskey="s" class="button" /></p>
 </form>
 
 <?php

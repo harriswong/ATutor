@@ -77,16 +77,16 @@ if ($_GET['pref_id'] != '') {
 } else if ($_GET['submit']) {
 	/* custom prefs */
 
-	$temp_prefs[PREF_MAIN_MENU_SIDE]= intval($_GET['pos']);
+//	$temp_prefs[PREF_MAIN_MENU_SIDE]= intval($_GET['pos']);
 	$temp_prefs[PREF_SEQ]		    = intval($_GET['seq']);
 	$temp_prefs[PREF_TOC]		    = intval($_GET['toc']);
 	$temp_prefs[PREF_NUMBERING]	    = intval($_GET['numering']);
-	$temp_prefs[PREF_SEQ_ICONS]	    = intval($_GET['seq_icons']);
-	$temp_prefs[PREF_NAV_ICONS]	    = intval($_GET['nav_icons']);
-	$temp_prefs[PREF_LOGIN_ICONS]	= intval($_GET['login_icons']);
-	$temp_prefs[PREF_CONTENT_ICONS]	= intval($_GET['content_icons']);
+//	$temp_prefs[PREF_SEQ_ICONS]	    = intval($_GET['seq_icons']);
+//	$temp_prefs[PREF_NAV_ICONS]	    = intval($_GET['nav_icons']);
+//	$temp_prefs[PREF_LOGIN_ICONS]	= intval($_GET['login_icons']);
+//	$temp_prefs[PREF_CONTENT_ICONS]	= intval($_GET['content_icons']);
 	$temp_prefs[PREF_HEADINGS]	    = intval($_GET['headings']);
-	$temp_prefs[PREF_BREADCRUMBS]	= intval($_GET['breadcrumbs']);
+//	$temp_prefs[PREF_BREADCRUMBS]	= intval($_GET['breadcrumbs']);
 	$temp_prefs[PREF_HELP]	        = intval($_GET['use_help']);
 	$temp_prefs[PREF_MINI_HELP]	    = intval($_GET['use_mini_help']);
 	$temp_prefs[PREF_THEME]	        = $_GET['theme'];
