@@ -310,6 +310,8 @@ function toggleToc() {
 </tr>
 </table>
 
+	<h2 id="page-title"><?php echo $_page_title; ?></h2>
+
 	<div id="sub-navigation">
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php foreach ($_sub_level_pages as $page): ?>
@@ -322,8 +324,8 @@ function toggleToc() {
 			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
+	<br />
 
-	<h2 id="page-title"><?php echo $_page_title; ?></h2>
 	<!--
 	<script type="text/javascript">
 	if (document.getElementById) {

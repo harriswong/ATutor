@@ -54,7 +54,6 @@ if (AT_DEVEL_TRANSLATE == 0) {
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
-echo '<h3>'._AT('language').'</h3>';
 
 $msg->printAll();
 ?>

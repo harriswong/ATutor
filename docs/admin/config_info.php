@@ -21,8 +21,6 @@ if ($_SESSION['course_id'] > -1) { exit; }
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
-echo '<h3>'._AT('server_configuration').'</h3>';
-
 echo '<br /><p>ATutor '._AT('version').': <strong>'.VERSION.'</strong> - <a href="http://atutor.ca/check_atutor_version.php?v='.urlencode(VERSION).'">'._AT('check_latest_version').'</a></p>';
 
 echo '<h4>'._AT('fix_content_ordering').'</h4>';

@@ -59,13 +59,7 @@ else if(isset($_POST['import'])) {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<br /> <h2>';
-echo _AT('themes');
-echo '</h2>';
-
-echo '<h3>';
-echo _AT('theme_manager');
-echo '</h3><br/>';
+echo '<br />';
 
 //if themes directory is not writeable
 if (!is_writable('../../themes/')) {
