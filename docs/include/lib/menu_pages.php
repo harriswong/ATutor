@@ -17,35 +17,39 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 define('AT_NAV_PUBLIC', 1);
 define('AT_NAV_START',  2);
 define('AT_NAV_COURSE', 3);
-define('AT_NAV_ADMIN',  4);
+define('AT_NAV_HOME',   4);
+define('AT_NAV_ADMIN',  5);
 
 /*
-	4 sections: public, my_start_page, course, admin
+	5 sections: public, my_start_page, course, admin, home
 
 */
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php');
+$_pages[AT_NAV_HOME]   = array();
 
 if ($_SESSION['course_id']) {
-	if ($system_courses[$_SESSION['course_id']]['home_links'] || $system_courses[$_SESSION['course_id']]['main_links']) {
-		$main_links = $home_links = array();
+	$main_links = $home_links = array();
+	if (!$system_courses[$_SESSION['course_id']]['home_links'] && !$system_courses[$_SESSION['course_id']]['main_links']) {
+		// probably a mistake:
+		$_pages[AT_NAV_COURSE][] = 'forum/list.php';
+		$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
+
+	} else {
 		if ($system_courses[$_SESSION['course_id']]['main_links']) {
 			$main_links = explode('|', $system_courses[$_SESSION['course_id']]['main_links']);
+			$_pages[AT_NAV_COURSE] = array_merge($_pages[AT_NAV_COURSE], $main_links);
 		}
 
 		if ($system_courses[$_SESSION['course_id']]['home_links']) {
 			$home_links = explode('|', $system_courses[$_SESSION['course_id']]['home_links']);
+			$_pages[AT_NAV_HOME] = array_merge($_pages[AT_NAV_HOME], $home_links);
 		}
-
-		if (count($main_links)) {
-			$_pages[AT_NAV_COURSE] = array_merge($_pages[AT_NAV_COURSE], $main_links);
-		}
-	} else {
-		$_pages[AT_NAV_COURSE][] = 'forum/list.php';
-		$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
 	}
+
+//	debug($_pages[AT_NAV_HOME]);
 
 	if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
 		$_pages[AT_NAV_COURSE][] = 'tools/index.php';

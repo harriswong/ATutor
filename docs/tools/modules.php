@@ -67,15 +67,15 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	<td><?php echo $_pages[$module]['title']; ?></td>
 	<td>
 		<?php if (in_array($module, $_pages[AT_NAV_COURSE])): ?>
-			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" checked="checked" /><label for="m<?php echo $module; ?>">Main Navigation</label>
+			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" checked="checked" /><label for="m<?php echo $module; ?>">[Main Navigation]</label>
 		<?php else: ?>
-			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" /><label for="m<?php echo $module; ?>">Main Navigation</label>
+			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" /><label for="m<?php echo $module; ?>">[Main Navigation]</label>
 		<?php endif; ?>
 
-		<?php if ($_pages[$module]['parent'] == 'index.php'): ?>
-			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" checked="checked" /><label for="h<?php echo $module; ?>">Home</label>
+		<?php if (in_array($module, $_pages[AT_NAV_HOME])): ?>
+			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" checked="checked" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
 		<?php else: ?>
-			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>">Home</label>
+			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
 			
 		<?php endif; ?>
 </tr>
