@@ -50,7 +50,9 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 		$name = $_SESSION['login'];
 		$email = '';
 
-		$sql	= "INSERT INTO ".TABLE_PREFIX."resource_links VALUES (0, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', 0, '$name', '$email', NOW(), 0)";
+		$approved = 1; //auto-approve instructor submitted links
+
+		$sql	= "INSERT INTO ".TABLE_PREFIX."resource_links VALUES (0, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_ADDED');
