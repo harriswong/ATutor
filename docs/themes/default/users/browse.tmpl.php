@@ -10,7 +10,6 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: $
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 global $msg;
@@ -30,7 +29,7 @@ $msg->printAll();
 					<?php else: ?>
 						<div class="browse-unselected">
 					<?php endif; ?>
-							<li><a href="<?php echo $_SERVER['PHP_SELF'].'?cat='.$cat_id; ?>#courses"><?php echo $cat_name ?></a></li>
+							<li><a href="<?php echo $_SERVER['PHP_SELF'].'?cat='.$cat_id; ?>#courses"><?php echo $cat_name ?></a></li>    
 						</div>
 				<?php endforeach; ?>		
 			</ul>			<br />
@@ -40,31 +39,31 @@ $msg->printAll();
 	<div style="float: left; white-space:nowrap; padding-right:30px;">
 			<h3><?php echo $this->cats[$this->cat].' '._AT('courses'); ?></h3>
 
-			<?php
-			if (isset($this->course_cats)):
-				$cur_sub_cat = '';
-				echo '<ul class="browse-list">';
-				foreach ($this->course_cats as $course_id=>$cat_id):
+			<?php if (isset($this->courses)):
+				$cur_sub_cat = ''; ?>
 
-					if (isset($this->sub_cats) && array_key_exists($cat_id, $this->sub_cats) && ($cur_sub_cat != $this->sub_cats[$cat_id])):
-						$cur_sub_cat = $this->sub_cats[$cat_id];
-						echo '</ul><br /><h4>'.$cur_sub_cat.'</h4><ul class="browse-list">';
-					endif;
+				<ul class="browse-list">
+				
+				<?php foreach ($this->courses as $course_id=>$info):
+					if (isset($this->sub_cats) && array_key_exists($info['cat_id'], $this->sub_cats) && ($cur_sub_cat != $this->sub_cats[$info['cat_id']])):
+						$cur_sub_cat = $this->sub_cats[$info['cat_id']];?>
+						</ul><br /><h4><?php echo $cur_sub_cat; ?></h4><ul class="browse-list">
+					<?php endif; ?>
 
-					if (!empty($this->course) && $this->course==$course_id):
-						echo '<div class="browse-selected">';
-					else:
-						echo '<div class="browse-unselected">';
-					endif;
+					<?php if ($info['selected']): ?>
+						<div class="browse-selected">
+					<?php else: ?>
+						<div class="browse-unselected">
+					<?php endif; ?>
+						<li><a href="<?php echo $info['url']; ?>"><?php echo $info['title']; ?></a></li>
+					</div>
 
-					echo '<li><a href="'.$_SERVER['PHP_SELF'].'?cat='.$this->cat.SEP.'course='.$course_id.'#info">'.$system_courses[$course_id]['title'].'</a></li>';
-					echo '</div>';
-				endforeach;
-				echo '</ul>';
-			else:
+				<?php endforeach; ?>
+
+				</ul>
+			<?php else:
 				echo _AT('no_courses');
-			endif;
-			?>
+			endif;?>
 			<br />
 	</div>
 
