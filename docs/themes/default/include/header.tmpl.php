@@ -26,7 +26,7 @@ define('AT_NAV_ADMIN',  4);
 
 */
 
-$_pages[AT_NAV_START]  = array('users/index.php', 'users/profile_edit.php', 'users/preferences.php', 'users/inbox.php');
+$_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php');
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'search.php', 'login.php', 'password_reminder.php');
 
@@ -115,8 +115,8 @@ $_pages['users/index.php']['children'] = array('users/browse.php', 'users/create
 	$_pages['users/create_course.php']['title']  = _AT('create_course');
 	$_pages['users/create_course.php']['parent'] = 'users/index.php';
 
-$_pages['users/profile_edit.php']['title']    = _AT('profile');
-$_pages['users/profile_edit.php']['parent']   = AT_NAV_START;
+$_pages['users/profile.php']['title']    = _AT('profile');
+$_pages['users/profile.php']['parent']   = AT_NAV_START;
 	
 $_pages['users/preferences.php']['title']  = _AT('preferences');
 $_pages['users/preferences.php']['parent'] = AT_NAV_START;
