@@ -23,12 +23,14 @@ $_section[1][1] = 'forum/list.php';
 require_once(AT_INCLUDE_PATH.'lib/forums.inc.php');
 require (AT_INCLUDE_PATH.'header.inc.php');
 
+/*
 if ((authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) || authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) && $_SESSION['prefs'][PREF_EDIT]) {
 	$msg->addHelp('CREATE_FORUMS');
 } else if ((authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) || authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) && !$_SESSION['prefs'][PREF_EDIT]) {
 	$help = array('ENABLE_EDITOR', $_my_uri);
 	$msg->addHelp($help);
 }
+*/
 
 $msg->addHelp('SHARED_FORUMS');
 $msg->addHelp('SUBSCRIBE_FORUMS');
@@ -36,20 +38,19 @@ $msg->printHelps();
 
 $msg->printAll(); // print everything but the Helps which were printed first, above
 
-echo '<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" width="95%" align="center">';
-echo '<tr>';
-echo '	<th colspan="7" class="cyan">'._AT('forums').'</th>';
-echo '</tr>'."\n";
-echo '<tr>';
+echo '<table class="data" summary="" rules="cols">';
+echo '<thead><tr>';
 echo '	<th scope="col" class="cat"><a name="list"></a><small>'._AT('forum').'</small> ';
+/*
 unset($editors);
 $editors[] = array('priv' => AT_PRIV_FORUMS, 'title' => _AT('add_forum'), 'url' => 'editor/add_forum.php');
 print_editor($editors , $large = false);
+*/
 echo '</th>';
-echo '	<th scope="col" class="cat"><small>'._AT('forum_topics').'</small></th>';
-echo '	<th scope="col" class="cat"><small>'._AT('posts').'</small></th>';
-echo '	<th scope="col" class="cat"><small>'._AT('last_post').'</small></th>';
-echo '</tr>'."\n";
+echo '	<th scope="col"><small>'._AT('forum_topics').'</small></th>';
+echo '	<th scope="col"><small>'._AT('posts').'</small></th>';
+echo '	<th scope="col"><small>'._AT('last_post').'</small></th>';
+echo '</tr></thead><tbody>';
 
 $shared  = array();
 $general = array();
@@ -62,29 +63,19 @@ if ($num_shared || $num_nonshared) {
 	foreach ($all_forums as $shared => $forums) {
 		if ($num_shared && $num_nonshared) {
 			if ($shared == 'nonshared') {
-				echo '<tr><td height="1" class="row2" colspan="7"></td></tr>';
 				echo '<tr>';
-				echo '<td colspan="3"><small><strong>' . _AT('course_forums') . '</strong></small></td>';
+				echo '<th colspan="4">' . _AT('course_forums') . '</th>';
 				echo '</tr>';
 			} else {
-				echo '<tr><td height="1" class="row2" colspan="7"></td></tr>';
 				echo '<tr>';
-				echo '<td colspan="3"><small><strong>' . _AT('shared_forums') . '</strong></small></td>';
+				echo '<th colspan="4">' . _AT('shared_forums') . '</th>';
 				echo '</tr>';
 			}
 		}
 
 		foreach ($forums as $row) {
-			echo '<tr><td height="1" class="row2" colspan="7"></td></tr>'."\n";
 			echo '<tr><td class="row1 lineL"><a href="forum/index.php?fid='.$row['forum_id'].'"><strong>'.$row['title'].'</strong></a> ';
 
-			if ($shared == 'nonshared') {
-				unset($editors);
-				$editors[] = array('priv' => AT_PRIV_FORUMS, 'title' => _AT('edit'), 'url' => 'editor/edit_forum.php?fid='.$row['forum_id']);
-				$editors[] = array('priv' => AT_PRIV_FORUMS, 'title' => _AT('delete'), 'url' => 'editor/delete_forum.php?fid='.$row['forum_id']);
-				print_editor($editors , $large = false);
-			}
-			
 			if ($_SESSION['enroll']) {
 				$sql	= "SELECT 1 AS constant FROM ".TABLE_PREFIX."forums_subscriptions WHERE forum_id=$row[forum_id] AND member_id=$_SESSION[member_id]";
 				$result1 = mysql_query($sql, $db);
@@ -114,7 +105,7 @@ if ($num_shared || $num_nonshared) {
 } else {
 	echo '<tr><td class="row1" colspan="4"><em>'._AT('no_forums').'</em></td></tr>';
 }
-echo '</table>';
+echo '</tbody></table>';
 
 require (AT_INCLUDE_PATH.'footer.inc.php');
 ?>

@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-// $Id: index.php 3252 2005-02-11 16:29:03Z joel $
+// $Id$
 
 $page = 'tools';
 define('AT_INCLUDE_PATH', '../../include/');
@@ -48,7 +48,7 @@ $result = mysql_query($sql, $db);
 ?>
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
-<table class="data" summary="" rules="cols" style="width: 90%;">
+<table class="data" summary="" rules="cols">
 <thead>
 <tr>
 	<th scope="col">&nbsp;</th>
