@@ -229,6 +229,8 @@ function debug($var, $title='') {
 	echo '</pre>';
 }
 
+$_modules = array('sitemap.php', 'tools/ims/index.php', 'discussions/achat/index.php', 'links/index.php', 'resources/tile/index.php', 'glossary/index.php', 'tools/tracker.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab.php');
+
 
 /********************************************************************/
 /* the system course information									*/

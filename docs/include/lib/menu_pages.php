@@ -29,11 +29,9 @@ $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/p
 $_pages[AT_NAV_COURSE] = array('index.php');
 
 if ($_SESSION['course_id']) {
-	$sql = "SELECT home_links, main_links FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
-	$result = mysql_query($sql, $db);
-	if (($row = mysql_fetch_assoc($result)) && ($row['home_links'] || $row['main_links'])) {
-		$home_links = explode('|', $row['home_links']);
-		$main_links = explode('|', $row['main_links']);
+	if ($system_courses[$_SESSION['course_id']]['home_links'] || $system_courses[$_SESSION['course_id']]['main_links']) {
+		$home_links = explode('|', $system_courses[$_SESSION['course_id']]['home_links']);
+		$main_links = explode('|', $system_courses[$_SESSION['course_id']]['main_links']);
 
 		$_pages[AT_NAV_COURSE] = array_merge($_pages[AT_NAV_COURSE], $main_links);
 	} else {
@@ -407,15 +405,10 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 
 $_pages['forum/list.php']['title']  = _AT('forums');
-$_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['glossary/index.php']['title']  = _AT('glossary');
-$_pages['glossary/index.php']['parent'] = 'index.php';
-$_pages['glossary/index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['links/index.php']['title']  = _AT('links');
-$_pages['links/index.php']['parent'] = AT_NAV_COURSE;
-$_pages['links/index.php']['parent'] = 'index.php';
 $_pages['links/index.php']['children'] = array('links/add.php');
 
 	$_pages['links/add.php']['title']  = _AT('suggest_link');
@@ -425,20 +418,24 @@ $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 //$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
 $_pages['discussions/achat/index.php']['title'] = _AT('chat');
-$_pages['discussions/achat/index.php']['parent'] = 'index.php';
 
 $_pages['resources/tile/index.php']['title'] = _AT('tile_search');
-$_pages['resources/tile/index.php']['parent'] = 'index.php';
 
 $_pages['tools/tracker.php']['title'] = _AT('my_tracker');
-$_pages['tools/tracker.php']['parent'] = 'index.php';
 
 $_pages['tools/my_tests.php']['title'] = _AT('my_tests');
-$_pages['tools/my_tests.php']['parent'] = 'index.php';
+
+$_pages['polls/index.php']['title'] = _AT('polls');
 
 $_pages['acollab.php']['title'] = 'ACollab';
-$_pages['acollab.php']['parent'] = 'index.php';
 
+foreach ($_modules as $module) {
+	if (in_array($module, $_pages[AT_NAV_COURSE])) {
+		$_pages[$module]['parent'] = AT_NAV_COURSE;
+	} else {
+		$_pages[$module]['parent'] = 'index.php';
+	}
+}
 /* global pages */
 $_pages['about.php']['title']  = _AT('about_atutor');
 

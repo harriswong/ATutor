@@ -20,9 +20,6 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_ADMIN);
 
 // 'search.php',  removed
-$_modules = array('sitemap.php', 'tools/ims/index.php', 'discussions/achat/index.php', 'links/index.php', 'resources/tile/index.php', 'glossary/index.php', 'tools/tracker.php', 'tools/my_tests.php', 'forum/list.php' ,'discussions/polls.php','acollab.php');
-
-
 if (isset($_POST['submit'])) {
 	$_POST['main'] = array_intersect($_POST['main'], $_modules);
 	$_POST['home'] = array_intersect($_POST['home'], $_modules);
@@ -34,6 +31,9 @@ if (isset($_POST['submit'])) {
 		$sql    = "UPDATE ".TABLE_PREFIX."courses SET home_links='$home_links', main_links='$main_links' WHERE course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql, $db);
 	}
+
+	header('Location: '.$_SERVER['PHP_SELF']);
+	exit;
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
