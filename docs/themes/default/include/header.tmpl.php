@@ -231,6 +231,7 @@ $_current_sub_level_page = get_current_sub_navigation_page($current_page);
 
 $_path = get_path($current_page);
 $_path = array_reverse($_path);
+array_pop($_path);
 
 $_page_title = $_pages[$current_page]['title'];
 
@@ -321,8 +322,8 @@ function toggleToc() {
 
 <div id="breadcrumbs">
 	<?php echo $_section_title; ?> : <?php foreach ($_path as $page): ?>
-										<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> > 
-									<?php endforeach; ?>
+										<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
+									<?php endforeach; ?> <?php echo $_page_title; ?>
 </div>
 
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
