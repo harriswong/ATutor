@@ -18,23 +18,47 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_TEST_CREATE, AT_PRIV_TEST_MARK);
 
 if (isset($_GET['edit'])) {
-	header('Location: edit_test.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: edit_test.php?tid='.$_GET['id']);
+		exit;
+	}
 } else if (isset($_GET['preview'])) {
-	header('Location: preview.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: preview.php?tid='.$_GET['id']);
+		exit;
+	}
 } else if (isset($_GET['questions'])) {
-	header('Location: questions.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: questions.php?tid='.$_GET['id']);
+		exit;
+	}
 } else if (isset($_GET['submissions'])) {
-	header('Location: results.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: results.php?tid='.$_GET['id']);
+		exit;
+	}
 } else if (isset($_GET['statistics'])) {
-	header('Location: results_all_quest.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: results_all_quest.php?tid='.$_GET['id']);
+		exit;
+	}
 } else if (isset($_GET['delete'])) {
-	header('Location: delete_test.php?tid='.$_GET['id']);
-	exit;
+	if ($_GET['id'] == '') {
+		$msg->addError('NO_TEST_SELECTED');
+	} else {
+		header('Location: delete_test.php?tid='.$_GET['id']);
+		exit;
+	}
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
