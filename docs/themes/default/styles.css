@@ -1,6 +1,6 @@
 /* main body attributes */
 body {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-top: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -9,7 +9,7 @@ body {
 
 /* heading attributes */
 h1, h2, h3, h4, h5, h6 {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-left: 0px;
@@ -18,7 +18,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* paragraph attributes */
 p {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 10px;
 	margin-top: 0px;
 	margin-left: 5px;
@@ -27,7 +27,7 @@ p {
 
 /*  Table of content attributes*/
 p.toc{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #eeeeee;
 	padding: .6em;
 	margin-bottom: .6em;
@@ -39,14 +39,14 @@ p.toc{
 
 /* list attributes */
 ul {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-right: 0px;
 }
 
 li {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -54,7 +54,7 @@ li {
 
 li.folders {
 	list-style: disc url(../../images/folder.gif) outside;
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -66,23 +66,23 @@ li.folders .disabled {
 
 /* link attributes */
 a:link {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	color: #384F89;
 	text-decoration: underline;
 }
 a:visited {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	color: #51286C;
 	text-decoration: underline;
 }
 a:hover {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	color: black;
 	text-decoration: underline;
 }
 
 .formfieldR {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	color: black;
 	border-top:  #003399  solid 1px;
 	border-bottom: #003399 solid 1px;
@@ -93,7 +93,7 @@ a:hover {
 }
 /*
 form {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-left: 0px;
@@ -109,7 +109,7 @@ form {
 /* table rows */
 /*
 td.row1, table.row1 { 
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	font-weight: normal;
 	background-color: #EFEFEF;
 	vertical-align: top;	
@@ -125,7 +125,7 @@ td.row2 {
 }
 
 td.cat, th.cat {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-image: url('images/cellpic1.gif');
 	background-repeat: repeat-x;
 	background-color:#D1D7DC; 
@@ -153,7 +153,7 @@ a.dropdown-title {
 
 /* main submit button */
 .button {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #EBEDF6;
 	font-weight: bold;
 	border-top:  #354A81  solid 1px;
@@ -164,7 +164,7 @@ a.dropdown-title {
 
 /* small submit button at top */
 .button2 {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #F8F8F8;
 	border-top:  #354A81  solid 1px;
 	border-bottom: #354A81  solid 1px;
@@ -207,7 +207,7 @@ td.row4 {
 
 /* date attributes */
 small.date {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	color: #006699;	
 	margin-bottom: 0px; 
 	margin-top: 0px;
@@ -226,40 +226,40 @@ hr {
 
 /* error box */
 table.errbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FF0000;
 }
 tr.errbox {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FEF1F1;
 	vertical-align:top;
 }
 
 /* confirm box */
 table.cnfrmbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FF0000;
 }
 tr.cnfrmbox {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FEF1F1;
 	vertical-align:top;
 }
 
 /* help box */
 table.hlpbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #006699;
 }
 tr.hlpbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #E5F0FD;
 	vertical-align:top;
 }
 
 /* Editor box small */
 .editorsmallbox {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #EEEEEE;
 	padding: 2px;
 	padding-right: 3px;
@@ -268,7 +268,7 @@ tr.hlpbox{
 
 /* Editor box large */
 .editorlargebox {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #EEEEEE;
 	margin-left:1em;
 	padding-left: .2em;
@@ -280,31 +280,31 @@ tr.hlpbox{
 
 /* warning box */
 table.wrnbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FF8400;
 }
 tr.wrnbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #FFF6ED;
 	vertical-align:top;
 }
 
 /* feedback box */
 table.fbkbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color: #30B626;
 }
 tr.fbkbox{
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	background-color:#EBFDE9;
 	vertical-align:top;
 }
 select.dropdown {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
     background-color: #F1F3F1;
 }                                                             
 .copy {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 }   
 
 /* AChat Styles  */
@@ -372,14 +372,14 @@ a .highlight{
 .cyan{
 	background-color:#464F88;
 	color: white; 
-	font-family: Verdana, Helvetica, sans-serif;
+	font-family: Helvetica, Helvetica, sans-serif;
 	font-weight:bold;
 }
 .cyan2{
  background-color:#464F88;
  padding: 2px;
  color: white; 
- font-family: Verdana, Helvetica, sans-serif;
+ font-family: Helvetica, Helvetica, sans-serif;
  font-weight:bold;
  text-align:center;
 }
@@ -388,7 +388,7 @@ th.cyan{
  background-color:#006699;
  padding: 3px;
  color: white; 
- font-family: Verdana, Helvetica, sans-serif;
+ font-family: Helvetica, Helvetica, sans-serif;
  text-align:center;
  font-weight: normal;
 }
@@ -446,13 +446,13 @@ td.navmenu.selected, td.navmenu.selected a:hover {
 }
 
 #jumpmenu, optgroup {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
     background-color: #F1F3F1;
 	font-size: smaller;
 }
 
 #jump-button {
-	font-family: Verdana, Arial, Helvetica, sans-serif;	
+	font-family: Helvetica, Arial, Helvetica, sans-serif;	
 	background-color: #3C92A9;
 	border-top:  #98AAB1  solid 1px;
 	border-bottom: #98AAB1 solid 1px;
@@ -463,7 +463,7 @@ td.navmenu.selected, td.navmenu.selected a:hover {
 }
 
 #user-bar {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color: #E7E3B1;
 	text-align: center;
 	padding: 3px;
@@ -503,7 +503,7 @@ td.navmenu.borderless {
 }
 /* menu titles */
 td.cat, th.cat {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-image: url('images/cellpic1.gif');
 	background-repeat: repeat-x;
 	background-color:#D1D7DC; 
@@ -517,7 +517,7 @@ td.cat, th.cat {
 	color:black;
 }
 td.cat2c {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-image: url('images/cellpic1.gif');
 	background-repeat: repeat;
 	white-space: nowrap;
@@ -530,19 +530,19 @@ td.cat2c {
 
 /*
 table.cat2 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color:#9C9DA6;
 	text-align: center;
 	font-weight: bold;	
 	border: 1px #98AAB1 solid;
 }
 table.cat3 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color: ;
 }
 */
 #course-nav {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color: #EFEFEF;
 	text-align: center;
 	padding: 0px;
@@ -603,7 +603,7 @@ td.instmenu.borderless {
 
 /* edit content tabs */
 .buttontab {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color: #ffffff;
 	font-weight: bold;
 	border: 0px;
@@ -720,7 +720,7 @@ td.pen a:link, td.pen a:visited {
 }
 
 p.public-text {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	color: black;
 	margin-bottom: 10px;
 	margin-top: 0px;
@@ -983,6 +983,13 @@ table.data input[type=submit] {
 	max-width: 60%;
 	min-width: 100px;
 	margin-left: 5px;
+}
+
+div#browse {
+	margin-left: auto; 
+	margin-right: auto; 
+	width: 40%; 
+	white-space: nowrap;
 }
 
 /* used for static tables with no form elements: */
