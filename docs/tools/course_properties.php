@@ -49,11 +49,6 @@ $onload = 'onload="document.course_form.title.focus()"';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-$msg->addHelp('COURSE_PROPERTIES');
-$msg->addHelp('COURSE_PROPERTIES1');
-$msg->addHelp('COURSE_PROPERTIES2');
-$msg->addHelp('COURSE_PROPERTIES3');
-$msg->printALL();
 require (AT_INCLUDE_PATH.'html/course_properties.inc.php');
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

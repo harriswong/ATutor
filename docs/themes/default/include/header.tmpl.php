@@ -179,8 +179,12 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/course_stats.php']['title']  = _AT('statistics');
 	$_pages['tools/course_stats.php']['parent'] = 'tools/index.php';
 
-	$_pages['tools/course_properties.php']['title']  = _AT('properties');
-	$_pages['tools/course_properties.php']['parent'] = 'tools/index.php';
+	$_pages['tools/course_properties.php']['title']    = _AT('properties');
+	$_pages['tools/course_properties.php']['parent']   = 'tools/index.php';
+	$_pages['tools/course_properties.php']['children'] = array('tools/delete_course.php');
+
+		$_pages['tools/delete_course.php']['title']  = _AT('delete_course');
+		$_pages['tools/delete_course.php']['parent'] = 'tools/course_properties.php';
 
 	$_pages['tools/sitemap/index.php']['title']  = _AT('sitemap');
 	$_pages['tools/sitemap/index.php']['parent'] = 'tools/index.php';
