@@ -39,8 +39,12 @@ $_pages['users/browse.php']['parent'] = 'users/index.php';
 $_pages['users/create_course.php']['title']  = _AT('create_course');
 $_pages['users/create_course.php']['parent'] = 'users/index.php';
 
-$_pages['users/profile.php']['title']  = _AT('profile');
-$_pages['users/profile.php']['parent'] = AT_NAV_START;
+$_pages['users/profile.php']['title']    = _AT('profile');
+$_pages['users/profile.php']['parent']   = AT_NAV_START;
+$_pages['users/profile.php']['children'] = array('users/profile_edit.php');
+
+$_pages['users/profile_edit.php']['title']  = _AT('edit_profile');
+$_pages['users/profile_edit.php']['parent'] = 'users/profile.php';
 
 $_pages['users/preferences.php']['title']  = _AT('preferences');
 $_pages['users/preferences.php']['parent'] = AT_NAV_START;
