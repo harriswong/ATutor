@@ -36,14 +36,15 @@ if ($pathext == '') {
 
 if ($pathext != '') {
 	$bits = explode('/', $pathext);
+
 	foreach ($bits as $bit) {
 		if ($bit != '') {
 			$bit_path .= $bit . '/';
 			echo ' / ';
+
 			if ($bit_path == $pathext) {
 				echo $bit;
-			}
-			else {
+			} else {
 				echo '<a href="'.$_SERVER['PHP_SELF'].'?pathext=' . urlencode($bit_path) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed . '">' . $bit . '</a>';
 			}
 		}

@@ -43,7 +43,6 @@ if (!$popup && !$framed) {
 	$msg->addHelp('FILEMANAGER4');
 }
 */
-$msg->printAll();
 
 require('filemanager.php');
 
