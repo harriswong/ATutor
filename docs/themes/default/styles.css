@@ -449,9 +449,10 @@ td.navmenu.selected, td.navmenu.selected a:hover {
 	border: 1px #98AAB1 solid;
 }
 
-#jumpmenu {
+#jumpmenu, optgroup {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
     background-color: #F1F3F1;
+	font-size: smaller;
 }
 
 #jump-button {
@@ -462,6 +463,7 @@ td.navmenu.selected, td.navmenu.selected a:hover {
 	border-right: #98AAB1 solid 1px;
 	border-left: #98AAB1 solid 1px;	
 	color: white;
+	font-size: smaller;
 }
 
 #user-bar {
@@ -789,6 +791,7 @@ table.tabbed-table th#left-empty-tab {
 	border-bottom: 1px solid black;
 }
 table.tabbed-table th#right-empty-tab {
+	text-align: right;
 	background-color: white;
 	border-bottom: 1px solid black;
 	width: 420;
@@ -833,26 +836,11 @@ table.tabbed-table td.content {
 }
 
 a#my-start-page {
+	margin-left: 5px;
 	background-color: #EFEFEF;
 	padding: 4px;
 	border: 1px solid #cccccc;
 	clear: all;
-}
-a#my-start-page:hover {
-	background-color: #fafafa;
-	border: 1px solid #aaaaaa;
-}
-
-input#editor-switch {
-	background-color: #EFEFEF;
-	padding: 1px;
-	margin: 2px;
-	border: 1px solid #cccccc;
-}
-
-input#editor-switch:hover {
-	background-color: #fafafa;
-	border: 1px solid #aaaaaa;
 }
 
 div#breadcrumbs {
@@ -918,10 +906,36 @@ div#toctoggle {
 h1#section-title {
 	float: left;
 	margin-left: 5px;
-	font-size: xx-large;
 }
 
 div#top-links {
 	padding-right: 5px;
 	line-height: 170%;
+}
+
+a#editor-link {
+	background-color: #EFEFEF;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 15px;
+	padding-right: 8px;
+	border: 1px solid #cccccc;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a#editor-link:hover {
+	background-color: #fafafa;
+	border: 1px solid #aaaaaa;
+}
+
+a#editor-link.off {
+	background-image: url(images/pen.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 2px;
+}
+a#editor-link.on {
+	background-image: url(images/pen2.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 2px;
 }

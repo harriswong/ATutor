@@ -14,7 +14,7 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-global $system_courses, $_base_path, $_pages;
+global $system_courses, $_base_path, $_pages, $_my_uri;
 
 define('AT_NAV_PUBLIC', 1);
 define('AT_NAV_START',  2);
@@ -139,6 +139,8 @@ $_pages['tools/index.php']['children'] = array('forum/list.php');
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = 'tools/index.php';
 
+$_pages['editor/edit_content.php']['title']  = _AT('edit_content');
+$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
@@ -265,36 +267,12 @@ if (!$_SESSION['valid_user']) {
 </head>
 <body <?php echo $this->tmpl_onload; ?>><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
-<script language="JavaScript">
-function toggleToc() {
-	//var tocmain = document.getElementById('help');
-	var toc = document.getElementById('help');
-	var showlink=document.getElementById('showlink');
-	var hidelink=document.getElementById('hidelink');
-	if(toc.style.display == 'none') {
-		toc.style.display = tocWas;
-		hidelink.style.display='';
-		showlink.style.display='none';
-		//tocmain.className = '';
+<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script>
 
-		var help = document.getElementById('help-title');
-		help.className = '';
+<!-- section title -->
+	<h1 id="section-title"><?php echo $_section_title; ?></h1>
 
-	} else {
-		tocWas = toc.style.display;
-		toc.style.display = 'none';
-		hidelink.style.display='none';
-		showlink.style.display='';
-		//tocmain.className = 'tochidden';
-
-		var help = document.getElementById('help-title');
-		help.className = 'line';
-	}
-}
-
-</script>
-<h1 id="section-title"><?php echo $_section_title; ?></h1>
-
+<!-- top help/search/login links -->
 <div align="right" id="top-links">
 	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a> | <a href="<?php echo $this->tmpl_base_path; ?>logout.php"><?php echo _AT('logout'); ?></a><br />
 	<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
@@ -313,37 +291,53 @@ function toggleToc() {
 						</optgroup>
 					<?php endif; ?>
 			</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /><input type="hidden" name="g" value="22" /></form>
-
 </div>
 
-<?php if ($_SESSION['course_id'] > 0): ?>
-	<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
-<?php endif; ?>
+<!-- back to the current section -->
+	<?php if ($_SESSION['course_id'] > 0): ?>
+		<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
+	<?php endif; ?>
 
-<div id="breadcrumbs">
-	<?php echo $_section_title; ?> : 
-	<?php foreach ($_path as $page): ?>
-		<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
-	<?php endforeach; ?> <?php echo $_page_title; ?>
-</div>
-<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr>
-	<th id="left-empty-tab">&nbsp;</th>
-	<?php foreach ($_top_level_pages as $page): ?>
-		<?php if ($page['url'] == $_current_top_level_page): ?>
-			<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
-			<th class="tab-spacer">&nbsp;</th>
-		<?php else: ?>
-			<th class="tab"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
-			<th class="tab-spacer">&nbsp;</th>
-		<?php endif; ?>
-	<?php endforeach; ?>
-	<th id="right-empty-tab">&nbsp;</th>
-</tr>
-</table>
+<!-- the bread crumbs -->
+	<div id="breadcrumbs">
+		<?php echo $_section_title; ?> : 
+		<?php foreach ($_path as $page): ?>
+			<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
+		<?php endforeach; ?> <?php echo $_page_title; ?>
+	</div>
 
+<!-- the main navigation. in our case, tabs -->
+	<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<th id="left-empty-tab">&nbsp;</th>
+		<?php foreach ($_top_level_pages as $page): ?>
+			<?php if ($page['url'] == $_current_top_level_page): ?>
+				<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
+				<th class="tab-spacer">&nbsp;</th>
+			<?php else: ?>
+				<th class="tab"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
+				<th class="tab-spacer">&nbsp;</th>
+			<?php endif; ?>
+		<?php endforeach; ?>
+		<th id="right-empty-tab"><?php if (($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
+									<a href="<?php echo $_my_uri; ?>enable=PREF_EDIT" id="editor-link" class="off"><?php echo _AT('enable_editor'); ?></a>
+
+								<?php elseif (($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
+									<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
+								<?php endif; ?>
+
+								&nbsp;</th>
+	</tr>
+	</table>
+
+<!-- the page title -->
+	<div style="float: right">
+	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
+	</div>
 	<h2 id="page-title"><?php echo $_page_title; ?></h2>
 
+
+<!-- the sub navigation -->
 	<div id="sub-navigation">
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php foreach ($_sub_level_pages as $page): ?>

@@ -91,9 +91,6 @@ $result = mysql_query($sql,$db);
 if ($row = mysql_fetch_assoc($result)) {
 	echo '<br />';
 	echo '<table align="center" border="0" cellspacing="1" cellpadding="0" width="98%" class="bodyline" summary="">';
-if ($_SESSION['course_id'] == 0) {
-	echo '<tr><th colspan="4" class="cyan">'._AT('inbox').'</th></tr>';
-}
 	echo '<tr>
 		<th class="cat"><img src="images/clr.gif" alt="" width="40" height="1" /></th>
 		<th width="100" class="cat">'._AT('from').'</th>

@@ -26,7 +26,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 					<small><a name="menu"></a><a href="<?php echo $this->tmpl_close_menu_url; ?>" accesskey="6" title="<?php echo _AT('close_menus')?>: Alt-6"><?php echo _AT('close_menus'); ?></a></small>
 				</td>
 			</tr>
-			<?php if(show_pen()): ?>
+			<?php if(false && show_pen()): ?>
 				<tr><td height="5"></td></tr>
 				<tr>
 					<td class="pen" valign="top">
@@ -56,7 +56,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 							<small><a name="menu"></a><a href="<?php echo $this->tmpl_open_menu_url; ?>" accesskey="6" title="<?php echo _AT('open_menus'); ?> ALT-6"><?php echo _AT('open_menus'); ?></a></small>
 						</td>
 					</tr>
-					<?php if(show_pen()): ?>
+					<?php if(false && show_pen()): ?>
 						<tr><td height="5"></td></tr>
 						<tr>
 							<td class="pen" valign="top">
@@ -78,7 +78,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 							<small><a name="menu"></a><a href="<?php echo $this->tmpl_open_menu_url; ?>" accesskey="6" title="<?php echo _AT('open_menus'); ?> ALT-6"><?php echo _AT('open_menus'); ?></a></small>
 						</td>
 					</tr>
-					<?php if(show_pen()): ?>
+					<?php if(false && show_pen()): ?>
 						<tr><td height="5"></td></tr>
 						<tr>
 							<td class="pen" valign="top">
