@@ -83,12 +83,12 @@ if ($framed != TRUE) {
 	}
 	// filemanager listing table
 	// make new directory 
-	echo '<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">';
+	echo '<table cellspacing="1" cellpadding="0" border="0" summary="" align="center">';
 	echo '<tr><td colspan="2">';
 	echo '<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?pathext='.urlencode($pathext).SEP. 'popup='.$popup.'">';
 	if( $MakeDirOn ) {
 		if ($depth < $MaxDirDepth) {
-			echo '<input type="text" name="dirname" size="20" class="formfield" /> ';
+			echo '<input type="text" name="dirname" size="20" /> ';
 			echo '<input type="hidden" name="mkdir_value" value="true" /> ';
 			echo '<input type="submit" name="mkdir" value="'._AT('create_folder').'" class="button" />';
 			echo '&nbsp;<small class="spacer">'._AT('keep_it_short').'';
@@ -105,7 +105,6 @@ if ($framed != TRUE) {
 	if (($my_MaxCourseSize == AT_COURSESIZE_UNLIMITED) 
 		|| (($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) && ($course_total < $MaxCourseSize))
 		|| ($my_MaxCourseSize-$course_total > 0)) {
-		echo '<tr><td class="row2" height="1" colspan="2"></td></tr>';
 		echo '<tr><td  colspan="1">';
 		echo '<form onsubmit="openWindow(\''.$_base_href.'tools/prog.php\');" name="form1" method="post" action="tools/filemanager/upload.php?popup='.$popup.'" enctype="multipart/form-data">';
 		echo '<input type="hidden" name="MAX_FILE_SIZE" value="'.$my_MaxFileSize.'" />';
@@ -130,6 +129,7 @@ if ($framed != TRUE) {
 	echo '<p /><p />';
 }
 // Directory and File listing 
+
 echo '<form name="checkform" action="'.$_SERVER['PHP_SELF'].'?pathext='.urlencode($pathext).SEP.'popup='.$popup .SEP. 'framed='.$framed.'" method="post">';
 echo '<input type="hidden" name="pathext" value ="'.$pathext.'" />';
 ?>
@@ -158,7 +158,7 @@ echo '<input type="hidden" name="pathext" value ="'.$pathext.'" />';
 </tr>
 <tr>
 	<td colspan="4" align="right"><strong><?php echo _AT('directory_total'); ?>:</strong></td>
-	<td align="right">&nbsp;<strong><?php echo get_human_size($totalBytes); ?></strong>&nbsp;</td>
+	<td align="right">&nbsp;<strong><?php echo get_human_size(dirsize($current_path.$pathext.$file.'/')); ?></strong>&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="4" align="right"><strong><?php echo _AT('course_total'); ?>:</strong></td>
