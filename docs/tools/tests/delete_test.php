@@ -20,15 +20,14 @@
 	$_section[1][1] = 'tools/tests';
 	$_section[2][0] = _AT('delete_test');
 
-$msg->deleteFeedback('CANCELLED'); // makes sure its not there
-	if ($_GET['d']) {
 	
-		/* We must ensure that any previous feedback is flushed, since AT_FEEDBACK_CANCELLED might be present
-		 * if Yes/Delete was chosen below
-		 */
-		$msg->deleteFeedback('CANCELLED'); // makes sure its not there
+	if (isset($_POST['submit_no'])) {
+		$msg->addFeedback('CANCELLED');
+		header('Location: index.php');
+		exit;
+	} else if (isset($_POST['submit_yes'])) {
 		
-		$tid = intval($_GET['tid']);
+		$tid = intval($_POST['tid']);
 
 		$sql	= "DELETE FROM ".TABLE_PREFIX."tests WHERE test_id=$tid AND course_id=$_SESSION[course_id]";
 		$result	= mysql_query($sql, $db);
@@ -63,24 +62,21 @@ $msg->deleteFeedback('CANCELLED'); // makes sure its not there
 		header('Location: '.$_base_href.'tools/tests/index.php');
 		exit;
 
-	} else {
-		require(AT_INCLUDE_PATH.'header.inc.php');
- 
+	} /* else: */
 
-		$sql	= "SELECT title FROM ".TABLE_PREFIX."tests WHERE test_id=$_GET[tid] AND course_id=$_SESSION[course_id]";
-		$result	= mysql_query($sql, $db);
-		$row	= mysql_fetch_array($result);
+	require(AT_INCLUDE_PATH.'header.inc.php');
 
-		$warnings=array('DELETE_TEST', $row['title']);
-		$msg->printWarnings($warnings);
+	$_GET['tid'] = intval($_GET['tid']);
 
-		/* Since we do not know which choice will be taken, assume it No/Cancel, addFeedback('CENCELLED)
-		 * If sent to index.php then OK, else if sent back here & if $_GET['d']=1 then assumed choice was not taken
-		 * ensure that addFeeback('CANCELLED') is properly cleaned up, see above
-		 */
-		$msg->addFeedback('CANCELLED');
-		echo '<div align="center"><a href="tools/tests/delete_test.php?tid='.$_GET['tid'].SEP.'d=1">'._AT('yes_delete').'</a>, <a href="tools/tests/index.php">'._AT('no_cancel').'</a></div>';
-	}
- 
+	$sql	= "SELECT title FROM ".TABLE_PREFIX."tests WHERE test_id=$_GET[tid] AND course_id=$_SESSION[course_id]";
+	$result	= mysql_query($sql, $db);
+	$row	= mysql_fetch_array($result);
+
+	unset($hidden_vars);
+	$hidden_vars['tid'] = $_GET['tid'];
+
+	$msg->addConfirm(array('DELETE_TEST', $row['title']), $hidden_vars);
+	$msg->printConfirm();
+
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

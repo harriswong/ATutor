@@ -33,7 +33,7 @@ if (isset($_GET['edit'])) {
 	header('Location: results_all_quest.php?tid='.$_GET['id']);
 	exit;
 } else if (isset($_GET['delete'])) {
-	header('Location: delete_test.php?tid=1'.$_GET['id']);
+	header('Location: delete_test.php?tid='.$_GET['id']);
 	exit;
 }
 
