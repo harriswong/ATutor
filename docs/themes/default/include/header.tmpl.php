@@ -297,7 +297,24 @@ function toggleToc() {
 
 </script>
 <div id="search-help-links">
-	<a href="">Search</a> | <a href="">Help</a><br><form><select><option>course name</option></select><input type="submit" value="jump"></form>
+	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a><br />
+	<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
+		<label for="jumpmenu" accesskey="j"></label>
+			<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  ALT-j">							
+				<option value="0"><?php echo _AT('my_start_page'); ?></option>
+					<?php if ($_SESSION['valid_user']): ?>								
+						<optgroup label="<?php echo _AT('courses_below'); ?>">
+							<?php foreach ($this->tmpl_nav_courses as $this_course_id => $this_course_title): ?>
+								<?php if ($this_course_id == $_SESSION['course_id']): ?>
+									<option value="<?php echo $this_course_id; ?>" selected="selected"><?php echo $this_course_title; ?></option>
+								<?php else: ?>
+									<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</optgroup>
+					<?php endif; ?>
+			</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /><input type="hidden" name="g" value="22" /></form>
+
 </div>
 
 <?php if ($_SESSION['course_id']): ?>
