@@ -82,7 +82,7 @@ foreach ($cats as $cat) {
 
 		do {
 			if ($tid) {
-				echo '<tr>';
+				echo '<tr onmousedown="document.form[\'q' . $row['question_id'] . '\'].checked = true;">';
 				echo '<td>';
 				echo '<input type="checkbox" value="'.$row['question_id'].'" name="add_questions['.$cat['category_id'].'][]" id="q'.$row['question_id'].'" /></td>';
 			} else {
