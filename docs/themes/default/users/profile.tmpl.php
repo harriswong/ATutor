@@ -144,7 +144,7 @@ $msg->printAll();
 
 	<div class="row"><label for="website"><?php   echo _AT('web_site'); ?>:</label><br /><input id="website" class="formfield" name="website" size="40" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['website']));?>" /></div>
 
-	<br /><p align="center"><input type="submit" class="button" value=" <?php   echo _AT('update_profile'); ?> [Alt-s]" name="submit" accesskey="s" /> <input type="submit" name="cancel" class="button" value=" <?php echo  _AT('cancel'); ?>" /></p>
+	<div class="row buttons"><input type="submit" value=" <?php   echo _AT('save'); ?>" name="submit" accesskey="s" /> <input type="submit" name="cancel" value=" <?php echo  _AT('cancel'); ?>" /></div>
 
 </div>
 

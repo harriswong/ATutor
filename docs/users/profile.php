@@ -171,10 +171,20 @@ if ($_POST['submit']){
 
 $savant->assign('row', $row);
 
-$months = array(_AT('january'), _AT('february'), _AT('march'), _AT('april'), _AT('may'), _AT('june'), _AT('july'), _AT('august'), _AT('september'), _AT('october'), _AT('november'), _AT('december'));
+$months = array(	_AT('date_january'), 
+					_AT('date_february'), 
+					_AT('date_march'), 
+					_AT('date_april'), 
+					_AT('date_may'),
+					_AT('date_june'), 
+					_AT('date_july'), 
+					_AT('date_august'), 
+					_AT('date_september'), 
+					_AT('date_october'), 
+					_AT('date_november'),
+					_AT('date_december'));
 
 $savant->assign('months', $months);
-
 
 $savant->display('users/profile.tmpl.php');
 
