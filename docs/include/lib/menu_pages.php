@@ -235,8 +235,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/course_stats.php']['title']  = _AT('statistics');
 	$_pages['tools/course_stats.php']['parent'] = 'tools/index.php';
 
-	$_pages['tools/course_preferences.php']['title']  = _AT('preferences');
-	$_pages['tools/course_preferences.php']['parent'] = 'tools/index.php';
+	$_pages['tools/side_menu.php']['title']  = _AT('preferences');
+	$_pages['tools/side_menu.php']['parent'] = 'tools/index.php';
 
 	$_pages['tools/tile/index.php']['title']  = _AT('tile_search');
 	$_pages['tools/tile/index.php']['parent'] = 'tools/index.php';

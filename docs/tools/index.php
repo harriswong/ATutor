@@ -35,6 +35,7 @@
 	<li><a href="tools/modules.php"><?php echo _AT('modules'); ?></a></li>
 	<li><a href="tools/glossary/index.php"><?php echo _AT('glossary'); ?></a></li>
 	<li><a href="tools/tracker/index.php"><?php echo _AT('tracker'); ?></a> *new*</li>
+	<li><a href="tools/side_menu.php"><?php echo _AT('side_menu'); ?></a></li>
 </ol>
 <?php
 	
@@ -83,20 +84,7 @@ if (defined('AC_PATH') && AC_PATH) {
 ?>
 <table border="0" cellspacing="0" cellpadding="3" summary="">
 <?php if (authenticate(AT_PRIV_STYLES, AT_PRIV_RETURN)) { ?>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/edit-preferences-small.gif" border="0"  class="menuimage" width="28" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="tools/course_preferences.php">'._AT('course_default_prefs').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('course_default_prefs_text');
-			?>
-	</td>
-</tr>
+
 <tr>
 	<?php 
 				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
