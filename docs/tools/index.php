@@ -42,6 +42,7 @@
 	<li><a href="tools/backup/index.php"><?php echo _AT('backups'); ?></a></li>
 	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrolment'); ?></a> ( send email, enrollment manager, tracker)</li>
 	<li><a href="discussions/polls.php"><?php echo _AT('polls'); ?></a></li>
+	<li><a href="resources/tile/index.php"><?php echo _AT('tile_search'); ?></a></li>
 </tr>
 </ul>
 <?php

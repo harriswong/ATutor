@@ -15,103 +15,69 @@
 define('AT_INCLUDE_PATH', '../../include/');
 
 require (AT_INCLUDE_PATH.'vitals.inc.php');
-$_section[0][0] = _AT('resources');
-$_section[0][1] = 'resources/index.php';
-$_section[1][0] = _AT('tile_search');
-$_section[1][1] = 'resources/tile/index.php';
 
+$path = array();
 
+/* called at the start of en element */
+/* builds the $path array which is the path from the root to the current element */
+function startElement($parser, $name, $attrs) {
+	global $path;
+	array_push($path, $name);
+}
 
+/* called when an element ends */
+/* removed the current element from the $path */
+function endElement($parser, $name) {
+	global $my_data, $path, $tile_title, $tile_description, $tile_identifier;
 
-	$path = array();
-
-	/* called at the start of en element */
-	/* builds the $path array which is the path from the root to the current element */
-	function startElement($parser, $name, $attrs) {
-		global $path;
-		array_push($path, $name);
+	if ($path == array('lom', 'general', 'title', 'langstring')) {
+		$tile_title = $my_data;
+	} else if ($path == array('lom', 'general', 'description', 'langstring')) {
+		$tile_description = $my_data;
+	} else if ($path == array('lom', 'general', 'identifier')) {
+		$tile_identifier = $my_data;
 	}
 
-	/* called when an element ends */
-	/* removed the current element from the $path */
-	function endElement($parser, $name) {
-		global $my_data, $path, $tile_title, $tile_description, $tile_identifier;
+	$my_data = '';
+	array_pop($path);
+}
 
-		if ($path == array('lom', 'general', 'title', 'langstring')) {
-			$tile_title = $my_data;
-		} else if ($path == array('lom', 'general', 'description', 'langstring')) {
-			$tile_description = $my_data;
-		} else if ($path == array('lom', 'general', 'identifier')) {
-			$tile_identifier = $my_data;
-		}
-
-		$my_data = '';
-		array_pop($path);
-	}
-
-	/* called when there is character data within elements */
-	/* constructs the $items array using the last entry in $path as the parent element */
-	function characterData($parser, $data){
-		global $my_data;
-		$my_data .= $data;
-	}
+/* called when there is character data within elements */
+/* constructs the $items array using the last entry in $path as the parent element */
+function characterData($parser, $data){
+	global $my_data;
+	$my_data .= $data;
+}
 
 require (AT_INCLUDE_PATH.'header.inc.php');
 	
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<h2><img src="images/icons/default/square-large-resources.gif" class="menuimage" vspace="2" width="42" height="38" border="0" alt="" /> <a href="resources/index.php?g=11">'._AT('resources').'</a></h2>';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1 && $_SESSION['prefs'][PREF_CONTENT_ICONS] == 2) {
-	echo '<h2><a href="resources/index.php?g=11">'._AT('resources').'</a></h2>';
-}
-
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<h3><img src="images/icons/default/search_tile-large.gif" width="42" height="38"  class="menuimageh3" border="0" alt="" /> '._AT('tile_search').'</h3>';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1 && $_SESSION['prefs'][PREF_CONTENT_ICONS] == 2) {
-	echo '<h3>'._AT('tile_search').'</h3>';
-}
-
-$msg->addHelp('TILE_SEARCH_USER');
-if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) {
-	$msg->addHelp('TILE_SEARCH_ADMIN');
-}
 
 $msg->printAll();
 
 ?>
-<br />
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>#search_results" method="get" name="form">
 
-	<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-	<tr>
-		<th colspan="2" class="cyan"><?php print_popup_help('SEARCH'); ?><?php echo _AT('tile_search'); ?></th>
-	</tr>
-	<tr>
-		<td class="row1" align="right"><b><label for="words2"><?php echo _AT('search_words'); ?>:</label></b>
-		</td>
-		<td class="row1"><input type="text" name="query" class="formfield" size="40" id="words2" value="<?php echo stripslashes(htmlspecialchars($_GET['query'])); ?>" /></td>
-	</tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right"><b><label for="words2"><?php echo _AT('search_in'); ?>:</label></b>
-		</td>
-		<td class="row1">
-			<select name="field">   
-				<option selected="selected" value="anyField"><?php echo _AT('tile_any_field'); ?></option>   
-				<option value="title"><?php echo _AT('tile_title'); ?></option>
-				<option value="author"><?php echo _AT('tile_author'); ?></option>
-				<option value="subject"><?php echo _AT('tile_keyword'); ?></option>
-				<option value="description"><?php echo _AT('tile_description'); ?></option>
-				<option value="technicalFormat"><?php echo _AT('tile_technical_format'); ?></option> 
-			</select></td>
-	</tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" colspan="2" align="center"><input type="submit" name="submit" value="<?php echo _AT('search'); ?>" class="button" /></td>
-	</tr>
-	</table>
+<div class="input-form" style="width: 40%">
+	<div class="row">
+		<label for="words2"><?php echo _AT('search_words'); ?></label><br />
+		<input type="text" name="query" size="40" id="words2" value="<?php echo stripslashes(htmlspecialchars($_GET['query'])); ?>" />
+	</div>
+
+	<div class="row">
+		<label for="words2"><?php echo _AT('search_in'); ?></label><br />
+
+		<input type="radio" name="field" value="anyField" checked="checked" id="taf" /><label for="taf"><?php echo _AT('tile_any_field'); ?></label><br />
+		<input type="radio" name="field" value="title" id="tt" /><label for="tt"><?php echo _AT('tile_title'); ?></label><br />
+		<input type="radio" name="field" value="author" id="ta" /><label for="ta"><?php echo _AT('tile_author'); ?></label><br />
+		<input type="radio" name="field" value="subject" id="tk" /><label for="tk"><?php echo _AT('tile_keyword'); ?></label><br />
+		<input type="radio" name="field" value="description" id="td" /><label for="td"><?php echo _AT('tile_description'); ?></label><br />
+		<input type="radio" name="field" value="technicalFormat" id="tf" /><label for="tf"><?php echo _AT('tile_technical_format'); ?></label>
+	</div>
+
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('search'); ?>" />
+	</div>
+</div>
 </form>
 <br />
 <?php
@@ -147,7 +113,7 @@ if (isset($_GET['query'])) {
 	} else {
 		$num_results = 0;
 	}
-	echo '<h2>'. _AT('results_found', $num_results).'</h2>';
+	echo '<h3>'. _AT('results_found', $num_results).'</h3>';
 	echo '<ol>';
 	if ($num_results) {
 		foreach ($results as $result) {

@@ -11,9 +11,13 @@ global $msg;
 	<input type="hidden" name="form_login_action" value="true" />
 	<input type="hidden" name="form_course_id" value="<?php echo $this->tmpl_course_id; ?>" />
 
-<h4><?php echo _AT('login'); ?> <?php echo $this->tmpl_title; ?></h4>
-
 <div class="input-form" style="max-width: 400px">
+	<?php if ($this->tmpl_title): ?>
+		<div class="row">
+			<h3><?php echo _AT('login'). ' ' . $this->tmpl_title; ?></h3>
+		</div>
+	<?php endif;?>
+
 	<div class="row">
 		<label for="login"><?php echo _AT('login_name'); ?></label><br />
 		<input type="text" name="form_login" id="login" />

@@ -113,8 +113,6 @@ if (!isset($errors) && $onload) {
 	$savant->assign('tmpl_onload', $onload);
 }
 
-$savant->assign('tmpl_page', $page);
-
 if ($_SESSION['valid_user'] === true) {
 	$savant->assign('tmpl_user_name', AT_print($_SESSION['login'], 'members.login'));
 } else {
@@ -124,103 +122,41 @@ if ($_SESSION['valid_user'] === true) {
 
 if ($_user_location == 'public') {
 	/* the public section */
-	if (!defined('HOME_URL') || !HOME_URL) {
-		unset($theme_info['pub_nav']['home']);
-	}
-
-	$savant->assign('tmpl_user_nav', $theme_info['pub_nav']);
 	$myLang->sendContentTypeHeader();
 	$savant->display('include/header.tmpl.php');
 
 } else if ($_user_location == 'admin') {
 	/* the /admin/ section */
 
-	$savant->assign('tmpl_user_nav', $theme_info['admin_nav']);
-	$savant->assign('tmpl_section', _AT('administration'));
-
 	$myLang->sendContentTypeHeader();
 	$savant->display('include/header.tmpl.php');
 
 } else {
 
-	/* text for jump menu when guest */
-	$tmpl_login_jump = _AT('account_login');
-	$savant->assign('tmpl_login_jump', $tmpl_login_jump);
-
 	/* the list of our courses: */
 	/* used for the courses drop down */
 	global $system_courses;
-	$sql	= "SELECT E.course_id FROM ".TABLE_PREFIX."course_enrollment E WHERE E.member_id=$_SESSION[member_id] AND E.approved<>'n'";
-	$result = @mysql_query($sql, $db);
+	if ($_SESSION['valid_user']) {
+		$sql	= "SELECT E.course_id FROM ".TABLE_PREFIX."course_enrollment E WHERE E.member_id=$_SESSION[member_id] AND E.approved<>'n'";
+		$result = @mysql_query($sql, $db);
 
-	$nav_courses = array(); /* the list of courses we're enrolled in or own */
-	while ($row = @mysql_fetch_assoc($result)) {
-		if (strlen($system_courses[$row['course_id']]['title']) > 33) {
-			$tmp_title = substr($system_courses[$row['course_id']]['title'], 0, 30). '...';
-		} else {
-			$tmp_title = $system_courses[$row['course_id']]['title'];
+		$nav_courses = array(); /* the list of courses we're enrolled in or own */
+		while ($row = @mysql_fetch_assoc($result)) {
+			if (strlen($system_courses[$row['course_id']]['title']) > 33) {
+				$tmp_title = substr($system_courses[$row['course_id']]['title'], 0, 30). '...';
+			} else {
+				$tmp_title = $system_courses[$row['course_id']]['title'];
+			}
+			$nav_courses[$row['course_id']] = $tmp_title;
 		}
-		$nav_courses[$row['course_id']] = $tmp_title;
+
+		natcasesort($nav_courses);
+		reset($nav_courses);
+		$savant->assign('tmpl_nav_courses',    $nav_courses);
 	}
-
-	natcasesort($nav_courses);
-	reset($nav_courses);
-	$savant->assign('tmpl_nav_courses',    $nav_courses);
-
-	if ($_SESSION['prefs'][PREF_LOGIN_ICONS] == 1) {
-		$savant->assign('tmpl_main_icons_only', true);
-	} else if ($_SESSION['prefs'][PREF_LOGIN_ICONS] == 2) {
-		$savant->assign('tmpl_main_text_only', true);
-	}
-
-	/* check for inbox msgs */
-	$sql	= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."messages WHERE to_member_id=$_SESSION[member_id] AND new=1";
-	$result	= mysql_query($sql, $db);
-	$row	= @mysql_fetch_assoc($result);
-
-	if ($row['cnt'] > 0) {
-		$theme_info['user_nav']['inbox'] = $theme_info['user_nav']['inbox_on'];
-	} else {
-		$theme_info['user_nav']['inbox'] = $theme_info['user_nav']['inbox_off'];
-	}
-	unset($theme_info['user_nav']['inbox_on']);
-	unset($theme_info['user_nav']['inbox_off']);
-
-	$savant->assign('tmpl_user_nav', $theme_info['user_nav']);
 
 	/* course menus */
 	if ($_SESSION['course_id'] > 0) {
-
-		if ($_SESSION['prefs'][PREF_NAV_ICONS] == 1) {
-			$savant->assign('tmpl_course_icons_only', true);
-		} else if ($_SESSION['prefs'][PREF_NAV_ICONS] == 2) {
-			$savant->assign('tmpl_course_text_only', true);
-		}
-
-		if (!defined('AC_PATH') || !AC_PATH) {
-			unset($theme_info['nav']['acollab']);
-		}
-		
-		unset($nav);
-		$savant->assign('tmpl_course_nav', $theme_info['nav']);
-	
-		/* the instructor nav bar */
-		if (show_pen()) {
-			if ($_SESSION['prefs']['PREF_EDIT'] == 0) {
-				$pen_image = $_base_path.'images/pen.gif';
-				$pen_link = '<a href="'.$_my_uri.'enable='.PREF_EDIT.'">'._AT('enable_editor').'</a>';
-			} else {
-				$pen_image = $_base_path.'images/pen2.gif';
-				$pen_link = '<a href="'.$_my_uri.'disable='.PREF_EDIT.'">'._AT('disable_editor').'</a>';
-			}
-			$savant->assign('tmpl_pen_image', $pen_image);
-			$savant->assign('tmpl_pen_link', $pen_link);
-		}
-		
-		if ($_SESSION['prefs'][PREF_BREADCRUMBS] && ($_SESSION['course_id'] >0)) { 
-			$savant->assign('tmpl_breadcrumbs', $breadcrumbs);
-		}
-
 		$sql	= "SELECT banner_text, banner_styles FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql, $db);
 		if ($row = mysql_fetch_assoc($result)) {
@@ -253,10 +189,6 @@ if ($_user_location == 'public') {
 	/* course specific elements: */
 	/* != 'public' special case for the about.php page, which is available from a course but hides the content menu */
 	if (($_SESSION['course_id'] > 0) && ($_user_location != 'public')) {
-		if (($_SESSION['prefs'][PREF_MAIN_MENU] == 1) && ($_SESSION['prefs'][PREF_MAIN_MENU_SIDE] == MENU_LEFT)) { 
-			$savant->assign('tmpl_menu_open', TRUE);
-		}
-
 		if (($_SESSION['prefs'][PREF_MAIN_MENU] == 0) || ($_SESSION['prefs'][PREF_MAIN_MENU_SIDE] == MENU_LEFT)) { 
 				 $savant->assign('tmpl_width', '100%');
 		} else { $savant->assign('tmpl_width', '80%'); }
