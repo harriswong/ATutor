@@ -147,7 +147,12 @@ global $system_courses;
 
 
 <!-- the page title -->
-	<h2 id="page-title"><?php echo $this->page_title; ?></h2>
+	<div id="sequence-links">
+		<?php echo $this->sequence_links; ?>
+	</div>
+	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
+
+
 	<!-- div style="float: right">
 	<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div>
 	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
