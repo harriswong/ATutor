@@ -18,7 +18,23 @@ global $savant;
 global $onload;
 global $_stacks;
 
+?>
 
+<style type="text/css">
+.dropdown {
+	width: 200px;
+	padding: 2px;
+	background-color: white;
+	color: black;
+	border-left: 1px solid #EAF2FE;
+	border-right: 1px solid #EAF2FE;
+	border-bottom: 1px solid #EAF2FE;
+	font-weight: normal;
+}
+
+</style>
+
+<?php
 if (is_array($_SESSION['prefs'][PREF_STACK])) { 	
 	foreach ($_SESSION['prefs'][PREF_STACK] as $stack_id) {
 		$dropdown_name = $_stacks[$stack_id]['name'];

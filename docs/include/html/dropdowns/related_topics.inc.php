@@ -28,8 +28,6 @@ if ($_GET['menu_jump']) {
 	 
 if ($_SESSION['prefs'][PREF_RELATED] == 1){
 	ob_start();
-	echo '<tr>';
-	echo '<td class="dropdown" align="left">';
 
 	$related = $contentManager->getRelatedContent($_SESSION['s_cid']);
 
@@ -44,7 +42,6 @@ if ($_SESSION['prefs'][PREF_RELATED] == 1){
 		}
 	}
 	
-	echo '</td></tr>';
 
 	$savant->assign('tmpl_dropdown_contents', ob_get_contents());
 	ob_end_clean();
