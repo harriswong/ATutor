@@ -1,4 +1,3 @@
-<style>
 	div.input-form {
 width:70%; margin-left:auto; margin-right:auto;
 line-height:200%;
@@ -35,4 +34,3 @@ div.input-form input:focus {
 	border:solid 1px blue;
 	padding: 2px
 }
-</style>
