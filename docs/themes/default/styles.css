@@ -992,7 +992,7 @@ table.data input[type=submit]:hover {
 div#browse {
 	margin-left: auto; 
 	margin-right: auto; 
-	width: 50%;
+	width: 60%;
 }
 
 div.browse-selected {
@@ -1006,9 +1006,15 @@ div.browse-unselected {
 	padding-left: 9px; 
 }
 
+ul.browse-list {
+	list-style: none;
+	padding:0px;
+}
 
 /* used for static tables with no form elements: */
 table.data.static tbody tr:hover {
 	background-color: transparent;
 	cursor: auto;
 }
+
+

@@ -23,9 +23,9 @@ $_section[0][0] = _AT('browse_courses');
 require(AT_INCLUDE_PATH.'header.inc.php');
 $msg->printAll();
 
-$cat			= $_GET['cat'];
-$course			= $_GET['course'];
-$current_cats	= array();
+$cat	= intval($_GET['cat']);
+$course	= intval($_GET['course']);
+$cats	= array();
 
 $cats[0]  = _AT('all');
 $cats[-1] = _AT('cats_uncategorized');
@@ -37,9 +37,10 @@ while($row = mysql_fetch_array($result)) {
 }
  ?>
 <div id="browse" >
-	<div style="float: left; width: 30%"">
+	<div style="float: left; white-space:nowrap; padding-right:30px;">
 			<h3><?php echo _AT('cats_categories'); ?></h3>
 
+			<ul class="browse-list">
 			<?php 
 			foreach ($cats as $cat_id => $cat_name) {
 				if ($cat_id == $cat) {
@@ -48,37 +49,59 @@ while($row = mysql_fetch_array($result)) {
 					echo '<div class="browse-unselected">';
 				}
 
-				echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat_id.'">'.$cat_name.'</a>';
-				echo '<br /></div>';
+				echo '<li><a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat_id.'#courses">'.$cat_name.'</a></li>';
+				echo '</div>';
 			}
 			?>
-			<br />
+			</ul>
 	</div>
-	<div style="float: left; width: 20%"">
-			<h3><?php echo $cats[$cat].' '._AT('courses'); ?></h3>
+	<a name="courses"></a>
+	<div style="float: left; white-space:nowrap; padding-right:30px;">
 			<?php
-			if ($cat > 0) {
-				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$_GET['cat']." ORDER BY title";
-			} else if ($cat == "-1") {
+			if ($cat > 0) {				
+				//get its subcats
+				$sql_sub	= "SELECT * FROM ".TABLE_PREFIX."course_cats WHERE cat_parent=".$cat." ORDER BY cat_name";
+				$result_sub = mysql_query($sql_sub,$db);
+
+				if ($row = mysql_fetch_assoc($result_sub)) {
+					$sql = "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND (cat_id=".$cat;
+					do {
+						$sql .= " OR cat_id=".$row['cat_id'];
+						$sub_cats[$row['cat_id']] = $row['cat_name'];
+					} while ($row = mysql_fetch_assoc($result_sub));
+					$sql .= ") ORDER BY cat_id, title";
+				} else {
+					$sql = "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$cat." ORDER BY title";
+				}				
+			} else if ($cat == -1) {
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=0 ORDER BY title";
 			} else {
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 ORDER BY title";
+				$cat=0;
 			}
 			$result = mysql_query($sql,$db);
 
+			echo '<h3>'.$cats[$cat].' '._AT('courses').'</h3>';
+
 			if ($row = mysql_fetch_assoc($result)) {
+				$cur_sub_cat = '';
+				echo '<ul class="browse-list">';
 				do {
+					if (isset($sub_cats) && array_key_exists($row['cat_id'], $sub_cats) && ($cur_sub_cat != $sub_cats[$row['cat_id']])) {
+						$cur_sub_cat = $sub_cats[$row['cat_id']];
+						echo '</ul><br /><h4>'.$cur_sub_cat.'</h4><ul class="browse-list">';
+					}
 					if (!empty($course) && $course==$row['course_id']) {
 						$course_row = $row;
 						echo '<div class="browse-selected">';
 					} else {
 						echo '<div class="browse-unselected">';
 					}
-					//echo '<a href="bounce.php?course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat.SEP.'course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
+					echo '<li><a href="'.$_SERVER['PHP_SELF'].'?cat='.$cat.SEP.'course='.$row['course_id'].'#info">'.$system_courses[$row['course_id']]['title'].'</a></li>';
 					echo '</div>';
 
 				} while ($row = mysql_fetch_assoc($result));
+				echo '</ul>';
 			} else {
 				echo _AT('no_courses');
 			}
@@ -87,22 +110,24 @@ while($row = mysql_fetch_array($result)) {
 	</div>
 
 	<?php if (isset($course_row)) { ?>
-	<div style="float: left; width: 50%">
+	<a name="info"></a>
+	<div style="float: left; width: 50%;">
 			<h3><?php echo $course_row['title'].' '._AT('info'); ?></h3>
 
 			<p><?php echo $course_row['description']; ?></p>
 
-			<p>Taught by 
-			<?php	
-				$sql = "SELECT login, first_name, last_name FROM ".TABLE_PREFIX."members WHERE member_id=".$course_row['member_id'];
+			<p> 
+			<?php
+				echo _AT('instructor').': ';
+				$sql = "SELECT login FROM ".TABLE_PREFIX."members WHERE member_id=".$course_row['member_id'];
 				$result = mysql_query($sql,$db);
 				if ($row = mysql_fetch_array($result)) {
-					echo $row['first_name'].' '.$row['last_name'];
-				}						
-			?>
-			, Access is <?php echo $course_row['access']; ?></p>
+					echo $row['login'];
+				}				
+				echo '</p><p>';
+				echo _AT('access').': '.$course_row['access']; ?></p>
 
-			<p><a href="bounce.php?course=<?php echo $course_row['course_id']; ?>">Enter Course</a></p>
+			<p><a href="bounce.php?course=<?php echo $course_row['course_id']; ?>"><?php echo _AT('enter_course'); ?></a></p>
 			<br />
 	</div>
 	<?php } ?>
