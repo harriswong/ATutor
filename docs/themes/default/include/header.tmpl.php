@@ -83,7 +83,7 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 	$_pages['admin/forums.php']['parent']   = 'admin/courses.php';
 	$_pages['admin/forums.php']['children'] = array('admin/forum_add.php');
 
-		$_pages['admin/forum_add.php']['title']    = _AT('add_forum');
+		$_pages['admin/forum_add.php']['title']    = _AT('create_forum');
 		$_pages['admin/forum_add.php']['parent']   = 'admin/forums.php';
 
 		$_pages['admin/forum_edit.php']['title']    = _AT('edit_forum');
@@ -176,7 +176,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/forums/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/forums/index.php']['children'] = array('editor/add_forum.php');
 
-	$_pages['editor/add_forum.php']['title']  = _AT('add_forum');
+	$_pages['editor/add_forum.php']['title']  = _AT('create_forum');
 	$_pages['editor/add_forum.php']['parent'] = 'tools/forums/index.php';
 
 	$_pages['editor/delete_forum.php']['title']  = _AT('delete_forum');
