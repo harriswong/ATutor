@@ -105,8 +105,6 @@ if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>'._AT('my_courses').'</h2>'."\n";
-
 	$msg->printAll();
 
 	$msg->addHelp('CONTROL_CENTER1');

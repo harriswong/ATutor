@@ -70,6 +70,8 @@ if (!$_SESSION['course_id']) {
 
 	$_section_title = 'My Start Page';
 
+	$_page_title = $_pages[$current_page]['title'];
+
 } else {
 	$_top_level_pages[] = array('url' => 'index.php',                   'title' => _AT('home'));
 	$_top_level_pages[] = array('url' => 'tools/index.php',             'title' => _AT('tools'));
@@ -144,6 +146,8 @@ if (!$_SESSION['course_id']) {
 			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
+
+	<h2><?php echo $_page_title; ?></h2>
 	
 
 <?php return; ?>
