@@ -59,9 +59,4 @@ function select_link_categories($categories, $cat_id, $current_cat_id, $exclude,
 	}
 }
 
-function view_url($CatID) {
-
-
-}
-
 ?>
