@@ -22,17 +22,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	}
 
 	/* help for content pages */
-	if (authenticate(AT_PRIV_ANNOUNCEMENTS, AT_PRIV_RETURN) && ($_SESSION['prefs'][PREF_EDIT] == 1)) {
-		if ($_SESSION['prefs'][PREF_MENU]==1){
-			$msg->addHelp('ADD_ANNOUNCEMENT2');
-		} else {
-			$msg->addHelp('ADD_ANNOUNCEMENT');
-		}
-		$msg->addHelp('ADD_TOP_PAGE');
-	}
-	if ($_SESSION['prefs'][PREF_EDIT] == 1) {
-		$msg->printHelps();
-	}
 
 	if (defined('AT_SHOW_TEST_BOX') && AT_SHOW_TEST_BOX) {
 		// print new available tests
@@ -57,18 +46,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 		<?php 
 		}
 	}
-
-	unset($editors);
-	$editors[] = array(	'priv'  => AT_PRIV_ANNOUNCEMENTS, 
-						'title' => _AT('add_announcement'), 
-						'url'   => $_base_path.'editor/add_news.php');
-
-	$editors[] = array(	'priv'  => AT_PRIV_CONTENT,
-						'title' => _AT('add_top_page'), 
-						'url'   => $_base_path.'editor/edit_content.php');
-	$editors[] = array('priv' => AT_PRIV_CONTENT, 'title' => _AT('import_content_package'), 'url' => $_base_path.'tools/ims/index.php');
-
-	print_editor($editors, $large_editor = true);
 
 	$sql	= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."news WHERE course_id=$_SESSION[course_id]";
 	$result = mysql_query($sql, $db);

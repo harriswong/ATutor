@@ -66,7 +66,11 @@ function print_select($pid, $depth) {
 
 	foreach ($all_content[$pid] as $row) {
 		if (isset($all_content[$row['content_id']])) {
-			echo '<option value="'.$row['content_id'].'">';
+			echo '<option value="'.$row['content_id'].'"';
+			if ($_GET['id'] == $row['content_id']) {
+				echo ' selected="selected"';
+			}
+			echo '>';
 			echo str_repeat('&nbsp;', $depth * 5);
 			echo $row['title'].'</option>';
 
@@ -79,7 +83,7 @@ function print_select($pid, $depth) {
 <form method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <div class="input-form">
 	<div class="row">
-		<h3>[ Select Parent ]</h3>
+		<h3>[ Select Parent Topic ]</h3>
 	</div>
 
 	<div class="row">
@@ -92,7 +96,7 @@ function print_select($pid, $depth) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="sub_content" value="[ view children ]" />
+		<input type="submit" name="sub_content" value="[ view sub topics ]" />
 	</div>
 </div>
 </form>
@@ -117,9 +121,9 @@ function print_select($pid, $depth) {
 <tfoot>
 <tr>
 	<td colspan="5">
-		<input type="submit" name="view" value="<?php echo _AT('view'); ?>" />
-		<input type="submit" name="sub_content" value="<?php echo _AT('sub_pages'); ?>" />
 		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
+		<input type="submit" name="view" value="<?php echo _AT('view'); ?>" />
+		<input type="submit" name="sub_content" value="<?php echo _AT('view_sub_topics'); ?>" />
 		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
 	</td>
 </tr>
