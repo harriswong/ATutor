@@ -502,7 +502,7 @@ class ContentManager
 			$next_prev_links .= ' ';
 			$alt_title = $this->_menu_info[$_SESSION['s_cid']]['title'];
 			if ($_SESSION['prefs'][PREF_SEQ_ICONS] != 2) {
-				$next_prev_links .= '<a href="'.$_base_path.'?cid='.$_SESSION['s_cid'].SEP.'g=7" accesskey="0" title="'._AT('resume').': '.$alt_title.' Alt-0"><img src="'.$_base_path.'images/resume.gif" class="menuimage" border="0" alt="'._AT('resume').': '.$alt_title.' ALT-0" height="25" width="28" /></a>'."\n";
+				$next_prev_links .= '<a href="'.$_base_path.'?cid='.$_SESSION['s_cid'].SEP.'g=7" accesskey="0" title="'._AT('resume').': '.$alt_title.' Alt-0"><img src="'.$_base_path.'images/resume.gif" class="menuimage" border="0" alt="'._AT('resume').': '.$alt_title.' ALT-0" height="25" width="28" /></a>';
 			}
 
 			if ($_SESSION['prefs'][PREF_SEQ_ICONS] != 1) {
@@ -660,7 +660,7 @@ class ContentManager
 					$link .= $content['title'];
 					$link .= '</a>';
 					if ($on) {
-						$link .= '</strong>'."\n";
+						$link .= '</strong>';
 					}
 				} else {
 					//$content['title'] = stripslashes(htmlspecialchars($content['title']));
@@ -668,7 +668,7 @@ class ContentManager
 					if ($truncate && (strlen($content['title']) > (26-$depth*4)) ) {
 						$content['title'] = rtrim(substr($content['title'], 0, (26-$depth*4)-4)).'...';
 					}
-					$link .= trim($content['title']).'</strong>'."\n";
+					$link .= trim($content['title']).'</strong>';
 					$on = true;
 				}
 
