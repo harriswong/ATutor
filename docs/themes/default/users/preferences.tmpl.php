@@ -25,6 +25,7 @@ $msg->printAll();
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" name="prefs">
 
 <div class="input-form">
+
 	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
 		<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
 			<?php echo _AT('themes_disabled'); ?>
@@ -56,36 +57,33 @@ $msg->printAll();
 		<?php
 		/* sequence links preference */
 		if ($_SESSION['prefs'][PREF_SEQ] == TOP) {
-			$top = ' selected="selected"';
+			$top = ' checked="checked"';
 		} else if ($_SESSION['prefs'][PREF_SEQ] == BOTTOM) {
-			$bottom = ' selected="selected"';
+			$bottom = ' checked="checked"';
 		} else {
-			$both = ' selected="selected"';
+			$both = ' checked="checked"';
 		}
-		?><select name="seq" id="seq">
-			<option value="<?php echo TOP; ?>"<?php echo $top; ?>><?php echo _AT('top');  ?></option>
-			<option value="<?php echo BOTTOM; ?>"<?php echo $bottom; ?> ><?php echo _AT('bottom');  ?></option>
-			<option value="<?php echo BOTH; ?>"<?php echo $both; ?>><?php echo _AT('top_bottom');  ?></option>
-		  </select>
+		?><input type="radio" name="seq" id="seq_top" value="<?php echo TOP; ?>" <?php echo $top; ?> /><label for="seq_top"><?php echo _AT('top');  ?></label> 
+		<input type="radio" name="seq" id="seq_bottom" value="<?php echo BOTTOM; ?>" <?php echo $bottom; ?> /><label for="seq_bottom"><?php echo _AT('bottom');  ?></label> 
+		<input type="radio" name="seq" id="seq_both" value="<?php echo BOTH; ?>" <?php echo $neither; ?> /><label for="seq_both"><?php echo _AT('top_bottom');  ?></label>
 	</div>
 
 	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
 		<label for="toc"><?php echo _AT('table_of_contents'); ?></label><br />
 		<?php
 			// table of contents preference
-			$top = $bottom = '';
+			$top = $bottom = $neither = '';
 			if ($_SESSION['prefs'][PREF_TOC] == TOP) {
-				$top	= ' selected="selected"';
+				$top	= ' checked="checked"';
 			} else if ($_SESSION['prefs'][PREF_TOC] == BOTTOM) {
-				$bottom = ' selected="selected"';
+				$bottom = ' checked="checked"';
 			} else {
-				$neither = ' selected="selected"';
+				$neither = ' checked="checked"';
 			}
-		?><select name="toc" id="toc">
-			<option value="<?php echo TOP; ?>"<?php echo $top; ?>><?php echo _AT('top');  ?></option>
-			<option value="<?php echo BOTTOM; ?>"<?php echo $bottom; ?>><?php echo _AT('bottom');  ?></option>
-			<option value="<?php echo NEITHER; ?>"<?php echo $neither; ?>><?php echo _AT('neither');  ?></option>
-		  </select>
+		?><input type="radio" name="toc" id="toc_top" value="<?php echo TOP; ?>" <?php echo $top; ?> /><label for="toc_top"><?php echo _AT('top');  ?></label> 
+		<input type="radio" name="toc" id="toc_bottom" value="<?php echo BOTTOM; ?>" <?php echo $bottom; ?> /><label for="toc_bottom"><?php echo _AT('bottom');  ?></label> 
+		<input type="radio" name="toc" id="toc_neither" value="<?php echo NEITHER; ?>" <?php echo $neither; ?> /><label for="toc_neither"><?php echo _AT('neither');  ?></label>
+		
 	</div>
 
 	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?>">
@@ -97,7 +95,7 @@ $msg->printAll();
 			} else {
 				$num2 = ' checked="checked"';
 			}
-			?><input type="radio" name ="numbering" id="num_en" value="1" <?php echo $num; ?> /><label for="num_en"><?php echo _AT('enable');  ?></label><br />
+			?><input type="radio" name ="numbering" id="num_en" value="1" <?php echo $num; ?> /><label for="num_en"><?php echo _AT('enable');  ?></label> 
 			<input type="radio" name ="numbering" id="num_dis" value="0" <?php echo $num2; ?> /><label for="num_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
@@ -110,7 +108,7 @@ $msg->printAll();
 			} else {
 				$num2 = ' checked="checked"';
 			}
-			?><input type="radio" name ="use_help" id="help_en" value="1" <?php echo $num; ?> /><label for="help_en"><?php echo _AT('enable');  ?></label><br />
+			?><input type="radio" name ="use_help" id="help_en" value="1" <?php echo $num; ?> /><label for="help_en"><?php echo _AT('enable');  ?></label> 
 			<input type="radio" name ="use_help" id="help_dis" value="0" <?php echo $num2; ?> /><label for="help_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
@@ -123,7 +121,7 @@ $msg->printAll();
 			} else {
 				$num2 = ' checked="checked"';
 			}
-			?><input type="radio" name ="use_mini_help" id="mhelp_en" value="1" <?php echo $num; ?> /><label for="mhelp_en"><?php echo _AT('enable');  ?></label><br />
+			?><input type="radio" name ="use_mini_help" id="mhelp_en" value="1" <?php echo $num; ?> /><label for="mhelp_en"><?php echo _AT('enable');  ?></label> 
 			<input type="radio" name ="use_mini_help" id="mhelp_dis" value="0" <?php echo $num2; ?> /><label for="mhelp_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
@@ -136,7 +134,7 @@ $msg->printAll();
 			} else {
 				$num2 = ' checked="checked"';
 			}
-			?><input type="radio" name ="use_jump_redirect" id="jump_en" value="1" <?php echo $num; ?> /><label for="jump_en"><?php echo _AT('enable');  ?></label><br />
+			?><input type="radio" name ="use_jump_redirect" id="jump_en" value="1" <?php echo $num; ?> /><label for="jump_en"><?php echo _AT('enable');  ?></label> 
 			<input type="radio" name ="use_jump_redirect" id="jump_dis" value="0" <?php echo $num2; ?> /><label for="jump_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 

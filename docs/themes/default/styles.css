@@ -842,8 +842,8 @@ div#breadcrumbs {
 	background-color: #FAF9F9;
 }
 h2#page-title {
-	margin-bottom: 0px;
-	margin-top: 0px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 	margin-left: 5px;
 	border-bottom: 1px solid blue;
 }
