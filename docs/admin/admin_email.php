@@ -79,6 +79,9 @@ if ($_POST['cancel']) {
 }
 
 $title = _AT('admin_email');
+
+$onload = 'onload="document.form.subject.focus()"';
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 
@@ -95,46 +98,32 @@ $msg->printErrors();
 	}
 
 ?>
-<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
 <input type="hidden" name="admin" value="admin" />
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" width="95%" summary="" align="center">
-<tr>
-	<th colspan="2" align="left" class="cyan"><?php echo  _AT('send_email'); ?></th>
-</tr>
-<tr>
-	<td class="row1" align="right"><b><label for="to"><?php echo  _AT('to'); ?>:</label></b></td>
-	<td class="row1">
-	<input type="radio" name="to" value="3" checked="checked" id="all" /><label for="all"><?php echo  _AT('all'); ?></label>  
+
+<div class="input-form">
+	<div class="row">
+		<label for="to"><?php echo  _AT('to'); ?></label><br />
+		<input type="radio" name="to" value="3" checked="checked" id="all" /><label for="all"><?php echo  _AT('all'); ?></label>  
 	  <input type="radio" name="to" value="1" id="inst" <?php if ($_POST['to'] == 1) { echo 'checked="checked"'; } ?> /><label for="inst"><?php echo  _AT('instructors'); ?></label>
 	  <input type="radio" name="to" value="2" id="stud" <?php if ($_POST['to'] == 2) { echo 'checked="checked"'; } ?> /><label for="stud"><?php echo  _AT('students'); ?></label>
-		</td>
-</tr>
-<tr>
-	<td height="1" class="row2" colspan="2"></td>
-</tr>
-<tr>
-	<td width="100" class="row1" align="right"><strong><label for="subject"><?php echo _AT('subject'); ?>:</label></strong></td>
-	<td class="row1"><input type="text" name="subject" class="formfield" size="40" id="subject" value="<?php echo $_POST['subject']; ?>" /></td>
-</tr>
-<tr>
-	<td height="1" class="row2" colspan="2"></td>
-</tr>
-<tr>
-	<td width="100" class="row1" align="right" valign="top"><strong><label for="body"><?php echo _AT('body'); ?>:</label></strong></td>
-	<td class="row1"><textarea cols="55" rows="18" name="body" id="body" class="formfield"><?php echo $_POST['body']; ?></textarea><br /><br /></td>
-</tr>
-<tr>
-	<td height="1" class="row2" colspan="2"></td>
-</tr>
-<tr>
-	<td height="1" class="row2" colspan="2"></td>
-</tr>
-<tr>
-	<td colspan="2" class="row1" align="center"><input type="submit" name="submit" value="<?php echo _AT('send_email'); ?>" class="button" /> | <input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" class="button" /></td>
-</tr>
-</table>
+	</div>
+
+	<div class="row">
+		<label for="subject"><?php echo _AT('subject'); ?></label><br />
+		<input type="text" name="subject" size="40" id="subject" value="<?php echo $_POST['subject']; ?>" />
+	</div>
+
+	<div class="row">
+		<label for="body"><?php echo _AT('body'); ?></label><br />
+		<textarea cols="55" rows="18" name="body" id="body"><?php echo $_POST['body']; ?></textarea>
+	</div>
+
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('send_email'); ?>" /> 
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
+	</div>
+</div>
 </form>
 
-<?php
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

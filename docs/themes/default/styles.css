@@ -91,6 +91,7 @@ a:hover {
 	text-align: right;
 	padding: 2px;
 }
+/*
 form {
 	font-family: Verdana, Arial, sans-serif;
 	margin-bottom: 0px;
@@ -98,6 +99,7 @@ form {
 	margin-left: 0px;
 	margin-right: 0px;
 }
+*/
 
 /* align text to the left */
 .left {
@@ -105,6 +107,7 @@ form {
 }
 
 /* table rows */
+/*
 td.row1, table.row1 { 
 	font-family: Verdana, Arial, sans-serif;
 	font-weight: normal;
@@ -112,7 +115,9 @@ td.row1, table.row1 {
 	vertical-align: top;	
 	padding: 3px;
 }
+*/
 
+/*
 td.row2 { 
 	background-color: #98AAB1; 
 	font-weight: normal;
@@ -131,7 +136,7 @@ td.cat, th.cat {
 	padding-right: 5px;
 	white-space: nowrap;
 }
-
+*/
 a.dropdown-title {
 	color: white;
 	font-weight: normal;
@@ -303,6 +308,7 @@ select.dropdown {
 }   
 
 /* AChat Styles  */
+/*
 table.box2 {
 	background-color: #FFFFFF;
 	border-right: #006699 solid 1px;
@@ -318,7 +324,7 @@ table.box {
 }
 
 td.box2 {
-	background-color: white; /* #DDF0FF; */
+	background-color: white;
 	padding-left: 1px;
 	padding-right: 1px;
 	font-weight: bold;
@@ -331,7 +337,7 @@ td.box1 {
 	padding-left: 2px;
 	padding-right: 2px;
 }
-
+*/
 body.chatbody{
 	background-color: #FFFFEE;
 	background-image: url('images/lines.v.2.gif');
@@ -522,6 +528,7 @@ td.cat2c {
 	border-left: 1px #98AAB1 solid;
 }
 
+/*
 table.cat2 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color:#9C9DA6;
@@ -533,7 +540,7 @@ table.cat3 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color: ;
 }
-
+*/
 #course-nav {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color: #EFEFEF;
@@ -712,20 +719,6 @@ td.pen a:link, td.pen a:visited {
 	text-decoration:none;
 }
 
-td.public-row { 
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-weight: normal;
-	background-color: white;
-	vertical-align: top;	
-	padding: 3px;
-	direction: ltr;
-}
-td.public-row2 {
-	background-color: #FDE6D1;
-	font-weight: normal;
-	height: 1px;
-	color: white;
-}
 p.public-text {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	color: black;
@@ -791,6 +784,7 @@ table.tabbed-table th.tab-spacer {
 	width: 5px;
 	border-bottom: 1px solid black;
 }
+
 table.tabbed-table th.tab {
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -926,4 +920,59 @@ a#editor-link.on {
 	background-image: url(images/pen2.gif);
 	background-repeat: no-repeat;
 	background-position: 0px 2px;
+}
+
+
+###### for data tables ###
+
+table {
+	border: solid;
+}
+
+table.data {
+	border: 1px solid #f0f0f0;
+	width: 60%; 
+	margin-left: auto; 
+	margin-right: auto;
+} 
+
+table.data th {
+	background-color: #f0f0f0;
+	padding: 3px;
+	font-size: smaller;
+	white-space: nowrap;
+}
+
+table.data tbody {
+	background-color: #fdfdfd;
+}
+
+table.data td {
+	padding: 3px;
+	font-size: smaller;
+}
+
+table.data tbody tr:hover {
+	background-color: #f5f5ff;
+	cursor: pointer;
+}
+
+table.data tfoot {
+	background-color: #fafafa;
+}
+
+table.data tfoot td {
+	padding: 5px;
+}
+
+table.data input[type=submit] {
+	border: 1px solid #999;
+	background-color: white;
+	padding: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	max-width: 60%;
+	min-width: 100px;
+	margin-left: 5px;
+	font-size: smaller;
 }
