@@ -30,24 +30,21 @@ $_pages[AT_NAV_COURSE] = array('index.php');
 $_pages[AT_NAV_HOME]   = array();
 
 if ($_SESSION['course_id']) {
-	$main_links = $home_links = array();
-	if (!$system_courses[$_SESSION['course_id']]['home_links'] && !$system_courses[$_SESSION['course_id']]['main_links']) {
-		// probably a mistake:
-		$_pages[AT_NAV_COURSE][] = 'forum/list.php';
-		$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
+	$main_links = $home_links = $side_menu = array();
 
-		$_pages[AT_NAV_HOME]   = $_modules;
-
-	} else {
-		if ($system_courses[$_SESSION['course_id']]['main_links']) {
+	if ($system_courses[$_SESSION['course_id']]['main_links']) {
 			$main_links = explode('|', $system_courses[$_SESSION['course_id']]['main_links']);
 			$_pages[AT_NAV_COURSE] = array_merge($_pages[AT_NAV_COURSE], $main_links);
-		}
+	}
 
-		if ($system_courses[$_SESSION['course_id']]['home_links']) {
-			$home_links = explode('|', $system_courses[$_SESSION['course_id']]['home_links']);
-			$_pages[AT_NAV_HOME] = array_merge($_pages[AT_NAV_HOME], $home_links);
-		}
+	if ($system_courses[$_SESSION['course_id']]['home_links']) {
+		$home_links = explode('|', $system_courses[$_SESSION['course_id']]['home_links']);
+		$_pages[AT_NAV_HOME] = array_merge($_pages[AT_NAV_HOME], $home_links);
+	}
+	
+	if ($system_courses[$_SESSION['course_id']]['side_menu']) {
+		$side_menu = explode('|', $system_courses[$_SESSION['course_id']]['side_menu']);
+		$_pages[AT_NAV_HOME] = array_merge($_pages[AT_NAV_HOME], $home_links);
 	}
 
 //	debug($_pages[AT_NAV_HOME]);
