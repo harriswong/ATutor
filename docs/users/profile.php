@@ -74,7 +74,7 @@ $row = mysql_fetch_array($result);
 
 /* template starts here */
 
-$savant->assign('tmpl_profile', 'hello');
+$savant->assign('row', $row);
 
 $savant->display('users/profile.tmpl.php');
 

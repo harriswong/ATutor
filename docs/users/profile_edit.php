@@ -30,40 +30,11 @@ if ($_SESSION['valid_user'] !== true) {
 	exit;
 }
 
-$title = _AT('edit_profile'); 
-
-
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	Header('Location: index.php');
+	Header('Location: profile.php');
 	exit;
 }
-
-if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
-
-	$parts = parse_url($_base_href);
-
-	setcookie('ATLogin', '', time()-172800, $parts['path'], $parts['host'], 0);
-	setcookie('ATPass',  '', time()-172800, $parts['path'], $parts['host'], 0);
-	
-	$msg->addFeedback('AUTO_DISABLED');
-	Header('Location: index.php');
-	exit;
-} else if (isset($_GET['auto']) && ($_GET['auto'] == 'enable')) {
-	$parts = parse_url($_base_href);
-
-	$sql	= "SELECT PASSWORD(password) AS pass FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[member_id]";
-	$result = mysql_query($sql, $db);
-	$row	= mysql_fetch_array($result);
-
-	setcookie('ATLogin', $_SESSION['login'], time()+172800, $parts['path'], $parts['host'], 0);
-	setcookie('ATPass',  $row['pass'], time()+172800, $parts['path'], $parts['host'], 0);
-
-	$msg->addFeedback('AUTO_ENABLED');
-	header('Location: index.php');
-	exit;
-}
-
 
 if ($_POST['submit']) {
 	$error = '';
@@ -135,7 +106,7 @@ if ($_POST['submit']) {
 		}
 
 		$msg->addFeedback('PROFILE_UPDATED');
-		header('Location: ./index.php');
+		header('Location: ./profile.php');
 		exit;
 	}
 }
@@ -150,27 +121,26 @@ if (!($row = mysql_fetch_array($result))) {
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
-$msg->printErrors();
-?>
-<?php
-	$sql	= 'SELECT * FROM '.TABLE_PREFIX.'members WHERE member_id='.$_SESSION['member_id'];
-	$result = mysql_query($sql,$db);
-	$row = mysql_fetch_array($result);
 
-	if ($_POST['submit']){
-		$row['password']	= $_POST['password'];
-		$row['email']		= $_POST['email'];
-		$row['first_name']	= $_POST['first_name'];
-		$row['last_name']	= $_POST['last_name'];
-		$row['dob']			= $dob;
-		$row['address']		= $_POST['address'];
-		$row['postal']		= $_POST['postal'];
-		$row['city']		= $_POST['city'];
-		$row['province']	= $_POST['province'];
-		$row['country']		= $_POST['country'];
-		$row['phone']		= $_POST['phone'];
-		$row['website']		= $_POST['website'];
-	}
+
+$sql	= 'SELECT * FROM '.TABLE_PREFIX.'members WHERE member_id='.$_SESSION['member_id'];
+$result = mysql_query($sql,$db);
+$row = mysql_fetch_array($result);
+
+if ($_POST['submit']){
+	$row['password']	= $_POST['password'];
+	$row['email']		= $_POST['email'];
+	$row['first_name']	= $_POST['first_name'];
+	$row['last_name']	= $_POST['last_name'];
+	$row['dob']			= $dob;
+	$row['address']		= $_POST['address'];
+	$row['postal']		= $_POST['postal'];
+	$row['city']		= $_POST['city'];
+	$row['province']	= $_POST['province'];
+	$row['country']		= $_POST['country'];
+	$row['phone']		= $_POST['phone'];
+	$row['website']		= $_POST['website'];
+}
 
 /* template starts here */
 
@@ -178,6 +148,6 @@ $msg->printAll();
 
 $savant->assign('row', $row);
 
-$savant->display('users/profile.tmpl.php');
+$savant->display('users/profile_edit.tmpl.php');
 
 ?>
