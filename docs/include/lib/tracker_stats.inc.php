@@ -123,105 +123,127 @@ if($_GET['stats']="summary" && !$to_cid &&!$_GET['csv'] && !$_GET['g_id']){
 		echo _AT('unknown_error');
 	}
 ?>
+	<br />
 	<a name="show_pages"></a>
 	<h3><?php  echo  _AT('tool_summary'); ?></h3>
-	<table border="0" width="90%" class="bodyline" cellspacing="1" cellpadding="0" align="center">
-	<tr><th scope="col"  width="25%"><?php  echo  _AT('at_tools'); ?></th><th scope="col" width="55%"><?php  echo  _AT('hit_count'); ?></th><th scope="col" width="10%"><?php  echo  _AT('avg_duration'); ?></th><th scope="col" width="10%"><?php  echo  _AT('details'); ?></th></tr>
-	<tr><td height="1" class="row2" colspan="4"></td></tr>
-	<?php
-			//this array needs to be created from the database (eventually add new field to g_refs table called "timed" values true/false
-			$timed_tools=array(14=>14, 15=>15, 16=>16, 17=>17, 18=>18, 20=>20, 21=>21, 23=>23, 27=>27, 28=>28, 29=>29, 31=>31, 32=>32, 35=>35);
-			//$this_i=1;
+	<table class="data static" rules="cols" summary="">
+	<thead>
+	<tr>
+		<th><?php echo _AT('at_tools');     ?></th>
+		<th><?php echo _AT('hit_count');    ?></th>
+		<th><?php echo _AT('avg_duration'); ?></th>
+		<th><?php echo _AT('details');      ?></th>
+	</tr>
+	</thead>
 
-			foreach($title_tools as $key=>$value){
-				$tool_names[$key] = $gcount[$key];
+	<tbody>
+<?php
+		//this array needs to be created from the database 
+		//(eventually add new field to g_refs table called "timed" values true/false
+		$timed_tools=array(14=>14, 15=>15, 16=>16, 17=>17, 18=>18, 20=>20, 21=>21, 23=>23, 27=>27, 28=>28, 29=>29, 31=>31, 32=>32, 35=>35);
+		
+		foreach($title_tools as $key=>$value) {
+			$tool_names[$key] = $gcount[$key];
+		}
 
-			}
-			if (is_array($tool_names)) {
-				arsort($tool_names);
-				foreach($tool_names as $key=>$value){
-					//$this_i++;
-					echo '<tr><td class="row1"><small>';
-					echo _AT($title_tools[$key]);
-					echo '</small></td><td class="row1"><small><img src = "images/bar.gif" height="12" width="'.((($gcount[$key]/$nav_total)*100)*2).'" alt="" />';
-					echo $value;
-					echo '</small></td>';
-					$that_avgtime='';
-					if($timed_tools[$key]==$key){  
-						$that_avgtime=number_format((number_format($that_time[$key], 1  )/$gcount[$key]),1);
-					}
-					echo '<td class="row1"><small>';
-					if($that_avgtime){
+		if (is_array($tool_names)) {
+			arsort($tool_names);
+		
+			foreach($tool_names as $key=>$value) {
+				echo '<tr>';
+					echo '<td>' . _AT($title_tools[$key]) . '</td>';
+					echo '<td><img src="images/bar.gif" height="12" width="' . ((($gcount[$key]/$nav_total)*100)*2) . '" alt="" />' . $value . '</td>';
+
+				$that_avgtime='';
+				if($timed_tools[$key]==$key) {  
+					$that_avgtime=number_format((number_format($that_time[$key], 1  )/$gcount[$key]),1);
+				}
+
+					echo '<td>';
+					if($that_avgtime) {
 						echo $that_avgtime;
-					}else{
+					} else {
 						echo _AT('na');
 					}
-					echo '</small></td>';
-					echo '<td class="row1"><small><a href="'.$_SERVER['PHP_SELF'].'?g_id='.$key.'#show_pages">'._AT('details').'</a></small></td>';
-					echo '</tr>';
-					echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
-				}
+					echo '</td>';
+
+					echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?g_id=' . $key . '#show_pages">' . _AT('details') . '</a></td>';
+				echo '</tr>';
 			}
-	echo '</table>';
+		}
+?>
+	</tbody>
+	</table>
 
-	?>
+	<br /><br />
+
 	<h3><?php  echo  _AT('page_stats'); ?></h3>
-	<table border="0" width="90%" class="bodyline" cellspacing="1" cellpadding="0" align="center">
-	<tr><th scope="col"  width="25%"><?php  echo  _AT('page_title'); ?></th><th scope="col" width="55%"><?php  echo  _AT('hit_count'); ?></th><th scope="col" width="10%"><?php  echo  _AT('avg_duration'); ?></th><th scope="col" width="10%"><?php  echo  _AT('details'); ?></th></tr>
-	<tr><td height="1" class="row2" colspan="4"></td></tr>
-	<?php
+	<table class="data static" rules="cols" summary="">
+	<thead>
+	<tr>
+		<th><?php echo _AT('page_title');   ?></th>
+		<th><?php echo _AT('hit_count');    ?></th>
+		<th><?php echo _AT('avg_duration'); ?></th>
+		<th><?php echo _AT('details');      ?></th>
+	</tr>
+	</thead>
+<?php
 	//get content page traffic
+	$sql6 = "SELECT G.to_cid, count(*) AS pages, G.g
+		FROM ".TABLE_PREFIX."g_click_data G
+		WHERE G.to_cid <> 0	AND	course_id='$_SESSION[course_id]'
+		GROUP BY G.to_cid";
 
-	$sql6="SELECT
-			G.to_cid,
-			count(*) AS pages,
-			G.g
+	$result6 = mysql_query($sql6, $db);
 
-		from
-			".TABLE_PREFIX."g_click_data G
-
-		where
-			G.to_cid <> 0
-			AND
-			course_id='$_SESSION[course_id]'
-
-		group by
-			G.to_cid";
-	if(!$result6 = mysql_query($sql6, $db)){
+	if(!$result6) {
 		echo "query failed";
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
 	
-	$sql11= "select to_cid, AVG(duration) AS t from ".TABLE_PREFIX."g_click_data where course_id='$_SESSION[course_id]' GROUP BY to_cid";
+	$sql11 = "SELECT to_cid, AVG(duration) AS t FROM ".TABLE_PREFIX."g_click_data WHERE course_id='$_SESSION[course_id]' GROUP BY to_cid";
+	$result11 = mysql_query($sql11, $db);
 
-	if($result11=mysql_query($sql11, $db)){
-		while($row=mysql_fetch_array($result11)){
+	if ($result11) {
+		while($row = mysql_fetch_array($result11)) {
 			$this_time[$row['to_cid']]= $row['t'];
 		}
-	}else{
+	} 
+	
+	else {
 		echo _AT('unknown_error');
 	}
+
 	$max_bar_width='180';
 	$result9 = mysql_query($sql6, $db);
-	while($row = mysql_fetch_array($result9)){
+	
+	while($row = mysql_fetch_array($result9)) {
 		$total_hits=($total_hits + $row["pages"]);
 	}
-	if($total_hits){
+	if($total_hits) {
 		$bar_factor = ($max_bar_width/$total_hits);
 	}
-	if($result6 = mysql_query($sql6, $db)){
-				while($row = mysql_fetch_array($result6)){
-					if($title_refs[$row['to_cid']] != ''){
-						echo '<tr><td class="row1"><small>';
-						echo $title_refs[$row['to_cid']];
-						echo '</small></td><td class="row1"><img src = "images/bar.gif" height="12" width="'.($row["pages"]*$bar_factor).'" alt="" /><small>'.$row["pages"].'</small></td>'."\n";
-						$this_avgtime=(number_format($this_time[$row['to_cid']], 1  )/$row["pages"]);
-						echo '<td class="row1"><small>'.number_format($this_avgtime, 1).'</small></td>';
-						echo '<td class="row1"><a href="'.$_SERVER['PHP_SELF'].'?stats=details'.SEP.'to_cid='.$row['to_cid'].'#show_pages"><small>'._AT('details').'</small></a></td></tr>'."\n";
-						echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
-					}
-				}
+
+	if ($result6 = mysql_query($sql6, $db)) {
+
+		echo '<tbody>';
+
+		while($row = mysql_fetch_array($result6)) {
+			if($title_refs[$row['to_cid']] != '') {
+				echo '<tr>';
+					echo '<td>' . $title_refs[$row['to_cid']] . '</td>';
+					echo '<td><img src="images/bar.gif" height="12" width="' . ($row["pages"]*$bar_factor) . '" alt="" />' . $row["pages"] . '</td>';
+
+					$this_avgtime=(number_format($this_time[$row['to_cid']], 1  )/$row["pages"]);
+
+					echo '<td>' . number_format($this_avgtime, 1) . '</td>';
+					echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?stats=details' . SEP . 'to_cid=' . $row['to_cid'] . '#show_pages">' . _AT('details') . '</a></td>';
+				echo '</tr>';
+
+			}
+		}
+		echo '<tbody>';
 	}
 
 	echo '</table>';
