@@ -104,7 +104,11 @@ if ($row = mysql_fetch_assoc($result)) {
 		$count ++;
 
 		?>
-		<tr onmousedown="document.location='users/inbox.php?view=<?php echo $row['message_id']; ?>'">
+		<?php if ($row['message_id'] == $view): ?>
+			<tr onmousedown="document.location='users/inbox.php?view=<?php echo $row['message_id']; ?>'" class="selected">
+		<?php else: ?>
+			<tr onmousedown="document.location='users/inbox.php?view=<?php echo $row['message_id']; ?>'" title="<?php echo _AT('view_message'); ?>">
+		<?php endif; ?>
 
 		<?php
 		echo '<td valign="middle" width="10" align="center">';

@@ -955,6 +955,11 @@ table.data tbody tr:hover {
 	cursor: pointer;
 }
 
+table.data tbody tr.selected {
+	background-color: #f5f5ff;
+	cursor: auto;
+}
+
 table.data tfoot {
 	background-color: #fafafa;
 }
