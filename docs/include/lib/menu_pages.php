@@ -436,6 +436,8 @@ $_pages['polls/index.php']['title'] = _AT('polls');
 
 $_pages['acollab.php']['title'] = 'ACollab';
 
+$_pages['export.php']['title'] = _AT('export_content');
+
 foreach ($_modules as $module) {
 	if (in_array($module, $_pages[AT_NAV_COURSE])) {
 		$_pages[$module]['parent'] = AT_NAV_COURSE;

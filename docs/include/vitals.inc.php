@@ -229,7 +229,7 @@ function debug($var, $title='') {
 	echo '</pre>';
 }
 
-$_modules = array('sitemap.php', 'tools/ims/index.php', 'discussions/achat/index.php', 'links/index.php', 'resources/tile/index.php', 'glossary/index.php', 'tools/tracker.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab.php');
+$_modules = array('sitemap.php', 'export.php', 'discussions/achat/index.php', 'links/index.php', 'resources/tile/index.php', 'glossary/index.php', 'tools/tracker.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab.php');
 
 
 /********************************************************************/
