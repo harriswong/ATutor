@@ -1050,3 +1050,6 @@ div#feedback ul {
 	padding-left: 0px;
 }
 
+acronym {
+	cursor: help;
+}
