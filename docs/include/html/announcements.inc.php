@@ -112,10 +112,12 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 			echo '<tr>';
 			echo '<td>';
 			echo '<br /><h4>'.$news_item['title'];
+			/*
 			unset($editors);
 			$editors[] = array('priv' => AT_PRIV_ANNOUNCEMENTS, 'title' => _AT('edit'), 'url' => $_base_path.'editor/edit_news.php?aid='.$news_id);
 			$editors[] = array('priv' => AT_PRIV_ANNOUNCEMENTS, 'title' => _AT('delete'), 'url' => $_base_path.'editor/delete_news.php?aid='.$news_id);
 			print_editor($editors , $large = false);
+			*/
 
 			echo '</h4>';
 
