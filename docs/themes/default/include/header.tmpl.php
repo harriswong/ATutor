@@ -60,17 +60,18 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 
 	$_pages['admin/backup/index.php']['title']    = _AT('backups');
 	$_pages['admin/backup/index.php']['parent']   = 'admin/courses.php';
-	//$_pages['admin/backup/index.php']['children'] = array('admin/backup/restore.php');
+	$_pages['admin/backup/index.php']['children'] = array('admin/backup/create.php');
 
-	// this item is a bit iffy:
-	$_pages['admin/backup/restore.php']['title']    = _AT('restore');
-	$_pages['admin/backup/restore.php']['parent']   = 'admin/backup/index.php';
-
-	$_pages['admin/backup/create.php']['title']    = _AT('create');
-	$_pages['admin/backup/create.php']['parent']   = 'admin/backup/index.php';
+		$_pages['admin/backup/create.php']['title']    = _AT('create');
+		$_pages['admin/backup/create.php']['parent']   = 'admin/backup/index.php';
+	
+		// this item is a bit iffy:
+		$_pages['admin/backup/restore.php']['title']    = _AT('restore');
+		$_pages['admin/backup/restore.php']['parent']   = 'admin/backup/index.php';
 
 	$_pages['admin/forums.php']['title']    = _AT('forums');
 	$_pages['admin/forums.php']['parent']   = 'admin/courses.php';
+	$_pages['admin/forums.php']['children'] = array('admin/forum_add.php');
 
 		$_pages['admin/forum_add.php']['title']    = _AT('add_forum');
 		$_pages['admin/forum_add.php']['parent']   = 'admin/forums.php';
@@ -281,8 +282,16 @@ $_sub_level_pages        = get_sub_navigation($current_page);
 $_current_sub_level_page = get_current_sub_navigation_page($current_page);
 
 $_path = get_path($current_page);
+unset($_path[0]);
+if ($_path[1]['url'] == $_sub_level_pages[0]['url']) {
+	$back_to_page = $_path[2];
+	//debug('back to : '.$_path[2]['title']);
+} else {
+	$back_to_page = $_path[1];
+	//debug('back to : '.$_path[1]['title']);
+}
 $_path = array_reverse($_path);
-array_pop($_path);
+
 
 $_page_title = $_pages[$current_page]['title'];
 
@@ -394,6 +403,9 @@ if ($_SESSION['course_id'] > 0) {
 
 <!-- the sub navigation -->
 	<div id="sub-navigation">
+		<?php if (isset($back_to_page)): ?>
+			<a href="<?php echo $back_to_page['url']; ?>"><img src="<?php echo $this->tmpl_base_path.'themes/'.$this->tmpl_theme; ?>/images/back.gif" border="0" /> Back to <?php echo $back_to_page['title']; ?></a> | 
+		<?php endif; ?>
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php $num_pages = count($_sub_level_pages); ?>
 			<?php for($i=0; $i<$num_pages; $i++): ?>
