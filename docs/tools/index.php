@@ -32,7 +32,11 @@
 	<li><a href="tools/my_tests.php"><?php echo _AT('my_tests'); ?></a><br /><?php echo _AT('my_tests_text'); ?></li>
 </ul>
 
+<hr />
 
+<ul>
+	<li><a href="tools/content/index.php">[ Content ]</li>
+</ul>
 <?php
 	
 if (defined('AC_PATH') && AC_PATH) {
