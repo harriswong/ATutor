@@ -16,13 +16,11 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 authenticate(AT_PRIV_ANNOUNCEMENTS);
 
-	if ($_POST['submit_no']) {
-		$msg->addFeedback('CANCELLED');
-		Header('Location: ../index.php');
-		exit;
-	}
-
-if ($_POST['submit_yes']) {
+if (isset($_POST['submit_no'])) {
+	$msg->addFeedback('CANCELLED');
+	header('Location: '.$_base_href.'tools/news/index.php');
+	exit;
+} else if (isset($_POST['submit_yes'])) {
 	$_POST['form_news_id'] = intval($_POST['form_news_id']);
 
 	$sql = "DELETE FROM ".TABLE_PREFIX."news WHERE news_id=$_POST[form_news_id] AND course_id=$_SESSION[course_id]";
@@ -37,7 +35,7 @@ if ($_POST['submit_yes']) {
 	}
 
 	$msg->addFeedback('NEWS_DELETED');
-	header('Location: ../index.php');
+	header('Location: '.$_base_href.'tools/news/index.php');
 	exit;
 }
 

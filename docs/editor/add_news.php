@@ -22,18 +22,17 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 	$content_base_href = 'content/' . $_SESSION['course_id'] . '/';
 }
 
-	if (isset($_POST['cancel'])) {
-		$msg->addFeedback('CANCELLED');
-		header('Location: ../index.php');
-		exit;
-	}
+if (isset($_POST['cancel'])) {
+	$msg->addFeedback('CANCELLED');
+	header('Location: '.$_base_href.'tools/news/index.php');
+	exit;
+} 
 
-	//used for visual editor
-	if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
-		$onload = 'onload="initEditor();"';
-	}else {
-		$onload = ' onload="document.form.title.focus();"';
-	}
+if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
+	$onload = 'onload="initEditor();"';
+}else {
+	$onload = ' onload="document.form.title.focus();"';
+}
 
 
 	if (isset($_POST['add_news'])&& isset($_POST['submit'])) {
@@ -61,7 +60,7 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 				@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
 			}
 
-			header('Location: ../index.php');
+			header('Location: '.$_base_href.'tools/news/index.php');
 			exit;
 		}
 	}

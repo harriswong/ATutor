@@ -24,11 +24,9 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: ../index.php');
+	header('Location: '.$_base_href.'tools/news/index.php');
 	exit;
-}
-
-if ($_POST['edit_news']) {
+} else if ($_POST['edit_news']) {
 	$_POST['title'] = trim($_POST['title']);
 	$_POST['body_text']  = trim($_POST['body_text']);
 	$_POST['aid']	= intval($_POST['aid']);
@@ -54,7 +52,7 @@ if ($_POST['edit_news']) {
 		}
 
 		$msg->addFeedback('NEWS_UPDATED');
-		header('Location: ../index.php');
+		header('Location: '.$_base_href.'tools/news/index.php');
 		exit;
 	}
 }
