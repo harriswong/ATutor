@@ -72,9 +72,8 @@ $msg->printAll();
 ?>
 
 <form name="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-	<input type="hidden" name="course" value="<?php echo $_REQUEST['course']; ?>" />
+<input type="hidden" name="course" value="<?php echo $_REQUEST['course']; ?>" />
 	
-	<p align="center"><a href="admin/backup/create.php"><?php echo _AT('create'); ?></a></p>
 
 <table class="data" summary="" rules="groups" style="width: 90%">
 <thead>

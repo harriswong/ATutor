@@ -45,6 +45,9 @@ $_pages['admin/users.php']['children'] = array('admin/admin_email.php');
 	$_pages['admin/profile.php']['title']    = _AT('profile');
 	$_pages['admin/profile.php']['parent']   = 'admin/users.php';
 
+	$_pages['admin/admin_delete.php']['title']    = _AT('delete_user');
+	$_pages['admin/admin_delete.php']['parent']   = 'admin/users.php';
+
 $_pages['admin/courses.php']['title']    = _AT('courses');
 $_pages['admin/courses.php']['parent']   = AT_NAV_ADMIN;
 $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'admin/backup/index.php', 'admin/forums.php', 'admin/course_categories.php');
@@ -62,12 +65,19 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 	$_pages['admin/backup/index.php']['parent']   = 'admin/courses.php';
 	$_pages['admin/backup/index.php']['children'] = array('admin/backup/create.php');
 
-		$_pages['admin/backup/create.php']['title']    = _AT('create');
+		$_pages['admin/backup/create.php']['title']    = _AT('create_backup');
 		$_pages['admin/backup/create.php']['parent']   = 'admin/backup/index.php';
 	
 		// this item is a bit iffy:
 		$_pages['admin/backup/restore.php']['title']    = _AT('restore');
 		$_pages['admin/backup/restore.php']['parent']   = 'admin/backup/index.php';
+
+		$_pages['admin/backup/delete.php']['title']    = _AT('delete');
+		$_pages['admin/backup/delete.php']['parent']   = 'admin/backup/index.php';
+
+		$_pages['admin/backup/edit.php']['title']    = _AT('edit');
+		$_pages['admin/backup/edit.php']['parent']   = 'admin/backup/index.php';
+
 
 	$_pages['admin/forums.php']['title']    = _AT('forums');
 	$_pages['admin/forums.php']['parent']   = 'admin/courses.php';
@@ -186,7 +196,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/question_cats.php']['parent'] = 'tools/tests/index.php';
 	$_pages['tools/tests/question_cats.php']['children'] = array('tools/tests/question_cats_manage.php');
 
-	$_pages['tools/tests/question_cats_manage.php']['title']  = _AT('add');
+	$_pages['tools/tests/question_cats_manage.php']['title']  = _AT('create_category');
 	$_pages['tools/tests/question_cats_manage.php']['parent'] = 'tools/tests/question_cats.php';
 
 
