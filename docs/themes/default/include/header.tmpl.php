@@ -171,6 +171,9 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/course_email.php']['title']  = _AT('course_email');
 	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
 
+	$_pages['tools/edit_header.php']['title']  = _AT('course_copyright2');
+	$_pages['tools/edit_header.php']['parent'] = 'tools/index.php';
+
 	$_pages['tools/backup/index.php']['title']  = _AT('backups');
 	$_pages['tools/backup/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/backup/index.php']['children'] = array('tools/backup/create.php', 'tools/backup/upload.php');

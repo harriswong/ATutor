@@ -1,12 +1,3 @@
-
-<br />
-<br />
-<?php require(AT_INCLUDE_PATH.'html/languages.inc.php'); ?>
-<?php require(AT_INCLUDE_PATH.'html/copyright.inc.php'); ?>
-</body>
-</html>
-<?php return; ?>
-
 <?php
 /************************************************************************/
 /* ATutor																*/
@@ -19,13 +10,11 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-if (!defined('AT_INCLUDE_PATH')) { exit; }
-
-		?><br /></td>
-		</tr>
-		</table>
-<br />
-<?php require(AT_INCLUDE_PATH.'html/languages.inc.php'); ?>
-<?php require(AT_INCLUDE_PATH.'html/copyright.inc.php'); ?>
+if (!defined('AT_INCLUDE_PATH')) { exit; } 
+?>
+	<br />
+	<br />
+	<?php require(AT_INCLUDE_PATH.'html/languages.inc.php'); ?>
+	<?php require(AT_INCLUDE_PATH.'html/copyright.inc.php'); ?>
 </body>
 </html>

@@ -39,55 +39,33 @@ if($_POST['update']){
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-//$warning[]=AT_WARNING_SAVE_YOUR_WORK;
-$msg->printAll();
-
-echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="tools/" class="hide" ><img src="images/icons/default/square-large-tools.gif" vspace="2" border="0"  class="menuimageh2" width="42" height="40" alt="" /></a> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="tools/" class="hide" >'._AT('tools').'</a>';
-	}
-echo '</h2>';
-
-echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/copyright-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo _AT('course_copyright2');
-	}
-echo '</h3>';
-$msg->addHelp('COURSE_COPYRIGHT');
-$msg->printAll();
 
 ?>
 
 
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form" enctype="multipart/form-data">
-<input type="hidden" name="MAX_FILE_SIZE" value="204000" />
-<table cellspacing="0" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-	<tr><td colspan="2" class="cat"><label for="copyright"><?php echo _AT('course_copyright'); ?></label></td></tr>
-	<tr><td colspan="2" align="center" class="row1">
-	
-	<textarea name="copyright" rows="5" cols="65" class="formfield" id="copyright"><?php
-		$getcopyright_sql="select copyright from ".TABLE_PREFIX."courses where course_id='$_SESSION[course_id]'";
-		$result2=mysql_query($getcopyright_sql, $db);
-		while($row=mysql_fetch_row($result2)){
-			$show_edit_copyright = $row[0];
-		}
-		if (strlen($show_edit_copyright) > 0){
-			echo $show_edit_copyright;
-		}
-	?></textarea>
-	<input type="hidden" name="update" value="1" />
-	<br />
-	<input type="submit" value="<?php echo _AT('save_changes'); ?> Alt-s" accesskey="s" class="button"/> - <input type="submit" name="cancel" class="button" value="<?php echo _AT('cancel'); ?>" />
-	</td></tr>
-	</table>
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<input type="hidden" name="update" value="1" />
+
+<div class="input-form">
+	<div class="row">
+		<label for="copyright"><?php echo _AT('course_copyright'); ?></label><br />
+		<textarea name="copyright" rows="5" cols="65" id="copyright"><?php
+			$getcopyright_sql="select copyright from ".TABLE_PREFIX."courses where course_id='$_SESSION[course_id]'";
+			$result2=mysql_query($getcopyright_sql, $db);
+			while($row=mysql_fetch_row($result2)){
+				$show_edit_copyright = $row[0];
+			}
+			if (strlen($show_edit_copyright) > 0){
+				echo $show_edit_copyright;
+			}
+			?></textarea>
+	</div>
+
+	<div class="row buttons">
+		<input type="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /> 
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
+	</div>
+</div>
 </form>
 
-<?php
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-?>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
