@@ -58,7 +58,7 @@ if (!isset($_GET['cat_parent_id'])) {
 
 <form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
-<table class="data" summary="" rules="cols">
+<table class="data static" summary="" rules="cols">
 <thead>
 <tr>
 	<th scope="col"><?php echo _AT('title'); ?></th>
