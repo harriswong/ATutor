@@ -176,7 +176,6 @@ $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['tools/index.php']['title']    = _AT('manage');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
-//$_pages['tools/index.php']['children'] = array('forum/list.php');
 
 	$_pages['discussions/polls.php']['title']  = _AT('polls');
 	$_pages['discussions/polls.php']['parent'] = 'tools/index.php';
@@ -226,6 +225,9 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['sitemap.php']['title']  = _AT('sitemap');
 	$_pages['sitemap.php']['parent'] = 'index.php';
+
+	$_pages['tools/modules.php']['title']  = _AT('modules');
+	$_pages['tools/modules.php']['parent'] = 'tools/index.php';
 
 	$_pages['tools/course_email.php']['title']  = _AT('course_email');
 	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
@@ -396,6 +398,21 @@ $_pages['links/index.php']['children'] = array('links/add.php');
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 //$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
+$_pages['discussions/achat/index.php']['title'] = _AT('chat');
+$_pages['discussions/achat/index.php']['parent'] = 'index.php';
+
+$_pages['resources/tile/index.php']['title'] = _AT('tile_search');
+$_pages['resources/tile/index.php']['parent'] = 'index.php';
+
+$_pages['tools/tracker.php']['title'] = _AT('my_tracker');
+$_pages['tools/tracker.php']['parent'] = 'index.php';
+
+$_pages['tools/my_tests.php']['title'] = _AT('my_tests');
+$_pages['tools/my_tests.php']['parent'] = 'index.php';
+
+$_pages['acollab.php']['title'] = 'ACollab';
+$_pages['acollab.php']['parent'] = 'index.php';
+
 /* global pages */
 $_pages['about.php']['title']  = _AT('about_atutor');
 
@@ -412,6 +429,7 @@ $_pages['help/index.php']['children'] = array('help/accessibility.php', 'help/ab
 	$_pages['help/contact_admin.php']['parent'] = 'help/index.php';
 
 $_pages['search.php']['title']      = _AT('search');
+
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 

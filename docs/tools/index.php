@@ -32,6 +32,7 @@
 	<li><a href="tools/tests/index.php"><?php echo _AT('test_manager'); ?></a></li>
 	<li><a href="tools/course_tracker.php"><?php echo _AT('course_tracker'); ?></a></li>
 	<li><a href="tools/course_stats.php"><?php echo _AT('course_stats'); ?></a></li>
+	<li><a href="tools/modules.php"><?php echo _AT('modules'); ?></a></li>
 </ol>
 <?php
 	

@@ -19,7 +19,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 		<li><a href="<?php echo $_base_path; ?>search.php">Search</a></li>
 		<li><a href="<?php echo $_base_path; ?>sitemap.php">Site-Map</a></li>
 		<li><a href="<?php echo $_base_path; ?>tools/ims/index.php"><?php echo _AT('export_content'); ?></a></li>
-		<li><a href="<?php echo $_base_path; ?>discussions/achat/"><?php echo _AT('chat'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>discussions/achat/index.php"><?php echo _AT('chat'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>links/index.php"><?php echo _AT('links'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>resources/tile/index.php"><?php echo _AT('tile_search'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>glossary/index.php"><?php echo _AT('glossary'); ?></a></li>
