@@ -40,7 +40,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$_GET['cat_id'] = intval($_GET['cat_id']); 
 
-	$sql = "SELECT * FROM ".TABLE_PREFIX."resource_links WHERE course_id=$_SESSION[course_id] AND CatID=$_GET[cat_id]";
+	$sql = "SELECT * FROM ".TABLE_PREFIX."resource_categories WHERE course_id=$_SESSION[course_id] AND CatID=$_GET[cat_id]";
 	$result = mysql_query($sql,$db);
 
 	if (mysql_num_rows($result) == 0) {

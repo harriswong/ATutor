@@ -17,8 +17,16 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['cat_id'])) {
 		$msg->addError('NO_CAT_SELECTED');
 } else if (isset($_POST['delete'])) {
-	header('Location: categories_delete.php?cat_id='.$_POST['cat_id']);
-	exit;
+	//check if links are in the cat
+	$sql	= "SELECT LinkID FROM ".TABLE_PREFIX."resource_links WHERE CatID=$_POST[cat_id]";
+	$result = mysql_query($sql, $db);
+    if ($row = mysql_fetch_assoc($result)) {
+		$msg->addError('LINK_CAT_NOT_EMPTY');
+	
+	} else {
+		header('Location: categories_delete.php?cat_id='.$_POST['cat_id']);
+		exit;
+	}
 } else if (isset($_POST['edit'])) {
 	header('Location: categories_edit.php?cat_id='.$_POST['cat_id']);
 	exit;
