@@ -19,6 +19,81 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 
 authenticate(AT_PRIV_ADMIN);
 
+
+if (isset($_POST['up'])) {
+	$up = key($_POST['up']);
+	$_new_modules  = array();
+	if (isset($_POST['main'])) {
+		foreach ($_POST['main'] as $m) {
+			if ($m == $up) {
+				$last_m = array_pop($_new_modules);
+				$_new_modules[] = $m;
+				$_new_modules[] = $last_m;
+			} else {
+				$_new_modules[] = $m;
+			}
+		}
+
+		$_POST['main'] = $_new_modules;
+	}
+
+	if (isset($_POST['home'])) {
+		$_new_modules  = array();
+		foreach ($_POST['home'] as $m) {
+			if ($m == $up) {
+				$last_m = array_pop($_new_modules);
+				$_new_modules[] = $m;
+				$_new_modules[] = $last_m;
+			} else {
+				$_new_modules[] = $m;
+			}
+		}
+
+		$_POST['home'] = $_new_modules;
+	}
+
+	$_POST['submit'] = TRUE;
+} else if (isset($_POST['down'])) {
+	$_new_modules  = array();
+
+	$down = key($_POST['down']);
+
+	if (isset($_POST['main'])) {
+		foreach ($_POST['main'] as $m) {
+			if ($m == $down) {
+				$found = TRUE;
+				continue;
+			}
+			$_new_modules[] = $m;
+			if ($found) {
+				$_new_modules[] = $down;
+				$found = FALSE;
+			}
+		}
+
+		$_POST['main'] = $_new_modules;
+	}
+
+	if (isset($_POST['home'])) {
+		$_new_modules  = array();
+		foreach ($_POST['home'] as $m) {
+			if ($m == $down) {
+				$found = TRUE;
+				continue;
+			}
+			$_new_modules[] = $m;
+			if ($found) {
+				$_new_modules[] = $down;
+				$found = FALSE;
+			}
+		}
+
+		$_POST['home'] = $_new_modules;
+	}
+
+	$_POST['submit'] = TRUE;
+}
+
 // 'search.php',  removed
 if (isset($_POST['submit'])) {
 	if (isset($_POST['main'])) {
@@ -39,30 +114,39 @@ if (isset($_POST['submit'])) {
 		$sql    = "UPDATE ".TABLE_PREFIX."courses SET home_links='$home_links', main_links='$main_links' WHERE course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql, $db);
 	}
-
+	$msg->addFeedback('saved');
 	header('Location: '.$_SERVER['PHP_SELF']);
 	exit;
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
+$_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); // also removes index.php and tools/index.php
+$_current_modules = array_merge($_current_modules, array_diff($_pages[AT_NAV_HOME],$_pages[AT_NAV_COURSE]) );
+$_current_modules = array_merge($_current_modules, array_diff($_modules, $_current_modules));
+
+$count = 0;
+$num_modules = count($_current_modules);
+
 ?>
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table class="data static" rules="rows" summary="">
+<table class="data static" rules="rows" summary="" style="width: 90%;">
 <thead>
 <tr>
 	<th scope="cols"><?php echo _AT('section'); ?></th>
 	<th><?php echo _AT('location'); ?></th>
+	<th><?php echo _AT('order'); ?></th>
 </tr>
 </thead>
 <tfoot>
 <tr>
-	<td colspan="2"><input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /></td>
+	<td colspan="3"><input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /></td>
 </tr>
 </tfoot>
 <tbody>
-<?php foreach ($_modules as $module): ?>
+<?php foreach ($_current_modules as $module): ?>
+<?php $count++; ?>
 <tr>
 	<td><?php echo $_pages[$module]['title']; ?></td>
 	<td>
@@ -76,6 +160,16 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" checked="checked" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
 		<?php else: ?>
 			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
+		<?php endif; ?>
+	</td>
+	<td>
+		<?php if ($count > 1): ?>
+			<input type="submit" name="up[<?php echo $module; ?>]" value="/\" />
+		<?php else: ?>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<?php endif; ?>
+		<?php if ($count < $num_modules): ?>
+			<input type="submit" name="down[<?php echo $module; ?>]" value="\/" />
 		<?php endif; ?>
 	</td>
 </tr>
