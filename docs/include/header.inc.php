@@ -198,8 +198,6 @@ if ($_user_location == 'public') {
 		$savant->assign('tmpl_rel_url', '');
 	}
 
-	$savant->display('include/header.tmpl.php');
-
 	/* course specific elements: */
 	/* != 'public' special case for the about.php page, which is available from a course but hides the content menu */
 	if (($_SESSION['course_id'] > 0) && ($_user_location != 'public')) {
@@ -209,10 +207,12 @@ if ($_user_location == 'public') {
 
 		$next_prev_links = $contentManager->generateSequenceCrumbs($cid);
 
-		if ($_SESSION['prefs'][PREF_SEQ] != BOTTOM) {
-			echo '<div align="right" id="seqtop">' . $next_prev_links . '</div>';
-		}
+		//if ($_SESSION['prefs'][PREF_SEQ] != BOTTOM) {
+		//	echo '<div align="right" id="seqtop">' . $next_prev_links . '</div>';
+	//	}
 	}
+
+	$savant->display('include/header.tmpl.php');
 }
 
 /* Register our Errorhandler on everypage */

@@ -876,7 +876,6 @@ div#feedback {
 	font-weight: bold;
 }
 
-
 div#help {
 	width: 50%;
 	margin-left: auto;
@@ -889,7 +888,6 @@ div#help {
 	color: blue;
 }
 
-
 acronym {
 	cursor: help;
 }
@@ -899,4 +897,27 @@ div.news p {
 }
 div.news span.date {
 	color: #ACACAC;
+}
+
+/* home page links */
+div.home-link {
+	padding: 4px;
+	float: left;
+	text-align: center;
+	margin: 5px;
+}
+div.home-link:hover {
+	padding: 3px;
+	background-color: #efefef;
+	border: 1px solid #afafaf;
+	float: left;
+	text-align: center;
+	margin: 5px;
+}
+div.home-link a {
+	text-decoration: none;
+}
+
+div.home-link img {
+	border: 0px;
 }

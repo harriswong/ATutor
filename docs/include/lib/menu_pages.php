@@ -37,6 +37,8 @@ if ($_SESSION['course_id']) {
 		$_pages[AT_NAV_COURSE][] = 'forum/list.php';
 		$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
 
+		$_pages[AT_NAV_HOME]   = $_modules;
+
 	} else {
 		if ($system_courses[$_SESSION['course_id']]['main_links']) {
 			$main_links = explode('|', $system_courses[$_SESSION['course_id']]['main_links']);
@@ -455,13 +457,16 @@ $_pages['acollab.php']['img'] = 'images/courses/tree.gif';
 $_pages['export.php']['title'] = _AT('export_content');
 $_pages['export.php']['img'] = 'images/courses/fort.gif';
 
-foreach ($_modules as $module) {
-	if (in_array($module, $_pages[AT_NAV_COURSE])) {
-		$_pages[$module]['parent'] = AT_NAV_COURSE;
-	} else {
-		$_pages[$module]['parent'] = 'index.php';
+if (isset($_modules)) {
+	foreach ($_modules as $module) {
+		if (in_array($module, $_pages[AT_NAV_COURSE])) {
+			$_pages[$module]['parent'] = AT_NAV_COURSE;
+		} else {
+			$_pages[$module]['parent'] = 'index.php';
+		}
 	}
 }
+
 /* global pages */
 $_pages['about.php']['title']  = _AT('about_atutor');
 

@@ -117,7 +117,7 @@ while ($row = mysql_fetch_assoc($result)): $count++; ?>
 		<a href="bounce.php?course=<?php echo $row['course_id']; ?>">
 		<?php 
 			if ($row['icon'] == '') {
-				echo '<img src="" class="icon" border="0" width="79" height="79" />';
+				echo '<img src="images/clr.gif" class="icon" border="0" width="79" height="79" />';
 			} else {
 				echo '<img src="images/courses/' . $row['icon'] .'" class="icon" border="0" />';
 			}
