@@ -447,16 +447,10 @@ if ($_SESSION['course_id'] > 0) {
 	</tr>
 	</table>
 </div>
-<!-- the page title -->
-	<!-- div style="float: right">
-	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
-	</div-->
-	<h2 id="page-title"><?php echo $_page_title; ?></h2>
-
 <!-- the sub navigation -->
 	<div id="sub-navigation">
 		<?php if (isset($back_to_page)): ?>
-			<a href="<?php echo $back_to_page['url']; ?>"><img src="<?php echo $this->tmpl_base_path.'themes/'.$this->tmpl_theme; ?>/images/back.gif" border="0" /> Back to <?php echo $back_to_page['title']; ?></a> | 
+			<a href="<?php echo $back_to_page['url']; ?>" id="back-to">Back to <?php echo $back_to_page['title']; ?></a> | 
 		<?php endif; ?>
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php $num_pages = count($_sub_level_pages); ?>
@@ -472,7 +466,14 @@ if ($_SESSION['course_id'] > 0) {
 			<?php endfor; ?>
 		<?php endif; ?>
 	</div>
+
+<!-- the page title -->
+	<h2 id="page-title"><?php echo $_page_title; ?></h2>
+	<!-- div style="float: right">
+	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
+	</div-->
 	<br />
+
 
 	<!--
 	<script type="text/javascript">
