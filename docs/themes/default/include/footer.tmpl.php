@@ -14,7 +14,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 ?>
 	</td>
 <?php if ($_SESSION['course_id'] > 0): ?>
-	<td>
+	<td valign="top">
 		<?php require(AT_INCLUDE_PATH.'html/dropdowns.inc.php'); ?>
 	</td>
 <?php endif; ?>
