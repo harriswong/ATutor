@@ -4,21 +4,12 @@ Jacek Materna<br/>
 
 TODO:<br/>
 <ul>	
-	<li>404.php needs lang code</li>
+	<li>404.php needs lang code-> AT_INFOS_404_BLURB = 
+	'The page you are trying to access <i>%s</i> does 
+	not exist, or has been moved. Try using the 
+	<a href="tools/sitemap/">SiteMap</a> to find it.</li>
 	
-	<li>/resources/links/index.php line 135, printfeedbacks, $msg is not a prefixed lang code
-	The system cannot handle this. Contents of $msg must be translated to lang codes
-	i.e $msg = _AT('suggestion_submitted_approval'); Must be a lang code</li>
-	
-	<li>Savant template var assignments
-		<ul>
-			<li>/include/course_header.inc.php <- line 58</li>
-			<li>/include/footer.inc.php 	   <- line 50</li>
-			<li>/include/html/dropdowns/*</li>
-		</ul>
-	</li>
-	
-	<li>Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes
+	<li>Some new lang codes here
 		<ul>
 			<li>/help/contact_instructor.php</li>
 			<li>/users/private_enroll.php</li>

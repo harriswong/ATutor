@@ -136,7 +136,7 @@ function start_page($CatID="",$title="",$msg="")
 	global $_my_uri;
 	
 	if(!empty($msg)) {
-		print_feedback($msg);
+		$msg->printNoLookupFeedback($msg);
 	}
 
 	$msg->printWarnings();

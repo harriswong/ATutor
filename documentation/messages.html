@@ -279,6 +279,15 @@ Essentially, two lines of code are accomplished in one.</p>
 	$msg->printErrors('MAX_ATTEMPTS');
 </pre>
 
+<h3><a name="Boolean"></a>Printing String inside Feedback style box</h3>
+
+<kbd>printNoLookup($str);</kbd><br/><br/>
+
+<p>Print <kbd>$str</kbd> inside a Feedback Message type style box. Performs
+no dialog with $_SESSION or any language mappings in the language_text DB table.
+Strictly used in <kbd>/resources/links/index.php</kbd> for compatibility.
+</p>
+
 <h3><a name="Boolean"></a>Checking for existance of specific Message type</h3>
 
 <kbd>contains{Errors|Warnings|Feedbacks|Helps|Infos}();</kbd><br/><br/>

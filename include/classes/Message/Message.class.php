@@ -367,6 +367,20 @@ class Message {
 	}
 	
 	/**
+	* Print feedback message using Savant template with no Session dialog and
+	* no database dialog, straight text inside feedback box
+	* @access  public
+	* @param String String message to display inside feedback box
+	* @author  Jacek Materna
+	*/
+	function printNoLookupFeedback($str) {
+		if (str != null) {
+			$this->savant->assign('item', array($str));	// pass string to savant var for processing
+			$this->savant->display($this->tmpl['feedback']);
+		}
+	}
+	
+	/**
 	 * Method which simply check if a particular message type exists in the session obj
 	 */
 	function containsErrors() {

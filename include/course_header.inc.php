@@ -55,7 +55,7 @@ if (!isset($errors) && $onload) {
 	$savant->assign('tmpl_onload', $onload);
 }
 
-$savant->assign('tmpl_popup_help', 'AT_HELP_MAIN_MENU');
+$savant->assign('tmpl_popup_help', 'MAIN_MENU');
 $savant->assign('tmpl_page', $page);
 
 if ($_SESSION['prefs'][PREF_BREADCRUMBS]) {
@@ -105,7 +105,7 @@ require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
 global $savant;
 $msg =& new Message($savant);
 
-$msg->printAll();
+$msg->printFeedbacks();
 /*
 if ($_GET['f']) {
 	$f = intval($_GET['f']);

@@ -92,7 +92,6 @@ exit('this file should not be used');
 				// line to email removed.
 
 				$msg->printFeedbacks('MSG_SENT');
-				echo _AT('message_sent');
 				require(AT_INCLUDE_PATH.'footer.inc.php');
 				exit;
 			}
