@@ -325,6 +325,28 @@ if (isset($_POST['form_course'])) {
 		<textarea name="copyright" rows="2" cols="65" id="copyright"><?php echo $row['copyright']; ?></textarea>
 	</div>
 
+	<div class="row">
+		<label for="icons"><?php echo _AT('select_icon'); ?></label><br />
+		<select name="icon" id="icons" onChange="SelectImg()">
+			<option value="clr.gif"><?php echo _AT('no_icon'); ?></option>
+			<?php
+				if ($dir = opendir('../images/courses/')) {
+					while (false !== ($file = readdir($dir)) ) {
+						if( ($file == '.') || ($file == '..') ) { continue;	}
+						echo '<option value="' . $file . '">' . $file . '</option>';	
+					}		
+					closedir($dir);	
+				}
+			?>
+		</select>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('howto_preview'); ?><br />
+		<label for="0"><?php echo _AT('thumbnail_preview'); ?></label><br />
+		<img id="0" src="images/courses/clr.gif" alt="<?php echo _AT('no_image'); ?>">
+	</div>
+
 	<div class="buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /> 
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" />
@@ -354,6 +376,12 @@ function enableOther()		{ document.course_form.quota_entered.disabled = false; }
 function disableOther()		{ document.course_form.quota_entered.disabled = true; }
 function enableOther2()		{ document.course_form.filesize_entered.disabled = false; }
 function disableOther2()	{ document.course_form.filesize_entered.disabled = true; }
+
+function SelectImg() {
+	document.getElementById(0).src = "images/courses/" + document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
+
+	document.getElementById(0).alt = document.course_form.icon.options[document.course_form.icon.selectedIndex].value;
+}
 
 // -->
 </script>
