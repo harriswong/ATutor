@@ -137,7 +137,7 @@ class ContentManager
 		$result = mysql_query($sql, $this->db);
 
 		/* main topics all have minor_num = 0 */
-		$sql = "INSERT INTO ".TABLE_PREFIX."content VALUES (0,$course_id, $content_parent_id, $ordering, NOW(), 0, $formatting, '$release_date', '$keywords', '', '$title','$text', $inherit_release_date)";
+		$sql = "INSERT INTO ".TABLE_PREFIX."content VALUES (0,$course_id, $content_parent_id, $ordering, NOW(), 0, $formatting, '$release_date', '$keywords', '', '$title','$text', $inherit_release_date, 0)";
 
 		$err = mysql_query($sql, $this->db);
 
@@ -292,6 +292,16 @@ class ContentManager
 
 
 	function & getContentPage($content_id) {
+		$sql	= "SELECT *, release_date+0 AS r_date, NOW()+0 AS n_date FROM ".TABLE_PREFIX."content WHERE content_id=$content_id AND course_id=$this->course_id";
+		$result = mysql_query($sql, $this->db);
+
+		return $result;
+	}
+
+	function & viewContentPage($content_id) {
+		$sql0    = "UPDATE ".TABLE_PREFIX."content SET counter=counter+1 WHERE content_id=$content_id AND course_id=$this->course_id";
+		$result0 = mysql_query($sql0, $this->db);
+
 		$sql	= "SELECT *, release_date+0 AS r_date, NOW()+0 AS n_date FROM ".TABLE_PREFIX."content WHERE content_id=$content_id AND course_id=$this->course_id";
 		$result = mysql_query($sql, $this->db);
 
@@ -950,6 +960,13 @@ class ContentManager
 		}
 
 		return false;
+	}
+
+	function getTrackerInfo() {
+		$sql	= "SELECT title, content_id, counter FROM ".TABLE_PREFIX."content WHERE course_id=$this->course_id";
+		$result = mysql_query($sql, $this->db);
+
+		return $result;
 	}
 
 }
