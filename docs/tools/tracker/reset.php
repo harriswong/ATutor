@@ -25,13 +25,12 @@ if (isset($_POST['submit_no'])) {
 
 else if (isset($_POST['submit_yes'])) {
 	//clean up the db
-
-
+	$sql    = "DELETE FROM ".TABLE_PREFIX."member_track WHERE course_id=$_SESSION[course_id]";
+	$result = mysql_query($sql, $db);
 
 	$msg->addFeedback('TRACKING_DELETED');
 	header('Location: ./index.php');
 	exit;
-
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
