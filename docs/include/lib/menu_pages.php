@@ -281,8 +281,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['tools/links/categories.php']['parent'] = 'tools/links/index.php';
 		$_pages['tools/links/categories.php']['children'] = array('tools/links/categories_add.php');
 
-		$_pages['tools/links/categories_add.php']['title']  = _AT('add_category');
-		$_pages['tools/links/categories_add.php']['parent'] = 'tools/links/categories.php';
+		$_pages['tools/links/categories_create.php']['title']  = _AT('create_category');
+		$_pages['tools/links/categories_create.php']['parent'] = 'tools/links/categories.php';
 
 		$_pages['tools/links/categories_edit.php']['title']  = _AT('edit_category');
 		$_pages['tools/links/categories_edit.php']['parent'] = 'tools/links/categories.php';

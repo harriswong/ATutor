@@ -11,11 +11,24 @@
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
 // $Id$
-
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
+/* available header.tmpl.php variables:
+ *
+ * ======================================
+ * top_level_pages           array(array('url', 'title'))     the top level pages. ATutor default creates tabs.
+ * section_title             string                           the name of the current section. either name of the course, administration, my start page, etc.
+ * page_title                string                           the title of the current page.
+ * path                      array(array('url', 'title'))     the path to the current page.
+ * back_to_page              array('url', 'title')            the link back to the part of the current page, if needed.
+ * current_top_level_page    string                           full url to the current top level page in "top_leve_pages"
+ * current_sub_level_page    string                           full url to the current sub level page in the "sub_level_pages"
+ * sub_level_pages           array(array('url', 'title'))     the sub level pages.
+ *
+ */
+
 // will have to be moved to the header.inc.php
-global $system_courses, $_base_path, $_pages, $_my_uri;
+global $system_courses;
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
@@ -37,10 +50,9 @@ global $system_courses, $_base_path, $_pages, $_my_uri;
 </head>
 <body <?php echo $this->tmpl_onload; ?>><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
-<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div>
 
 <!-- section title -->
-	<h1 id="section-title"><?php echo $this->section_title; ?></h1>
+<h1 id="section-title"><?php echo $this->section_title; ?></h1>
 
 <!-- top help/search/login links -->
 <div align="right" id="top-links">
@@ -95,13 +107,7 @@ global $system_courses, $_base_path, $_pages, $_my_uri;
 		<?php endif; ?>
 	<?php endforeach; ?>
 	<th id="right-empty-tab">
-		<?php if (FALSE && ($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
-			<a href="<?php echo $_my_uri; ?>enable=PREF_EDIT" id="editor-link" class="off"><?php echo _AT('enable_editor'); ?></a>
-		<?php elseif (FALSE && ($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
-			<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
-		<?php else: ?>
-			<small><?php echo $this->tmpl_current_date; ?>&nbsp;</small>
-		<?php endif; ?>
+		<small><?php echo $this->tmpl_current_date; ?>&nbsp;</small>
 	</th>
 	</tr>
 	</table>
@@ -110,12 +116,6 @@ global $system_courses, $_base_path, $_pages, $_my_uri;
 
 <?php if ($this->sub_level_pages): ?>
 	<div id="sub-navigation">
-		<?php if (($_SESSION['course_id'] > 0) && show_pen()): ?>
-			<!--div style="float: right; color: black;">
-				Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
-			</div-->
-		<?php endif; ?>
-
 		<?php if (isset($this->back_to_page)): ?>
 			<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to">Back to <?php echo $this->back_to_page['title']; ?></a> | 
 		<?php endif; ?>
@@ -134,11 +134,6 @@ global $system_courses, $_base_path, $_pages, $_my_uri;
 	</div>
 <?php else: ?>
 	<div id="sub-navigation">
-		<?php if (($_SESSION['course_id'] > 0) && show_pen()): ?>
-			<!--div style="float: right; color: black;">
-				Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
-			</div-->
-		<?php endif; ?>
 		&nbsp;
 	</div>
 <?php endif; ?>
@@ -146,6 +141,7 @@ global $system_courses, $_base_path, $_pages, $_my_uri;
 <!-- the page title -->
 	<h2 id="page-title"><?php echo $this->page_title; ?></h2>
 	<!-- div style="float: right">
+	<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div>
 	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
 	</div-->
 	<!--
