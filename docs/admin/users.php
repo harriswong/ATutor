@@ -30,8 +30,6 @@ $id = $_GET['id'];
 $L = $_GET['L'];
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
-$msg->printAll();
-
 if ($_GET['col']) {
 	$col = addslashes($_GET['col']);
 } else {
@@ -78,8 +76,6 @@ if (($row = mysql_fetch_array($result))==0) {
 		echo ' | ';
 	}
 
-
-	echo '<br /><br /><a name="list"></a>';
 ?>
 
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">

@@ -17,7 +17,9 @@ define('AT_INCLUDE_PATH', '../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
 if ($_POST['cancel']) {
-	header('Location: users.php');
+	$msg->addFeedback('CANCELLED');
+
+	header('Location: users.php#feedback');
 	exit;
 } else if ($_POST['submit']) {
 	$_POST['subject'] = trim($_POST['subject']);
@@ -71,9 +73,7 @@ if ($_POST['cancel']) {
 		unset($mail);
 
 		$msg->addFeedback('MSG_SENT');
-		header('Location: users.php');
-		
-		require(AT_INCLUDE_PATH.'footer.inc.php');
+		header('Location: users.php#feedback');
 		exit;
 	}
 }

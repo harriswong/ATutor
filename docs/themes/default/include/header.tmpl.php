@@ -350,9 +350,12 @@ $_page_title = $_pages[$current_page]['title'];
 if ($_SESSION['course_id'] > 0) {
 	$_section_title = $_SESSION['course_title'];
 } else if (!$_SESSION['valid_user']) {
-	$_section_title = 'Welcome';
+	$_section_title = SITE_NAME;
+	if (defined('HOME_URL') && HOME_URL) {
+		$_top_level_pages[] = array('url' => HOME_URL, 'title' => _AT('home'));
+	}
 } else if ($_SESSION['course_id'] < 0) {
-	$_section_title = 'Administration';
+	$_section_title = _AT('administration');
 } else if (!$_SESSION['course_id']) {
 	$_section_title = _AT('my_start_page');
 }
@@ -424,48 +427,54 @@ if ($_SESSION['course_id'] > 0) {
 	</div>
 
 <!-- the main navigation. in our case, tabs -->
-	<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
-	<tr>
-		<th id="left-empty-tab">&nbsp;</th>
-		<?php foreach ($_top_level_pages as $page): ?>
-			<?php if ($page['url'] == $_current_top_level_page): ?>
-				<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
-				<th class="tab-spacer">&nbsp;</th>
-			<?php else: ?>
-				<th class="tab"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
-				<th class="tab-spacer">&nbsp;</th>
-			<?php endif; ?>
-		<?php endforeach; ?>
-		<th id="right-empty-tab"><?php if (($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
-									<a href="<?php echo $_my_uri; ?>enable=PREF_EDIT" id="editor-link" class="off"><?php echo _AT('enable_editor'); ?></a>
-
-								<?php elseif (($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
-									<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
-								<?php endif; ?>
-
-								&nbsp;</th>
+<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+	<th id="left-empty-tab">&nbsp;</th>
+	<?php foreach ($_top_level_pages as $page): ?>
+		<?php if ($page['url'] == $_current_top_level_page): ?>
+			<th class="selected"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
+			<th class="tab-spacer">&nbsp;</th>
+		<?php else: ?>
+			<th class="tab"><a href="<?php echo $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
+			<th class="tab-spacer">&nbsp;</th>
+		<?php endif; ?>
+	<?php endforeach; ?>
+	<th id="right-empty-tab">
+		<?php if (($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
+			<a href="<?php echo $_my_uri; ?>enable=PREF_EDIT" id="editor-link" class="off"><?php echo _AT('enable_editor'); ?></a>
+		<?php elseif (($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
+			<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
+		<?php else: ?>
+			&nbsp;
+		<?php endif; ?>
+	</th>
 	</tr>
 	</table>
 </div>
 <!-- the sub navigation -->
+<?php if ($_sub_level_pages): ?>
 	<div id="sub-navigation">
 		<?php if (isset($back_to_page)): ?>
 			<a href="<?php echo $back_to_page['url']; ?>" id="back-to">Back to <?php echo $back_to_page['title']; ?></a> | 
 		<?php endif; ?>
-		<?php if (isset($_sub_level_pages)): ?>
-			<?php $num_pages = count($_sub_level_pages); ?>
-			<?php for($i=0; $i<$num_pages; $i++): ?>
-				<?php if ($_sub_level_pages[$i]['url'] == $_current_sub_level_page): ?>
-					<strong><?php echo $_sub_level_pages[$i]['title']; ?></strong>
-				<?php else: ?>
-					<a href="<?php echo $_sub_level_pages[$i]['url']; ?>"><?php echo $_sub_level_pages[$i]['title']; ?></a>
-				<?php endif; ?>
-				<?php if ($i < $num_pages-1): ?>
-					|
-				<?php endif; ?>
-			<?php endfor; ?>
-		<?php endif; ?>
+
+		<?php $num_pages = count($_sub_level_pages); ?>
+		<?php for($i=0; $i<$num_pages; $i++): ?>
+			<?php if ($_sub_level_pages[$i]['url'] == $_current_sub_level_page): ?>
+				<strong><?php echo $_sub_level_pages[$i]['title']; ?></strong>
+			<?php else: ?>
+				<a href="<?php echo $_sub_level_pages[$i]['url']; ?>"><?php echo $_sub_level_pages[$i]['title']; ?></a>
+			<?php endif; ?>
+			<?php if ($i < $num_pages-1): ?>
+				|
+			<?php endif; ?>
+		<?php endfor; ?>
 	</div>
+<?php else: ?>
+	<div id="sub-navigation">
+		&nbsp;
+	</div>
+<?php endif; ?>
 
 <!-- the page title -->
 	<h2 id="page-title"><?php echo $_page_title; ?></h2>
@@ -493,3 +502,4 @@ if ($_SESSION['course_id'] > 0) {
 	</div>
 	-->
 <a name="content"></a>
+<?php global $msg; $msg->printAll(); ?>

@@ -838,6 +838,11 @@ div#sub-navigation {
 	padding: 5px;
 	background-color: #EAF2FE;
 	border-bottom: 1px solid #c0d0d0;
+	color: #c0d0d0;
+}
+
+div#sub-navigation strong {
+	color: black;
 }
 
 div#help {
@@ -1009,8 +1014,8 @@ div#error {
 	width: 50%;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-top: 15px;
+	margin-bottom: 15px;
 	border: 1px solid red;
 	padding: 5px;
 	background-color: #fffcf3;
@@ -1029,8 +1034,8 @@ div#feedback {
 	width: 50%;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-top: 15px;
+	margin-bottom: 15px;
 	border: 1px solid green;
 	padding: 5px;
 	background-color: #c3fffc;
