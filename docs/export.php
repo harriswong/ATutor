@@ -15,13 +15,13 @@
 define('AT_INCLUDE_PATH', './include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (isset($_POST['cancel']) {
-	$msg->addFeeback('cancelled');
+if (isset($_POST['cancel'])) {
+	$msg->addFeedback('CANCELLED');
 	header('Location: index.php');
 	exit;
 }
 
-if (isset($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	header('Location: tools/ims/ims_export.php?cid' . $_POST['cid']);
 	exit;
 }
