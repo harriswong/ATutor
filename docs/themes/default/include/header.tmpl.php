@@ -24,9 +24,15 @@ $_pages['profile.php'] = array('profile', '0');
 
 if (!$_SESSION['course_id']) {
 	$_top_level_pages[] = array('url' => 'users/index.php',       'title' => _AT('my_courses'));
-	$_top_level_pages[] = array('url' => 'users/edit.php',        'title' => _AT('profile'));
+	$_top_level_pages[] = array('url' => 'users/profile.php',     'title' => _AT('profile'));
 	$_top_level_pages[] = array('url' => 'users/preferences.php', 'title' => _AT('preferences'));
 	$_top_level_pages[] = array('url' => 'users/inbox.php',       'title' => _AT('inbox'));
+
+	if ($_SERVER['PHP_SELF'] == $_base_path . 'users/index.php') {
+		$_sub_level_pages[] = array('url' => 'users/index.php',         'title' => _AT('my_courses'));
+		$_sub_level_pages[] = array('url' => 'users/browse.php',        'title' => _AT('browse_courses'));
+		$_sub_level_pages[] = array('url' => 'users/create_course.php', 'title' => _AT('create_course'));
+	}
 
 	$_section_title = 'My Start Page';
 
@@ -85,10 +91,37 @@ if (!$_SESSION['course_id']) {
 			<th class="tab-spacer">&nbsp;</th>
 		<?php endif; ?>
 	<?php endforeach; ?>
-	<th id="right-empty-tab">&nbsp;</th>
+	<th id="right-empty-tab"><!-- course select drop down -->
+		<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
+			<label for="jumpmenu" accesskey="j"></label>
+			<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  ALT-j">							
+				<option value="0"><?php echo _AT('my_courses'); ?></option>
+				<?php if ($_SESSION['valid_user']): ?>								
+					<optgroup label="<?php echo _AT('courses_below'); ?>">
+						<?php foreach ($this->tmpl_nav_courses as $this_course_id => $this_course_title): ?>
+							<?php if ($this_course_id == $_SESSION['course_id']): ?>
+								<option value="<?php echo $this_course_id; ?>" selected="selected"><?php echo $this_course_title; ?></option>
+							<?php else: ?>
+								<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</optgroup>
+				<?php endif; ?>
+			</select>&nbsp;<input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /><input type="hidden" name="g" value="22" /></form></td>
+		<!-- end course select drop down --></th>
 </tr>
 <tr>
 	<td colspan="<?php echo count($_top_level_pages) *2 +2; ?>" class="content">
+	<?php if (isset($_sub_level_pages)): ?>
+		<?php foreach ($_sub_level_pages as $page): ?>
+		<?php if ($_base_path . $page['url'] == $_SERVER['PHP_SELF']): ?>
+			<strong><?php echo $page['title']; ?></strong>
+		<?php else: ?>
+			<a href="<?php echo $_base_path . $page['url']; ?>"><div><?php echo $page['title']; ?></div></a>
+		<?php endif; ?>
+	<?php endforeach; ?>
+
+	<?php endif; ?>
 	
 
 <?php return; ?>
