@@ -177,6 +177,19 @@ if (defined('AC_PATH') && AC_PATH) {
 </tr>
 <?php } ?>
 
+<?php if (authenticate(AT_PRIV_ANNOUNCEMENTS, AT_PRIV_RETURN)) { ?>
+<tr>
+	<?php
+			echo '<td rowspan="2" valign="top">*</td>';
+			echo '<td>';
+				echo ' <a href="tools/news/index.php">'._AT('announcements').'</a>';
+			echo '</td></tr><tr><td>';
+			echo _AT('announcement_text');
+			?>
+	</td>
+</tr>
+<?php } ?>
+
 <?php if (authenticate(AT_PRIV_COURSE_EMAIL, AT_PRIV_RETURN)) { ?>
 <tr>
 	<?php

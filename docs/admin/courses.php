@@ -110,7 +110,10 @@ if (!($row = mysql_fetch_assoc($result))) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="8"><input type="submit" name="view" value="View" /> <input type="submit" name="edit" value="Edit" /> <input type="submit" name="backups" value="Backups" /> <input type="submit" name="delete" value="Delete" /></td>
+	<td colspan="8"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" /> 
+					<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
+					<input type="submit" name="backups" value="<?php echo _AT('backups'); ?>" /> 
+					<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
 </tr>
 </tfoot>
 <tbody>
