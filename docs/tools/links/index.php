@@ -23,7 +23,7 @@ require (AT_INCLUDE_PATH.'lib/links.inc.php');
 if (isset($_POST['edit'])) {
 	header('Location: edit.php?lid='.$_POST['link_id']);
 	exit;
-} else if (isset($_POST['edit'])) {
+} else if (isset($_POST['delete'])) {
 	header('Location: delete.php?lid='.$_POST['link_id']);
 	exit;
 }
