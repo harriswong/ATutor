@@ -5,6 +5,7 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	font-size: small;
+	background-color: white;
 }
 
 /* heading attributes */
@@ -12,8 +13,9 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: trebuchet ms, Arial, sans-serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
-	margin-left: 0px;
+	margin-left: 5px;
 	margin-right: 0px;
+	color: #D15600;
 }
 
 /* paragraph attributes */
@@ -349,42 +351,6 @@ a .highlight{
 	text-decoration: underline;
 }
 
-/*public area*/
-.cyan{
-	background-color:#464F88;
-	color: white; 
-	font-family: Helvetica, Helvetica, sans-serif;
-	font-weight:bold;
-}
-.cyan2{
- background-color:#464F88;
- padding: 2px;
- color: white; 
- font-family: Helvetica, Helvetica, sans-serif;
- font-weight:bold;
- text-align:center;
-}
-
-th.cyan{
- background-color:#006699;
- padding: 3px;
- color: white; 
- font-family: Helvetica, Helvetica, sans-serif;
- text-align:center;
- font-weight: normal;
-}
-.cyan a:link{
- color: white;
- text-decoration: underline;
-}
-.cyan a:visited{
- color: white;
- text-decoration: underline;
-}
-.cyan a:hover{
- color: white;
- text-decoration: underline;
-}
 
 .center {
 	text-align: center;
@@ -401,29 +367,6 @@ td.navmenu {
 	white-space:nowrap;
 	border-left: 1px white solid;
 	text-decoration: none;
-}
-
-td.navmenu a:link, td.navmenu a:visited{
-	color: white;
-	text-decoration: none;
-}
-td.navmenu a:hover, td.navmenu a:visited.selected{
-	color: white;
-	text-decoration: none;
-}
-td.navmenu.selected, td.navmenu.selected a:visited {
-	background-color: orange;
-	text-decoration: none;
-}
-td.navmenu.selected, td.navmenu.selected a:hover {
-	background-color: orange;
-	text-decoration: none;
-}
-
-/* styles from stylesheet.css */
-.bodyline {
-	background-color: #FFFFFF;
-	border: 1px #98AAB1 solid;
 }
 
 #jumpmenu, optgroup {
@@ -462,13 +405,7 @@ td.usernavmenu {
 	padding-bottom: 1px;
 	background-color: #cccccc;
 }
-#preferences-user-nav {
-	background: transparent url(images/prefs.gif) 0 1px no-repeat;
-	padding-left: 18px;
-	padding-top: 1px;
-	padding-bottom: 1px;
-	background-color: #cccccc;
-}
+
 #inbox-user-nav {
 	background: transparent url(images/inbox.gif) 0 1px no-repeat;
 	padding-left: 18px;
@@ -483,15 +420,6 @@ td.navmenu.borderless {
 	padding-right: 10px;
 }
 
-#course-nav {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-	background-color: #EFEFEF;
-	text-align: center;
-	padding: 0px;
-	text-decoration: none;
-	border-top: 1px #98AAB1 solid;
-	border-bottom: 1px #98AAB1 solid;
-} 
 
 .course-nav-item {
 	color: #464F88;
@@ -713,32 +641,32 @@ table.tabbed-table {
 table.tabbed-table th#left-empty-tab {
 	background-color: transparent;
 	width: 15px;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #9DAB9A;
 }
 table.tabbed-table th#right-empty-tab {
 	text-align: right;
 	background-color: transparent;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #9DAB9A;
 	width: 420;
 }
 table.tabbed-table th.tab-spacer {
 	background-color: transparent;
 	width: 5px;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #9DAB9A;
 }
 
 table.tabbed-table th.tab {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	width: 130px;
-	background-color: #D4E5FD;
-	border-bottom: 1px solid black;
-	border-left: 1px solid black;
-	border-top: 1px solid black;
-	border-right: 1px solid black;
+	background-color: #C9CEA4;
+	border-bottom: 1px solid #9DAB9A;
+	border-left: 1px solid #9DAB9A;
+	border-top: 1px solid #9DAB9A;
+	border-right: 1px solid #9DAB9A;
 }
 table.tabbed-table th.tab:hover {
-	background-color: #EAF2FE;
+	background-color: #DFE1C7;
 }
 
 table.tabbed-table th.tab a:focus {
@@ -748,15 +676,19 @@ table.tabbed-table th.selected {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	width: 130px;
-	background-color: #EAF2FE;
-	border-left: 1px solid black;
-	border-top: 1px solid black;
-	border-right: 1px solid black;
+	background-color: #DFE1C7;
+	border-left: 1px solid #9DAB9A;
+	border-top: 1px solid #9DAB9A;
+	border-right: 1px solid #9DAB9A;
+}
+
+table.tabbed-table a {
+	color: black;
 }
 
 a#my-start-page {
 	margin-left: 5px;
-	background-color: #EFEFEF;
+	background-color: #DFE1C7;
 	padding: 4px;
 	padding-left: 15px;
 	border: 1px solid #cccccc;
@@ -776,13 +708,13 @@ a#back-to {
 div#breadcrumbs {
 	margin-bottom: 5px;
 	margin-top: 10px;
-	border-top: 1px dashed #cccccc;
-	border-bottom: 1px dashed #cccccc;
+	border-top: 1px solid #EDB512;
+	border-bottom: 1px solid #EDB512;
 	padding: 5px;
 	font-weight: bold;
 	font-size: smaller;
-	background-color: #FAF9F9;
-	color: #888888;
+	background-color: #FCFCCE;
+	color: black;
 }
 h2#page-title {
 	margin-bottom: 10px;
@@ -797,9 +729,9 @@ h1 {
 
 div#sub-navigation {
 	padding: 5px;
-	background-color: #EAF2FE;
-	border-bottom: 1px solid #c0d0d0;
-	color: #c0d0d0;
+	background-color: #DFE1C7;
+	border-bottom: 1px solid #9DAB9A;
+	color: #9DAB9A;
 }
 
 div#sub-navigation strong {
