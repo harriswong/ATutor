@@ -25,7 +25,7 @@
 	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a></li>
 	<li><a href="tools/backup/index.php"><?php echo _AT('backups'); ?></a></li>
 	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrolment'); ?></a> ( send email, enrollment manager, tracker)</li>
-	<li><a href="discussions/polls.php"><?php echo _AT('polls'); ?></a></li>
+	<li><a href="tools/polls/index.php"><?php echo _AT('polls'); ?></a></li>
 	<li><a href="resources/tile/index.php"><?php echo _AT('tile_search'); ?></a></li>
 	<li><a href="tools/links/index.php"><?php echo _AT('links'); ?></a></li>
 	<li><a href="tools/filemanager/index.php"><?php echo _AT('file_manager'); ?></a></li>
@@ -33,6 +33,7 @@
 	<li><a href="tools/course_tracker.php"><?php echo _AT('course_tracker'); ?></a></li>
 	<li><a href="tools/course_stats.php"><?php echo _AT('course_stats'); ?></a></li>
 	<li><a href="tools/modules.php"><?php echo _AT('modules'); ?></a></li>
+	<li><a href="tools/glossary/index.php"><?php echo _AT('glossary'); ?></a></li>
 </ol>
 <?php
 	
