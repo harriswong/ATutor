@@ -32,17 +32,17 @@ if (mysql_num_rows($result) == 0) {
 } 
 ?>
 
-<table align="center" width="40%" border="1">
+<!--table align="center" width="40%" border="1">
 	<tr>
-		<th>Category</th>
-		<th>Courses</th>
+		<th><?php echo _AT('category'); ?></th>
+		<th><?php echo _AT('courses'); ?></th>
 	</tr>
-
 	<tr>
-	<td>
-
+	<td-->
+<div style="margin-left: auto; margin-right: auto; width:30%; ">
+	<div style="float: left;">
 			<?php if (empty($cat)) { ?>
-				<img src="images/side_arrow.gif" /><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br />
+				<img src="images/side_arrow.gif" alt="Selected Category" /><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br />
 			<?php } else { ?>
 				<div style="margin-left: 9px;"><a href="<?php echo $_SERVER['PHP_SELF']; ?>">All Courses</a><br /></div>
 			<?php }	?>
@@ -59,9 +59,9 @@ if (mysql_num_rows($result) == 0) {
 				$current_cats[$row['cat_id']] = $row['cat_name'];
 			}
 			?>
-			</div>
-	</td>
-	<td align="left" valign="top">
+			<br />
+	</div>
+	<div style="float: right;">
 			<?php
 			if (!empty($cat)) {
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE hide=0 AND cat_id=".$_GET['cat']." ORDER BY title";
@@ -74,9 +74,9 @@ if (mysql_num_rows($result) == 0) {
 				echo '<a href="bounce.php?course='.$row['course_id'].'">'.$system_courses[$row['course_id']]['title'].'</a><br />';
 			}
 			?>
-	</td>
-</tr>
-</table>
+	</div>
+</div>
+<br />
 
 <?php
 	require(AT_INCLUDE_PATH.'footer.inc.php');
