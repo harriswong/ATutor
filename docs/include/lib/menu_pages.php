@@ -27,9 +27,9 @@ define('AT_NAV_ADMIN',  4);
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
-	$_pages[AT_NAV_COURSE] = array('index.php',  'forum/list.php',        'resources/links/index.php', 'tools/index.php');
+	$_pages[AT_NAV_COURSE] = array('index.php',  'forum/list.php',        'links/index.php', 'tools/index.php');
 } else {
-	$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php',        'resources/links/index.php');
+	$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php',        'links/index.php');
 }
 $_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 
