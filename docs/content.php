@@ -48,8 +48,26 @@ $parent_headings = '';
 $num_in_path = count($path)-1;
 
 /* the page title: */
-/*
+
 $page_title = '';
+
+$page_title .= $content_row['title'];
+
+$num_in_path = count($path)-1;
+for ($i=0; $i<$num_in_path; $i++) {
+	$content_info = $path[$i];
+	if ($_SESSION['prefs'][PREF_NUMBERING]) {
+		if ($contentManager->_menu_info[$content_info['content_id']]['content_parent_id'] == 0) {
+			$top_num = $contentManager->_menu_info[$content_info['content_id']]['ordering'];
+			$parent_headings .= $top_num;
+		} else {
+			$top_num = $top_num.'.'.$contentManager->_menu_info[$content_info['content_id']]['ordering'];
+			$parent_headings .= $top_num;
+		}
+		$parent_headings .= ' ';
+	}
+}
+
 if ($_SESSION['prefs'][PREF_NUMBERING]) {
 	if ($top_num != '') {
 		$top_num = $top_num.'.'.$content_row['ordering'];
@@ -59,9 +77,6 @@ if ($_SESSION['prefs'][PREF_NUMBERING]) {
 		$page_title .= $top_num.' ';
 	}
 }
-$page_title .= $content_row['title'];
-
-*/
 
 $parent = 0;
 foreach ($path as $page) {
@@ -91,8 +106,6 @@ if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) && ($_SESSION['prefs'][PREF_ED
 */
 
 save_last_cid($cid);
-
-
 
 /*
 if ((	($content_row['r_date'] <= $content_row['n_date'])
