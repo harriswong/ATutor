@@ -50,45 +50,43 @@ if (isset($_POST['save'])) {
 	}
 }
 
-	$file    = $_GET['file'];
-	$pathext = $_GET['pathext']; 
-	$popup   = $_GET['popup'];
-	$framed  = $_GET['framed'];
+$file    = $_GET['file'];
+$pathext = $_GET['pathext']; 
+$popup   = $_GET['popup'];
+$framed  = $_GET['framed'];
 
-	$filedata = stat($current_path.$pathext.$file);
-	$path_parts = pathinfo($current_path.$pathext.$file);
-	$ext = strtolower($path_parts['extension']);
+$filedata = stat($current_path.$pathext.$file);
+$path_parts = pathinfo($current_path.$pathext.$file);
+$ext = strtolower($path_parts['extension']);
 
-	// open file to edit
-	$real = realpath($current_path . $pathext . $file);
+// open file to edit
+$real = realpath($current_path . $pathext . $file);
 
-	if (course_realpath($current_path . $pathext . $file) == FALSE) {
-		// error: File does not exist
-		$msg->addError('FILE_NOT_EXIST');
-		header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
-		exit;
-	} else if (is_dir($current_path.$pathext.$file)) {
-		// error: cannot edit folder
-		$msg->addError('BAD_FILE_TYPE');
-		header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
-		exit;
-	} else if (!is_readable($current_path.$pathext.$file)) {
-		// error: File cannot open file
-		$msg->addError(array('CANNOT_OPEN_FILE', $file));
-		header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
-		exit;
-	} else if (in_array($ext, $editable_file_types)) {
-		$_POST['body_text'] = file_get_contents($current_path.$pathext.$file);
-	} else {
-		//error: bad file type
-		$msg->addError('BAD_FILE_TYPE');
-		header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
-		exit;
-	}
+if (course_realpath($current_path . $pathext . $file) == FALSE) {
+	// error: File does not exist
+	$msg->addError('FILE_NOT_EXIST');
+	header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
+	exit;
+} else if (is_dir($current_path.$pathext.$file)) {
+	// error: cannot edit folder
+	$msg->addError('BAD_FILE_TYPE');
+	header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
+	exit;
+} else if (!is_readable($current_path.$pathext.$file)) {
+	// error: File cannot open file
+	$msg->addError(array('CANNOT_OPEN_FILE', $file));
+	header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
+	exit;
+} else if (in_array($ext, $editable_file_types)) {
+	$_POST['body_text'] = file_get_contents($current_path.$pathext.$file);
+} else {
+	//error: bad file type
+	$msg->addError('BAD_FILE_TYPE');
+	header('Location: index.php?pathext='.$pathext.SEP.'framed='.$framed.SEP.'popup='.$popup);
+	exit;
+}
 
-	require($_header_file);
-
-	echo '<p align="center"><strong>'.$file.'</strong></p>';
+require($_header_file);
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
@@ -98,6 +96,9 @@ if (isset($_POST['save'])) {
 <input type="hidden" name="file"    value="<?php echo $file; ?>" />
 
 <div class="input-form">
+	<div class="row">
+		<h3><?php echo $file; ?></h3>
+	</div>
 	<div class="row">
 		<label for="body_text"><?php echo _AT('body'); ?></label><br />
 		<textarea  name="body_text" id="body_text" rows="25"><?php echo $_POST['body_text']; ?></textarea>
