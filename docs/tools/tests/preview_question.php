@@ -15,7 +15,12 @@
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-	
+
+if (isset($_GET['submit'])) {
+	header('Location: '.$_base_href.'tools/tests/question_db.php');
+	exit;
+}
+
 if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 	$content_base_href = 'get.php/';
 } else {
@@ -30,20 +35,20 @@ $sql = "SELECT * FROM ".TABLE_PREFIX."tests_questions WHERE course_id=$_SESSION[
 $result	= mysql_query($sql, $db);
 $row = mysql_fetch_assoc($result);
 
-echo '<h4><a href="'.$_base_path.'tools/tests/question_db.php">'._AT('question_database').'</a>: '._AT('preview').'</h4>';
-echo '<br />';
-
 if ($row['properties'] == AT_TESTS_QPROP_ALIGN_VERT) {
 	$spacer = '<br />';
 } else {
 	$spacer = ', ';
 }
+echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'">';
+echo '<div class="input-form">';
+echo '<div class="row">';
+echo '<h3>'.AT_print($row['question'], 'tests_questions.question').'</h3>';
 
 switch ($row['type']) {
 	
 	case AT_TESTS_MC:
 		/* multiple choice question */
-		echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
 		for ($i=0; $i < 10; $i++) {
 			if ($row['choice_'.$i] != '') {
 				if ($i > 0) {
@@ -61,7 +66,6 @@ switch ($row['type']) {
 				
 	case AT_TESTS_TF:
 		/* true or false quastion */
-		echo AT_print($row['question'], 'tests_questions.question').'<br />';
 
 		echo '<input type="radio" name="question_'.$row['question_id'].'" value="1" id="choice_'.$row['question_id'].'_1" /><label for="choice_'.$row['question_id'].'_1">'._AT('true').'</label>';
 
@@ -76,7 +80,7 @@ switch ($row['type']) {
 
 	case AT_TESTS_LONG:
 		/* long answer question */
-		echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
+		echo '<p>';
 		switch ($row['properties']) {
 			case AT_TESTS_QPROP_WORD:
 				/* one word */
@@ -104,7 +108,7 @@ switch ($row['type']) {
 
 	case AT_TESTS_LIKERT:
 		/* Likert question */
-		echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
+		echo '<p>';
  
 		for ($i=0; $i < 10; $i++) {
 			if ($row['choice_'.$i] != '') {
@@ -122,7 +126,10 @@ switch ($row['type']) {
 		echo '</p>';
 		break;
 }
-echo '<hr />';
+echo '</div>';
+echo '<div class="row buttons"><input type="submit" name="submit" value="'._AT('back').'" /></div>';
+echo '</div>';
+echo '</form>';
 
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

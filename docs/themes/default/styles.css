@@ -279,8 +279,20 @@ a .highlight{
 .center {
 	text-align: center;
 }
-
-/* new classes for the nav menu */
+#jump-button {
+	font-family: Helvetica, Arial, Helvetica, sans-serif;	
+	background-color: #3C92A9;
+	border-top:  #98AAB1  solid 1px;
+	border-bottom: #98AAB1 solid 1px;
+	border-right: #98AAB1 solid 1px;
+	border-left: #98AAB1 solid 1px;	
+	color: white;
+	font-size: smaller;
+}
+#jumpmenu, optgroup {
+	font-size: smaller;
+}
+/* new classes for the nav menu
 table.navmenu {
 	background-color: #464F88;
 }
@@ -293,22 +305,9 @@ td.navmenu {
 	text-decoration: none;
 }
 
-#jumpmenu, optgroup {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-    background-color: #F1F3F1;
-	font-size: smaller;
-}
 
-#jump-button {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;	
-	background-color: #3C92A9;
-	border-top:  #98AAB1  solid 1px;
-	border-bottom: #98AAB1 solid 1px;
-	border-right: #98AAB1 solid 1px;
-	border-left: #98AAB1 solid 1px;	
-	color: white;
-	font-size: smaller;
-}
+
+
 
 #user-bar {
 	font-family: Helvetica, Arial, Helvetica, sans-serif;
@@ -361,6 +360,11 @@ td.navmenu.borderless {
 	color: #3C92A9;
 	text-decoration: underline;
 }
+
+option, select, optgroup {
+	background-color: white;
+}
+*/
 
 /* instructor menu #464F88*/
 table.instmenu {

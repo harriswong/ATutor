@@ -332,8 +332,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/preview.php']['title']  = _AT('preview');
 	$_pages['tools/tests/preview.php']['parent'] = 'tools/tests/index.php';
 
-	//$_pages['tools/tests/questions.php']['title']  = _AT('questions');
-	//$_pages['tools/tests/questions.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/preview_question.php']['title']  = _AT('preview');
+	$_pages['tools/tests/preview_question.php']['parent'] = 'tools/tests/question_db.php';
 
 	$_pages['tools/tests/results.php']['title']  = _AT('submissions');
 	$_pages['tools/tests/results.php']['parent'] = 'tools/tests/index.php';
