@@ -65,11 +65,7 @@ $msg->printAll();
 
 <div class="input-form">
 	<div class="row">
-		<h3><?php echo _AT('cats_add_categories'); ?></h3>
-	</div>
-
-	<div class="row">
-		<label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br ?>
+		<label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br />
 		<input type="text" id="category_name" name="cat_name" value="<?php echo stripslashes(htmlspecialchars($categories[$cat_id]['cat_name'])); ?>" />
 	</div>
 
@@ -125,7 +121,8 @@ $msg->printAll();
 <?php endif; ?>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('create'); ?>" accesskey="s" /><input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
+		<input type="submit" name="submit" value="<?php echo _AT('create'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
 	</div>
 </div>
 </form>
