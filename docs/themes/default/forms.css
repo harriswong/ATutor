@@ -3,13 +3,24 @@ div.input-form {
 	margin-left:auto; 
 	margin-right:auto;
 	border: 1px solid #f0f0f0;
-	padding: 8px;
-	background-color: #fcfcfc;
+	/* padding: 8px; */
+	/* background-color: #fcfcfc; */
 }
 
-div.input-form div.row {
-	margin-bottom: 15px;
+
+div.input-form div.rowA, div.input-form div.rowB {
+	background-color: #fdfdfd;
+	/* margin-bottom: 15px; */
+	padding:8px;
 }
+
+/*
+div.input-form div.rowB {
+	background-color: 0;
+	margin-bottom: 15px;
+	padding:8px;
+}
+*/
 
 div.input-form p {
 	margin-left: 0px;
@@ -34,6 +45,7 @@ div.input-form input {
 	border: 1px solid #999;
 	background-color: white;
 	padding: 2px;
+	max-width: 60%;
 }
 
 div.input-form input:focus {
@@ -41,9 +53,9 @@ div.input-form input:focus {
 	padding: 2px
 }
 
-
 div.input-form div.buttons {
 	text-align: right;
+	padding:8px;
 }
 div.input-form div.buttons input {
 	background-color: white;

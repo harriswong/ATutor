@@ -122,6 +122,8 @@ if (isset($_GET['course'])) {
 	$savant->assign('tmpl_title',  ' ');
 }
 
+$savant->assign('cycle_input_rows', array('rowA', 'rowB'));
+
 $savant->display('login.tmpl.php');
 
 ?>

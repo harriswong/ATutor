@@ -168,129 +168,120 @@ if (isset($_POST['form_course'])) {
 <br />
 <?php endif; ?>
 
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" width="95%" summary="" align="center">
-<tr>
-	<th colspan="2" class="cyan"><?php echo _AT('course_properties'); ?></th>
-</tr>
-<?php if ($isadmin) { ?>
-<tr>
-	<td class="row1" align="right" nowrap="nowrap"><strong><label for="inst"><?php echo  _AT('instructor'); ?>:</label></strong></td>
-	<td class="row1"><select name="instructor" id="inst">
-		<?php 
-		//see include/lib/filemanager.inc.php
-		output_instructors($row['member_id']); ?>
+<div class="input-form">
+
+<?php if ($isadmin): ?>
+	<div class="rowA">
+		<label for="inst"><?php echo  _AT('instructor'); ?></label><br />
+		<select name="instructor" id="inst"><?php 
+			//see include/lib/filemanager.inc.php
+			output_instructors($row['member_id']); ?>
 		</select>
-	</td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<?php } ?>
-<tr>
-	<td class="row1" align="right" nowrap="nowrap"><strong><label for="title"><?php echo  _AT('title'); ?>:</label></strong></td>
-	<td class="row1"><input type="text" id="title" name="title" class="formfield" size="40" value="<?php echo stripslashes(htmlspecialchars($row['title'])); ?>" /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td nowrap="nowrap" class="row1" align="right"><strong><label for="pri_lang"><?php  echo _AT('primary_language'); ?>:</label></strong></td>
-	<td class="row1"><?php $languageManager->printDropdown($row['primary_language'], 'pri_lang', 'pri_lang'); ?></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" valign="top" align="right"><strong><label for="description"><?php echo _AT('description'); ?>:</label></strong></td>
-	<td class="row1"><textarea id="description" cols="45" rows="4" class="formfield" name="description"><?php echo $row['description']; ?></textarea></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td class="row1" align="right"><strong><label for="cat"><?php echo _AT('category'); ?>:</label></strong></td><td class="row1">
-<?php
-	$categories = get_categories();
+	</div>
+<?php endif; ?>
 
-	if (is_array($categories)) {
+	<div class="rowA">
+		<label for="title"><?php echo _AT('title'); ?></label><br />
+		<input type="text" id="title" name="title" size="40" value="<?php echo stripslashes(htmlspecialchars($row['title'])); ?>" />
+	</div>
 
-		echo '<select name="category_parent" id="cat">';
-		echo '<option value="0">&nbsp;&nbsp;&nbsp;[ '._AT('cats_uncategorized').' ]&nbsp;&nbsp;&nbsp;</option>';
-		echo '<option value="0"></option>';
+	<div class="rowA">
+		<label for="pri_lang"><?php  echo _AT('primary_language'); ?></label><br />
+		<?php $languageManager->printDropdown($row['primary_language'], 'pri_lang', 'pri_lang'); ?>
+	</div>
+	<div class="rowA">
+		<label for="description"><?php echo _AT('description'); ?></label><br />
+		<textarea id="description" cols="45" rows="4" name="description"><?php echo $row['description']; ?></textarea>
+	</div>
 
-		select_categories($categories, 0, $row['cat_id'], false);
+	<div class="rowA">
+		<label for="cat"><?php echo _AT('category'); ?></label><br />
+		<?php
+		$categories = get_categories();
 
-		echo '</select>';
-	} else {
-		echo _AT('no_cats').'<span id="cat"></span>';
-	}
-?>
-</td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" valign="top" align="right" nowrap="nowrap"><strong><?php  echo _AT('content_packaging'); ?>:</strong></td>
-	<td class="row1"><?php
-		
-		switch ($row['content_packaging']) {
-			case 'none':
-					$none = ' checked="checked"';
-					break;
+		if (is_array($categories)) {
 
-			case 'top':
-					$top	 = ' checked="checked"';
-					break;
+			echo '<select name="category_parent" id="cat">';
+			echo '<option value="0">&nbsp;&nbsp;&nbsp;[ '._AT('cats_uncategorized').' ]&nbsp;&nbsp;&nbsp;</option>';
+			echo '<option value="0"></option>';
 
-			case 'all':
-					$all	= ' checked="checked"';
-					break;
-		}
-?>
+			select_categories($categories, 0, $row['cat_id'], false);
+
+			echo '</select>';
+		} else {
+			echo _AT('no_cats').'<span id="cat"></span>';
+		} ?>
+	</div>
+
+	<div class="rowA">
+		<?php  echo _AT('content_packaging'); ?><br />
+		<?php
+			switch ($row['content_packaging']) {
+				case 'none':
+						$none = ' checked="checked"';
+						break;
+
+				case 'top':
+						$top	 = ' checked="checked"';
+						break;
+
+				case 'all':
+						$all	= ' checked="checked"';
+						break;
+			}
+			?>
 		<label><input type="radio" name="content_packaging" value="none" id="none" <?php echo $none; ?> /><?php echo _AT('content_packaging_none'); ?></label><br />
 		<label><input type="radio" name="content_packaging" value="top" id="ctop"  <?php echo $top; ?> /><?php  echo _AT('content_packaging_top'); ?></label><br />
-		<label><input type="radio" name="content_packaging" value="all" id="all" <?php echo $all; ?> /><?php  echo _AT('content_packaging_all'); ?></label><br /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" valign="top" align="right" nowrap="nowrap"><strong><?php echo _AT('syndicate_announcements'); ?>:</strong></td>
-	<td class="row1"><?php
+		<label><input type="radio" name="content_packaging" value="all" id="all" <?php echo $all; ?> /><?php  echo _AT('content_packaging_all'); ?></label>
+	</div>
 
-		$rss_no = $rss_yes = '';
+	<div class="rowA">
+		<?php echo _AT('syndicate_announcements'); ?><br />
+		<?php
+				$rss_no = $rss_yes = '';
 
-		if ($row['rss']) {
-			$rss_yes = ' checked="checked"';
-		} else {
-			$rss_no = ' checked="checked"';
-		}
-?>
+				if ($row['rss']) {
+					$rss_yes = ' checked="checked"';
+				} else {
+					$rss_no = ' checked="checked"';
+				}
+		?>
 		<label><input type="radio" name="rss" value="1" id="rss_y" <?php echo $rss_yes; ?> /><?php echo _AT('enable_syndicate'); ?></label><br />
-		<label><input type="radio" name="rss" value="0" id="rss_n"  <?php echo $rss_no; ?> /><?php  echo _AT('disable_syndicate'); ?></label><br /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td  class="row1" valign="top" align="right"><strong><?php echo  _AT('access'); ?>:</strong></td>
-<?php
-		switch ($row['access']) {
-			case 'public':
-					$pub = ' checked="checked"';
-					$disable = 'disabled="disabled"'; // disable the nofity box
-					break;
+		<label><input type="radio" name="rss" value="0" id="rss_n"  <?php echo $rss_no; ?> /><?php  echo _AT('disable_syndicate'); ?></label>
+	</div>
 
-			case 'protected':
-					$prot	 = ' checked="checked"';
-					$disable = 'disabled="disabled"'; // disable the nofity box
-					break;
+	<div class="rowA">
+		<?php echo _AT('access'); ?><br />
+		<?php
+				switch ($row['access']) {
+					case 'public':
+							$pub = ' checked="checked"';
+							$disable = 'disabled="disabled"'; // disable the nofity box
+							break;
 
-			case 'private':
-					$priv	= ' checked="checked"';
-					break;
-		}
+					case 'protected':
+							$prot	 = ' checked="checked"';
+							$disable = 'disabled="disabled"'; // disable the nofity box
+							break;
 
-		if ($row['notify']) {
-			$notify = ' checked="checked"';
-		}
+					case 'private':
+							$priv	= ' checked="checked"';
+							break;
+				}
 
-		if ($row['hide']) {
-			$hide = ' checked="checked"';
-		}
-?>
-	<td class="row1"><input type="radio" name="access" value="public" id="pub" onclick="disableNotify();" <?php echo $pub; ?> /><label for="pub"><strong> <?php echo  _AT('public'); ?>: </strong></label><?php echo  _AT('about_public'); ?><br /><br />
+				if ($row['notify']) {
+					$notify = ' checked="checked"';
+				}
 
-		<input type="radio" name="access" value="protected" id="prot" onclick="disableNotify();" <?php echo $prot; ?> /><label for="prot"><strong><?php echo  _AT('protected'); ?>:</strong></label> <?php echo  _AT('about_protected'); ?>
+				if ($row['hide']) {
+					$hide = ' checked="checked"';
+				}
+		?>
+		<input type="radio" name="access" value="public" id="pub" onclick="disableNotify();" <?php echo $pub; ?> /><label for="pub"><strong> <?php echo  _AT('public'); ?>: </strong></label><?php echo  _AT('about_public'); ?><br /><br />
 
-		<br /><br />
-		<input type="radio" name="access" value="private" id="priv" onclick="enableNotify();" <?php echo $priv; ?> /><label for="priv"><strong><?php echo  _AT('private'); ?>:</strong></label> <?php echo  _AT('about_private'); ?>
-		<br />
+		<input type="radio" name="access" value="protected" id="prot" onclick="disableNotify();" <?php echo $prot; ?> /><label for="prot"><strong><?php echo  _AT('protected'); ?>:</strong></label> <?php echo _AT('about_protected'); ?><br /><br />
+
+		<input type="radio" name="access" value="private" id="priv" onclick="enableNotify();" <?php echo $priv; ?> /><label for="priv"><strong><?php echo  _AT('private'); ?>:</strong></label> <?php echo  _AT('about_private'); ?><br />
 		<input type="checkbox" name="notify" id="notify" value="1" <?php
 			echo $disable;
 			echo $notify; ?> /><label for="notify"><?php echo  _AT('email_approvals'); ?></label>
@@ -298,20 +289,14 @@ if (isset($_POST['form_course'])) {
 		<input type="checkbox" name="hide" id="hide" value="1" <?php
 		echo $disable;
 		echo $hide; ?> /><label for="hide"><?php echo  _AT('hide_course'); ?></label>.
-
-		<br />
-		<br /></td>
-</tr>
+	</div>
 
 <?php if (!$course_id) : ?>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" valign="top" align="right"><strong><label for="initial_content"><?php echo _AT('initial_content'); ?></label>:</strong></td>
-		<td class="row1">
+	<div class="rowA">
+		<label for="initial_content"><?php echo _AT('initial_content'); ?></label><br />
 		<select name="initial_content" id="initial_content" size="5">
 			<option value="0"><?php echo _AT('empty'); ?></option>
 			<option value="1" selected="selected"><?php echo _AT('create_basic'); ?></option>
-
 			<?php 
 			$Backup =& new Backup($db);
 
@@ -339,85 +324,67 @@ if (isset($_POST['form_course'])) {
 			}
 			?>
 			</select>
-		</td>
-	</tr>
-
+	</div>
 <?php endif; // !$course_id ?>
 
 <?php if ($isadmin) : ?>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right">
+	<div class="rowA">
+		<?php  echo _AT('course_quota'); ?><br />
 		<?php 
-			$help = array('COURSE_QUOTA', AT_KBYTE_SIZE, AT_KBYTE_SIZE*AT_KBYTE_SIZE); 		
-			print_popup_help($help); 
-		?>
-		<strong><?php  echo _AT('course_quota'); ?>:</strong></td>
-		<td class="row1"><?php 
-		if ($row['max_quota'] == AT_COURSESIZE_UNLIMITED) { 
-			$c_unlim = ' checked="checked" ';
-			$c_oth2 = ' disabled="disabled" ';
-		} elseif ($row['max_quota'] == AT_COURSESIZE_DEFAULT) {
-			$c_def = ' checked="checked" ';
-			$c_oth2 = ' disabled="disabled" ';
-		} else {
-			$c_oth = ' checked="checked" ';
-			$c_oth2 = '';
-		}
+			if ($row['max_quota'] == AT_COURSESIZE_UNLIMITED) { 
+				$c_unlim = ' checked="checked" ';
+				$c_oth2 = ' disabled="disabled" ';
+			} elseif ($row['max_quota'] == AT_COURSESIZE_DEFAULT) {
+				$c_def = ' checked="checked" ';
+				$c_oth2 = ' disabled="disabled" ';
+			} else {
+				$c_oth = ' checked="checked" ';
+				$c_oth2 = '';
+			}
 
-		if ($course_id > 0) {
-			$course_size = dirsize(AT_CONTENT_DIR . $course_id.'/');
-		} else {
-			$course_size = 0;
-		}
+			if ($course_id > 0) {
+				$course_size = dirsize(AT_CONTENT_DIR . $course_id.'/');
+			} else {
+				$course_size = 0;
+			}
 
-	/*	if ($course_size < AT_KBYTE_SIZE) {
-			$course_size = round($course_size);
-			$course_size = $course_size .' '._AT('bytes'); 
-		} else {
-			$course_size = round(bytes_to_megabytes($course_size),2) .' '._AT('megabytes'); 
-		}
-	*/
-		if ($course_id) {
-			echo _AT('current_course_size') .': '.get_human_size($course_size).'<br />'; 
-		}
+			if ($course_id) {
+				echo _AT('current_course_size') .': '.get_human_size($course_size).'<br />'; 
+			}
 		?>
 
 		<input type="radio" id="c_default" name="quota" value="<?php echo AT_COURSESIZE_DEFAULT; ?>" onclick="disableOther();" <?php echo $c_def;?> /><label for="c_default"> <?php echo _AT('default') . ' ('.get_human_size($MaxCourseSize).')'; ?></label> <br />
 		<input type="radio" id="c_unlim" name="quota" value="<?php echo AT_COURSESIZE_UNLIMITED; ?>" onclick="disableOther();" <?php echo $c_unlim;?>/><label for="c_unlim"> <?php echo _AT('unlimited'); ?></label> <br />
 		<input type="radio" id="c_other" name="quota" value="2" onclick="enableOther();" <?php echo $c_oth;?>/><label for="c_other"> <?php echo _AT('other'); ?> </label> - 
 		<input type="text" id="quota_entered" name="quota_entered" class="formfieldR" <?php echo $c_oth2?> value="<?php if ($row['max_quota']!=AT_COURSESIZE_UNLIMITED && $row['max_quota']!=AT_COURSESIZE_DEFAULT) { echo bytes_to_megabytes($row['max_quota']); } ?>" size="4" /> MB
-		</td>
-	</tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right" valign="top"><strong><?php  echo _AT('max_file_size'); ?>:</strong></td>
-		<td class="row1">
-	<?php 
-		$max_allowed = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
 
-		if ($row['max_file_size'] == AT_FILESIZE_DEFAULT) { 
-			$f_def = ' checked="checked" ';
-			$f_oth2 = ' disabled="disabled" ';
-		} elseif ($row['max_file_size'] == AT_FILESIZE_SYSTEM_MAX) {
-			$f_max = ' checked="checked" ';
-			$f_oth2 = ' disabled="disabled" ';
-		} else {
-			$f_oth = ' checked="checked" ';
-			$f_oth2 = '';
-		}
-	?>
+	</div>
+
+	<div class="rowA">
+		<?php  echo _AT('max_file_size'); ?><br />
+		<?php 
+			$max_allowed = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
+
+			if ($row['max_file_size'] == AT_FILESIZE_DEFAULT) { 
+				$f_def = ' checked="checked" ';
+				$f_oth2 = ' disabled="disabled" ';
+			} elseif ($row['max_file_size'] == AT_FILESIZE_SYSTEM_MAX) {
+				$f_max = ' checked="checked" ';
+				$f_oth2 = ' disabled="disabled" ';
+			} else {
+				$f_oth = ' checked="checked" ';
+				$f_oth2 = '';
+			}
+		?>
 		<input type="radio" id="f_default" name="filesize" value="<?php echo AT_FILESIZE_DEFAULT; ?>" onclick="disableOther2();" <?php echo $f_def;?> /><label for="f_default"> <?php echo _AT('default') . ' ('.get_human_size($MaxFileSize).')'; ?></label> <br />
 		<input type="radio" id="f_maxallowed" name="filesize" value="<?php echo AT_FILESIZE_SYSTEM_MAX; ?>" onclick="disableOther2();" <?php echo $f_max;?>/><label for="f_maxallowed"> <?php echo _AT('max_file_size_system') . ' ('.get_human_size($max_allowed).')'; ?></label> <br />
 		<input type="radio" id="f_other" name="filesize" value="2" onclick="enableOther2();" <?php echo $f_oth;?>/><label for="f_other"> <?php echo _AT('other'); ?> </label> - 
 		<input type="text" id="filesize_entered" name="filesize_entered" class="formfieldR" <?php echo $f_oth2?> value="<?php if ($row['max_file_size']!=AT_FILESIZE_DEFAULT && $row['max_file_size']!=AT_FILESIZE_SYSTEM_MAX) { echo bytes_to_megabytes($row['max_file_size']); } ?>" size="4" /> MB
-		</td>	
+	</div>
 
-	</tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right" valign="top"><strong><?php  echo _AT('tracking'); ?>:</strong></td>
-		<td class="row1">		<?php
+	<div class="rowA">
+		<?php echo _AT('tracking'); ?><br />
+		<?php
 			if($row['tracking'] == 'on'){
 				$on = ' checked="checked" ';
 			} else {
@@ -425,8 +392,7 @@ if (isset($_POST['form_course'])) {
 			}
 			?>
 			<input type="radio" name="tracking" value="off" id="toff" <?php echo $off; ?> /><label for="toff"><?php  echo _AT('off'); ?></label> <input type="radio" name="tracking" value="on" id="ton"<?php echo $on; ?> /><label for="ton"><?php  echo _AT('on'); ?></label>
-		</td>
-	</tr>
+	</div>		
 
 <?php else: ?>
 
@@ -436,12 +402,12 @@ if (isset($_POST['form_course'])) {
 
 <?php endif; ?>
 
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td  class="row1" colspan="2" align="center"><input type="submit" name="submit" class="button" value="<?php echo  _AT('submit'); ?>" accesskey="s" /> - <input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" class="button" /></td>
-</tr>
-</table>
+	<div class="buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /> 
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" />
+	</div>
+</div>
+
 </form>
 
 

@@ -126,7 +126,7 @@ if ($reply_to) {
 <input type="hidden" name="replied" value="<?php echo $_GET['reply']; ?>" />
 
 <div class="input-form">
-	<div class="row">
+	<div class="rowA">
 		<label for="to"><?php echo _AT('to'); ?></label><br />
 		<?php
 			if ($_GET['reply'] == '') {
@@ -152,7 +152,7 @@ if ($reply_to) {
 			} ?>
 	</div>
 
-	<div class="row">
+	<div class="rowA">
 		<label for="subject"><?php echo _AT('subject'); ?></label><br />
 		<input type="text" name="subject" id="subject" value="<?php
 			if (($subject != '') && ($_POST['subject'] == '')) {
@@ -166,7 +166,7 @@ if ($reply_to) {
 			?>" size="40" maxlength="100" />
 	</div>
 
-	<div class="row">
+	<div class="rowA">
 		<label for="body"><?php echo _AT('message'); ?></label><br />
 		<textarea name="message" id="body" rows="15" cols="55"><?php
 			if ($body != '') {
@@ -187,9 +187,9 @@ if ($reply_to) {
 	<!--a href="<?php echo substr($_my_uri, 0, strlen($_my_uri)-1); ?>#jumpcodes" title="<?php echo _AT('jump_code'); ?>"><img src="images/clr.gif" height="1" width="1" alt="<?php echo _AT('jump_code'); ?>" border="0" /></a--><?php 
 		
 		$hide_learning_concepts = true;
-		//require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?><br />
+		//require(AT_INCLUDE_PATH.'html/code_picker.inc.php'); ?>
 		
-	<div class="buttons">
+	<div class="rowA buttons">
 		<a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('send'); ?>" accesskey="s" /><?php
 		if ($reply != '') {
 			echo '<input type="submit" name="submit_delete" value="'._AT('send_delete').'" accesskey="n" /> ';
