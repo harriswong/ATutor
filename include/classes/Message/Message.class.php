@@ -53,7 +53,7 @@ class Message {
 						'feedback' => 'AT_FEEDBACK_',
 						'warning' => 'AT_WARNING_',
 						'info' => 'AT_INFOS_',
-						'help' => 'AT_HELP_'
+						'help' => 'AT_HELP_',
 				  );
 	
 	/**
@@ -70,7 +70,7 @@ class Message {
 	* Print message(s) of type $type. Processes stored messages in session var for type $type
 	* and translates them into language spec. Then passes processed data to savant template for display
 	* @access  public
-	* @param   string $type					error|warning|info|feedback
+	* @param   string $type					error|warning|info|feedback|help|help_pop
 	* @author  Jacek Materna
 	*/
 	function printAbstract($type) {
@@ -349,10 +349,10 @@ class Message {
 	function printHelps($optional=null) {
 		if ($optional != null)  // shortcut
 			$this->addAbstract('help', $optional);
-
+			
 		$this->printAbstract('help');
 	}
-	
+	 
 	/**
 	* Dump all the messages in the session to the screen in the following order
 	* @access  public

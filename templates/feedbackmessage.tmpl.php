@@ -25,7 +25,7 @@ if (is_object($item)) {
 	/* this is an array of items */
 	$body .= '<ul>';
 	foreach($item as $e){
-		$body .= '<li><small>'. e .'</small></li>';
+		$body .= '<li><small>'. $e .'</small></li>';
 	}
 	$body .= '</ul>';
 }

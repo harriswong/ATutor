@@ -104,7 +104,7 @@ $msg->printErrors();
 <tr><td height="1" class="row2" colspan="2"></td></tr>
 <tr>
 	<td align="right" class="row1">	
-	<?php print_popup_help(AT_HELP_FORMATTING); ?>
+	<?php print_popup_help('FORMATTING'); ?>
 	<b><?php echo _AT('formatting'); ?>:</b></td>
 	<td class="row1"><input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] === 0) { echo 'checked="checked"'; } ?> /><label for="text"><?php echo _AT('plain_text'); ?></label>, <input type="radio" name="formatting" value="1" id="html" <?php if ($_POST['formatting'] !== 0) { echo 'checked="checked"'; } ?> /><label for="html"><?php echo _AT('html'); ?></label> <?php
 

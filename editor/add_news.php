@@ -63,7 +63,7 @@ authenticate(AT_PRIV_ANNOUNCEMENTS);
 	<th colspan="2" class="cyan"><img src="images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor_on'); ?>" title="<?php echo _AT('editor_on'); ?>" height="14" width="16" /><?php echo _AT('add_announcement'); ?></th>
 </tr>
 <tr>
-	<td class="row1" align="right"><?php print_popup_help(AT_HELP_ANNOUNCEMENT); ?><b><label for="title"><?php echo _AT('title'); ?>:</label></b></td>
+	<td class="row1" align="right"><?php print_popup_help('ANNOUNCEMENT'); ?><b><label for="title"><?php echo _AT('title'); ?>:</label></b></td>
 	<td class="row1"><input type="text" name="title" class="formfield" size="40" id="title" /></td>
 </tr>
 <tr><td height="1" class="row2" colspan="2"></td></tr>
@@ -74,7 +74,7 @@ authenticate(AT_PRIV_ANNOUNCEMENTS);
 <tr><td height="1" class="row2" colspan="2"></td></tr>
 <tr>
 	<td align="right" class="row1">	
-	<?php print_popup_help(AT_HELP_FORMATTING); ?>
+	<?php print_popup_help('FORMATTING'); ?>
 	<b><?php echo _AT('formatting'); ?>:</b></td>
 	<td class="row1"><input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] === 0) { echo 'checked="checked"'; } ?> /><label for="text"><?php echo _AT('plain_text'); ?></label>, <input type="radio" name="formatting" value="1" id="html" <?php if ($_POST['formatting'] !== 0) { echo 'checked="checked"'; } ?> /><label for="html"><?php echo _AT('html'); ?></label> <?php
 

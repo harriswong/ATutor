@@ -27,7 +27,6 @@ $_section[0][1] = 'tools/';
 $_section[1][0] =  _AT('course_banner');
 
 $msg->addInfo('HEADFOOT_DEPRECATED');
-$infos[]=AT_INFOS_HEADFOOT_DEPRECATED;
 
 $sql="SELECT header, footer FROM ".TABLE_PREFIX."courses WHERE course_id='$_SESSION[course_id]'";
 $result=mysql_query($sql, $db);
@@ -180,7 +179,7 @@ $msg->printAll();
 		<th colspan="2" class="cyan"><?php echo _AT('banner_styles'); ?></th>
 	</tr>
 	<tr>
-		<td class="row1"><?php print_popup_help(AT_HELP_BANNER_TEXT); ?><?php echo _AT('text'); ?>: </td>
+		<td class="row1"><?php print_popup_help('BANNER_TEXT'); ?><?php echo _AT('text'); ?>: </td>
 		<td class="row1"><input type="radio" name="banner_text" value="default" <?php echo $default_checked; ?> id="default" onclick="disableCustom();" /> <label for="default"><?php echo _AT('default'); ?></label><br />
 		<input type="radio" name="banner_text" value="custom" <?php echo $custom_checked; ?> id="custom" onclick="enableCustom();" /><label for="custom"><?php echo _AT('custom'); ?></label>
 		<p align="center"> <textarea name="banner_text_html" rows="5" cols="50" class="formfield" id="b_text" 

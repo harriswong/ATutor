@@ -176,9 +176,14 @@ define('AT_ERROR_INCOMPLETE',             $i); $i++;
 define('AT_ERROR_THEME_IMPORT_FAILED',    $i); $i++;
 define('AT_ERROR_THEME_INFO_ABSENT',      $i); $i++;
 define('AT_ERROR_IMPORT_ERROR_IN_ZIP',    $i); $i++;
-define('AT_ERROR_CANNOT_OPEN_FILE',      $i); $i++;
+define('AT_ERROR_CANNOT_OPEN_FILE',       $i); $i++;
 define('AT_ERROR_CANNOT_WRITE_FILE',      $i); $i++;
 
+define('AT_ERROR_FORUM_DENIED',			  $i); $i++;
+define('AT_ERROR_NO_FILE_SELECT',		  $i); $i++;
+define('AT_ERROR_SELECT_ONE_FILE',        $i); $i++;
+
+define('AT_ERROR_NO_COURSE_SELECTED',     $i); $i++;
 
 
 /********************************************************/
@@ -322,6 +327,8 @@ define('AT_WARNING_REMOVE_STUDENT',       $i); $i++;
 define('AT_WARNING_ENROLL_STUDENT',       $i); $i++;
 define('AT_WARNING_UNENROLL_STUDENT',     $i); $i++;
 define('AT_WARNING_UNENROLL_PRIV',        $i); $i++;
+define('AT_WARNING_UNENROLL_PRIV',        $i); $i++;
+define('AT_WARNING_ALUMNI',				  $i); $i++;
 
 define('AT_WARNING_DELETE_THEME',         $i); $i++;
 define('AT_WARNING_THEME_VERSION_DIFF',   $i); $i++;
@@ -447,6 +454,9 @@ define('AT_FEEDBACK_BACKUP_DELETED',        $i); $i++;
 define('AT_FEEDBACK_BACKUP_CREATED',        $i); $i++;
 define('AT_FEEDBACK_BACKUP_EDIT',           $i); $i++;
 define('AT_FEEDBACK_BACKUP_UPLOADED',       $i); $i++;
+define('AT_FEEDBACK_FILE_SAVED',			$i); $i++;
+
+define('AT_FEEDBACK_FILE_SAVED',			$i); $i++;
 
 /********************************************************/
 /* INFOS DEFINITIONS									*/
@@ -488,4 +498,5 @@ define('AT_INFOS_DECISION_NOT_REVERSED',    $i); $i++;
 define('AT_INFOS_DECISION_NOT_SAVED',       $i); $i++;
 
 define('AT_INFOS_NO_INSTRUCTORS',			$i); $i++;
+define('AT_INFOS_NO_ACOLLAB',			$i); $i++;
 ?>

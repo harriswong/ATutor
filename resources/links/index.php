@@ -452,7 +452,7 @@ function show_add_link($add = "NULL", $CatName = "unknown")
 
 	<table cellspacing="1" cellpadding="0" border="0" class="bodyline" align="center" summary="">
 	<tr>
-		<th class="left" colspan="2"><?php print_popup_help(AT_HELP_ADD_RESOURCE_MINI); ?><?php echo _AT('add_new_resource'); ?></th>
+		<th class="left" colspan="2"><?php print_popup_help('ADD_RESOURCE_MINI'); ?><?php echo _AT('add_new_resource'); ?></th>
 	</tr>
 	<tr>
 		<td class="row1" align="right"><label for="url"><b><?php echo _AT('url'); ?>:</b></label></td>
