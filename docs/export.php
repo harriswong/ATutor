@@ -15,6 +15,17 @@
 define('AT_INCLUDE_PATH', './include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
+if (isset($_POST['cancel']) {
+	$msg->addFeeback('cancelled');
+	header('Location: index.php');
+	exit;
+}
+
+if (isset($_POST['submit']) {
+	header('Location: tools/ims/ims_export.php?cid' . $_POST['cid']);
+	exit;
+}
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 if (!isset($_main_menu)) {
@@ -58,7 +69,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 ?>
 
 
-<form method="post" action="tools/ims/ims_export.php">
+<form method="post" action="<?php $_SERVER['PHP_SELF']?>">
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('export_content'); ?></h3>
@@ -76,13 +87,6 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 		</select>
 	</div>
 
-	<?php if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)): ?>
-			<div class="row">
-				<input type="checkbox" name="to_tile" id="to_tile" value="1" />
-				<label for="to_tile"><?php echo _AC('tile_export'); ?></label>
-			</div>
-	<?php endif; ?>
-	
 	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('export'); ?>" />
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
