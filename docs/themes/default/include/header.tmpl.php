@@ -28,21 +28,77 @@ define('AT_NAV_ADMIN',  4);
 
 $_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php');
+$_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php', 'search.php', 'login.php', 'password_reminder.php');
 
+$_pages[AT_NAV_ADMIN] = array('admin/index.php', 'admin/users.php', 'admin/courses.php', 'admin/config_info.php');
+
+/* admin pages */
+$_pages['admin/index.php']['title']    = _AT('home');
+$_pages['admin/index.php']['parent']   = AT_NAV_ADMIN;
+
+$_pages['admin/users.php']['title']    = _AT('users');
+$_pages['admin/users.php']['parent']   = AT_NAV_ADMIN;
+
+$_pages['admin/courses.php']['title']    = _AT('courses');
+$_pages['admin/courses.php']['parent']   = AT_NAV_ADMIN;
+$_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'admin/backup/index.php', 'admin/forums.php', 'admin/course_categories.php');
+
+	$_pages['admin/create_course.php']['title']    = _AT('create_course');
+	$_pages['admin/create_course.php']['parent']   = 'admin/courses.php';
+
+	$_pages['admin/backup/index.php']['title']    = _AT('backups');
+	$_pages['admin/backup/index.php']['parent']   = 'admin/courses.php';
+
+	$_pages['admin/forums.php']['title']    = _AT('forums');
+	$_pages['admin/forums.php']['parent']   = 'admin/courses.php';
+
+	$_pages['admin/course_categories.php']['title']    = _AT('cats_categories');
+	$_pages['admin/course_categories.php']['parent']   = 'admin/courses.php';
+
+$_pages['admin/config_info.php']['title']    = _AT('server_configuration');
+$_pages['admin/config_info.php']['parent']   = AT_NAV_ADMIN;
+$_pages['admin/config_info.php']['children'] = array('admin/language.php', 'admin/themes/index.php');
+
+	$_pages['admin/language.php']['title']    = _AT('language');
+	$_pages['admin/language.php']['parent']   = 'admin/config_info.php';
+
+	$_pages['admin/themes/index.php']['title']    = _AT('themes');
+	$_pages['admin/themes/index.php']['parent']   = 'admin/config_info.php';
+
+
+/* public pages */
+$_pages['registration.php']['title']    = _AT('register');
+$_pages['registration.php']['parent']   = AT_NAV_PUBLIC;
+
+$_pages['browse.php']['title']    = _AT('browse_courses');
+$_pages['browse.php']['parent']   = AT_NAV_PUBLIC;
+
+$_pages['search.php']['title']    = _AT('search');
+$_pages['search.php']['parent']   = AT_NAV_PUBLIC;
+
+$_pages['login.php']['title']    = _AT('login');
+$_pages['login.php']['parent']   = AT_NAV_PUBLIC;
+
+$_pages['password_reminder.php']['title']    = _AT('password_reminder');
+$_pages['password_reminder.php']['parent']   = AT_NAV_PUBLIC;
+
+
+
+/* my start page pages */
 $_pages['users/index.php']['title']    = _AT('my_courses');
 $_pages['users/index.php']['parent']   = AT_NAV_START;
 $_pages['users/index.php']['children'] = array('users/browse.php', 'users/create_course.php');
-
+	
 	$_pages['users/browse.php']['title']  = _AT('browse_courses');
 	$_pages['users/browse.php']['parent'] = 'users/index.php';
-
+	
 	$_pages['users/create_course.php']['title']  = _AT('create_course');
 	$_pages['users/create_course.php']['parent'] = 'users/index.php';
 
 $_pages['users/profile.php']['title']    = _AT('profile');
 $_pages['users/profile.php']['parent']   = AT_NAV_START;
 $_pages['users/profile.php']['children'] = array('users/profile_edit.php');
-
+	
 	$_pages['users/profile_edit.php']['title']  = _AT('edit_profile');
 	$_pages['users/profile_edit.php']['parent'] = 'users/profile.php';
 
@@ -81,7 +137,7 @@ function get_main_navigation($current_page) {
 		foreach($_pages[$parent_page] as $page) {
 			$_top_level_pages[] = array('url' => $page, 'title' => $_pages[$page]['title']);
 		}
-	} else {
+	} else if (isset($parent_page)) {
 		return get_main_navigation($parent_page);
 	}
 
@@ -95,7 +151,7 @@ function get_current_main_page($current_page) {
 
 	if (isset($parent_page) && is_numeric($parent_page)) {
 		return $current_page;
-	} else {
+	} else if (isset($parent_page)) {
 		return get_current_main_page($parent_page);
 	}
 }
@@ -111,7 +167,7 @@ function get_sub_navigation($current_page) {
 		foreach ($_pages[$current_page]['children'] as $child) {
 			$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
 		}
-	} else {
+	} else if (isset($_pages[$current_page]['parent'])) {
 		// no children
 
 		$parent_page = $_pages[$current_page]['parent'];
@@ -141,31 +197,33 @@ function get_path($current_page) {
 	if (isset($parent_page) && is_numeric($parent_page)) {
 		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
 		return $path;
-	} else {
+	} else if (isset($parent_page)) {
 		$path[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
 		$path = array_merge($path, get_path($parent_page));
+	} else {
+		$path = array();
 	}
 	
 	return $path;
 }
 
-$_top_level_pages = get_main_navigation($current_page);
+$_top_level_pages        = get_main_navigation($current_page);
 $_current_top_level_page = get_current_main_page($current_page);
 
-$_sub_level_pages = get_sub_navigation($current_page);
+$_sub_level_pages        = get_sub_navigation($current_page);
 $_current_sub_level_page = get_current_sub_navigation_page($current_page);
 
 $_path = get_path($current_page);
 $_path = array_reverse($_path);
 
-//debug($_current_top_level_page);
-
-//debug($_top_level_pages);
 
 $_page_title = $_pages[$current_page]['title'];
 
-
-if (!$_SESSION['course_id']) {
+if (!$_SESSION['valid_user']) {
+	$_section_title = 'Welcome';
+} else if ($_SESSION['course_id'] < 0) {
+	$_section_title = 'Administration';
+} else if (!$_SESSION['course_id']) {
 	$_section_title = 'My Start Page';
 } else {
 	$_section_title = $_SESSION['course_title'];
@@ -236,7 +294,7 @@ function toggleToc() {
 									<?php endforeach; ?>
 </div>
 
-<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
+<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
 	<?php foreach ($_top_level_pages as $page): ?>
@@ -250,8 +308,8 @@ function toggleToc() {
 	<?php endforeach; ?>
 	<th id="right-empty-tab">&nbsp;</th>
 </tr>
-<tr>
-	<td colspan="<?php echo count($_top_level_pages) *2 +2; ?>" class="content">
+</table>
+
 	<div id="sub-navigation">
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php foreach ($_sub_level_pages as $page): ?>
@@ -266,6 +324,7 @@ function toggleToc() {
 	</div>
 
 	<h2 id="page-title"><?php echo $_page_title; ?></h2>
+	<!--
 	<script type="text/javascript">
 	if (document.getElementById) {
 		document.writeln('<div id=\'toctoggle\'>[<a href="javascript:toggleToc()" class="internal">' +
@@ -277,9 +336,11 @@ function toggleToc() {
 
 	<h3 id="help-title">Help</h3>
 	<div id="help">
-		<p>this is a help message. what do you think?</p>
-		<p>this is a really long stupid help message.</p>
+		<p>this is a help message.</p>
+		<p>More help goes here..</p>
+		<p>And here</p>
 	</div>
+	-->
 	
 
 <?php return; ?>

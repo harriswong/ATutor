@@ -40,7 +40,8 @@ if (isset($_POST['cancel'])) {
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
-echo '<h3>'._AT('create_course').'</h3><br />';
+
+echo '<br />';
 
 $msg->printAll();
 

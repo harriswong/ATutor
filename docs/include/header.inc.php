@@ -185,7 +185,7 @@ if ($_user_location == 'public') {
 	$savant->assign('tmpl_section', _AT('administration'));
 
 	$myLang->sendContentTypeHeader();
-	$savant->display('admin_header.tmpl.php');
+	$savant->display('include/header.tmpl.php');
 
 } else {
 

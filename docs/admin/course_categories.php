@@ -117,7 +117,6 @@ if (isset($_GET['pcat_id'])) {
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
-echo '<h3>'._AT('cats_course_categories').'</h3>';
 
 $msg->printAll();
 

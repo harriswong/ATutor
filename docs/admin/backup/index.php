@@ -67,7 +67,6 @@ if (isset($_POST['restore'])) {
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-echo '<h3>'._AT('backups').'</h3>';
 
 $msg->printAll();
 ?>

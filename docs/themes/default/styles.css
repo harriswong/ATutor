@@ -1072,9 +1072,13 @@ div#search-help-links {
 	text-align: right;
 }
 
+table.tabbed-table {
+	width: 100%;
+	margin-left: -5px;
+}
 table.tabbed-table th#left-empty-tab {
 	background-color: white;
-	width: 10px;
+	width: 15px;
 	border-bottom: 1px solid black;
 }
 table.tabbed-table th#right-empty-tab {

@@ -22,7 +22,7 @@ if ($_SESSION['course_id'] > -1) { exit; }
 require(AT_INCLUDE_PATH.'lib/forums.inc.php');
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
-echo '<h3>'._AT('forums').'</h3><br />';
+echo '<br />';
 
 $msg->addHelp('SHARED_FORUMS');
 $msg->printHelps();
