@@ -171,6 +171,10 @@ if ($_POST['submit']){
 
 $savant->assign('row', $row);
 
+$months = array(_AT('january'), _AT('february'), _AT('march'), _AT('april'), _AT('may'), _AT('june'), _AT('july'), _AT('august'), _AT('september'), _AT('october'), _AT('november'), _AT('december'));
+$savant->assign('months', $months);
+
+
 $savant->display('users/profile.tmpl.php');
 
 ?>
