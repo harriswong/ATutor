@@ -127,7 +127,6 @@ if (isset($_POST['num']) && ($_POST['num'] === 0)) {
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printErrors();
-$msg->printHelps('ADD_TEST');
 
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
