@@ -786,6 +786,10 @@ table.data tfoot {
 
 table.data tfoot td {
 	padding: 5px;
+	background-image: url('http://joel.atutor.ca/phpMyAdmin/images/arrow_ltr.gif');
+	background-repeat: no-repeat;
+	background-position: 4px 5px;
+	padding-left: 40px;
 }
 
 table.data tfoot input {
