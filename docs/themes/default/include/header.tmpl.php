@@ -294,8 +294,9 @@ function toggleToc() {
 }
 
 </script>
-<h1 id="section"><?php echo $_section_title; ?></h1>
-<div align="right">
+<h1 id="section-title"><?php echo $_section_title; ?></h1>
+
+<div align="right" id="top-links">
 	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a> | <a href="<?php echo $this->tmpl_base_path; ?>logout.php"><?php echo _AT('logout'); ?></a><br />
 	<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
 		<label for="jumpmenu" accesskey="j"></label>

@@ -917,7 +917,6 @@ h1 {
 }
 
 div#sub-navigation {
-	font-size: smaller;
 	margin-left: 5px;
 }
 
@@ -956,10 +955,12 @@ div#toctoggle {
 	padding-left: 10px;
 }
 
-fieldset {
-	font-size: smaller;
+h1#section-title {
+	float: left;
+	margin-left: 5px;
 }
 
-h1#section {
-	float: left;
+div#top-links {
+	padding-right: 5px;
+	line-height: 170%;
 }
