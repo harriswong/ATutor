@@ -37,6 +37,7 @@ function add_update_course($_POST, $isadmin = FALSE) {
 	$_POST['hide']        = $addslashes($_POST['hide']);
 	$_POST['pri_lang']	  = $addslashes($_POST['pri_lang']);
 	$_POST['created_date']= $addslashes($_POST['created_date']);
+	$_POST['copyright']	  = $addslashes($_POST['copyright']);
 
 	$_POST['course']	= intval($_POST['course']);
 	$_POST['notify']	= intval($_POST['notify']);
@@ -107,10 +108,11 @@ function add_update_course($_POST, $isadmin = FALSE) {
 		return FALSE;
 	}
 
-	$sql	= "REPLACE INTO ".TABLE_PREFIX."courses SET course_id=$_POST[course], member_id='$_POST[instructor]', access='$_POST[access]', title='$_POST[title]', description='$_POST[description]', cat_id='$_POST[category_parent]', content_packaging='$_POST[content_packaging]', notify=$_POST[notify], hide=$_POST[hide], max_quota=$quota, max_file_size=$filesize, tracking='$tracking', primary_language='$_POST[pri_lang]', created_date='$_POST[created_date]', rss=$_POST[rss]";
+	$sql	= "REPLACE INTO ".TABLE_PREFIX."courses SET course_id=$_POST[course], member_id='$_POST[instructor]', access='$_POST[access]', title='$_POST[title]', description='$_POST[description]', cat_id='$_POST[category_parent]', content_packaging='$_POST[content_packaging]', notify=$_POST[notify], hide=$_POST[hide], max_quota=$quota, max_file_size=$filesize, tracking='$tracking', primary_language='$_POST[pri_lang]', created_date='$_POST[created_date]', rss=$_POST[rss], copyright='$_POST[copyright]'";
 
 	$result = mysql_query($sql, $db);
 	if (!$result) {
+		echo mysql_error($db);
 		echo 'DB Error';
 		exit;
 	}
