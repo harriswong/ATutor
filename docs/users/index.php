@@ -105,21 +105,16 @@ if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
 	exit;
 }
 
-	require(AT_INCLUDE_PATH.'header.inc.php');
-
-	$msg->printAll();
-
+require(AT_INCLUDE_PATH.'header.inc.php');
 
 $sql = "SELECT E.approved, E.role, E.last_cid, C.* FROM ".TABLE_PREFIX."course_enrollment E, ".TABLE_PREFIX."courses C WHERE E.member_id=$_SESSION[member_id] AND E.course_id=C.course_id ORDER BY C.title";
 $result = mysql_query($sql,$db);
 
-while ($row = mysql_fetch_assoc($result)):
-	$count++;
-?>
+while ($row = mysql_fetch_assoc($result)): $count++; ?>
 	<div class="course<?php echo (!($count % 2)) ? '' : ' break'; ?>" onmousedown="document.location='bounce.php?course=<?php echo $row['course_id']; ?>'">
 		<h2><a href="bounce.php?course=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h2>
 
-		<a href=""><img src="/a/themes/default/images/courses/tree.gif" class="icon" border="0" /></a>
+		<a href="bounce.php?course=<?php echo $row['course_id']; ?>"><img src="themes/default/images/courses/shapes.gif" class="icon" border="0" /></a>
 		<p>Instructor: <a href=""><?php echo get_login($row['member_id']); ?></a><br />
 			My Role: <?php echo $row['role']; ?><br /></p>
 

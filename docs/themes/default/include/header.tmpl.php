@@ -282,6 +282,8 @@ $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 //$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
 /* global pages */
+$_pages['about.php']['title']  = _AT('about_atutor');
+
 $_pages['help/index.php']['title']  = _AT('help');
 $_pages['help/index.php']['children'] = array('help/accessibility.php', 'help/about_help.php', 'help/contact_admin.php');
 
