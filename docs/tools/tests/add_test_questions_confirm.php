@@ -20,6 +20,16 @@ authenticate(AT_PRIV_TEST_CREATE);
 
 $tid = intval($_POST['tid']);
 
+$_pages['tools/tests/questions.php?tid='.$tid]['title']    = _AT('questions');
+$_pages['tools/tests/questions.php?tid='.$tid]['parent']   = 'tools/tests/index.php';
+$_pages['tools/tests/questions.php?tid='.$tid]['children'] = array('tools/tests/add_test_questions.php?tid='.$tid);
+
+$_pages['tools/tests/add_test_questions.php?tid='.$tid]['title']    = _AT('add_questions');
+$_pages['tools/tests/add_test_questions.php?tid='.$tid]['parent']   = 'tools/tests/questions.php?tid='.$tid;
+
+$_pages['tools/tests/add_test_questions_confirm.php']['title']    = _AT('add_questions');
+$_pages['tools/tests/add_test_questions_confirm.php']['parent']   = 'tools/tests/questions.php?tid='.$tid;
+
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 	header('Location: questions.php?tid='.$tid);

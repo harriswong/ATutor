@@ -18,11 +18,12 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 authenticate(AT_PRIV_TEST_CREATE);
 
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/index.php';
-$_section[1][0] = _AT('test_manager');
-$_section[1][1] = 'tools/tests/index.php';
-$_section[2][0] = _AT('questions');
+$_pages['tools/tests/questions.php']['title']    = _AT('questions');
+$_pages['tools/tests/questions.php']['parent']   = 'tools/tests/index.php';
+$_pages['tools/tests/questions.php']['children'] = array('tools/tests/add_test_questions.php?tid='.$_GET['tid']);
+
+$_pages['tools/tests/add_test_questions.php?tid='.$_GET['tid']]['title']    = _AT('add_questions');
+$_pages['tools/tests/add_test_questions.php?tid='.$_GET['tid']]['parent']   = 'tools/tests/questions.php?tid='.$_GET['tid'];
 
 $tid = intval($_REQUEST['tid']);
 
@@ -71,13 +72,6 @@ $msg->printAll();
 
 $sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions Q, ".TABLE_PREFIX."tests_questions_assoc TQ WHERE Q.course_id=$_SESSION[course_id] AND Q.question_id=TQ.question_id AND TQ.test_id=$tid";
 $result	= mysql_query($sql, $db);
-
-unset($editors);
-$editors[] = array('priv' => AT_PRIV_TEST_CREATE, 'title' => _AT('add_questions'), 'url' => 'tools/tests/add_test_questions.php?tid=' . $tid);
-$editors[] = array('priv' => AT_PRIV_TEST_CREATE, 'title' => _AT('preview'), 'url' => 'tools/tests/preview.php?tid=' . $tid);
-echo '<div align="center">';
-print_editor($editors , $large = false);
-echo '</div>';
 
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
@@ -175,10 +169,9 @@ if ($row = mysql_fetch_assoc($result)) {
 	//total weight
 	echo '<tfoot>';
 	echo '<tr>';
-	echo '<td class="row1" colspan="2" align="center" nowrap="nowrap"><strong>'._AT('total').':</strong> '.$total_weight.'</td>';
-
-	echo '<td class="row1" colspan="4" align="left" nowrap="nowrap">';
-	echo '<input type="submit" value="'._AT('update').'" name="submit" class="button" /> | <input type="submit"  value="'._AT('done').'" name="done" class="button" /></td>';
+	echo '<td colspan="2" align="center" nowrap="nowrap"><strong>'._AT('total').':</strong> '.$total_weight.'</td>';
+	echo '<td colspan="4" align="left" nowrap="nowrap">';
+	echo '<input type="submit" value="'._AT('update').'" name="submit" /> <input type="submit"  value="'._AT('done').'" name="done" /></td>';
 	echo '</tr>';
 	echo '</tfoot>';
 } else {

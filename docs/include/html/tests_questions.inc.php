@@ -82,21 +82,21 @@ foreach ($cats as $cat) {
 
 		do {
 			if ($tid) {
-				echo '<tr onmousedown="document.form[\'q' . $row['question_id'] . '\'].checked = true;">';
+				echo '<tr onmousedown="document.form[\'q' . $row['question_id'] . '\'].checked = !document.form[\'q' . $row['question_id'] . '\'].checked;">';
 				echo '<td>';
 				echo '<input type="checkbox" value="'.$row['question_id'].'" name="add_questions['.$cat['category_id'].'][]" id="q'.$row['question_id'].'" /></td>';
 			} else {
 				echo '<tr onmousedown="document.form[\'q'.$row['question_id'].'\'].checked = true;">';
 				echo '<td><input type="radio" name="id" value="'.$row['question_id'].'|'.$row['type'].'" id="q'.$row['question_id'].'"></td>';
 			}
-			echo '<td><label for="q'.$row['question_id'].'">';
+			echo '<td>';
 			if (strlen($row['question']) > 45) {
 				echo AT_print(substr(htmlentities($row['question']), 0, 43), 'tests_questions.question') . '...';
 			} else {
 				echo AT_print(htmlentities($row['question']), 'tests_questions.question');
 			}
 
-			echo '</label></td>';
+			echo '</td>';
 			echo '<td>';
 			switch ($row['type']) {
 				case 1:
