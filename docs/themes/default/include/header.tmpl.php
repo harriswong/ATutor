@@ -499,9 +499,9 @@ if ($_SESSION['course_id'] > 0) {
 		<?php endif; ?>
 	<?php endforeach; ?>
 	<th id="right-empty-tab">
-		<?php if (($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
+		<?php if (FALSE && ($_SESSION['course_id'] > 0) && show_pen() && (!$_SESSION['prefs']['PREF_EDIT'])): ?>
 			<a href="<?php echo $_my_uri; ?>enable=PREF_EDIT" id="editor-link" class="off"><?php echo _AT('enable_editor'); ?></a>
-		<?php elseif (($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
+		<?php elseif (FALSE && ($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
 			<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
 		<?php else: ?>
 			&nbsp;

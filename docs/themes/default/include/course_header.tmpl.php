@@ -16,7 +16,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 ?>
 <!-- content table -->
 
-<?php require(AT_INCLUDE_PATH.'html/dropdowns.inc.php'); ?>
+<?php // require(AT_INCLUDE_PATH.'html/dropdowns.inc.php'); ?>
 
 
 <a name="course-content"></a>

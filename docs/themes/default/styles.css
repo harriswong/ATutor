@@ -482,46 +482,7 @@ td.navmenu.borderless {
 	border-left: 0px;
 	padding-right: 10px;
 }
-/* menu titles */
-td.cat, th.cat {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-	background-image: url('images/cellpic1.gif');
-	background-repeat: repeat-x;
-	background-color:#D1D7DC; 
-	height: 25px;
-	text-align: center;
-	font-weight: bold;
-	padding-top: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-	white-space: nowrap;
-	color:black;
-}
-td.cat2c {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-	background-image: url('images/cellpic1.gif');
-	background-repeat: repeat;
-	white-space: nowrap;
-	text-align: center;
-	font-weight: bold;
-	height: 25px;
 
-	border-left: 1px #98AAB1 solid;
-}
-
-/*
-table.cat2 {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-	background-color:#9C9DA6;
-	text-align: center;
-	font-weight: bold;	
-	border: 1px #98AAB1 solid;
-}
-table.cat3 {
-	font-family: Helvetica, Arial, Helvetica, sans-serif;
-	background-color: ;
-}
-*/
 #course-nav {
 	font-family: Helvetica, Arial, Helvetica, sans-serif;
 	background-color: #EFEFEF;
