@@ -26,11 +26,14 @@ define('AT_NAV_ADMIN',  4);
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
+$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php');
+//$_pages[AT_NAV_COURSE][] = 'links/index.php';
+$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
+
 if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
-	$_pages[AT_NAV_COURSE] = array('index.php',  'forum/list.php',        'links/index.php', 'tools/index.php');
-} else {
-	$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php',        'links/index.php');
+	$_pages[AT_NAV_COURSE][] = 'tools/index.php';
 }
+
 $_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 
 /* admin pages */
@@ -168,7 +171,7 @@ $_pages['users/inbox.php']['children'] = array('users/send_message.php');
 	$_pages['users/send_message.php']['parent'] = 'users/inbox.php';
 
 /* course pages */
-$_pages['index.php']['title']  = _AT('announcements');
+$_pages['index.php']['title']  = _AT('home');
 $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['tools/index.php']['title']    = _AT('manage');
@@ -378,13 +381,13 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 
-	/*
-	$_pages['forum/index.php']['title']  = 'forum_name';
-	$_pages['forum/index.php']['parent'] = 'forum/list.php';
-	*/
+$_pages['glossary/index.php']['title']  = _AT('glossary');
+$_pages['glossary/index.php']['parent'] = 'index.php';
+$_pages['glossary/index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['links/index.php']['title']  = _AT('links');
 $_pages['links/index.php']['parent'] = AT_NAV_COURSE;
+$_pages['links/index.php']['parent'] = 'index.php';
 $_pages['links/index.php']['children'] = array('links/add.php');
 
 	$_pages['links/add.php']['title']  = _AT('suggest_link');
