@@ -47,18 +47,17 @@ if(mysql_num_rows($result) > 0){
 	$count = (($page-1) * $results_per_page) + 1;
 	$gloss_results = array_slice($gloss_results, ($page-1)*$results_per_page, $results_per_page);
 	
-	for ($i=1; $i<=$num_pages; $i++) {
-		if ($i == 1) {
-			echo _AT('page').': | ';
+	if($num_pages > 1) {
+		echo _AT('page').': ';
+		for ($i=1; $i<=$num_pages; $i++) {
+			if ($i == $page) {
+				echo '<strong>'.$i.'</strong>';
+			} else {
+				echo ' | <a href="'.$_SERVER['PHP_SELF'].'?p='.$i.'#list">'.$i.'</a>';
+			}
 		}
-		if ($i == $page) {
-			echo '<strong>'.$i.'</strong>';
-		} else {
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?p='.$i.'#list">'.$i.'</a>';
-		}
-		echo ' | ';
 	}
-	echo '<br /><br /><a name="list"></a>';
+	echo '<a name="list"></a>';
 	$current_letter = '';
 	foreach ($gloss_results as $item) {
 		$item['word'] = AT_print($item['word'], 'glossary.word');
@@ -70,7 +69,7 @@ if(mysql_num_rows($result) > 0){
 		echo '<p>';
 		echo '<a name="'.urlencode($item['word']).'"></a>';
 
-		echo '<b>'.stripslashes($item['word']);
+		echo '<strong>'.stripslashes($item['word']);
 
 		if (($item['related_word_id'] != 0) || (is_array($glossary_related[urlencode($item['word_id'])]) )) {
 
@@ -102,33 +101,15 @@ if(mysql_num_rows($result) > 0){
 			}
 			echo ')';
 		}
-		echo '</b>';
-
-		/* admin editing options: */
-		unset($editors);
-		$editors[] = array('priv' => AT_PRIV_GLOSSARY, 'title' => _AT('edit_this_term'), 'url' => $_base_path.'editor/edit_glossary.php?gid='.$item['word_id']);
-		$editors[] = array('priv' => AT_PRIV_GLOSSARY, 'title' => _AT('delete_this_term'), 'url' => $_base_path.'editor/delete_glossary.php?gid='.$item['word_id'].SEP.'t='.urlencode($item['word']));
-		print_editor($editors , $large = false);
+		echo '</strong>';
 
 		echo '<br />';
 		echo AT_print($item['definition'], 'glossary.definition');
 		echo '</p>';
-		echo '<br />';
 	}
 } else {
 	$msg->printInfos('NO_TERMS');
 }
-	for ($i=1; $i<=$num_pages; $i++) {
-		if ($i == 1) {
-			echo _AT('page').': | ';
-		}
-		if ($i == $page) {
-			echo '<strong>'.$i.'</strong>';
-		} else {
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?p='.$i.'#list">'.$i.'</a>';
-		}
-		echo ' | ';
-	}
 
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>
