@@ -19,7 +19,7 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 //require(AT_INCLUDE_PATH.'lib/themes.inc.php');
 
 if ($_SESSION['course_id'] > -1) { exit; }
-require(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
+//require(AT_INCLUDE_PATH.'lib/admin_categories.inc.php');
 
 if ((isset($_POST['delete']) || isset($_POST['edit'])) && !isset($_POST['cat_id'])) {
 		$msg->addError('NO_CAT_SELECTED');
@@ -92,7 +92,7 @@ $msg->printAll();
 		} 
 	?>
 		<tr onmousedown="document.form['m<?php echo $row['cat_id']; ?>'].checked = true;">
-			<td><input type="radio" name="cat_id" value="<?php echo $row['cat_id']; ?>" id="m<?php echo $row['cat_id']; ?>"></td>
+			<td width="10"><input type="radio" name="cat_id" value="<?php echo $row['cat_id']; ?>" id="m<?php echo $row['cat_id']; ?>"></td>
 			<td><?php echo AT_print($row['cat_name'], 'members.first_name'); ?></td>
 			<td><?php echo AT_print($parent_cat_name, 'members.last_name'); ?></td>
 			<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES) : ?>
