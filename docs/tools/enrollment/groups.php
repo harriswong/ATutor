@@ -34,26 +34,22 @@ $_section[1][0] = _AT('course_enrolment');
 $_section[1][1] = 'tools/enrollment/index.php';
 $_section[2][0] = _AT('groups');
 
-if ($_POST['submit'] == _AT('done')) {
-	header('Location: index.php');
-	exit;
-
-} else if ($_POST['submit'] == _AT('edit')) {
+if (isset($_POST['edit'])) {
 	if ($_POST['group']) {
 		header('Location: groups_manage.php?gid='.$_POST['group']);
 		exit;
 	} else {
-		$msg->addError('NO_CAT_SELECTED');
+		$msg->addError('GROUP_NOT_FOUND');
 	}
 
-} else if ($_POST['submit'] == _AT('delete')) {
+} else if (isset($_POST['delete'])) {
 	if (isset($_POST['group'])) {
 		//confirm
 		header('Location: groups_delete.php?gid='.$_POST['group']);
 		exit;
 
 	} else {
-		$msg->addError('NO_CAT_SELECTED');
+		$msg->addError('GROUP_NOT_FOUND');
 	}	
 } 
 
@@ -61,10 +57,7 @@ $msg->addHelp('ENROLLMENT_GROUPS');
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-
 ?>
-
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
 
 <div align="center">
 <span class="editorsmallbox">
@@ -72,31 +65,38 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 </span>
 </div>
 
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<table class="data" summary="" rules="cols">
+<thead>
 <tr>
-	<th colspan="2" class="cyan"><?php echo _AT('groups'); ?> </th>
+	<th scope="col">&nbsp;</th>
+	<th scope="col"><?php echo _AT('title');         ?></th>
 </tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
+</thead>
+<tfoot>
+<tr>
+	<td colspan="6">
+		<input type="submit" name="edit"   value="<?php echo _AT('edit'); ?>" />
+		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+	</td>
+</tr>
+</tfoot>
+<tbody>
 <?php
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE course_id=$_SESSION[course_id] ORDER BY title";
 	$result	= mysql_query($sql, $db);
 	if ($row = mysql_fetch_assoc($result)) {
-		do { ?>
-			<tr>
-				<td class="row1" align="right"><input type="radio" id="g_<?php echo $row['group_id']; ?>" name="group" value="<?php echo $row['group_id']; ?>" /></td>
-				<td class="row1"><label for="g_<?php echo $row['group_id']; ?>"><?php echo $row['title']; ?></label></td>
+		do {
+?>
+			<tr onmousedown="document.form['g_<?php echo $row['group_id']; ?>'].checked = true;">
+				<td><input type="radio" id="g_<?php echo $row['group_id']; ?>" name="group" value="<?php echo $row['group_id']; ?>" /></td>
+				<td><label for="g_<?php echo $row['group_id']; ?>"><?php echo $row['title']; ?></label></td>
 			</tr>
-			<tr><td height="1" class="row2" colspan="2"></td></tr>
-		<?php } while ($row = mysql_fetch_assoc($result)); ?>
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		<tr>
-			<td class="row1" colspan="2" align="center"><input type="submit" value="<?php echo _AT('edit'); ?>" class="button" name="submit" /> | <input type="submit" value="<?php echo _AT('delete'); ?>" class="button" name="submit" /> | <input type="submit" value="<?php echo _AT('done'); ?>" class="button" name="submit" /></td>
-		</tr>
-	<?php
-	} else {
-		echo '<tr><td class="row1">'._AT('groups_no_groups').'</td></tr>';
-		echo '<tr><td height="1" class="row2" colspan="2"></td></tr>';
-	}?>
+<?php
+		} while ($row = mysql_fetch_assoc($result));
+	}
+?>
+</tbody>
 </table>
 </form>
 
