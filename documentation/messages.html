@@ -173,7 +173,7 @@ i.e. require_once(<kbd>'Message.class.php'</kbd>);<br/><br/>
 
 <h3><a name="Adding"></a>Adding Messages</h3>
 
-<kbd>$msg->add{Error|Warning|Info|Feddback|Help}($code);</kbd><br/><br/>
+<kbd>$msg->add{Error|Warning|Info|Feedback|Help}($code);</kbd><br/><br/>
 
 <p><kbd>$code</kbd> is a STRING of a language _msgs code or an array with element 0 being
 the language _msgs code followed by optional arguments. Refer to
@@ -287,7 +287,18 @@ Essentially, two lines of code are accomplished in one.</p>
 some kind of data. Useful for branching conditions in knowning
 when to print a Message or not. Otherwise returns false.</p>
 
-<h3><a name="Example"></a>Sample Code</h3>
+<h3><a name="Boolean"></a>Manually Deleting a specific Message from storage</h3>
+
+<kbd>delete{Error|Warning|Feedback|Help|Info}($code);</kbd><br/><br/>
+
+<p>Will delete anything related to <kbd>$code</kbd> from $_SESSION</p>
+<dt>Example:</dt>
+<pre class="code">
+	$msg->deleteFeedback('CANCELLED');
+</pre>
+
+<a href="#top" class="top">top</a>
+<h2><a name="Example"></a>Example Code</h2>
 	
 <pre class="code">
 
