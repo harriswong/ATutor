@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-
+// $Id$
 
 define('AT_INCLUDE_PATH', '../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
@@ -21,27 +21,6 @@ $_section[1][0] = _AT('glossary');
 
 require (AT_INCLUDE_PATH.'header.inc.php');
 	
-	echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="tools/index.php?g=11"><img src="images/icons/default/square-large-tools.gif" class="menuimage" border="0" vspace="2" width="41" height="40" alt="" /></a>';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo ' <a href="tools/index.php?g=11">'._AT('tools').'</a>';
-	}
-	echo '</h2>';
-
-	echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/glossary-large.gif" class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo _AT('glossary');
-	}
-	echo '</h3>';
-	
-	$msg->printAll();
-	
-	echo '<br />';
 
 	/* admin editing options: */
 	if (authenticate(AT_PRIV_GLOSSARY, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
