@@ -14,7 +14,7 @@
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-global $msg;
+global $msg, $_stacks;
 
 $msg->printErrors();
 $msg->printAll();
@@ -23,9 +23,37 @@ $msg->printAll();
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" name="prefs">
 
-<fieldset><strong><legend><?php print_popup_help('DISPLAY_OPTIONS'); ?><?php echo _AT('disp_options');  ?></legend></strong>
+<table border="0" cellspacing="1" cellpadding="5" align="center" class="bodyline" width="30%">
 
-<table border="0" cellspacing="1" cellpadding="0">
+<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
+	<tr>
+		<td><?php echo _AT('themes_disabled'); ?></td>
+	</tr>
+<?php else: ?>
+	<tr>
+		<td class="row1"><label for="seq_icons"><?php echo _AT('theme');  ?>:</label></td>
+		<td class="row1"><select name="theme"><?php
+						
+						$_themes = get_enabled_themes();
+					
+						foreach ($_themes as $theme) {
+							if (!$theme) {
+								continue;
+							}
+
+							$theme_fldr = get_folder($theme);
+
+							if ($theme_fldr == $_SESSION['prefs']['PREF_THEME']) {
+								echo '<option value="'.$theme_fldr.'" selected="selected">'.$theme.'</option>'."\n";
+							} else {
+								echo '<option value="'.$theme_fldr.'">'.$theme.'</option>'."\n";
+							}
+						}
+						?>
+						</select></td>
+	</tr>
+<?php endif; ?>
+
 <tr>
 <td class="row1"><label for="seq"><?php echo _AT('seq_links');  ?>:</label></td>
 <td class="row1"><?php
@@ -61,98 +89,62 @@ $msg->printAll();
 		<option value="<?php echo NEITHER; ?>"<?php echo $neither; ?>><?php echo _AT('neither');  ?></option>
 	  </select></td>
 </tr>
-</table>
-
-<br />
-
-<table border="0" cellspacing="1" cellpadding="0">
 <tr>
-	<td class="row1"><?php
-	/* Show Topic Numbering Preference */
-	if ($_SESSION['prefs'][PREF_NUMBERING] == 1) {
-		$num = ' checked="checked"';
-	}
-	?> <input type="checkbox" name="numering" value="1" <?php echo $num;?> id="numbering" /></td>
-	<td class="row1"><label for="numbering"><?php echo _AT('show_numbers');  ?></label></td>
-</tr>
-<tr>
-	<td class="row1"><?php
-		$num = '';
-		if ($_SESSION['prefs'][PREF_HEADINGS] == 1) {
+	<td class="row1"><label for="numbering"><?php echo _AT('show_numbers');  ?>:</label></td>
+	<td class="row1" nowrap="nowrap"><?php
+		$num = '';  $num2 = '';
+		if ($_SESSION['prefs'][PREF_NUMBERING] == 1) {
 			$num = ' checked="checked"';
+		} else {
+			$num2 = ' checked="checked"';
 		}
-		?> <input type="checkbox" name="headings" value="1" <?php echo $num;?> id="heading" /></td>
-	<td class="row1"><label for="heading"><?php echo _AT('show_headings');  ?></label></td>
+		?><input type="radio" name ="numbering" id="num_en" value="1" <?php echo $num; ?> /><label for="num_en"><?php echo _AT('enable');  ?></label>
+		<input type="radio" name ="numbering" id="num_dis" value="0" <?php echo $num2; ?> /><label for="num_dis"><?php echo _AT('disable');  ?></label>
+	</td>
 </tr>
-<tr>
+<tr>	
+	<td class="row1"><label for="use_help"><?php echo _AT('help');  ?>:</label><br /></td>
 	<td class="row1"><?php
-		$num = '';
+		$num = '';  $num2 = '';
 		if ($_SESSION['prefs'][PREF_HELP] == 1) {
 			$num = ' checked="checked"';
+		} else {
+			$num2 = ' checked="checked"';
 		}
-		?><input type="checkbox" name ="use_help" id="use_help" value="1" <?php echo $num; ?> /></td>
-	<td class="row1"><label for="use_help"><?php echo _AT('show_help');  ?></label><br /></td>
+		?><input type="radio" name ="use_help" id="help_en" value="1" <?php echo $num; ?> /><label for="help_en"><?php echo _AT('enable');  ?></label>
+		<input type="radio" name ="use_help" id="help_dis" value="0" <?php echo $num2; ?> /><label for="help_dis"><?php echo _AT('disable');  ?></label>
+	</td>
 </tr>
 <tr>
+	<td class="row1"><label for="use_mini_help"><?php echo _AT('show_mini_help');  ?>:</label><br /></td>
 	<td class="row1"><?php
-		$num = '';
+		$num = '';  $num2 = '';
 		if ($_SESSION['prefs'][PREF_MINI_HELP] == 1) {
 			$num = ' checked="checked"';
+		} else {
+			$num2 = ' checked="checked"';
 		}
-		?><input type="checkbox" name ="use_mini_help" id="use_mini_help" value="1" <?php echo $num; ?> /></td>
-	<td class="row1"><label for="use_mini_help"><?php echo _AT('show_mini_help');  ?></label><br /></td>
+		?><input type="radio" name ="use_mini_help" id="mhelp_en" value="1" <?php echo $num; ?> /><label for="mhelp_en"><?php echo _AT('enable');  ?></label>
+		<input type="radio" name ="use_mini_help" id="mhelp_dis" value="0" <?php echo $num2; ?> /><label for="mhelp_dis"><?php echo _AT('disable');  ?></label>
+	</td>
 </tr>
 <tr>
+	<td class="row1"><label for="use_jump_redirect"><?php echo _AT('jump_redirect');  ?>:</label><br /></td>
 	<td class="row1"><?php
-		$num = '';
-		if (isset($_SESSION['prefs'][PREF_JUMP_REDIRECT]) && $_SESSION['prefs'][PREF_JUMP_REDIRECT]) {
+		$num = '';  $num2 = '';
+		if ($_SESSION['prefs'][PREF_JUMP_REDIRECT] == 1) {
 			$num = ' checked="checked"';
+		} else {
+			$num2 = ' checked="checked"';
 		}
-		?><input type="checkbox" name="use_jump_redirect" value="1" id="use_jump_redirect" <?php echo $num; ?> /></td>
-	<td class="row1"><label for="use_jump_redirect"><?php echo _AT('jump_redirect');  ?></label><br /></td>
+		?><input type="radio" name ="use_jump_redirect" id="jump_en" value="1" <?php echo $num; ?> /><label for="jump_en"><?php echo _AT('enable');  ?></label>
+		<input type="radio" name ="use_jump_redirect" id="jump_dis" value="0" <?php echo $num2; ?> /><label for="jump_dis"><?php echo _AT('disable');  ?></label>
+	</td>
 </tr>
-</table>
-
-<br /> 
-
-<table border="0"  cellspacing="1" cellpadding="0">
-<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
-	<tr>
-		<td><?php echo _AT('themes_disabled'); ?></td>
-	</tr>
-<?php else: ?>
-	<tr>
-		<td class="row1"><label for="seq_icons"><?php echo _AT('theme');  ?>:</label></td>
-		<td class="row1"><select name="theme"><?php
-						
-						$_themes = get_enabled_themes();
-					
-						foreach ($_themes as $theme) {
-							if (!$theme) {
-								continue;
-							}
-
-							$theme_fldr = get_folder($theme);
-
-							if ($theme_fldr == $_SESSION['prefs']['PREF_THEME']) {
-								echo '<option value="'.$theme_fldr.'" selected="selected">'.$theme.'</option>'."\n";
-							} else {
-								echo '<option value="'.$theme_fldr.'">'.$theme.'</option>'."\n";
-							}
-						}
-						?>
-						</select></td>
-	</tr>
-<?php endif; ?>
-</table>
-</fieldset>
-<br />
-<fieldset><strong><legend><?php print_popup_help('MENU_OPTIONS'); ?><?php  echo _AT('menus'); ?></legend></strong>
-
-<table border="0" cellspacing="1" cellpadding="0">
 <tr>
-	<td class="row1" align="center"><?php
-
+	<td class="row1"><label for="seq_icons"><?php echo _AT('menus');  ?>:</label></td>
+	<td class="row1">
+	<?php
 		$num_stack = count($_stacks);
 
 		for ($i = 0; $i< 8; $i++) {
@@ -168,12 +160,10 @@ $msg->printAll();
 			echo '</select>'."\n";
 			echo '<br />'; 
 		}
-
 	?></td>
 </tr>
-</table>
-</fieldset>
 
+</table>
 <br /><p align="center"><input type="submit" name="submit" value="<?php echo _AT('set_prefs'); ?>" title="<?php echo _AT('set_prefs'); ?>" accesskey="s" class="button" /></p>
 </form>
 

@@ -80,7 +80,7 @@ if ($_GET['pref_id'] != '') {
 //	$temp_prefs[PREF_MAIN_MENU_SIDE]= intval($_GET['pos']);
 	$temp_prefs[PREF_SEQ]		    = intval($_GET['seq']);
 	$temp_prefs[PREF_TOC]		    = intval($_GET['toc']);
-	$temp_prefs[PREF_NUMBERING]	    = intval($_GET['numering']);
+	$temp_prefs[PREF_NUMBERING]	    = intval($_GET['numbering']);
 //	$temp_prefs[PREF_SEQ_ICONS]	    = intval($_GET['seq_icons']);
 //	$temp_prefs[PREF_NAV_ICONS]	    = intval($_GET['nav_icons']);
 //	$temp_prefs[PREF_LOGIN_ICONS]	= intval($_GET['login_icons']);
@@ -118,7 +118,7 @@ if ($_GET['pref_id'] != '') {
 	$action = true;
 } else if ($_GET['save'] == 2) {
 	/* save as pref for ALL courses */
-	save_prefs( );
+	save_prefs();
 	$msg->addFeedback('PREFS_SAVED2');
 	$_SESSION['prefs_saved'] = true;
 	$action = true;
