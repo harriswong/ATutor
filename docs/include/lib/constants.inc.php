@@ -182,17 +182,8 @@ define('AT_ENROLL_NO',			0);
 define('AT_ENROLL_YES',			1);
 define('AT_ENROLL_ALUMNUS',		2);
 
-/* names of the include files, the index IS important, so DO NOT change the order! */
-$_stacks = array(
-		array('name' => 'PREF_LOCAL',		'file' => 'local_menu'), 
-		array('name' => 'PREF_MAIN_MENU',	'file' => 'menu_menu'), 
-		array('name' => 'PREF_RELATED',		'file' => 'related_topics'), 
-		array('name' => 'PREF_ONLINE',		'file' => 'users_online'), 
-		array('name' => 'PREF_GLOSSARY',	'file' => 'glossary'), 
-		array('name' => 'PREF_SEARCH',		'file' => 'search'),
-		array('name' => 'PREF_POLL',        'file' => 'poll'),
-		array('name' => 'PREF_POSTS',       'file' => 'posts')
-		);
+/* names of the include files for the side menu drop downs */
+$_stacks = array('local_menu', 'menu_menu', 'related_topics', 'users_online', 'glossary', 'search', 'poll', 'posts');
 
 /* control how user inputs get formatted on output: */
 /* note: v131 not all formatting options are available on each section. */
