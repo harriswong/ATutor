@@ -109,9 +109,9 @@ if ($row = mysql_fetch_assoc($result)) {
 		<?php
 		echo '<td valign="middle" width="10" align="center">';
 		if ($row['new'] == 1)	{
-			echo '<small>'._AT('new').'&nbsp;</small>';
+			echo _AT('new');
 		} else if ($row['replied'] == 1) {
-			echo '<small>'._AT('replied').'</small>';
+			echo _AT('replied');
 		}
 		echo '</td>';
 
@@ -120,23 +120,23 @@ if ($row = mysql_fetch_assoc($result)) {
 		echo '<td align="left">';
 
 		if ($view != $row['message_id']) {
-			echo $name.'&nbsp;</td>';
+			echo $name.'</td>';
 		} else {
-			echo '<b>'.$name.'</b>&nbsp;</td>';
+			echo '<strong>'.$name.'</strong></td>';
 		}
 
 		echo '<td valign="middle">';
 		if ($view != $row['message_id']) {
 			echo '<a href="'.$_SERVER['PHP_SELF'].'?view='.$row['message_id'].'">'.AT_print($row['subject'], 'messages.subject').'</a></td>';
 		} else {
-			echo '<b>'.AT_print($row['subject'], 'messages.subject').'</b></td>';
+			echo '<strong>'.AT_print($row['subject'], 'messages.subject').'</strong></td>';
 		}
 	
-		echo '<td valign="middle" align="left" class="row1"><small>';
+		echo '<td valign="middle" align="left" nowrap="nowrap">';
 		echo AT_date(_AT('inbox_date_format'),
 					 $row['date_sent'],
 					 AT_DATE_MYSQL_DATETIME);
-		echo '</small></td>';
+		echo '</td>';
 		echo '</tr>';
 
 	} while ($row = mysql_fetch_assoc($result));
