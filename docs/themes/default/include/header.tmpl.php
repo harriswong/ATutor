@@ -165,6 +165,9 @@ $_pages['tools/index.php']['title']    = _AT('tools');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 //$_pages['tools/index.php']['children'] = array('forum/list.php');
 
+	$_pages['tools/course_stats.php']['title']  = _AT('statistics');
+	$_pages['tools/course_stats.php']['parent'] = 'tools/index.php';
+
 	$_pages['tools/sitemap/index.php']['title']  = _AT('sitemap');
 	$_pages['tools/sitemap/index.php']['parent'] = 'tools/index.php';
 

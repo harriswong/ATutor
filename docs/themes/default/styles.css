@@ -994,7 +994,7 @@ div#browse {
 }
 
 div.browse-selected {
-	background-image: url('../../images/side_arrow.gif'); 
+	background-image: url('images/side_arrow.gif'); 
 	background-repeat: no-repeat; 
 	padding-left: 9px; 
 	background-position: center left;
