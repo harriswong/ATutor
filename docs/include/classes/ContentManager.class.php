@@ -137,7 +137,7 @@ class ContentManager
 		$result = mysql_query($sql, $this->db);
 
 		/* main topics all have minor_num = 0 */
-		$sql = "INSERT INTO ".TABLE_PREFIX."content VALUES (0,$course_id, $content_parent_id, $ordering, NOW(), 0, $formatting, '$release_date', '$keywords', '', '$title','$text', $inherit_release_date, 0)";
+		$sql = "INSERT INTO ".TABLE_PREFIX."content VALUES (0,$course_id, $content_parent_id, $ordering, NOW(), 0, $formatting, '$release_date', '$keywords', '', '$title','$text', $inherit_release_date)";
 
 		$err = mysql_query($sql, $this->db);
 
@@ -296,29 +296,6 @@ class ContentManager
 
 		return $result;
 	}
-
-	function & viewContentPage($content_id) {
-		$sql0    = "UPDATE ".TABLE_PREFIX."content SET counter=counter+1 WHERE content_id=$content_id AND course_id=$this->course_id";
-		$result0 = mysql_query($sql0, $this->db);
-
-		$sql1    = "SELECT counter FROM ".TABLE_PREFIX."member_track WHERE member_id=$_SESSION[member_id] AND course_id=$this->course_id AND content_id=$content_id";
-		
-		if ($result1 = mysql_query($sql1, $this->db)) {
-			$row1 = mysql_fetch_assoc($result1);
-			$counter =	$row1['counter']+1;
-		} else {
-			$counter = 1;
-		}
-
-		$sql2    = "REPLACE INTO ".TABLE_PREFIX."member_track VALUES ($_SESSION[member_id], $this->course_id, $content_id, $counter, NOW())";
-		$result2 = mysql_query($sql2, $this->db);
-
-		$sql	= "SELECT *, release_date+0 AS r_date, NOW()+0 AS n_date FROM ".TABLE_PREFIX."content WHERE content_id=$content_id AND course_id=$this->course_id";
-		$result = mysql_query($sql, $this->db);
-
-		return $result;
-	}
-
 	
 	/* @See editor/edit_content.php include/html/dropdowns/related_topics.inc.php include/lib/editor_tabs_functions.inc.php */
 	function getRelatedContent($content_id, $all=false) {
@@ -927,14 +904,6 @@ class ContentManager
 
 		return false;
 	}
-
-	function getTrackerInfo($col, $order) {
-		$sql	= "SELECT title, content_id, counter FROM ".TABLE_PREFIX."content WHERE course_id=$this->course_id ORDER BY $col $order";
-		$result = mysql_query($sql, $this->db);
-
-		return $result;
-	}
-
 }
 
 ?>
