@@ -26,7 +26,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 		<li><a href="<?php echo $_base_path; ?>tools/tracker.php"><?php echo _AT('my_tracker'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>tools/my_tests.php"><?php echo _AT('my_tests'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>forum/list.php"><?php echo _AT('forums'); ?></a></li>
-		<li><a href="<?php echo $_base_path; ?>/polls/index.php"><?php echo _AT('polls'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>polls/index.php"><?php echo _AT('polls'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>acollab.php">ACollab</a></li>
 	</ol>
 <?php
