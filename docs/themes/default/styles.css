@@ -927,14 +927,3 @@ a#editor-link.on {
 	background-repeat: no-repeat;
 	background-position: 0px 2px;
 }
-
-.formfield {
-	border: #efefef solid 1px;
-	padding: 2px;
-}
-
-
-.formfield:focus {
-	border: 1px solid blue;
-	padding: 2px;
-}
