@@ -101,7 +101,7 @@ if (($row = mysql_fetch_array($result))==0) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="6"><input type="submit" name="delete" value="Delete" /> <input type="submit" name="profile" value="View Profile" /></td>
+	<td colspan="6"><input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /> <input type="submit" name="profile" value="<?php echo _AT('view_profile'); ?>" /></td>
 </tr>
 </tfoot>
 <tbody>

@@ -984,3 +984,9 @@ table.data input[type=submit] {
 	min-width: 100px;
 	margin-left: 5px;
 }
+
+/* used for static tables with no form elements: */
+table.data.static tbody tr:hover {
+	background-color: transparent;
+	cursor: auto;
+}
