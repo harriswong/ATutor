@@ -24,14 +24,6 @@ if ($qid == 0){
 	$qid = intval($_POST['qid']);
 }
 
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/';
-$_section[1][0] = _AT('test_manager');
-$_section[1][1] = 'tools/tests/';
-$_section[2][0] = _AT('question_database');
-$_section[2][1] = 'tools/tests/question_db.php';
-$_section[3][0] = _AT('edit_question');
-
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 	if ($_POST['tid']) {
@@ -148,13 +140,6 @@ if (!isset($_POST['submit'])) {
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-
-if (isset($_REQUEST['tid'])): ?>
-	<h3><img src="images/clr.gif" height="1" width="54" alt="" /><a href="tools/tests/questions.php?tid=<?php echo $_REQUEST['tid']; ?>"><?php echo _AT('questions'); ?></a></h3>
-<?php else: ?>
-	<h3><img src="images/clr.gif" height="1" width="54" alt="" /><a href="tools/tests/question_db.php"><?php echo _AT('question_database'); ?></a></h3>
-<?php endif; ?>
-<?php
 
 $msg->printErrors();
 ?>

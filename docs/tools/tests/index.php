@@ -96,6 +96,10 @@ $cols=6;
 		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" />
 		<input type="submit" name="preview" value="<?php echo _AT('preview'); ?>" />
 		<input type="submit" name="questions" value="<?php echo _AT('questions'); ?>" />
+	</td>
+</tr>
+<tr>
+	<td colspan="6">
 		<input type="submit" name="submissions" value="<?php echo _AT('submissions'); ?>" />
 		<input type="submit" name="statistics" value="<?php echo _AT('statistics'); ?>" />
 		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
