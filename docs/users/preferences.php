@@ -150,8 +150,6 @@
 	/* page contents starts here */
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
-	echo '<h2>'._AT('preferences').'</h2>'."\n";
-
 	if (($_SESSION['prefs_saved'] === false) && !$action && $_SESSION['valid_user']) {
 		$feedback = array('APPLY_PREFS', $_SERVER['PHP_SELF']);
 		$msg->addFeedback($feedback);
