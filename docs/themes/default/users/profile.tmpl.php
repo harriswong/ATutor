@@ -19,9 +19,8 @@ global $languageManager;
 $msg->printAll();
 
 ?>
-<fieldset><strong><legend><?php echo _AT('account_information'); ?></legend></strong>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table cellspacing="1" cellpadding="0" border="0" summary="">
+<table cellspacing="1" cellpadding="0" border="0" summary="" align="center">
 <tr>
 	<td class="row1"><?php echo _AT('login_name'); ?>:</td>
 	<td class="row1"><?php echo $this->row['login'];?></td>
@@ -73,11 +72,7 @@ $msg->printAll();
 	<br /><br />
 	</td>
 </tr>
-</table>
-</fieldset><br />
-
-<fieldset><strong><legend><?php echo _AT('personal_information'); ?></strong></legend>
-<table cellspacing="1" cellpadding="0" border="0" summary="">
+<tr><td colspan="2"><strong><u><?php   echo _AT('optional'); ?></u></strong><br /><br /></tr>
 <tr>
 	<td class="row1"><label for="first_name"><?php   echo _AT('first_name'); ?>:</label></td>
 	<td class="row1"><input id="first_name" class="formfield" name="first_name" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['first_name']));?>" /></td>
@@ -140,7 +135,7 @@ $msg->printAll();
 	<td class="row1"><input id="website" class="formfield" name="website" size="40" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['website']));?>" /><br /><br /></td>
 </tr>
 </table>
-</fieldset>
+
 
 <br /><p align="center"><input type="submit" class="button" value=" <?php   echo _AT('update_profile'); ?> [Alt-s]" name="submit" accesskey="s" /> <input type="submit" name="cancel" class="button" value=" <?php echo  _AT('cancel'); ?>" /></p>
 
