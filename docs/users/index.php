@@ -114,7 +114,15 @@ while ($row = mysql_fetch_assoc($result)): $count++; ?>
 	<div class="course" onmousedown="document.location='bounce.php?course=<?php echo $row['course_id']; ?>'">
 		<h2><a href="bounce.php?course=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h2>
 
-		<a href="bounce.php?course=<?php echo $row['course_id']; ?>"><img src="images/courses/<?php echo $row['icon']; ?>" class="icon" border="0" /></a>
+		<a href="bounce.php?course=<?php echo $row['course_id']; ?>">
+		<?php 
+			if ($row['icon'] == '') {
+				echo '<img src="" class="icon" border="0" width="79" height="79" />';
+			} else {
+				echo '<img src="images/courses/' . $row['icon'] .'" class="icon" border="0" />';
+			}
+		?>
+		</a>
 		<p>Instructor: <a href=""><?php echo get_login($row['member_id']); ?></a><br />
 			My Role: <?php echo $row['role']; ?><br /></p>
 
