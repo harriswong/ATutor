@@ -23,7 +23,7 @@ $msg->printAll();
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" name="prefs">
 
-<table border="0" cellspacing="1" cellpadding="5" align="center" class="bodyline" width="30%">
+<table border="0" cellspacing="1" cellpadding="5" align="center" width="30%">
 
 <?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
 	<tr>
