@@ -22,10 +22,27 @@ $_pages['browse.php']  = array('name', 'index.php');
 $_pages['create.php']  = array('create', 'index.php');
 $_pages['profile.php'] = array('profile', '0');
 
-$_top_level_pages[] = array('users/index.php',       _AT('my_courses'));
-$_top_level_pages[] = array('users/edit.php',        _AT('profile'));
-$_top_level_pages[] = array('users/preferences.php', _AT('preferences'));
-$_top_level_pages[] = array('users/inbox.php',       _AT('inbox'));
+if (!$_SESSION['course_id']) {
+	$_top_level_pages[] = array('url' => 'users/index.php',       'title' => _AT('my_courses'));
+	$_top_level_pages[] = array('url' => 'users/edit.php',        'title' => _AT('profile'));
+	$_top_level_pages[] = array('url' => 'users/preferences.php', 'title' => _AT('preferences'));
+	$_top_level_pages[] = array('url' => 'users/inbox.php',       'title' => _AT('inbox'));
+
+	$_section_title = 'My Start Page';
+
+} else {
+	$_top_level_pages[] = array('url' => 'index.php',                   'title' => _AT('home'));
+	$_top_level_pages[] = array('url' => 'tools/index.php',             'title' => _AT('tools'));
+	$_top_level_pages[] = array('url' => 'resources/links/index.php',   'title' => _AT('links'));
+	$_top_level_pages[] = array('url' => 'resources/tile/index.php',    'title' => _AT('tile'));
+	$_top_level_pages[] = array('url' => 'forum/list.php',              'title' => _AT('forums'));
+	$_top_level_pages[] = array('url' => 'discussions/achat/index.php', 'title' => _AT('chat'));
+	$_top_level_pages[] = array('url' => 'discussions/polls.php',       'title' => _AT('polls'));
+	$_top_level_pages[] = array('url' => 'discussions/achat/index.php', 'title' => _AT('chat'));
+	
+	$_section_title = $_SESSION['course_title'];
+}
+
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
@@ -51,24 +68,28 @@ $_top_level_pages[] = array('users/inbox.php',       _AT('inbox'));
 	<a href="">Search</a> | <a href="">Help</a><br><form><select><option>course name</option></select><input type="submit" value="jump"></form>
 </div>
 
-<h1>My Start Page</h1>
+<?php if ($_SESSION['course_id']): ?>
+	<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
+<?php endif; ?>
+
+<h1><?php echo $_section_title; ?></h1>
 
 <table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
 	<?php foreach ($_top_level_pages as $page): ?>
-		<?php if ($_base_path . $page[0] == $_SERVER['PHP_SELF']): ?>
-			<th class="selected"><?php echo $page[1]; ?></th>
+		<?php if ($_base_path . $page['url'] == $_SERVER['PHP_SELF']): ?>
+			<th class="selected"><?php echo $page['title']; ?></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php else: ?>
-			<th class="tab"><a href="<?php echo $page[0]; ?>"><div><?php echo $page[1]; ?></div></a></th>
+			<th class="tab"><a href="<?php echo $_base_path . $page['url']; ?>"><div><?php echo $page['title']; ?></div></a></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php endif; ?>
 	<?php endforeach; ?>
 	<th id="right-empty-tab">&nbsp;</th>
 </tr>
 <tr>
-	<td colspan="13" class="content">
+	<td colspan="<?php echo count($_top_level_pages) *2 +2; ?>" class="content">
 	
 
 <?php return; ?>
