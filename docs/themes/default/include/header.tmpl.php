@@ -142,7 +142,7 @@ $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 	$_pages['forum/view.php']['parent'] = 'forum/index.php';
 
 
-$_pages['resources/links/index.php']['title']  = _AT('resource_links');
+$_pages['resources/links/index.php']['title']  = _AT('links');
 $_pages['resources/links/index.php']['parent'] = AT_NAV_COURSE;
 
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
@@ -292,6 +292,7 @@ if ($_SESSION['course_id'] > 0) {
 	<link rel="shortcut icon" href="<?php echo $this->tmpl_base_path; ?>favicon.ico" type="image/x-icon" />
 	<link rel="stylesheet" href="<?php echo $this->tmpl_base_path; ?>print.css" type="text/css" media="print" />
 	<link rel="stylesheet" href="<?php echo $this->tmpl_base_path.'themes/'.$this->tmpl_theme; ?>/styles.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $this->tmpl_base_path.'themes/'.$this->tmpl_theme; ?>/forms.css" type="text/css" />
 	<?php echo $this->tmpl_rtl_css; ?>
 	<style type="text/css"><?php echo $this->tmpl_banner_style; ?></style>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
@@ -301,7 +302,7 @@ if ($_SESSION['course_id'] > 0) {
 </head>
 <body <?php echo $this->tmpl_onload; ?>><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
-<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script>
+<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div style="background-color: #f8f8ff;">
 
 <!-- section title -->
 	<h1 id="section-title"><?php echo $_section_title; ?></h1>
@@ -328,12 +329,12 @@ if ($_SESSION['course_id'] > 0) {
 <?php else: ?>
 	 | <a href="<?php echo $this->tmpl_base_path; ?>login.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('login'); ?></a><br /><br />
 <?php endif; ?>
-
 </div>
+
 
 <!-- back to the current section -->
 	<?php if ($_SESSION['valid_user'] && ($_SESSION['course_id'] > 0)): ?>
-		<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
+		<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">Back to My Start Page</a>
 	<?php endif; ?>
 
 <!-- the bread crumbs -->
@@ -367,7 +368,7 @@ if ($_SESSION['course_id'] > 0) {
 								&nbsp;</th>
 	</tr>
 	</table>
-
+</div>
 <!-- the page title -->
 	<!-- div style="float: right">
 	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;

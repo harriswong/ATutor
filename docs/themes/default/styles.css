@@ -1,7 +1,7 @@
 /* main body attributes */
 body {
 	font-family: Verdana, Arial, sans-serif;
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
 	font-size: small;
@@ -81,16 +81,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-/* formfield attributes */
-.formfield {
-	font-family: Verdana, Arial, sans-serif;
-	color: black;
-	border-top:  #003399  solid 1px;
-	border-bottom: #003399 solid 1px;
-	border-right: #003399 solid 1px;
-	border-left: #003399 solid 1px;
-	padding: 2px;
-}
 .formfieldR {
 	font-family: Verdana, Arial, sans-serif;
 	color: black;
@@ -786,18 +776,18 @@ table.tabbed-table {
 	margin-left: -5px;
 }
 table.tabbed-table th#left-empty-tab {
-	background-color: white;
+	background-color: transparent;
 	width: 15px;
 	border-bottom: 1px solid black;
 }
 table.tabbed-table th#right-empty-tab {
 	text-align: right;
-	background-color: white;
+	background-color: transparent;
 	border-bottom: 1px solid black;
 	width: 420;
 }
 table.tabbed-table th.tab-spacer {
-	background-color: white;
+	background-color: transparent;
 	width: 5px;
 	border-bottom: 1px solid black;
 }
@@ -832,8 +822,12 @@ a#my-start-page {
 	margin-left: 5px;
 	background-color: #EFEFEF;
 	padding: 4px;
+	padding-left: 15px;
 	border: 1px solid #cccccc;
 	clear: all;
+	background-image: url(http://www.gris.uni-tuebingen.de/images/start.gif);
+	background-repeat: no-repeat;
+	background-position: 2px 8px;
 }
 
 div#breadcrumbs {
@@ -851,6 +845,7 @@ h2#page-title {
 	margin-bottom: 0px;
 	margin-top: 0px;
 	margin-left: 5px;
+	border-bottom: 1px solid blue;
 }
 
 h1 {
@@ -931,4 +926,15 @@ a#editor-link.on {
 	background-image: url(images/pen2.gif);
 	background-repeat: no-repeat;
 	background-position: 0px 2px;
+}
+
+.formfield {
+	border: #efefef solid 1px;
+	padding: 2px;
+}
+
+
+.formfield:focus {
+	border: 1px solid blue;
+	padding: 2px;
 }
