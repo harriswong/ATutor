@@ -24,14 +24,6 @@ h1 {
 	margin-left: 0px;
 	margin-right: 0px;
 }
-h2 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	color: black;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-left: 5px;
-	margin-right: 0px;
-}
 h3 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	color: black;
@@ -1161,6 +1153,8 @@ div#breadcrumbs {
 	font-size: small;
 }
 h2 {
+	margin-bottom: 5px;
+	margin-top: 0px;
 	border-bottom: 1px solid green;
 }
 

@@ -88,8 +88,6 @@ if ($_GET['reply'] == '') {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2><a href="users/inbox.php">'._AT('inbox').'</a></h2>';
-
 $msg->printAll();
 
 echo '<p><br />'._AT('send_private_message').'</p>';

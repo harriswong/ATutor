@@ -30,7 +30,6 @@
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>'._AT('inbox').'</h2>';
 
 if (!$_SESSION['valid_user']) {
 	$msg->printInfos('INVALID_USER');
@@ -50,12 +49,6 @@ if ($_GET['delete']) {
 
 $msg->printFeedbacks();
 
-?>
-<p>
-<span class="bigspacer">( <a href="users/send_message.php"><?php echo _AT('new_message'); ?></a> )</span>
-</p>
-
-<?php
 
 if (isset($_GET['s'])) {
 	$msg->printFeedbacks('MSG_SENT');

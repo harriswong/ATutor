@@ -17,60 +17,67 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $system_courses, $_base_path;
 
 
-$_pages[0] = array('users/index.php', 'users/profile.php', 'users/prefs.php', 'users/inbox.php');
+$_pages[0] = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php', 'index.php', 'tools/index.php');
 
 $_pages['users/index.php']   = array('title' => _AT('my_courses'),      'parent' => 0, 'children' => array('users/browse.php', 'users/create_course.php'));
 $_pages['users/browse.php']  = array('title' => _AT('browse_courses'),  'parent' => 'users/index.php');
 $_pages['users/create_course.php']  = array('title' => _AT('create_course'),   'parent' => 'users/index.php');
 $_pages['users/profile.php']     = array('title' => _AT('profile'),     'parent' => 0);
 $_pages['users/preferences.php'] = array('title' => _AT('preferences'), 'parent' => 0);
-$_pages['users/inbox.php']       = array('title' => _AT('inbox'),       'parent' => 0);
+$_pages['users/inbox.php']       = array('title' => _AT('inbox'),       'parent' => 0, 'children' => array('users/send_message.php'));
+$_pages['users/send_message.php'] = array('title' => _AT('send_message'), 'parent' => 'users/inbox.php');
 
+$_pages['index.php'] = array('title' => _AT('home'), 'parent' => 0);
+$_pages['tools/index.php'] = array('title' => _AT('tools'), 'parent' => 0, 'children' => array('forum/list.php'));
 
-if (!$_SESSION['course_id']) {
+$_pages['forum/list.php'] = array('title' => _AT('forums'), 'parent' => 'tools/index.php');
 
-	$current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
+$current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
-	if (in_array($current_page, $_pages[0])) {
-		$_current_top_level_page = $_current_sub_level_page = $current_page;
+if (in_array($current_page, $_pages[0])) {
+	$_current_top_level_page = $_current_sub_level_page = $current_page;
 
-		if (isset($_pages[$current_page]['children'])) {
-			$_sub_level_pages[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
-			foreach ($_pages[$_current_top_level_page]['children'] as $child) {
-				$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
-			}
+	if (isset($_pages[$current_page]['children'])) {
+		$_sub_level_pages[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		foreach ($_pages[$_current_top_level_page]['children'] as $child) {
+			$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
 		}
-	} else {
-		$parent = $_pages[$current_page]['parent'];
+	}
+} else {
+	$parent = $_pages[$current_page]['parent'];
 
-		if (in_array($parent, $_pages[0])) {
-			$_current_top_level_page = $parent;
-			$_current_sub_level_page = $current_page;
+	if (in_array($parent, $_pages[0])) {
+		$_current_top_level_page = $parent;
+		$_current_sub_level_page = $current_page;
 
+		if (isset($_pages[$parent]['children'])) {
 			$_sub_level_pages[] = array('url' => $parent, 'title' => $_pages[$parent]['title']);
 			foreach ($_pages[$parent]['children'] as $child) {
 				$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
 			}
 		}
 	}
+}
+
+$_page_title = $_pages[$current_page]['title'];
+
+
+if (!$_SESSION['course_id']) {
 
 	/*
 	debug($_sub_level_pages, '_sub_level_pages');
 	debug($_current_top_level_page, '_current_top_level_page');
 	debug($_current_sub_level_page, '_current_sub_level_page');
+	debug($_top_level_pages, '_top_level_pages');
 	*/
-
-	$_current_top_level_page = $_base_path . 'users/index.php'; //$_SERVER['PHP_SELF'];
-	$_current_sub_level_page = $_SERVER['PHP_SELF'];
 
 	$_top_level_pages[] = array('url' => 'users/index.php',       'title' => _AT('my_courses'));
 	$_top_level_pages[] = array('url' => 'users/profile.php',     'title' => _AT('profile'));
 	$_top_level_pages[] = array('url' => 'users/preferences.php', 'title' => _AT('preferences'));
 	$_top_level_pages[] = array('url' => 'users/inbox.php',       'title' => _AT('inbox'));
 
-	$_section_title = 'My Start Page';
 
-	$_page_title = $_pages[$current_page]['title'];
+	$_section_title = 'My Start Page';
 
 } else {
 	$_top_level_pages[] = array('url' => 'index.php',                   'title' => _AT('home'));
@@ -122,7 +129,7 @@ if (!$_SESSION['course_id']) {
 <tr>
 	<th id="left-empty-tab">&nbsp;</th>
 	<?php foreach ($_top_level_pages as $page): ?>
-		<?php if ($_base_path . $page['url'] == $_current_top_level_page): ?>
+		<?php if ($page['url'] == $_current_top_level_page): ?>
 			<th class="selected"><?php echo $page['title']; ?></th>
 			<th class="tab-spacer">&nbsp;</th>
 		<?php else: ?>
@@ -137,7 +144,7 @@ if (!$_SESSION['course_id']) {
 	<div id="sub-navigation">
 		<?php if (isset($_sub_level_pages)): ?>
 			<?php foreach ($_sub_level_pages as $page): ?>
-				<?php if ($_base_path . $page['url'] == $_current_sub_level_page): ?>
+				<?php if ($page['url'] == $_current_sub_level_page): ?>
 					<strong><?php echo $page['title']; ?></strong>
 				<?php else: ?>
 					<a href="<?php echo $_base_path . $page['url']; ?>"><?php echo $page['title']; ?></a>
