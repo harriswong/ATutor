@@ -72,7 +72,6 @@ $msg->printAll();
 	<br /><br />
 	</td>
 </tr>
-<tr><td colspan="2"><strong><u><?php   echo _AT('optional'); ?></u></strong><br /><br /></tr>
 <tr>
 	<td class="row1"><label for="first_name"><?php   echo _AT('first_name'); ?>:</label></td>
 	<td class="row1"><input id="first_name" class="formfield" name="first_name" type="text" value="<?php echo stripslashes(htmlspecialchars($this->row['first_name']));?>" /></td>
