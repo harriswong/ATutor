@@ -56,14 +56,9 @@ $msg->printAll();
 	<div class="row">
 		<label for="category_parent"><?php echo _AT('cats_parent_category'); ?></label><br />
 		<select name="cat_parent_id" id="category_parent"><?php
-
-				if ($categories[$cat_id]['cat_parent']) {
-					$current_cat_id = $categories[$cat_id]['cat_parent'];
-					$exclude = false; /* don't exclude the children */
-				} else {
-					$current_cat_id = $cat_id;
-					$exclude = true; /* exclude the children */
-				}
+				$current_cat_id = $cat_id;
+				$exclude = true; /* exclude the children */
+				echo '<option value="0">&nbsp;&nbsp;&nbsp;[ '._AT('cats_none').' ]&nbsp;&nbsp;&nbsp;</option>';
 				echo '<option value="0"></option>';
 
 				/* @See: include/lib/admin_categories */

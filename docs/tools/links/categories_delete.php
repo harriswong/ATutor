@@ -20,21 +20,18 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: course_categories.php');
+	header('Location: categories.php');
 	exit;
 } else if (isset($_POST['submit_yes'])) {
 	/* delete has been confirmed, delete this category */
 	$cat_id	= intval($_POST['cat_id']);
 
 	if (!is_array($categories[$cat_id]['children'])) {
-		$sql = "DELETE FROM ".TABLE_PREFIX."course_cats WHERE cat_id=$cat_id";
-		$result = mysql_query($sql, $db);
-
-		$sql = "UPDATE ".TABLE_PREFIX."courses SET cat_id=0 WHERE cat_id=$cat_id";
+		$sql = "DELETE FROM ".TABLE_PREFIX."resource_categories WHERE course_id=$_SESSION[course_id] AND CatID=$cat_id";
 		$result = mysql_query($sql, $db);
 
 		$msg->addFeedback('CAT_DELETED');
-		header('Location: course_categories.php');
+		header('Location: categories.php');
 		exit;
 	}
 }
@@ -43,7 +40,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$_GET['cat_id'] = intval($_GET['cat_id']); 
 
-	$sql = "SELECT * FROM ".TABLE_PREFIX."course_cats WHERE cat_id=$_GET[cat_id]";
+	$sql = "SELECT * FROM ".TABLE_PREFIX."resource_links WHERE course_id=$_SESSION[course_id] AND CatID=$_GET[cat_id]";
 	$result = mysql_query($sql,$db);
 
 	if (mysql_num_rows($result) == 0) {
@@ -51,10 +48,10 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	} else {
 		$row = mysql_fetch_assoc($result);
 		
-		$hidden_vars['cat_name']= $row['cat_name'];
-		$hidden_vars['cat_id']	= $row['cat_id'];
+		$hidden_vars['cat_name']= $row['CatName'];
+		$hidden_vars['cat_id']	= $row['CatID'];
 
-		$confirm = array('DELETE_CATEGORY', AT_print($row['cat_name'], 'course_cats.cat_name'));
+		$confirm = array('DELETE_CATEGORY', AT_print($row['CatName'], 'resource_categories.cat_name'));
 		$msg->addConfirm($confirm, $hidden_vars);
 		
 		$msg->printConfirm();

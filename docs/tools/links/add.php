@@ -82,6 +82,7 @@ $msg->printErrors();
 				$current_cat_id = $cat_id;
 				$exclude = true; /* exclude the children */
 			}
+			echo '<option value="0">&nbsp;&nbsp;&nbsp;[ '._AT('cats_none').' ]&nbsp;&nbsp;&nbsp;</option>';
 			echo '<option value="0"></option>';
 			select_link_categories($categories, 0, $_POST['cat'], FALSE);
 			?>

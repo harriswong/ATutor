@@ -51,7 +51,7 @@ if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 		$name = $_SESSION['login'];
 		$email = '';
 
-		$sql	= "UPDATE ".TABLE_PREFIX."resource_links SET CatID=$_POST[cat], Url='$_POST[url]', LinkName='$_POST[title]', Description='$_POST[description]', SubmitName='$name' WHERE LinkID=".$link_id;
+		$sql	= "UPDATE ".TABLE_PREFIX."resource_links SET CatID=$_POST[cat], Url='$_POST[url]', LinkName='$_POST[title]', Description='$_POST[description]', SubmitName='$name', Approved=$_POST[approved] WHERE LinkID=".$link_id;
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_UPDATED');
@@ -74,6 +74,7 @@ if ($row = mysql_fetch_assoc($result)) {
 	$_POST['cat']			= $row['CatID'];
 	$_POST['url']			= $row['Url'];
 	$_POST['description']	= $row['Description'];
+	$_POST['approved']		= $row['Approved'];
 }
 
 $msg->printErrors();
@@ -113,6 +114,20 @@ $msg->printErrors();
 	<div class="row">
 		<label for="description"><?php echo _AT('description'); ?></label><br />
 		<textarea name="description" cols="55" rows="5" id="description" ><?php echo $_POST['description']; ?></textarea>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('approve'); ?><br />
+		<?php
+			if ($_POST['approved']) {
+				$y = 'checked="checked"';
+				$n = '';
+			} else {
+				$n = 'checked="checked"';
+				$y = '';
+			}
+		?>
+		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?>><label for="yes"><?php echo _AT('yes1'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?>><label for="no"><?php echo _AT('no1'); ?></label>
 	</div>
 	
 	<div class="row buttons">

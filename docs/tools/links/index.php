@@ -92,6 +92,8 @@ if (!isset($_GET['cat_parent_id'])) {
 	<th scope="col">&nbsp;</th>
 	<th scope="col"><?php echo _AT('title'); ?></th>
 	<th scope="col"><?php echo _AT('category'); ?></th>
+	<th scope="col"><?php echo _AT('approved'); ?></th>
+	<th scope="col"><?php echo _AT('num_hits'); ?></th>
 
 </tr>
 </thead>
@@ -123,13 +125,20 @@ if (!isset($_GET['cat_parent_id'])) {
 				<td width="10"><input type="radio" name="link_id" value="<?php echo $row['LinkID']; ?>" id="m<?php echo $row['LinkID']; ?>"></td>
 				<td><?php echo AT_print($row['LinkName'], 'resource_links.LinkName'); ?></td>
 				<td><?php echo AT_print($cat_name, 'resource_links.CatName'); ?></td>
+				<td align="center"><?php 
+						if($row['Approved']) { 
+							echo _AT('yes1'); 
+						} else { 
+							echo _AT('no1'); 
+						} ?></td>
+				<td align="center"><?php echo $row['hits']; ?></td>
 			</tr>
 <?php 
 		} while ($row = mysql_fetch_assoc($result));					
 } else {
 ?>
 	<tr>
-		<td colspan="3"><?php echo _AT('no_links'); ?></td>
+		<td colspan="5"><?php echo _AT('no_links'); ?></td>
 	</tr>
 <?php
 }					
