@@ -774,15 +774,16 @@ a#back-to {
 }
 
 div#breadcrumbs {
+	width: 100%;
 	margin-bottom: 5px;
 	margin-top: 10px;
 	border-top: 1px dashed #cccccc;
 	border-bottom: 1px dashed #cccccc;
 	padding: 5px;
 	font-weight: bold;
-	color: #888888;
 	font-size: smaller;
 	background-color: #FAF9F9;
+	color: #888888 !important;
 }
 h2#page-title {
 	margin-bottom: 10px;
@@ -847,6 +848,7 @@ h1#section-title {
 }
 
 div#top-links {
+	position: relative;
 	padding-right: 5px;
 	line-height: 170%;
 }

@@ -322,7 +322,7 @@ if (isset($_POST['form_course'])) {
 
 	<div class="row">
 		<label for="copyright"><?php echo _AT('course_copyright'); ?></label><br />
-		<textarea name="copyright" rows="5" cols="65" id="copyright"><?php echo $row['copyright']; ?></textarea>
+		<textarea name="copyright" rows="2" cols="65" id="copyright"><?php echo $row['copyright']; ?></textarea>
 	</div>
 
 	<div class="buttons">
