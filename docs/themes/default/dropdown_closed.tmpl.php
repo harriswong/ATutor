@@ -15,6 +15,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 ?>
 
 <div class="dropdown">
-	<?php echo $this->tmpl_menu_url; ?>
-	<small><a href="<?php echo $this->tmpl_open_url; ?>" accesskey="<?php echo $this->tmpl_access_key; ?>" title="<?php echo $this->tmpl_dropdown_open; ?> <?php if ($this->tmpl_access_key): echo 'ALT-'.$this->tmpl_access_key; endif; ?>"><?php echo $this->tmpl_dropdown_open; ?></a></small>
+	<div class="dropdown-heading">
+		<?php echo $this->tmpl_menu_url; ?><small><a href="<?php echo $this->tmpl_open_url; ?>" accesskey="<?php echo $this->tmpl_access_key; ?>" title="<?php echo $this->tmpl_dropdown_open; ?> <?php if ($this->tmpl_access_key): echo 'ALT-'.$this->tmpl_access_key; endif; ?>"><?php echo $this->tmpl_dropdown_open; ?></a></small>
+	</div>
 </div>

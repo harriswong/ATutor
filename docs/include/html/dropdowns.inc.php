@@ -21,7 +21,7 @@ global $_stacks;
 ?>
 
 <style type="text/css">
-.dropdown {
+div.dropdown {
 	width: 200px;
 	padding: 2px;
 	background-color: white;
@@ -31,6 +31,15 @@ global $_stacks;
 	border-bottom: 1px solid #EAF2FE;
 	font-weight: normal;
 }
+
+div.dropdown-heading {
+	background-color: #D4E5FD;
+	color: #006699;
+	border-left: 1px solid #EAF2FE;
+	border-right: 1px solid #EAF2FE;
+	border-top: 1px solid #EAF2FE;
+	font-weight: bold;
+	padding: 2px;}
 
 </style>
 
