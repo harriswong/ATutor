@@ -36,8 +36,7 @@ exit('this file should not be used');
 	echo '<a href="help/index.php?g=11"><h2>'._AT('help').'</h2></a>';
 
 	if (!$_SESSION['valid_user']) {
-		$infos[]=AT_ERROR_MSG_TO_INSTRUCTOR;
-		print_infos($infos);
+		$msg->printInfos('MSG_TO_INSTRUCTOR');
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}

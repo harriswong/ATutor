@@ -107,8 +107,7 @@ if ($_SESSION['valid_user']) {
 			$msg->printInfos();
 		} else if ($course_info[1] != $_SESSION['member_id'] ){
 		 // request has already been made
-		 	$infos[] = AT_ERROR_ALREADY_ENROLED;
-		 	print_infos($infos);
+		 	$msg->printInfos('ALREADY_ENROLLED');
 
 		} else {
 			$msg->printErrors('ALREADY_OWNED');

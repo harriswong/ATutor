@@ -27,7 +27,7 @@ if ( ($_POST['description'] == '') && isset($_POST['form_request_instructor'])){
 		$sql	= "UPDATE ".TABLE_PREFIX."members SET status=1 WHERE member_id=$_SESSION[member_id]";
 		$result = mysql_query($sql, $db);
 
-		$f = AT_INFOS_ACCOUNT_APPROVED;
+		$msg->addFeedback('ACCOUNT_APPROVED');
 	} else {
 		$_POST['description'] = $addslashes($_POST['description']);
 
@@ -62,10 +62,10 @@ if ( ($_POST['description'] == '') && isset($_POST['form_request_instructor'])){
 			unset($mail);
 
 		}
-		$f = AT_INFOS_ACCOUNT_PENDING;
+		$msg->addFeedback('ACCOUNT_PENDING');
 	}
 
-	header('Location: index.php?f='.$f);
+	header('Location: index.php');
 	exit;
 } 
 

@@ -93,8 +93,7 @@ if ($_POST['desc_submit']) {
 			$report = @file_get_contents($checker_url);
 
 			if ($report == 1) {
-				$errors = AT_INFOS_INVALID_URL;
-				print_errors($errors);
+				$msg->printErrors('INVALID_URL');
 			} else if ($report === false) {
 				$msg->printInfos('SERVICE_UNAVAILABLE');
 			} else {
