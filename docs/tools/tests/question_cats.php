@@ -18,15 +18,6 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 authenticate(AT_PRIV_TEST_CREATE);
 
-
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/index.php';
-$_section[1][0] = _AT('test_manager');
-$_section[1][1] = 'tools/tests/index.php';
-$_section[2][0] = _AT('question_database');
-$_section[2][1] = 'tools/tests/question_db.php';
-$_section[3][0] = _AT('cats_categories');
-
 if ($_POST['submit'] == _AT('edit')) {
 	if ($_POST['category']) {
 		header('Location: question_cats_manage.php?catid='.$_POST['category']);
@@ -55,13 +46,6 @@ $msg->printAll();
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-
-<div align="center">
-<span class="editorsmallbox">
-	<small><img src="<?php echo $_base_path; ?>images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor'); ?>" title="<?php echo _AT('editor'); ?>" height="14" width="16" /> <a href="tools/tests/question_cats_manage.php"><?php echo _AT('add'); ?></a></small>
-</span>
-</div>
-
 <div class="input-form">
 <?php 
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions_categories WHERE course_id=$_SESSION[course_id] ORDER BY title";
@@ -85,8 +69,7 @@ $msg->printAll();
 <?php
 
 	} else {
-		echo '<tr><td class="row1">'._AT('cats_no_categories').'</td></tr>';
-		echo '<tr><td height="1" class="row2" colspan="2"></td></tr>';
+		echo _AT('cats_no_categories');
 	}
 ?>
 </div>

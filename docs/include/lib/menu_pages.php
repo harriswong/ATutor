@@ -323,6 +323,9 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/question_cats_manage.php']['title']  = _AT('create_category');
 	$_pages['tools/tests/question_cats_manage.php']['parent'] = 'tools/tests/question_cats.php';
 
+	$_pages['tools/tests/question_cats_delete.php']['title']  = _AT('delete_category');
+	$_pages['tools/tests/question_cats_delete.php']['parent'] = 'tools/tests/question_cats.php';
+
 	$_pages['tools/tests/edit_test.php']['title']  = _AT('edit_test');
 	$_pages['tools/tests/edit_test.php']['parent'] = 'tools/tests/index.php';
 

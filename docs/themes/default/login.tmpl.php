@@ -12,7 +12,7 @@ global $msg;
 	<input type="hidden" name="form_course_id" value="<?php echo $this->tmpl_course_id; ?>" />
 
 <div class="input-form" style="max-width: 400px">
-	<?php if ($this->tmpl_title): ?>
+	<?php if ($_GET['course']): ?>
 		<div class="row">
 			<h3><?php echo _AT('login'). ' ' . $this->tmpl_title; ?></h3>
 		</div>
