@@ -187,6 +187,25 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/filemanager/index.php']['title']  = _AT('file_manager');
 	$_pages['tools/filemanager/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/filemanager/index.php']['children'] = array('tools/filemanager/new.php');
+
+		$_pages['tools/filemanager/new.php']['title']  = _AT('create_new_file');
+		$_pages['tools/filemanager/new.php']['parent'] = 'tools/filemanager/index.php';
+
+		$_pages['tools/filemanager/zip.php']['title']  = _AT('zip_file_manager');
+		$_pages['tools/filemanager/zip.php']['parent'] = 'tools/filemanager/index.php';
+
+		$_pages['tools/filemanager/rename.php']['title']  = _AT('rename');
+		$_pages['tools/filemanager/rename.php']['parent'] = 'tools/filemanager/index.php';
+
+		$_pages['tools/filemanager/move.php']['title']  = _AT('move');
+		$_pages['tools/filemanager/move.php']['parent'] = 'tools/filemanager/index.php';
+
+		$_pages['tools/filemanager/edit.php']['title']  = _AT('edit');
+		$_pages['tools/filemanager/edit.php']['parent'] = 'tools/filemanager/index.php';
+
+		$_pages['tools/filemanager/delete.php']['title']  = _AT('delete');
+		$_pages['tools/filemanager/delete.php']['parent'] = 'tools/filemanager/index.php';
 
 	$_pages['tools/course_stats.php']['title']  = _AT('statistics');
 	$_pages['tools/course_stats.php']['parent'] = 'tools/index.php';
@@ -232,6 +251,13 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 		$_pages['tools/enrollment/groups.php']['title']    = _AT('groups');
 		$_pages['tools/enrollment/groups.php']['parent']   = 'tools/enrollment/index.php';
+		$_pages['tools/enrollment/groups.php']['children']   = array('tools/enrollment/groups_manage.php');
+
+			$_pages['tools/enrollment/groups_manage.php']['title']    = _AT('create_group');
+			$_pages['tools/enrollment/groups_manage.php']['parent']   = 'tools/enrollment/groups.php';
+
+		$_pages['tools/enrollment/privileges.php']['title']    = _AT('roles_privileges');
+		$_pages['tools/enrollment/privileges.php']['parent']   = 'tools/enrollment/index.php';
 
 	$_pages['tools/backup/index.php']['title']  = _AT('backups');
 	$_pages['tools/backup/index.php']['parent'] = 'tools/index.php';
