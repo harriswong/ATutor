@@ -93,52 +93,12 @@ a:hover {
 	text-align: right;
 	padding: 2px;
 }
-/*
-form {
-	font-family: trebuchet ms, Arial, sans-serif;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-right: 0px;
-}
-*/
 
 /* align text to the left */
 .left {
 	text-align: left;
 }
 
-/* table rows */
-/*
-td.row1, table.row1 { 
-	font-family: trebuchet ms, Arial, sans-serif;
-	font-weight: normal;
-	background-color: #EFEFEF;
-	vertical-align: top;	
-	padding: 3px;
-}
-*/
-
-/*
-td.row2 { 
-	background-color: #98AAB1; 
-	font-weight: normal;
-	height: 1px;
-}
-
-td.cat, th.cat {
-	font-family: trebuchet ms, Arial, sans-serif;
-	background-image: url('images/cellpic1.gif');
-	background-repeat: repeat-x;
-	background-color:#D1D7DC; 
-	height: 25px;
-	text-align: center;
-	padding-top: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
-	white-space: nowrap;
-}
-*/
 a.dropdown-title {
 	color: white;
 	font-weight: normal;
@@ -289,42 +249,6 @@ select.dropdown {
 .copy {
 	font-family: trebuchet ms, Arial, sans-serif;
 }   
-
-/* AChat Styles  */
-/*
-table.box2 {
-	background-color: #FFFFFF;
-	border-right: #006699 solid 1px;
-	border-left: #006699 solid 1px;
-}
-
-table.box {
-	background-color: #EFEFEF;
-	border-right: #006699 solid 1px;
-	border-left: #006699 solid 1px;
-	border-top: #006699 solid 1px;
-	border-bottom: #006699 solid 1px;
-}
-
-td.box2 {
-	background-color: white;
-	padding-left: 1px;
-	padding-right: 1px;
-	font-weight: bold;
-	border-left: #006699 solid 1px;
-}
-
-td.box1 {
-	color: #FF0000;
-	background-color: white;
-	padding-left: 2px;
-	padding-right: 2px;
-}
-*/
-body.chatbody{
-	background-color: #FFFFEE;
-	background-image: url('images/lines.v.2.gif');
-}
 
 .good  {
   font-family : Arial, Helvetica, Arial Cyr, Arial Ua, sans-serif;
@@ -647,7 +571,7 @@ table.tabbed-table th#right-empty-tab {
 	text-align: right;
 	background-color: transparent;
 	border-bottom: 1px solid #9DAB9A;
-	width: 420;
+	width: 400;
 }
 table.tabbed-table th.tab-spacer {
 	background-color: transparent;
@@ -658,7 +582,7 @@ table.tabbed-table th.tab-spacer {
 table.tabbed-table th.tab {
 	padding-top: 2px;
 	padding-bottom: 2px;
-	width: 130px;
+	width: 110px;
 	background-color: #C9CEA4;
 	border-bottom: 1px solid #9DAB9A;
 	border-left: 1px solid #9DAB9A;
@@ -675,7 +599,7 @@ table.tabbed-table th.tab a:focus {
 table.tabbed-table th.selected {
 	padding-top: 2px;
 	padding-bottom: 2px;
-	width: 130px;
+	width: 110px;
 	background-color: #DFE1C7;
 	border-left: 1px solid #9DAB9A;
 	border-top: 1px solid #9DAB9A;

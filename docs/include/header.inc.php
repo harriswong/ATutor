@@ -28,6 +28,8 @@ global $contentManager;
 global $_section;
 global $addslashes;
 global $db;
+global $_pages; require(AT_INCLUDE_PATH . 'lib/menu_pages.php');
+
 
 if ( !isset($_SESSION['prefs']['PREF_THEME']) || ($_SESSION['login'] == 'admin') || ($_SESSION['login'] == '')
 	|| !file_exists(AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME'])) {
@@ -48,8 +50,6 @@ $savant->assign('tmpl_current_date', AT_date(_AT('announcement_date_format')));
 
 $theme_img  = $_base_path . 'themes/'. $_SESSION['prefs']['PREF_THEME'] . '/images/';
 
-
-
 $_tmp_base_href = $_base_href;
 if (isset($course_base_href) || isset($content_base_href)) {
 	$_tmp_base_href .= $course_base_href;
@@ -60,48 +60,6 @@ if (isset($course_base_href) || isset($content_base_href)) {
 
 $savant->assign('tmpl_content_base_href', $_tmp_base_href);
 $savant->assign('tmpl_base_href', $_base_href);
-
-/* bypass links */
-
-	if ($_SESSION['course_id'] > 0) {
-		$bypass_links = '<a href="'.$_SERVER['REQUEST_URI'].'#course-content" accesskey="c"><img src="'.$_base_path.'images/clr.gif" height="1" width="1" border="0" alt="'._AT('goto_content').': ALT-c" /></a>';
-	} else {
-		$bypass_links = '<a href="'.$_SERVER['REQUEST_URI'].'#content" accesskey="c"><img src="'.$_base_path.'images/clr.gif" height="1" width="1" border="0" alt="'._AT('goto_content').': ALT-c" /></a>';
-	}
-
-	$bypass_links .= '<a href="'.$_my_uri;
-
-	if(($_SESSION['prefs'][PREF_MAIN_MENU] !='' && ( $_SESSION['prefs'][PREF_MENU] == 1) || ($_SESSION['prefs'][PREF_LOCAL] == 1)) && !$_GET['menu_jump'] && $_GET['disable'] != PREF_MAIN_MENU && $_SESSION['course_id'] != 0){
-		$bypass_links .= '#menu';
-		if($_GET['collapse']){
-			$bypass_links .= $_GET['collapse'];
-		}else if ($_GET['cid'] && !$_GET['disable'] && !$_GET['expand']){
-			$bypass_links .= $_GET['cid'];
-		}else if ($_GET['expand']){
-			$bypass_links .= $_GET['expand'];
-		}else{
-			$bypass_links .= $_SESSION['s_cid'];
-		}
-	}else if($_GET['menu_jump']){
-		$bypass_links .= SEP.'menu_jump='.$_GET['menu_jump'].'#menu_jump'.$_GET['menu_jump'];
-	}else{
-		$bypass_links .= '#menu';
-	}
-
-	$bypass_links .= '" accesskey="m">';
-
-	$bypass_links .= '<img src="'.$_base_path.'images/clr.gif" height="1" width="1" border="0" alt="'._AT('goto_menu').' Alt-m" /></a>';
-	if ($_SESSION['course_id'] > 0) {
-		$bypass_links .= '<a href="'.$_SERVER['REQUEST_URI'].'#navigation" accesskey="y">';
-		$bypass_links .= '<img src="'.$_base_path.'images/clr.gif" height="1" width="1" border="0" alt="'._AT('goto_mainnav').' ALT-y" /></a>';
-		$bypass_links .= '<a href="'.$_base_path.'help/accessibility.php#course-content">';
-		$bypass_links .= '<img src="'.$_base_path.'images/clr.gif" height="1" width="1" border="0" alt="'._AT('goto_accessibility').'" /></a>';
-	}
-	$savant->assign('tmpl_bypass_links', $bypass_links);
-
-
-/* construct the page <title> */
-
 
 if ($myLang->isRTL()) {
 	$savant->assign('tmpl_rtl_css', '<link rel="stylesheet" href="'.$_base_path.'rtl.css" type="text/css" />');
@@ -119,81 +77,73 @@ if ($_SESSION['valid_user'] === true) {
 	$savant->assign('tmpl_user_name', _AT('guest'));
 }
 
-	global $_pages;
+$current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
-	require(AT_INCLUDE_PATH . 'lib/menu_pages.php');
-
-	$current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
-
-	$_top_level_pages        = get_main_navigation($current_page);
-	$_current_top_level_page = get_current_main_page($current_page);
-	if (empty($_top_level_pages)) {
-		if (!$_SESSION['valid_user']) {
-			$_top_level_pages = get_main_navigation($_pages[AT_NAV_PUBLIC][0]);
-		} else if ($_SESSION['course_id'] < 0) {
-			//$_section_title = 'Administration';
-			$_top_level_pages = get_main_navigation($_pages[AT_NAV_ADMIN][0]);
-		} else if (!$_SESSION['course_id']) {
-			//$_section_title = _AT('my_start_page');
-			$_top_level_pages = get_main_navigation($_pages[AT_NAV_START][0]);
-		} else {
-			//$_section_title = $_SESSION['course_title'];
-			$_top_level_pages = get_main_navigation($_pages[AT_NAV_COURSE][0]);
-		}
-	}
-
-	$_sub_level_pages        = get_sub_navigation($current_page);
-	$_current_sub_level_page = get_current_sub_navigation_page($current_page);
-
-	$savant->assign('current_top_level_page', $_current_top_level_page);
-	$savant->assign('sub_level_pages', $_sub_level_pages);
-	$savant->assign('current_sub_level_page', $_current_sub_level_page);
-
-	$_path = get_path($current_page);
-	unset($_path[0]);
-	if ($_path[1]['url'] == $_sub_level_pages[0]['url']) {
-		$back_to_page = $_path[2];
-		//debug('back to : '.$_path[2]['title']);
-	} else {
-		$back_to_page = $_path[1];
-		//debug('back to : '.$_path[1]['title']);
-	}
-	$_path = array_reverse($_path);
-	$savant->assign('path', $_path);
-	$savant->assign('back_to_page', $back_to_page);
-
-	$_page_title = $_pages[$current_page]['title'];
-	$savant->assign('page_title', $_page_title);
-
-
-	/* calculate the section_title: */
-	if ($_SESSION['course_id'] > 0) {
-		$_section_title = $_SESSION['course_title'];
-	} else if (!$_SESSION['valid_user']) {
-		$_section_title = SITE_NAME;
-		if (defined('HOME_URL') && HOME_URL) {
-			$_top_level_pages[] = array('url' => HOME_URL, 'title' => _AT('home'));
-		}
+$_top_level_pages        = get_main_navigation($current_page);
+$_current_top_level_page = get_current_main_page($current_page);
+if (empty($_top_level_pages)) {
+	if (!$_SESSION['valid_user']) {
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_PUBLIC][0]);
 	} else if ($_SESSION['course_id'] < 0) {
-		$_section_title = _AT('administration');
+		//$_section_title = 'Administration';
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_ADMIN][0]);
 	} else if (!$_SESSION['course_id']) {
-		$_section_title = _AT('my_start_page');
+		//$_section_title = _AT('my_start_page');
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_START][0]);
+	} else {
+		//$_section_title = $_SESSION['course_title'];
+		$_top_level_pages = get_main_navigation($_pages[AT_NAV_COURSE][0]);
 	}
+}
 
-	$savant->assign('top_level_pages', $_top_level_pages);
+$_sub_level_pages        = get_sub_navigation($current_page);
+$_current_sub_level_page = get_current_sub_navigation_page($current_page);
 
-	$savant->assign('section_title', $_section_title);
+$_path = get_path($current_page);
+unset($_path[0]);
+if ($_path[1]['url'] == $_sub_level_pages[0]['url']) {
+	$back_to_page = $_path[2];
+	//debug('back to : '.$_path[2]['title']);
+} else {
+	$back_to_page = $_path[1];
+	//debug('back to : '.$_path[1]['title']);
+}
+$_path = array_reverse($_path);
+$_page_title = $_pages[$current_page]['title'];
 
+/* calculate the section_title: */
+if ($_SESSION['course_id'] > 0) {
+	$_section_title = $_SESSION['course_title'];
+} else if (!$_SESSION['valid_user']) {
+	$_section_title = SITE_NAME;
+	if (defined('HOME_URL') && HOME_URL) {
+		$_top_level_pages[] = array('url' => HOME_URL, 'title' => _AT('home'));
+	}
+} else if ($_SESSION['course_id'] < 0) {
+	$_section_title = _AT('administration');
+} else if (!$_SESSION['course_id']) {
+	$_section_title = _AT('my_start_page');
+}
+
+$savant->assign('current_top_level_page', $_current_top_level_page);
+$savant->assign('sub_level_pages', $_sub_level_pages);
+$savant->assign('current_sub_level_page', $_current_sub_level_page);
+
+$savant->assign('path', $_path);
+$savant->assign('back_to_page', $back_to_page);
+$savant->assign('page_title', $_page_title);
+$savant->assign('top_level_pages', $_top_level_pages);
+$savant->assign('section_title', $_section_title);
+
+$myLang->sendContentTypeHeader();
 
 if ($_user_location == 'public') {
 	/* the public section */
-	$myLang->sendContentTypeHeader();
 	$savant->display('include/header.tmpl.php');
 
 } else if ($_user_location == 'admin') {
 	/* the /admin/ section */
 
-	$myLang->sendContentTypeHeader();
 	$savant->display('include/header.tmpl.php');
 
 } else {
@@ -248,9 +198,6 @@ if ($_user_location == 'public') {
 		$savant->assign('tmpl_rel_url', '');
 	}
 
-
-
-	$myLang->sendContentTypeHeader();
 	$savant->display('include/header.tmpl.php');
 
 	/* course specific elements: */
