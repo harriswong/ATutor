@@ -68,82 +68,61 @@ $msg->printAll();
 
 $themes = get_all_themes();
 
-foreach ($themes as $t): 
+foreach ($themes as $theme):
+	if ($theme == 'Atutor') {
+		$ss = $_base_href . 'themes/default/screenshot.jpg';
+	} else {
+		$src = get_folder($theme);
+		$ss = $_base_href . 'themes/' . $src . '/screenshot.jpg';
+	}
+
+	$info = get_themes_info($theme);
 ?>
 
 <form name="themes" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-	<input type="hidden" value="<?php echo $t; ?>" name="theme_name" />
-	<table cellspacing="1" cellpadding="0" border="1" class="bodyline" width="80%" summary="" align="center">
-		<tr>
-			<td class="row1" width="185">
-				<img src="<?php 
-							if ($t == 'Atutor') {
-								echo 'themes/default/screenshot.jpg';
-							} else {
-								$src = get_folder($t);
-								//echo $src;
-								echo 'themes/' . $src . '/screenshot.jpg';
-							}
-						  ?>"
-						  width="185" height="126" border="0" alt="<?php echo _AT('theme_screenshot') . '; '. $t; ?>" title="<?php echo _AT('theme_screenshot') . ' - '. $t; ?>" />
-			</td>
-			
-			<td class="row1" height="126">
-			<table cellspacing="0" cellpadding="0" border="0" class="bodyline" width="100%" summary="">
-				<tr ><th height="15" class="cyan"><?php echo ' ' . $t ?></th></tr>
-				<tr >
-					<td height="20"class="row1"><small>
-						<?php 
-							$info = get_themes_info($t);
-							echo ' ' . AT_print($info['extra_info'], 'themes.extra_info');
-						?></small>
-					</td>
-				</tr>
-				<tr >
-					<td height="15"class="row1"><small><strong><?php echo _AT('version'); ?>:</strong><em>
-						<?php 
-							echo ' ' . AT_print($info['version'], 'themes.version');
-						?></em></small>
-					</td>
-				</tr>
-				<tr >
-					<td height="15" class="row1"><small><strong><?php echo _AT('updated'); ?>:</strong><i>
-						<?php 
-							echo ' ' . AT_print($info['last_updated'], 'themes.last_updated');
-						?></i></small>
-					</td></tr>
-				<tr >
-					<td height="20" class="row1">
-						<input type= "submit" name="export"  value="<?php echo _AT('export'); ?>" class="button" />
-							<?php 
-								if (intval(check_status($t)) == 0) {
-									echo ' | <input type= "submit" name="delete"  value="'. _AT('delete') .'" class="button" />';
-									echo ' | <input type= "submit" name="enable"  value="'. _AT('enable') .'" class="button" />';
-									echo ' | <input type= "submit" name="default" value="'. _AT('set_default') .'" class="button" />';
-								}
-		
-								else if (intval(check_status($t)) == 1) {
-									echo ' | <input type= "submit" name="delete"  value="'. _AT('delete') .'" class="button" />';
-									echo ' | <input type= "submit" name="disable" value="'. _AT('disable') .'" class="button" />';
-									echo ' | <input type= "submit" name="default" value="'. _AT('set_default') .'" class="button" />';
-								}
-	
-								else {
-									echo ' | <i>' . _AT('current_default_theme') . '</i>';
-								}
-							?>
-					</td>
-				</tr>
-			</table>
-			</td>
-		</tr>
-	</table><br />
-</form>
-<?php
-endforeach;
-?>
+<input type="hidden" value="<?php echo $t; ?>" name="theme_name" />
 
-<form name="importForm" method="post" action="admin/themes/import.php"  enctype="multipart/form-data">
+<div class="input-form">
+	<div class="row">
+		<h3><?php echo $theme; ?></h3>
+	</div>
+
+	<img src="<?php echo $ss; ?>" width="185" height="126" border="0" alt="" style="float: right; margin-right: 10px;"/>
+
+	<div class="row">
+		<p><?php echo AT_print($info['extra_info'], 'themes.extra_info'); ?></p>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('version'); ?><br />
+		<?php echo AT_print($info['version'], 'themes.version'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('updated'); ?><br />
+		<?php echo AT_print($info['last_updated'], 'themes.last_updated'); ?>
+	</div>
+
+	<div class="row buttons">
+		<input type="submit" name="export" value="<?php echo _AT('export'); ?>" />
+		<?php if (intval(check_status($theme)) == 0) : ?>
+			<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+			<input type="submit" name="enable" value="<?php echo _AT('enable'); ?>" />
+			<input type="submit" name="default" value="<?php echo _AT('set_default'); ?>" />
+		<?php elseif (intval(check_status($theme)) == 1) : ?>
+			<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+			<input type="submit" name="disable" value="<?php echo _AT('disable'); ?>" />
+			<input type="submit" name="default" value="<?php echo _AT('set_default'); ?>" />
+		<?php else: ?>
+			<em><?php echo _AT('current_default_theme'); ?></em>
+		<?php endif; ?>
+	</div>
+</div>
+
+</form>
+<?php endforeach; ?>
+
+<form name="importForm" method="post" action="admin/themes/import.php" enctype="multipart/form-data">
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('import_theme'); ?></h3>
