@@ -63,8 +63,31 @@ if (!is_writable('../../themes/')) {
 		$msg->addWarning('THEMES_NOT_WRITEABLE');
 	}
 }
+?>
 
-$msg->printAll();
+<form name="importForm" method="post" action="admin/themes/import.php" enctype="multipart/form-data">
+<div class="input-form">
+	<div class="row">
+		<h3><?php echo _AT('import_theme'); ?></h3>
+	</div>
+
+	<div class="row">
+		<label for="file"><?php echo _AT('upload_theme_package'); ?></label><br />
+		<input type="file" name="file" size="40" id="file" />
+	</div>
+
+	<div class="row">
+		<label for="url"><?php echo _AT('specify_url_to_theme_package'); ?></label><br />
+		<input type="text" name="url" value="http://" size="40" id="url" />
+	</div>
+	
+	<div class="row buttons">
+	<input type= "submit" name="import" value="<?php echo _AT('import_theme'); ?>" />
+	</div>
+</div>
+</form>
+
+<?php
 
 $themes = get_all_themes();
 
@@ -78,6 +101,7 @@ foreach ($themes as $theme):
 
 	$info = get_themes_info($theme);
 ?>
+
 
 <form name="themes" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <input type="hidden" value="<?php echo $t; ?>" name="theme_name" />
@@ -121,27 +145,5 @@ foreach ($themes as $theme):
 
 </form>
 <?php endforeach; ?>
-
-<form name="importForm" method="post" action="admin/themes/import.php" enctype="multipart/form-data">
-<div class="input-form">
-	<div class="row">
-		<h3><?php echo _AT('import_theme'); ?></h3>
-	</div>
-
-	<div class="row">
-		<label for="file"><?php echo _AT('upload_theme_package'); ?></label><br />
-		<input type="file" name="file" size="40" id="file" />
-	</div>
-
-	<div class="row">
-		<label for="url"><?php echo _AT('specify_url_to_theme_package'); ?></label><br />
-		<input type="text" name="url" value="http://" size="40" id="url" />
-	</div>
-	
-	<div class="row buttons">
-	<input type= "submit" name="import" value="<?php echo _AT('import_theme'); ?>" />
-	</div>
-</div>
-</form>
 
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
