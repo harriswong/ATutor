@@ -42,7 +42,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 	echo _AT('forums').'</h3>';
 
 	if ((authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) || authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) && $_SESSION['prefs'][PREF_EDIT]) {
-		$msg->addHelp('CREATE_FORUM');
+		$msg->addHelp('CREATE_FORUMs');
 	} else if ((authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) || authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) && !$_SESSION['prefs'][PREF_EDIT]) {
 		$help = array('ENABLE_EDITOR', $_my_uri);
 		$msg->addHelp($help);

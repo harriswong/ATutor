@@ -44,13 +44,13 @@ require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
 global $savant;
 $msg =& new Message($savant);
 
-$msg->addInfo('CSS_DEPRACATED');
+$msg->addInfo('CSS_DEPRECATED');
 if (file_exists('../' . $filename)) {
 	$info = array('CSS_DEPRECATED_DL', $_base_href . $filename);
 	$msg->addInfo($info);
 }
 
-$msg->printInfos():
+$msg->printInfos();
 
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>
