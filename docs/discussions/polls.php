@@ -18,6 +18,31 @@ $_section[0][0] = _AT('discussions');
 $_section[0][1] = 'discussions/index.php';
 $_section[1][0] = _AT('polls');
 
+if (isset($_POST['view'])) {
+	if ($_POST['poll'] == '') {
+		$msg->addError('NO_POLL_SELECTED');
+	} else {
+		header('Location: ./poll.php?id=' . $_POST['poll']);
+	}
+} 
+
+else if (isset($_POST['edit'])) {
+	if ($_POST['poll'] == '') {
+		$msg->addError('NO_POLL_SELECTED');
+	} else {
+		header('Location: ../editor/edit_poll.php?poll_id=' . $_POST['poll']);
+	}
+}
+
+else if (isset($_POST['delete'])) { 
+	if ($_POST['poll'] == '') {
+		$msg->addError('NO_POLL_SELECTED');
+	} else {
+		header('Location: ../editor/delete_poll.php?pid=' . $_POST['poll'] );
+	}
+}
+
+
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
 if ($_GET['col']) {
@@ -38,25 +63,6 @@ $sql	= "SELECT * FROM ".TABLE_PREFIX."polls WHERE course_id=$_SESSION[course_id]
 $result = mysql_query($sql, $db);
 
 
-echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="discussions/" class="hide" ><img src="images/icons/default/square-large-discussions.gif" vspace="2" border="0"  class="menuimageh2" width="42" height="40" alt="" /></a> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="discussions/" class="hide" >'._AT('discussions').'</a>';
-	}
-echo '</h2>';
-
-echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/polls-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo _AT('polls');
-	}
-echo '</h3>';
-
-	
 /* admin editing options: */
 /* this session thing is a hack to temporarily prevent the en/dis editor link from affecting 'add poll' */
 if (authenticate(AT_PRIV_POLLS, AT_PRIV_RETURN)) {
@@ -81,39 +87,55 @@ if (!($row = mysql_fetch_assoc($result))) {
 	$num_rows = mysql_num_rows($result);
 ?>
 
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" width="95%" align="center">
+
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<table class="data" summary="" rules="cols">
+<thead>
 <tr>
-	<th colspan="8" class="cyan"><?php 
-		echo _AT('polls');
-	?></th>
+	<th scope="col">&nbsp;</th>
+	<th scope="col">
+		<?php echo _AT('question'); ?>
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=question<?php echo SEP; ?>order=asc" title="<?php echo _AT('question_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('question_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=question<?php echo SEP; ?>order=desc" title="<?php echo _AT('question_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('question_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>
+	</th>
+	<th scope="col">
+		<?php echo _AT('created'); ?>
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=asc" title="<?php echo _AT('created_date_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('created_date_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> 
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=desc" title="<?php echo _AT('created_date_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('created_date_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a>
+	</th>
 </tr>
-<tr>
-	<th scope="col" class="cat"><small<?php echo $highlight_question; ?>><?php echo _AT('question'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=question<?php echo SEP; ?>order=asc" title="<?php echo _AT('question_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('question_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=question<?php echo SEP; ?>order=desc" title="<?php echo _AT('question_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('question_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></small></th>
-
-	<th scope="col" class="cat"><small<?php echo $highlight_created_date; ?>><?php echo _AT('created_date'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=asc" title="<?php echo _AT('created_date_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('created_date_ascending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=created_date<?php echo SEP; ?>order=desc" title="<?php echo _AT('created_date_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('created_date_descending'); ?>" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></small></th>
-
-	<?php 
+</thead>
+<?php 
 	if ($_SESSION['prefs'][PREF_EDIT] && authenticate(AT_PRIV_POLLS,AT_PRIV_RETURN)) { 
-		echo '<th class="cat"><small>&nbsp;</small></th>';
-	} ?>
-</tr>
+?>
+		<tfoot>
+		<tr>
+			<td colspan="6">
+				<input type="submit" name="view"   value="<?php echo _AT('view'); ?>" />
+				<input type="submit" name="edit"   value="<?php echo _AT('edit'); ?>" />
+				<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+			</td>
+		</tr>
+		</tfoot>
+<?php
+	} // end if
+?>
+
+<tbody>
 <?php
 	do {
-		echo '<tr>';
-		echo '<td class="row1"><a href="discussions/poll.php?id='.$row['poll_id'].'">'.AT_print($row['question'], 'polls.question').'</a></td>';
-		echo '<td class="row1">'.$row['created_date'].'</td>';
+		echo '<tr onmousedown="document.form[\'p_' . $row['poll_id'] . '\'].checked = true;">';
+		echo '<td>';
+		echo '<input type="radio" id="p_' . $row['poll_id'] . '" name="poll" value="' . $row['poll_id'] . '" /></td>';
+		echo '<td><label for="p_' . $row['poll_id'] . '">' . AT_print($row['question'], 'polls.question') . '</label>';
+		echo '</td>';
+		echo '<td>' . $row['created_date'] . '</td>';
 
-		if ($_SESSION['prefs'][PREF_EDIT] && authenticate(AT_PRIV_POLLS,AT_PRIV_RETURN)) {
-			echo '<td class="row1" nowrap="nowrap"><a href="editor/edit_poll.php?poll_id='.$row['poll_id'].'">'._AT('edit').'</a> | <a href="editor/delete_poll.php?pid='.$row['poll_id'].'">'._AT('delete').'</a></td>';
-		}
-		echo '</tr>';
-
-		if ($count < $num_rows-1) {
-			echo '<tr><td height="1" class="row2" colspan="3"></td></tr>';
-		}
-		$count++;
 	} while ($row = mysql_fetch_assoc($result));
+
+	echo '</tbody>';
 	echo '</table>';
+	echo '</form>';
 }
 
 require(AT_INCLUDE_PATH.'footer.inc.php'); 
