@@ -199,6 +199,24 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/question_cats_manage.php']['title']  = _AT('create_category');
 	$_pages['tools/tests/question_cats_manage.php']['parent'] = 'tools/tests/question_cats.php';
 
+	$_pages['tools/tests/edit_test.php']['title']  = _AT('edit_test');
+	$_pages['tools/tests/edit_test.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/preview.php']['title']  = _AT('preview');
+	$_pages['tools/tests/preview.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/questions.php']['title']  = _AT('questions');
+	$_pages['tools/tests/questions.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/results.php']['title']  = _AT('submissions');
+	$_pages['tools/tests/results.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/results_all_quest.php']['title']  = _AT('statistics');
+	$_pages['tools/tests/results_all_quest.php']['parent'] = 'tools/tests/index.php';
+
+	$_pages['tools/tests/delete_test.php']['title']  = _AT('delete_test');
+	$_pages['tools/tests/delete_test.php']['parent'] = 'tools/tests/index.php';
+
 
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
