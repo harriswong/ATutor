@@ -79,6 +79,9 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 		$_pages['admin/forum_edit.php']['title']    = _AT('edit_forum');
 		$_pages['admin/forum_edit.php']['parent']   = 'admin/forums.php';
 
+		$_pages['admin/forum_delete.php']['title']    = _AT('delete_forum');
+		$_pages['admin/forum_delete.php']['parent']   = 'admin/forums.php';
+
 	$_pages['admin/course_categories.php']['title']    = _AT('cats_categories');
 	$_pages['admin/course_categories.php']['parent']   = 'admin/courses.php';
 
