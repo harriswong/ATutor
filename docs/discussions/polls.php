@@ -20,7 +20,7 @@ $_section[1][0] = _AT('polls');
 
 if (isset($_POST['view'])) {
 	if ($_POST['poll'] == '') {
-		$msg->addError('NO_POLL_SELECTED');
+		$msg->addError('POLL_NOT_FOUND');
 	} else {
 		header('Location: ./poll.php?id=' . $_POST['poll']);
 	}
@@ -28,7 +28,7 @@ if (isset($_POST['view'])) {
 
 else if (isset($_POST['edit'])) {
 	if ($_POST['poll'] == '') {
-		$msg->addError('NO_POLL_SELECTED');
+		$msg->addError('POLL_NOT_FOUND');
 	} else {
 		header('Location: ../editor/edit_poll.php?poll_id=' . $_POST['poll']);
 	}
@@ -36,7 +36,7 @@ else if (isset($_POST['edit'])) {
 
 else if (isset($_POST['delete'])) { 
 	if ($_POST['poll'] == '') {
-		$msg->addError('NO_POLL_SELECTED');
+		$msg->addError('POLL_NOT_FOUND');
 	} else {
 		header('Location: ../editor/delete_poll.php?pid=' . $_POST['poll'] );
 	}
@@ -105,21 +105,22 @@ if (!($row = mysql_fetch_assoc($result))) {
 	</th>
 </tr>
 </thead>
+<tfoot>
+<tr>
+	<td colspan="3">
+		<input type="submit" name="view"   value="<?php echo _AT('view'); ?>" />
 <?php 
 	if ($_SESSION['prefs'][PREF_EDIT] && authenticate(AT_PRIV_POLLS,AT_PRIV_RETURN)) { 
 ?>
-		<tfoot>
-		<tr>
-			<td colspan="6">
-				<input type="submit" name="view"   value="<?php echo _AT('view'); ?>" />
-				<input type="submit" name="edit"   value="<?php echo _AT('edit'); ?>" />
-				<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
-			</td>
-		</tr>
-		</tfoot>
+		<input type="submit" name="edit"   value="<?php echo _AT('edit'); ?>" />
+		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
 <?php
 	} // end if
 ?>
+	</td>
+</tr>
+</tfoot>
+
 
 <tbody>
 <?php
