@@ -18,6 +18,14 @@ define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 if ($_SESSION['course_id'] > -1) { exit; }
 
+if (isset($_GET['delete'])) {
+	header('Location: admin_delete.php?id='.$_GET['id']);
+	exit;
+} else if (isset($_GET['profile'])) {
+	header('Location: profile.php?member_id='.$_GET['id']);
+	exit;
+}
+
 $id = $_GET['id'];
 $L = $_GET['L'];
 require(AT_INCLUDE_PATH.'header.inc.php'); 
@@ -95,7 +103,7 @@ if (($row = mysql_fetch_array($result))==0) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="7"><input type="submit" value="Delete" /> <input type="submit" value="View Profile" /></td>
+	<td colspan="7"><input type="submit" name="delete" value="Delete" /> <input type="submit" name="profile" value="View Profile" /></td>
 </tr>
 </tfoot>
 <tbody>

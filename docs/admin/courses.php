@@ -18,6 +18,20 @@ define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 if ($_SESSION['course_id'] > -1) { exit; }
 
+if (isset($_GET['view'])) {
+	header('Location: instructor_login.php?course='.$_GET['id']);
+	exit;
+} else if (isset($_GET['edit'])) {
+	header('Location: edit_course.php?course_id='.$_GET['id']);
+	exit;
+} else if (isset($_GET['backups'])) {
+	header('Location: backup/index.php?course='.$_GET['id']);
+	exit;
+} else if (isset($_GET['delete'])) {
+	header('Location: delete_course.php?course='.$_GET['id']);
+	exit;
+}
+
 require(AT_INCLUDE_PATH.'header.inc.php'); 
 
 $sql = "SELECT * from ".TABLE_PREFIX."course_cats ORDER BY cat_name ";
@@ -87,7 +101,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="7"><input type="submit" value="View" /> <input type="submit" value="Edit" /> <input type="submit" value="Backups" /> <input type="submit" value="Delete" /> </td>
+	<td colspan="7"><input type="submit" name="view" value="View" /> <input type="submit" name="edit" value="Edit" /> <input type="submit" name="backups" value="Backups" /> <input type="submit" name="delete" value="Delete" /></td>
 </tr>
 </tfoot>
 <tbody>
