@@ -117,7 +117,7 @@ $result = mysql_query($sql,$db);
 while ($row = mysql_fetch_assoc($result)):
 	$count++;
 ?>
-	<div class="course<?php echo (!($count % 2)) ? '' : ' break'; ?>">
+	<div class="course<?php echo (!($count % 2)) ? '' : ' break'; ?>" onmousedown="document.location='bounce.php?course=<?php echo $row['course_id']; ?>'">
 		<h2><a href="bounce.php?couse=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h2>
 
 		<a href=""><img src="/a/themes/default/images/courses/tree.gif" class="icon" border="0" /></a>
@@ -159,6 +159,7 @@ div.course h2 {
 div.course:hover {
 	background-color: #FFF8C8;
 	border: #AAAAAA 1px solid;
+	cursor: pointer;
 }
 
 div.course a {
