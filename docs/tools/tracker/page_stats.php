@@ -31,13 +31,45 @@ else {
 	$order = "desc";
 }
 
+$sql	= "SELECT COUNT(member_id) FROM ".TABLE_PREFIX."members";
+$result = mysql_query($sql, $db);
+
+if (($row = mysql_fetch_array($result))==0) {
+	echo '<tr><td colspan="7" class="row1">'._AT('no_users_found_for').' <strong>'.$_GET['L'].'</strong></td></tr>';
+	require(AT_INCLUDE_PATH.'footer.inc.php');
+	exit;
+}
+
+	$num_results = $row[0];
+	$results_per_page = 10;
+	$num_pages = ceil($num_results / $results_per_page);
+	$page = intval($_GET['p']);
+	if (!$page) {
+		$page = 1;
+	}	
+	$count = (($page-1) * $results_per_page) + 1;
+
+	for ($i=1; $i<=$num_pages; $i++) {
+		if ($i == 1) {
+			echo _AT('page').': | ';
+		}
+		if ($i == $page) {
+			echo '<strong>'.$i.'</strong>';
+		} else {
+			echo '<a href="'.$_SERVER['PHP_SELF'].'?p='.$i.'#list">'.$i.'</a>';
+		}
+		echo ' | ';
+	}
+$offset = ($page-1)*$results_per_page;
+
 /*create a table that lists all the content pages and the number of time they were viewed*/
 $sql = "SELECT MT.counter, C.content_id, MT.last_accessed, C.title,
 		SEC_TO_TIME(MT.duration) AS total, SEC_TO_TIME(MT.duration/counter) AS average
 		FROM ".TABLE_PREFIX."content C LEFT JOIN ".TABLE_PREFIX."member_track MT
 		USING (content_id)
 		WHERE C.course_id=$_SESSION[course_id]
-		ORDER BY $col $order";
+		ORDER BY $col $order
+		LIMIT $offset, $results_per_page";
 $result = mysql_query($sql, $db);
 
 echo '<table class="data static" rules="cols" summary="">';
