@@ -14,79 +14,135 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-global $system_courses, $_base_path;
+global $system_courses, $_base_path, $_pages;
 
+define('AT_NAV_PUBLIC', 1);
+define('AT_NAV_START',  2);
+define('AT_NAV_COURSE', 3);
+define('AT_NAV_ADMIN',  4);
 
-$_pages[0] = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php', 'index.php', 'tools/index.php');
+/*
+	4 sections: public, my_start_page, course, admin
 
-$_pages['users/index.php']   = array('title' => _AT('my_courses'),      'parent' => 0, 'children' => array('users/browse.php', 'users/create_course.php'));
-$_pages['users/browse.php']  = array('title' => _AT('browse_courses'),  'parent' => 'users/index.php');
-$_pages['users/create_course.php']  = array('title' => _AT('create_course'),   'parent' => 'users/index.php');
-$_pages['users/profile.php']     = array('title' => _AT('profile'),     'parent' => 0);
-$_pages['users/preferences.php'] = array('title' => _AT('preferences'), 'parent' => 0);
-$_pages['users/inbox.php']       = array('title' => _AT('inbox'),       'parent' => 0, 'children' => array('users/send_message.php'));
-$_pages['users/send_message.php'] = array('title' => _AT('send_message'), 'parent' => 'users/inbox.php');
+*/
 
-$_pages['index.php'] = array('title' => _AT('home'), 'parent' => 0);
-$_pages['tools/index.php'] = array('title' => _AT('tools'), 'parent' => 0, 'children' => array('forum/list.php'));
+$_pages[AT_NAV_START]  = array('users/index.php', 'users/profile.php', 'users/preferences.php', 'users/inbox.php');
+$_pages[AT_NAV_COURSE] = array('index.php', 'tools/index.php');
 
-$_pages['forum/list.php'] = array('title' => _AT('forums'), 'parent' => 'tools/index.php');
+$_pages['users/index.php']['title']    = _AT('my_courses');
+$_pages['users/index.php']['parent']   = AT_NAV_START;
+$_pages['users/index.php']['children'] = array('users/browse.php', 'users/create_course.php');
+
+$_pages['users/browse.php']['title']  = _AT('browse_courses');
+$_pages['users/browse.php']['parent'] = 'users/index.php';
+
+$_pages['users/create_course.php']['title']  = _AT('create_course');
+$_pages['users/create_course.php']['parent'] = 'users/index.php';
+
+$_pages['users/profile.php']['title']  = _AT('profile');
+$_pages['users/profile.php']['parent'] = AT_NAV_START;
+
+$_pages['users/preferences.php']['title']  = _AT('preferences');
+$_pages['users/preferences.php']['parent'] = AT_NAV_START;
+
+$_pages['users/inbox.php']['title']    = _AT('inbox');
+$_pages['users/inbox.php']['parent']   = AT_NAV_START;
+$_pages['users/inbox.php']['children'] = array('users/send_message.php');
+
+$_pages['users/send_message.php']['title']  = _AT('send_message');
+$_pages['users/send_message.php']['parent'] = 'users/inbox.php';
+
+$_pages['index.php']['title']  = _AT('home');
+$_pages['index.php']['parent'] = AT_NAV_COURSE;
+
+$_pages['tools/index.php']['title']    = _AT('tools');
+$_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
+$_pages['tools/index.php']['children'] = array('forum/list.php');
+
+$_pages['forum/list.php']['title']  = _AT('forums');
+$_pages['forum/list.php']['parent'] = 'tools/index.php';
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
-if (in_array($current_page, $_pages[0])) {
-	$_current_top_level_page = $_current_sub_level_page = $current_page;
+function get_main_navigation($current_page) {
+	global $_pages;
 
-	if (isset($_pages[$current_page]['children'])) {
-		$_sub_level_pages[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
-		foreach ($_pages[$_current_top_level_page]['children'] as $child) {
-			$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
+	$parent_page = $_pages[$current_page]['parent'];
+	$_top_level_pages = array();
+
+	if (isset($parent_page) && is_numeric($parent_page)) {
+		foreach($_pages[$parent_page] as $page) {
+			$_top_level_pages[] = array('url' => $page, 'title' => $_pages[$page]['title']);
 		}
+	} else {
+		return get_main_navigation($parent_page);
 	}
-} else {
-	$parent = $_pages[$current_page]['parent'];
 
-	if (in_array($parent, $_pages[0])) {
-		$_current_top_level_page = $parent;
-		$_current_sub_level_page = $current_page;
+	return $_top_level_pages;
+}
 
-		if (isset($_pages[$parent]['children'])) {
-			$_sub_level_pages[] = array('url' => $parent, 'title' => $_pages[$parent]['title']);
-			foreach ($_pages[$parent]['children'] as $child) {
-				$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
-			}
-		}
+function get_current_main_page($current_page) {
+	global $_pages;
+
+	$parent_page = $_pages[$current_page]['parent'];
+
+	if (isset($parent_page) && is_numeric($parent_page)) {
+		return $current_page;
+	} else {
+		return get_current_main_page($parent_page);
 	}
 }
+
+function get_sub_navigation($current_page) {
+	global $_pages;
+
+	if (isset($current_page) && is_numeric($current_page)) {
+		// reached the top
+		return array();
+	} else if (isset($_pages[$current_page]['children'])) {
+		$_sub_level_pages[] = array('url' => $current_page, 'title' => $_pages[$current_page]['title']);
+		foreach ($_pages[$current_page]['children'] as $child) {
+			$_sub_level_pages[] = array('url' => $child, 'title' => $_pages[$child]['title']);
+		}
+	} else {
+		// no children
+
+		$parent_page = $_pages[$current_page]['parent'];
+		return get_sub_navigation($parent_page);
+	}
+
+	return $_sub_level_pages;
+}
+
+function get_current_sub_navigation_page($current_page) {
+	global $_pages;
+
+	$parent_page = $_pages[$current_page]['parent'];
+
+	if (isset($parent_page) && is_numeric($parent_page)) {
+		return $current_page;
+	} else {
+		return $current_page;
+	}
+
+}
+
+$_top_level_pages = get_main_navigation($current_page);
+$_current_top_level_page = get_current_main_page($current_page);
+
+$_sub_level_pages = get_sub_navigation($current_page);
+$_current_sub_level_page = get_current_sub_navigation_page($current_page);
+
+//debug($_current_top_level_page);
+
+//debug($_top_level_pages);
 
 $_page_title = $_pages[$current_page]['title'];
 
 
 if (!$_SESSION['course_id']) {
-
-	/*
-	debug($_sub_level_pages, '_sub_level_pages');
-	debug($_current_top_level_page, '_current_top_level_page');
-	debug($_current_sub_level_page, '_current_sub_level_page');
-	debug($_top_level_pages, '_top_level_pages');
-	*/
-
-	$_top_level_pages[] = array('url' => 'users/index.php',       'title' => _AT('my_courses'));
-	$_top_level_pages[] = array('url' => 'users/profile.php',     'title' => _AT('profile'));
-	$_top_level_pages[] = array('url' => 'users/preferences.php', 'title' => _AT('preferences'));
-	$_top_level_pages[] = array('url' => 'users/inbox.php',       'title' => _AT('inbox'));
-
-
 	$_section_title = 'My Start Page';
-
 } else {
-	$_top_level_pages[] = array('url' => 'index.php',                   'title' => _AT('home'));
-	$_top_level_pages[] = array('url' => 'tools/index.php',             'title' => _AT('tools'));
-	$_top_level_pages[] = array('url' => 'resources/links/index.php',   'title' => _AT('links'));
-	$_top_level_pages[] = array('url' => 'forum/list.php',              'title' => _AT('forums'));
-	$_top_level_pages[] = array('url' => 'discussions/achat/index.php', 'title' => _AT('chat'));
-	$_top_level_pages[] = array('url' => 'discussions/polls.php',       'title' => _AT('polls'));
-	
 	$_section_title = $_SESSION['course_title'];
 }
 
