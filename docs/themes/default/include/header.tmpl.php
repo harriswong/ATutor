@@ -33,7 +33,7 @@ global $system_courses;
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->tmpl_lang; ?>">
 <head>
-	<title><?php echo SITE_NAME; ?> : <?php echo $this->_page_title; ?></title>
+	<title><?php echo SITE_NAME; ?> : <?php echo $this->page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->tmpl_charset; ?>" />
 	<meta name="Generator" content="ATutor - Copyright 2005 by http://atutor.ca" />
 	<base href="<?php echo $this->tmpl_content_base_href; ?>" />
