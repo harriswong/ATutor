@@ -1151,13 +1151,14 @@ input#editor-switch:hover {
 	border: 1px solid #aaaaaa;
 }
 
-div#bc {
+div#breadcrumbs {
 	margin-bottom: 5px;
 	border-top: 1px dashed #cccccc;
 	border-bottom: 1px dashed #cccccc;
 	padding: 5px;
 	font-weight: bold;
 	color: #888888;
+	font-size: small;
 }
 h2 {
 	border-bottom: 1px solid green;
@@ -1165,4 +1166,8 @@ h2 {
 
 h1 {
 	margin-bottom: 5px;
+}
+
+#div.sub-navigation {
+	font-size: smaller;
 }

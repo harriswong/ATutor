@@ -67,7 +67,7 @@ $onload = 'onload="document.course_form.title.focus()"';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h3>'._AT('create_course').'</h3><br />';
+echo '<h2>'._AT('create_course').'</h2><br />';
 $msg->printAll();
 
 require(AT_INCLUDE_PATH.'html/course_properties.inc.php');
