@@ -42,6 +42,7 @@ if (isset($_POST['form_course'])) {
 	$row['rss']                 = $_POST['rss'];
 
 	$row['copyright']			= $_POST['copyright'];
+	$row['icon']				= $_POST['icon'];
 
 } else if ($course) {
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
