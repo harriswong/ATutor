@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2003 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -10,6 +10,7 @@
 /* modify it under the terms of the GNU General Public License				*/
 /* as published by the Free Software Foundation.							*/
 /****************************************************************************/
+// $Id$
 
 $page = 'categories';
 $_user_location = 'admin';
@@ -75,7 +76,7 @@ $msg->printAll();
 
 <div class="input-form">
 	<div class="row">
-		<label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br ?>
+		<label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br />
 		<input type="text" id="category_name" name="cat_name" value="<?php echo stripslashes(htmlspecialchars($categories[$cat_id]['cat_name'])); ?>" />
 	</div>
 
@@ -130,7 +131,8 @@ $msg->printAll();
 <?php endif; ?>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /><input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
 	</div>
 </div>
 </form>
