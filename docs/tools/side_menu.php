@@ -50,7 +50,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 					if (isset($_SESSION['prefs'][PREF_STACK][$i]) && ($j == $_SESSION[prefs][PREF_STACK][$i])) {
 						echo ' selected="selected"';
 					}
-					echo '>'._AT($_stacks[$j]['file']).'</option>'."\n";
+					echo '>'._AT($_stacks[$j]).'</option>'."\n";
 				}
 				echo '</select>'."\n";
 				echo '<br />'; 
