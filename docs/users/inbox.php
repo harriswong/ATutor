@@ -90,21 +90,24 @@ $result = mysql_query($sql,$db);
 
 if ($row = mysql_fetch_assoc($result)) {
 	echo '<br />';
-	echo '<table align="center" border="0" cellspacing="1" cellpadding="0" width="98%" class="bodyline" summary="">';
-	echo '<tr>
-		<th class="cat"><img src="images/clr.gif" alt="" width="40" height="1" /></th>
+	echo '<table class="data" summary="" rules="cols">';
+	echo '<thead><tr>
+		<th><img src="images/clr.gif" alt="" width="40" height="1" /></th>
 		<th width="100" class="cat">'._AT('from').'</th>
 		<th width="327" class="cat">'._AT('subject').'</th>
 		<th width="150" class="cat">'._AT('date').'</th>
-	</tr>';
+	</thead></tr>';
 	$count = 0;
 	$total = mysql_num_rows($result);
 	$view = $_GET['view'];
 	do {
 		$count ++;
 
-		echo '<tr>';	
-		echo '<td valign="middle" width="10" align="center" class="row1">';
+		?>
+		<tr onmousedown="document.location='users/inbox.php?view=<?php echo $row['message_id']; ?>'">
+
+		<?php
+		echo '<td valign="middle" width="10" align="center">';
 		if ($row['new'] == 1)	{
 			echo '<small>'._AT('new').'&nbsp;</small>';
 		} else if ($row['replied'] == 1) {
@@ -114,7 +117,7 @@ if ($row = mysql_fetch_assoc($result)) {
 
 		$name = AT_print(get_login($row['from_member_id']), 'members.logins');
 
-		echo '<td align="left" class="row1">';
+		echo '<td align="left">';
 
 		if ($view != $row['message_id']) {
 			echo $name.'&nbsp;</td>';
@@ -122,7 +125,7 @@ if ($row = mysql_fetch_assoc($result)) {
 			echo '<b>'.$name.'</b>&nbsp;</td>';
 		}
 
-		echo '<td valign="middle" class="row1">';
+		echo '<td valign="middle">';
 		if ($view != $row['message_id']) {
 			echo '<a href="'.$_SERVER['PHP_SELF'].'?view='.$row['message_id'].'">'.AT_print($row['subject'], 'messages.subject').'</a></td>';
 		} else {
@@ -135,10 +138,6 @@ if ($row = mysql_fetch_assoc($result)) {
 					 AT_DATE_MYSQL_DATETIME);
 		echo '</small></td>';
 		echo '</tr>';
-
-		if ($count < $total) {
-			echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
-		}
 
 	} while ($row = mysql_fetch_assoc($result));
 	echo '</table>';
