@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: edit.php 3111 2005-01-18 19:32:00Z joel $
+// $Id$
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 global $msg;
@@ -31,7 +31,7 @@ $msg->printAll();
 		<small class="spacer">&middot; <?php echo _AT('combination'); ?><br />
 		&middot; <?php echo _AT('15_max_chars'); ?></small>
 
-	<div class="row"><img src="images/asterisk.gif" alt="Required" /><?php echo _AT('password_again'); ?></label><br /><input id="password2" class="formfield" name="password2" type="password" size="15" maxlength="15" value="<?php if ($_POST['submit']){ echo stripslashes(htmlspecialchars($_POST['password2'])); } else { echo stripslashes(htmlspecialchars($this->row['password'])); }?>" /></div>
+	<div class="row"><img src="images/asterisk.gif" alt="Required" /><label for="password2"><?php echo _AT('password_again'); ?></label><br /><input id="password2" class="formfield" name="password2" type="password" size="15" maxlength="15" value="<?php if ($_POST['submit']){ echo stripslashes(htmlspecialchars($_POST['password2'])); } else { echo stripslashes(htmlspecialchars($this->row['password'])); }?>" /></div>
 
 	<div class="row"><img src="images/asterisk.gif" alt="Required" /><label for="email"><?php   echo _AT('email_address'); ?></label><br /><input id="email" class="formfield" name="email" type="text" size="30" maxlength="60"  value="<?php echo stripslashes(htmlspecialchars($this->row['email']));?>" /></div>
 
