@@ -56,10 +56,10 @@ echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-if ($result) {
+if (mysql_num_rows($result) > 0) {
 	while ($row = mysql_fetch_assoc($result)) {
 		echo '<tr>';
-			echo '<td>' . AT_print($row['title'], 'content.title') . '</td>';
+			echo '<td><a href='.$_base_href.'?cid='.$row['content_id']. '>' . AT_print($row['title'], 'content.title') . '</a></td>';
 			echo '<td>' . $row['counter'] . '</td>';
 		echo '</tr>';
 	} //end while
