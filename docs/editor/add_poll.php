@@ -53,50 +53,33 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printErrors();
 
-echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="discussions/" class="hide" ><img src="images/icons/default/square-large-discussions.gif" vspace="2" border="0"  class="menuimageh2" width="42" height="40" alt="" /></a> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="discussions/" class="hide" >'._AT('discussions').'</a>';
-	}
-echo '</h2>';
 
-echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/polls-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="discussions/polls.php" class="hide" >'._AT('polls').'</a>';
-	}
-echo '</h3>';
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-<input type="hidden" name="add_poll" value="true" />
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-<tr>
-	<th colspan="2" class="cyan"><?php  echo _AT('add_poll'); ?></th>
-</tr>
-<tr>
-	<td class="row1" align="right"><b><label for="question"><?php  echo _AT('question'); ?>:</label></b></td>
-	<td class="row1"><textarea name="question" cols="45" rows="3" class="formfield" id="question"></textarea></td>
-</tr>
+<div class="input-form">
+	<input type="hidden" name="add_poll" value="true" />
+	
+	<div class="row">
+		<label for="question"><?php  echo _AT('question'); ?>:</label><br />
+		<textarea name="question" cols="45" rows="3" id="question"></textarea>
+	</div>
 
-<?php for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right"><b><label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?>:</label></b></td>
-		<td class="row1"><input type="text" name="c<?php echo $i; ?>" class="formfield" size="40" id="c<?php echo $i; ?>" /></td>
-	</tr>
+<?php 
+	
+	for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
+		<div class="row">
+			<label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?>:</label><br />
+			<input type="text" name="c<?php echo $i; ?>" size="40" id="c<?php echo $i; ?>" />
+		</div>
 <?php endfor; ?>
 
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" colspan="2" align="center"><br /><input type="submit" name="submit" value="<?php  echo _AT('add_poll'); ?> [Alt-s]" class="button" accesskey="s" /> - <input type="submit" name="cancel" value="<?php  echo _AT('cancel'); ?>" class="button" /></td>
-</tr>
-</table>
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" /></td>
+	</div>
+
+</div>
 </form>
 
 <?php

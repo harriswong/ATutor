@@ -59,8 +59,6 @@
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
-	echo '<h2>'._AT('edit_glossary').'</h2>';
-
 	if ($_POST['submit']) {
 		$gid = intval($_POST['gid']);
 	} else {
@@ -74,8 +72,6 @@
 	}
 
 	$msg->printErrors();
-
-	echo '<form action="'.$_SERVER['PHP_SELF'].'" method="post" name="form">';
 
 	$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."glossary WHERE word_id=$gid", $db);
 
@@ -91,53 +87,56 @@
 	}
 
 ?>
-<input type="hidden" name="gid" value="<?php echo $gid; ?>" />
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-<tr>
-	<th colspan="2" class="cyan"><img src="images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor_on'); ?>" title="<?php echo _AT('editor_on'); ?>" height="14" width="16" /><?php echo _AT('edit_glossary');  ?></th>
-</tr>
-<tr>
-	<td align="right" class="row1"><b><label for="title"><?php echo _AT('glossary_term');  ?>:</label></b></td>
-	<td class="row1"><input type="text" name="word" size="40" id="title" class="formfield" value="<?php echo htmlspecialchars(stripslashes($row['word'])); ?>" /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td valign="top" align="right" class="row1"><b><label for="body"><?php echo _AT('glossary_definition'); ?>:</label></b></td>
-	<td class="row1"><textarea name="definition" class="formfield" cols="55" rows="7" id="body"><?php echo $row['definition']; ?></textarea></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td valign="top" align="right" class="row1"><b><?php echo _AT('glossary_related');  ?>:</b></td>
-	<td class="row1"><?php
 
-			$sql = "SELECT * FROM ".TABLE_PREFIX."glossary WHERE course_id=$_SESSION[course_id] AND word_id<>$gid ORDER BY word";
-			$result = mysql_query($sql, $db);
-			if ($row_g = mysql_fetch_array($result)) {
-				echo '<select name="related_term">';
-				echo '<option value="0"></option>';
-				do {
-					if ($row_g['word_id'] == $row['word_id']) {
-						continue;
-					}
-					echo '<option value="'.$row_g['word_id'].'"';
-					if ($row_g['word_id'] == $row['related_word_id']) {
-						echo ' selected="selected" ';
-					}
-					echo '>'.$row_g['word'].'</option>';
-				} while ($row_g = mysql_fetch_array($result));
-				echo '</select>';
-			} else {
-				echo  _AT('no_glossary_items');
-			}
-	?><br /><br /></td>
-</tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td colspan="2" align="center" class="row1"><br /><input type="submit" name="submit" value="<?php echo _AT('edit_glossary');  ?>[Alt-s]" accesskey="s" class="button" /> - <input type="submit" name="cancel" class="button" value="<?php echo _AT('cancel');  ?>" /></td>
-</tr>
-</table>
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<div class="input-form">
+	<input type="hidden" name="gid" value="<?php echo $gid; ?>" />
+	
+	<div class="row">
+		<label for="title"><?php echo _AT('glossary_term');  ?>:</label><br/ >
+		<input type="text" name="word" size="40" id="title" value="<?php echo htmlspecialchars(stripslashes($row['word'])); ?>" />
+	</div>
 
+	<div class="row">
+		<label for="body"><?php echo _AT('glossary_definition'); ?>:</label><br />
+		<textarea name="definition" cols="55" rows="7" id="body"><?php echo $row['definition']; ?></textarea>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('glossary_related');  ?>:<br />
+<?php
+		$sql = "SELECT * FROM ".TABLE_PREFIX."glossary WHERE course_id=$_SESSION[course_id] AND word_id<>$gid ORDER BY word";
+
+		$result = mysql_query($sql, $db);
+		if ($row_g = mysql_fetch_array($result)) {
+			echo '<select name="related_term">';
+			echo '<option value="0"></option>';
+			do {
+				if ($row_g['word_id'] == $row['word_id']) {
+					continue;
+				}
+		
+				echo '<option value="'.$row_g['word_id'].'"';
+			
+				if ($row_g['word_id'] == $row['related_word_id']) {
+					echo ' selected="selected" ';
+				}
+			
+				echo '>'.$row_g['word'].'</option>';
+			} while ($row_g = mysql_fetch_array($result));
+			
+			echo '</select>';
+		
+		} else {
+			echo  _AT('no_glossary_items');
+		}
+?>
+	</div>
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel');  ?>" />
+	</div>
+</div>
 </form>
 
 <?php

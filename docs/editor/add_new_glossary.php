@@ -86,37 +86,20 @@
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 	
-	echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="tools/index.php?g=11"><img src="images/icons/default/square-large-tools.gif" class="menuimageh2" border="0" vspace="2" width="41" height="40" alt="" /></a>';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo ' <a href="tools/index.php?g=11">'._AT('tools').'</a>';
-	}
-	echo '</h2>';
-
-	echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/glossary-large.gif" class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo _AT('add_glossary');
-	}
-	echo '</h3>';
-
 	$msg->printAll();
 
 ?>
 
-	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<div class="input-form">
 	<input type="hidden" name="num_terms" value="<?php echo $num_terms; ?>" />
-	<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
 <?php
 	for ($i=0;$i<$num_terms;$i++) {
 		if ($glossary[$word[$i]] != '') {
 			echo '<input type="hidden" name="ignore['.$i.']" value="1" />';
 			continue;
 		}
+		
 		for ($j=0;$j<$i;$j++) {
 			if ($word[$j] == $word[$i]) {
 				echo '<input type="hidden" name="ignore['.$i.']" value="1" />';
@@ -128,57 +111,47 @@
 			$word[$i] = ContentManager::cleanOutput($_POST['word'][$i]);
 		}
 ?>
-		<tr>
-			<th colspan="2" class="cyan"><img src="images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor_on'); ?>" title="<?php echo _AT('editor_on'); ?>" height="14" width="16" /> <?php echo _AT('add_glossary');  ?></th>
-		</tr>
-		<tr>
-			<td align="right" class="row1"><?php print_popup_help('GLOSSARY_MINI');?><b><label for="title<?php echo $i; ?>"><?php echo _AT('glossary_term');  ?>:</label></b></td>
-			<td class="row1"><input type="text" name="word[<?php echo $i; ?>]" size="30" class="formfield" value="<?php echo trim($word[$i]); ?>" id="title<?php echo $i; ?>" /><?php
-			
+		<div class="row">
+			<label for="title<?php echo $i; ?>"><?php echo _AT('glossary_term');  ?>:</label><br />
+			<input type="text" name="word[<?php echo $i; ?>]" size="30" value="<?php echo trim($word[$i]); ?>" id="title<?php echo $i; ?>" /><?php			
 			if ($_GET['pcid'] != '') { 
 				echo '<input type="checkbox" name="ignore['.$i.']" value="1" id="ig'.$i.'" /><label for="ig'.$i.'">Ignore this term</label>.';	
 			}
+			?>
+		</div>
 
-			?></td>
-		</tr>
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		<tr>
-			<td valign="top" align="right" class="row1"><b><label for="body<?php echo $i; ?>"><?php echo _AT('glossary_definition');  ?>:</label></b></td>
-			<td class="row1">
-				<textarea name="definition[<?php echo $i; ?>]" class="formfield" cols="55" rows="7" id="body<?php echo $i; ?>"><?php echo ContentManager::cleanOutput($_POST['definition'][$i]); ?></textarea><br /><br /></td>
-		</tr>
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		<tr>
-			<td valign="top" align="right" class="row1"><b><?php echo _AT('glossary_related');  ?>:</b></td>
-			<td class="row1"><?php
-				
-					$sql = "SELECT * FROM ".TABLE_PREFIX."glossary WHERE course_id=$_SESSION[course_id] ORDER BY word";
-					$result = mysql_query($sql, $db);
-					if ($row_g = mysql_fetch_assoc($result)) {
-						echo '<select name="related_term['.$i.']">';
-						echo '<option value="0"></option>';
-						do {
-							echo '<option value="'.$row_g['word_id'].'">'.$row_g['word'].'</option>';
-						} while ($row_g = mysql_fetch_assoc($result));
-						echo '</select>';
-					} else {
-						echo _AT('none_available');
-					}
+		<div class="row">
+			<label for="body<?php echo $i; ?>"><?php echo _AT('glossary_definition');  ?>:</label><br />
+			<textarea name="definition[<?php echo $i; ?>]" class="formfield" cols="55" rows="7" id="body<?php echo $i; ?>"><?php echo ContentManager::cleanOutput($_POST['definition'][$i]); ?></textarea>
+		</div>
 
-				?><br /><br /></td>
-		</tr>
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-		<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<?php } ?>
-		<tr>
-			<td colspan="2" align="center" class="row1"><br /><input type="submit" name="submit" value="<?php echo _AT('add_term'); ?><?php
-			if ($num_terms > 1) {
-				echo 's';
-			}
-			?>[Alt-s]" class="button" accesskey="s" /> - <input type="submit" name="cancel" class="button" value="<?php echo _AT('cancel'); ?>" /></td>
-		</tr>
-		</table>
+		<div class="row">
+			<?php echo _AT('glossary_related');  ?>:<br />
+<?php
+				$sql = "SELECT * FROM ".TABLE_PREFIX."glossary WHERE course_id=$_SESSION[course_id] ORDER BY word";
+				$result = mysql_query($sql, $db);
+				if ($row_g = mysql_fetch_assoc($result)) {
+					echo '<select name="related_term['.$i.']">';
+					echo '<option value="0"></option>';
+					do {
+						echo '<option value="'.$row_g['word_id'].'">'.$row_g['word'].'</option>';
+					} while ($row_g = mysql_fetch_assoc($result));
+					echo '</select>';
+				} else {
+					echo _AT('none_available');
+				}
+			} // endfor
+?>
+		</div>
+
+		<div class="row buttons">
+			<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
+			<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
+		</div>
+
+	</div>
 	</form>
+
 <?php
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

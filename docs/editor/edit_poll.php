@@ -62,27 +62,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printErrors();
 
-echo '<h2>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '<a href="discussions/" class="hide" ><img src="images/icons/default/square-large-discussions.gif" vspace="2" border="0"  class="menuimageh2" width="42" height="40" alt="" /></a> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="discussions/" class="hide" >'._AT('discussions').'</a>';
-	}
-echo '</h2>';
-
-echo '<h3>';
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-		echo '&nbsp;<img src="images/icons/default/polls-large.gif" class="menuimageh3" width="42" height="38" alt="" /> ';
-	}
-	if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-		echo '<a href="discussions/polls.php" class="hide" >'._AT('polls').'</a>';
-	}
-echo '</h3>';
-
-?>
-<?php
-
 	if ($poll_id == 0) {
 		$msg->printErrors('POLL_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
@@ -98,33 +77,32 @@ echo '</h3>';
 	}
 
 ?>
+
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-<input type="hidden" name="edit_poll" value="true" />
-<input type="hidden" name="poll_id" value="<?php echo $row['poll_id']; ?>" />
-<br />
-<table cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" align="center">
-<tr>
-	<th colspan="2" class="cyan"><img src="images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor_on'); ?>" title="<?php echo _AT('editor_on'); ?>" height="14" width="16" /><?php echo _AT('edit_poll'); ?></th>
-</tr>
-<tr>
-	<td align="right" class="row1"><b><?php echo _AT('question'); ?>:</b></td>
-	<td class="row1"><textarea name="question" cols="55" rows="3" id="question" class="formfield"><?php echo $row['question']; ?></textarea></td>
-</tr>
+<div class="input-form">
+	<input type="hidden" name="edit_poll" value="true" />
+	<input type="hidden" name="poll_id" value="<?php echo $row['poll_id']; ?>" />
 
-<?php for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<tr>
-		<td class="row1" align="right"><b><label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?>:</label></b></td>
-		<td class="row1"><input type="text" name="c<?php echo $i; ?>" id="c<?php echo $i; ?>" value="<?php echo htmlspecialchars(stripslashes($row['choice' . $i])); ?>" class="formfield" size="40" /></td>
-	</tr>
+
+	<div class="row">
+		<label for="question"><?php echo _AT('question'); ?>:</label><br />
+		<textarea name="question" cols="55" rows="3" id="question"><?php echo $row['question']; ?></textarea>
+	</div>
+
+<?php
+	for ($i=1; $i<= AT_NUM_POLL_CHOICES; $i++): ?>
+		<div class="row">
+			<label for="c<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo $i; ?>:</label><br />
+			<input type="text" name="c<?php echo $i; ?>" id="c<?php echo $i; ?>" value="<?php echo htmlspecialchars(stripslashes($row['choice' . $i])); ?>" size="40" />
+		</div>
+
 <?php endfor; ?>
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
+		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?> " />
+	</div>
 
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr><td height="1" class="row2" colspan="2"></td></tr>
-<tr>
-	<td class="row1" colspan="2" align="center"><br /><a name="jumpcodes"></a><input type="submit" name="submit" value="<?php echo _AT('edit_poll'); ?>[Alt-s]" accesskey="s" class="button" /> - <input type="submit" name="cancel" class="button" value="<?php echo _AT('cancel'); ?> " /></td>
-</tr>
-</table>
+</div>
 </form>
 <?php
 	require (AT_INCLUDE_PATH.'footer.inc.php');
