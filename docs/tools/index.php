@@ -190,6 +190,19 @@ if (defined('AC_PATH') && AC_PATH) {
 </tr>
 <?php } ?>
 
+<?php if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN)) { ?>
+<tr>
+	<?php
+			echo '<td rowspan="2" valign="top">*</td>';
+			echo '<td>';
+				echo ' <a href="tools/forums/index.php">'._AT('forums').'</a>';
+			echo '</td></tr><tr><td>';
+			echo _AT('forums_text');
+			?>
+	</td>
+</tr>
+<?php } ?>
+
 <?php if (authenticate(AT_PRIV_COURSE_EMAIL, AT_PRIV_RETURN)) { ?>
 <tr>
 	<?php
