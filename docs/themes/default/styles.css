@@ -893,3 +893,10 @@ div#help {
 acronym {
 	cursor: help;
 }
+
+div.news p {
+	margin-left: 10px;
+}
+div.news span.date {
+	color: #ACACAC;
+}

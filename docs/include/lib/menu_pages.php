@@ -247,6 +247,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['sitemap.php']['title']  = _AT('sitemap');
 	$_pages['sitemap.php']['parent'] = 'index.php';
+	$_pages['sitemap.php']['img'] = 'images/courses/tree.gif';
 
 	$_pages['tools/modules.php']['title']  = _AT('modules');
 	$_pages['tools/modules.php']['parent'] = 'tools/index.php';
@@ -416,11 +417,14 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 
 $_pages['forum/list.php']['title']  = _AT('forums');
+$_pages['forum/list.php']['img'] = 'images/courses/fort.gif';
 
 $_pages['glossary/index.php']['title']  = _AT('glossary');
+$_pages['glossary/index.php']['img'] = 'images/courses/fort.gif';
 
 $_pages['links/index.php']['title']  = _AT('links');
 $_pages['links/index.php']['children'] = array('links/add.php');
+$_pages['links/index.php']['img'] = 'images/courses/boot.gif';
 
 	$_pages['links/add.php']['title']  = _AT('suggest_link');
 	$_pages['links/add.php']['parent'] = 'links/index.php';
@@ -429,18 +433,25 @@ $_pages['editor/edit_content.php']['title']  = _AT('edit_content');
 //$_pages['editor/edit_content.php']['parent'] = 'index.php';
 
 $_pages['discussions/achat/index.php']['title'] = _AT('chat');
+$_pages['discussions/achat/index.php']['img'] = 'images/courses/bomb.gif';
 
 $_pages['resources/tile/index.php']['title'] = _AT('tile_search');
+$_pages['resources/tile/index.php']['img'] = 'images/courses/domino.gif';
 
 $_pages['tools/tracker.php']['title'] = _AT('my_tracker');
+$_pages['tools/tracker.php']['img'] = 'images/courses/fish.gif';
 
 $_pages['tools/my_tests.php']['title'] = _AT('my_tests');
+$_pages['tools/my_tests.php']['img'] = 'images/courses/rubiks.gif';
 
 $_pages['polls/index.php']['title'] = _AT('polls');
+$_pages['polls/index.php']['img'] = 'images/courses/shapes.gif';
 
 $_pages['acollab.php']['title'] = 'ACollab';
+$_pages['acollab.php']['img'] = 'images/courses/tree.gif';
 
 $_pages['export.php']['title'] = _AT('export_content');
+$_pages['export.php']['img'] = 'images/courses/fort.gif';
 
 foreach ($_modules as $module) {
 	if (in_array($module, $_pages[AT_NAV_COURSE])) {
@@ -549,4 +560,14 @@ function get_path($current_page) {
 	return $path;
 }
 
+function get_home_navigation() {
+	global $_pages, $_base_path;
+
+	$home_links = array();
+	foreach ($_pages[AT_NAV_HOME] as $child) {
+		$home_links[] = array('url' => $_base_path . $child, 'title' => $_pages[$child]['title'], 'img' => $_base_path.$_pages[$child]['img']);
+	}
+
+	return $home_links;
+}
 ?>

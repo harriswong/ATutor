@@ -24,7 +24,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
  * current_top_level_page    string                           full url to the current top level page in "top_leve_pages"
  * current_sub_level_page    string                           full url to the current sub level page in the "sub_level_pages"
  * sub_level_pages           array(array('url', 'title'))     the sub level pages.
- *
  */
 
 // will have to be moved to the header.inc.php

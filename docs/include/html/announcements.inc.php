@@ -14,7 +14,7 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-?>
+/*
 	<ol>
 		<li><a href="<?php echo $_base_path; ?>search.php">Search</a></li>
 		<li><a href="<?php echo $_base_path; ?>sitemap.php">Site-Map</a></li>
@@ -29,18 +29,18 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 		<li><a href="<?php echo $_base_path; ?>polls/index.php"><?php echo _AT('polls'); ?></a></li>
 		<li><a href="<?php echo $_base_path; ?>acollab.php">ACollab</a></li>
 	</ol>
-<?php
 
+**/
 	require_once(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
-	
+/*
 	if (!authenticate(AT_PRIV_ANNOUNCEMENTS, AT_PRIV_RETURN) && $_SESSION['enroll'] == AT_ENROLL_NO) {
 		echo '<small> - ';
 		echo '<a href="'.$_base_path.'enroll.php?course='.$_SESSION['course_id'].'">'._AT('enroll').'</a></small>';
 	}
-
+*/
 	/* help for content pages */
 
-	if (defined('AT_SHOW_TEST_BOX') && AT_SHOW_TEST_BOX) {
+	if (FALSE && defined('AT_SHOW_TEST_BOX') && AT_SHOW_TEST_BOX) {
 		// print new available tests
 		
 		$sql	= "SELECT T.test_id, T.title FROM ".TABLE_PREFIX."tests T WHERE T.course_id=$_SESSION[course_id] AND T.start_date<=NOW() AND T.end_date>= NOW() ORDER BY T.start_date, T.title";
@@ -64,77 +64,49 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 		}
 	}
 
-	$sql	= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."news WHERE course_id=$_SESSION[course_id]";
+/* the "home" links: */
+$home_links = get_home_navigation();
+$savant->assign('home_links', $home_links);
+
+
+/* the news announcements: */
+$news = array();
+$num_pages = 1;
+$page = intval($_GET['p']);
+if (!$page) {
+	$page = 1;
+}	
+
+$sql	= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."news WHERE course_id=$_SESSION[course_id]";
+$result = mysql_query($sql, $db);
+
+if ($row = mysql_fetch_assoc($result)) {	
+	$num_results = $row['cnt'];
+	$results_per_page = NUM_ANNOUNCEMENTS;
+	$num_pages = ceil($num_results / $results_per_page);
+
+	$count = (($page-1) * $results_per_page) + 1;
+
+	$offset = ($page-1)*$results_per_page;
+
+	$sql = "SELECT N.* FROM ".TABLE_PREFIX."news N WHERE N.course_id=$_SESSION[course_id] ORDER BY date DESC LIMIT $offset, $results_per_page";
+	
 	$result = mysql_query($sql, $db);
+	while ($row = mysql_fetch_assoc($result)) {
+		/* this can't be cached because it called _AT */
 
-	if ($row = mysql_fetch_assoc($result)) {	
-		$num_results = $row['cnt'];
-		$results_per_page = NUM_ANNOUNCEMENTS;
-		$num_pages = ceil($num_results / $results_per_page);
-		$page = intval($_GET['p']);
-		if (!$page) {
-			$page = 1;
-		}	
-		$count = (($page-1) * $results_per_page) + 1;
-
-		$offset = ($page-1)*$results_per_page;
-
-		$sql = "SELECT N.* FROM ".TABLE_PREFIX."news N WHERE N.course_id=$_SESSION[course_id] ORDER BY date DESC LIMIT $offset, $results_per_page";
+		$news[$row['news_id']] = array(
+						'date'		=> AT_date(	_AT('announcement_date_format'), 
+												$row['date'], 
+												AT_DATE_MYSQL_DATETIME),
+						'title'		=> AT_print($row['title'], 'news.title'),
+						'body'		=> AT_print($row['body'], 'news.body', $row['formatting']));
 	}
+}
 
-	$result = mysql_query($sql, $db);
-	if (mysql_num_rows($result) == 0) {
-		echo '<em>'._AT('no_announcements').'</em>';
-	} else {
-		$news = array();
-		while ($row = mysql_fetch_assoc($result)) {
-			/* this can't be cached because it called _AT */
-
-			$news[$row['news_id']] = array(
-							'date'		=> AT_date(	_AT('announcement_date_format'), 
-													$row['date'], 
-													AT_DATE_MYSQL_DATETIME),
- 							'title'		=> AT_print($row['title'], 'news.title'),
-							'body'		=> AT_print($row['body'], 'news.body', $row['formatting']));
-					
-
-		}
-
-		echo '<table border="0" cellspacing="1" cellpadding="0" width="98%" summary="">';
-		
-		foreach ($news as $news_id => $news_item) {
-			echo '<tr>';
-			echo '<td>';
-			echo '<br /><h4>'.$news_item['title'];
-			/*
-			unset($editors);
-			$editors[] = array('priv' => AT_PRIV_ANNOUNCEMENTS, 'title' => _AT('edit'), 'url' => $_base_path.'editor/edit_news.php?aid='.$news_id);
-			$editors[] = array('priv' => AT_PRIV_ANNOUNCEMENTS, 'title' => _AT('delete'), 'url' => $_base_path.'editor/delete_news.php?aid='.$news_id);
-			print_editor($editors , $large = false);
-			*/
-
-			echo '</h4>';
-
-			echo $news_item['body'];
-
-			echo '<br /><small class="date">'._AT('posted').' '.$news_item['date'].'</small>';
-			echo '</td>';
-			echo '</tr>';
-			echo '<tr><td class="row3" height="1"><img src="'.$_base_path.'images/clr.gif" height="1" width="1" alt="" /></td></tr>';
-		}
-		echo '</table><br />';
-		if($num_pages>1) {
-			echo _AT('page').': | ';
-			for ($i=1; $i<=$num_pages; $i++) {
-				if ($i == $page) {
-					echo '<strong>'.$i.'</strong>';
-				} else {
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?p='.$i.'">'.$i.'</a>';
-				}
-				echo ' | ';
-			}
-		}
-	}
-
+$savant->assign('announcements', $news);
+$savant->assign('num_pages', $num_pages);
+$savant->assign('current_page', $page);
+$savant->display('announcements.tmpl.php');
 
 ?>
