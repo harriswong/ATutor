@@ -194,13 +194,32 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/content/index.php']['title']    = _AT('content');
 	$_pages['tools/content/index.php']['parent']   = 'tools/index.php';
-	$_pages['tools/content/index.php']['children'] = array('tools/content/add.php');
+	$_pages['tools/content/index.php']['children'] = array('tools/content/add.php', 'tools/ims/index.php');
 
 		$_pages['tools/content/add.php']['title']    = _AT('add_content');
 		$_pages['tools/content/add.php']['parent']   = 'tools/content/index.php';
 
 		$_pages['editor/delete_content.php']['title']    = _AT('delete_content');
 		$_pages['editor/delete_content.php']['parent']   = 'tools/content/index.php';
+
+		$_pages['tools/ims/index.php']['title']    = _AT('content_packaging');
+		$_pages['tools/ims/index.php']['parent']   = 'tools/content/index.php';
+
+	$_pages['tools/enrollment/index.php']['title']    = _AT('enrolment');
+	$_pages['tools/enrollment/index.php']['parent']   = 'tools/index.php';
+	$_pages['tools/enrollment/index.php']['children'] = array('tools/enrollment/export_course_list.php', 'tools/enrollment/import_course_list.php', 'tools/enrollment/create_course_list.php', 'tools/enrollment/groups.php');
+
+		$_pages['tools/enrollment/export_course_list.php']['title']    = _AT('list_export_course_list');
+		$_pages['tools/enrollment/export_course_list.php']['parent']   = 'tools/enrollment/index.php';
+
+		$_pages['tools/enrollment/import_course_list.php']['title']    = _AT('list_import_course_list');
+		$_pages['tools/enrollment/import_course_list.php']['parent']   = 'tools/enrollment/index.php';
+
+		$_pages['tools/enrollment/create_course_list.php']['title']    = _AT('list_create_course_list');
+		$_pages['tools/enrollment/create_course_list.php']['parent']   = 'tools/enrollment/index.php';
+
+		$_pages['tools/enrollment/groups.php']['title']    = _AT('groups');
+		$_pages['tools/enrollment/groups.php']['parent']   = 'tools/enrollment/index.php';
 
 	$_pages['tools/backup/index.php']['title']  = _AT('backups');
 	$_pages['tools/backup/index.php']['parent'] = 'tools/index.php';
@@ -225,14 +244,14 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/news/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/news/index.php']['children'] = array('editor/add_news.php');
 
-	$_pages['editor/add_news.php']['title']  = _AT('add_announcement');
-	$_pages['editor/add_news.php']['parent'] = 'tools/news/index.php';
+		$_pages['editor/add_news.php']['title']  = _AT('add_announcement');
+		$_pages['editor/add_news.php']['parent'] = 'tools/news/index.php';
 
-	$_pages['editor/edit_news.php']['title']  = _AT('edit_announcement');
-	$_pages['editor/edit_news.php']['parent'] = 'tools/news/index.php';
+		$_pages['editor/edit_news.php']['title']  = _AT('edit_announcement');
+		$_pages['editor/edit_news.php']['parent'] = 'tools/news/index.php';
 
-	$_pages['editor/delete_news.php']['title']  = _AT('delete_announcement');
-	$_pages['editor/delete_news.php']['parent'] = 'tools/news/index.php';
+		$_pages['editor/delete_news.php']['title']  = _AT('delete_announcement');
+		$_pages['editor/delete_news.php']['parent'] = 'tools/news/index.php';
 
 	$_pages['tools/forums/index.php']['title']  = _AT('forums');
 	$_pages['tools/forums/index.php']['parent'] = 'tools/index.php';

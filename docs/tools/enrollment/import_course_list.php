@@ -110,25 +110,6 @@ function checkUserInfo($record) {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-echo '<h2>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '<img src="images/icons/default/square-large-tools.gif" border="0" vspace="2"  class="menuimageh2" width="42" height="40" alt="" />';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo ' <a href="tools/" class="hide" >'._AT('tools').'</a>';
-}
-echo '</h2>'."\n";
-
-echo '<h3>';
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-	echo '&nbsp;<img src="images/icons/default/enrol_mng-large.gif"  class="menuimageh3" width="42" height="38" alt="" /> ';
-}
-if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-	echo '<a href="tools/enrollment/index.php?course='.$_SESSION['course_id'].'">'._AT('course_enrolment').'</a>';
-}
-echo '</h3><br />'."\n";
-
-
 if ($_POST['submit'] && !$_POST['verify']) {
 	if ($_FILES['file']['size'] < 1) {
 		$msg->addError('FILE_EMPTY');
@@ -161,15 +142,11 @@ if ($_POST['submit'] && !$_POST['verify']) {
 if ($_POST['submit']=='' || $msg_error) {
 	//step one - upload file
 ?>
-	<p align="center"><strong>
-	<a href="tools/enrollment/create_course_list.php"> <?php echo _AT('create_list_manually');  ?></a>	
-	</strong></p>
 	<form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 	<input type="hidden" name="MAX_FILE_SIZE" value="30000" />
 	<input type="hidden" name="course" value="<?php echo $course; ?>" />
 
 	<table align="center" cellspacing="1" cellpadding="0" border="0" class="bodyline" summary="" width="90%">
-	<tr><th class="cyan"><?php echo _AT('list_import_course_list');  ?></th></tr>
 	<tr><td class="row1"><?php echo _AT('list_import_howto'); ?></td></tr>
 	<tr><td height="1" class="row2"></td></tr>
 

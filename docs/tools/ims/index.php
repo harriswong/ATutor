@@ -73,6 +73,10 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 <form method="post" action="tools/ims/ims_export.php">
 <div class="input-form">
 	<div class="row">
+		<h3><?php echo _AT('export_content'); ?></h3>
+	</div>
+
+	<div class="row">
 		<label for="select_cid"><?php echo _AT('export_content_package_what'); ?></label><br />
 		<select name="cid" id="select_cid">
 			<option value="0"><?php echo _AT('export_entire_course_or_chap'); ?></option>
@@ -107,6 +111,10 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 
 <form name="form1" method="post" action="tools/ims/ims_import.php" enctype="multipart/form-data" onsubmit="openWindow('<?php echo $_base_href; ?>tools/prog.php');">
 <div class="input-form">
+	<div class="row">
+		<h3><?php echo _AT('import_content'); ?></h3>
+	</div>
+
 	<div class="row">
 		<label for="select_cid2"><?php echo _AT('import_content_package_where'); ?></label><br />
 		<select name="cid" id="select_cid2">

@@ -35,10 +35,13 @@
 <hr />
 
 <ul>
-	<li><a href="tools/content/index.php">[ Content ]</a></li>
+	<li><a href="tools/content/index.php"><?php echo _AT('content'); ?></a> (add, content packaging)</li>
 	<li><a href="tools/news/index.php"><?php echo _AT('announcements'); ?></a></li>
 	<li><a href="tools/forums/index.php"><?php echo _AT('forums'); ?></a></li>
-	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a>
+	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a></li>
+	<li><a href="tools/backup/index.php"><?php echo _AT('backups'); ?></a></li>
+
+	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrollment'); ?></a> ( send email, enrollment manager, tracker)</li>
 </tr>
 </ul>
 <?php
@@ -171,20 +174,7 @@ if (defined('AC_PATH') && AC_PATH) {
 </tr>
 <?php } ?>
 <?php if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) { ?>
-<tr>
-	<?php
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
-					echo '<td rowspan="2" valign="top"><img src="images/icons/default/package-small.gif" border="0" class="menuimage" width="28" height="25" alt="*" /></td>';
-				}
-				echo '<td>';
-				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1) {
-					echo ' <a href="tools/ims/">'._AT('content_packaging').'</a>';
-				}
-				echo '</td></tr><tr><td>';
-				echo _AT('content_packaging_text');
-			?>
-	</td>
-</tr>
+
 <tr>
 	<?php
 				if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 2) {
