@@ -28,14 +28,23 @@ $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.p
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
 $_pages[AT_NAV_COURSE] = array('index.php');
 
-$sql = "SELECT home_links, main_links FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
-$result = mysql_query($sql, $db);
-if (($row = mysql_fetch_assoc($result)) && $row['home_links'] && $row['main_links']) {
-	//debug($row);
-}
+if ($_SESSION['course_id']) {
+	$sql = "SELECT home_links, main_links FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
+	$result = mysql_query($sql, $db);
+	if (($row = mysql_fetch_assoc($result)) && ($row['home_links'] || $row['main_links'])) {
+		$home_links = explode('|', $row['home_links']);
+		$main_links = explode('|', $row['main_links']);
 
-if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
-	$_pages[AT_NAV_COURSE][] = 'tools/index.php';
+		$_pages[AT_NAV_COURSE] = array_merge($_pages[AT_NAV_COURSE], $main_links);
+	} else {
+		$_pages[AT_NAV_COURSE][] = 'forum/list.php';
+		$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
+
+	}
+
+	if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
+		$_pages[AT_NAV_COURSE][] = 'tools/index.php';
+	}
 }
 
 $_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
