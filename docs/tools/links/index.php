@@ -78,7 +78,7 @@ if (!isset($_GET['cat_parent_id'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="cat_links" value="'view_cat_links'" />
+		<input type="submit" name="cat_links" value="<?php echo _AT('view_cat_links'); ?>" />
 	</div>
 </div>
 </form>
