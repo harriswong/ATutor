@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: question_cats.php 2517 2004-11-25 16:05:18Z heidi $
+// $Id$
 
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
@@ -26,13 +26,6 @@ if (!($result) || !authenticate(AT_PRIV_ENROLLMENT, AT_PRIV_RETURN)) {
 	require (AT_INCLUDE_PATH.'footer.inc.php'); 
 	exit;
 }
-
-
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/index.php';
-$_section[1][0] = _AT('course_enrolment');
-$_section[1][1] = 'tools/enrollment/index.php';
-$_section[2][0] = _AT('groups');
 
 if (isset($_POST['edit'])) {
 	if ($_POST['group']) {
@@ -58,12 +51,6 @@ $msg->addHelp('ENROLLMENT_GROUPS');
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
-
-<div align="center">
-<span class="editorsmallbox">
-	<small><img src="<?php echo $_base_path; ?>images/pen2.gif" border="0" class="menuimage12" alt="<?php echo _AT('editor'); ?>" title="<?php echo _AT('editor'); ?>" height="14" width="16" /> <a href="tools/enrollment/groups_manage.php"><?php echo _AT('add'); ?></a></small>
-</span>
-</div>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
 <table class="data" summary="" rules="cols">

@@ -10,21 +10,13 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: questions.php 2326 2004-11-17 17:50:58Z heidi $
+// $Id$
 
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 authenticate(AT_PRIV_TEST_CREATE);
-
-
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/index.php';
-$_section[1][0] = _AT('course_enrolment');
-$_section[1][1] = 'tools/enrollment/index.php';
-$_section[2][0] = _AT('groups');
-$_section[2][1] = 'tools/enrollment/groups.php';
 
 if ($_REQUEST['gid']) {
 	$_section[3][0] = _AT('edit');
@@ -78,7 +70,7 @@ $msg->printErrors();
 		echo '<input type="hidden" value="'.$_REQUEST['gid'].'" name="gid" />';
 	}
 ?>
-<div class="input-form">
+<div class="input-form" style="width:50%;">
 	<div class="row">
 		<label for="cat"><?php echo _AT('title'); ?></label><br />
 		<input type="text" name="title" id="cat" value="<?php echo $_POST['title']; ?>" />
