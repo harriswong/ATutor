@@ -76,8 +76,8 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" checked="checked" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
 		<?php else: ?>
 			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
-			
 		<?php endif; ?>
+	</td>
 </tr>
 <?php endforeach; ?>
 </tbody>
