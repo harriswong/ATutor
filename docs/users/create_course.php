@@ -43,7 +43,7 @@ $_section[1][1] = 'users/create_course.php';
 
 $title = _AT('create_course');
 
-$course_id = 0;
+$course = 0;
 $isadmin   = FALSE;
 
 if (isset($_POST['cancel'])) {
