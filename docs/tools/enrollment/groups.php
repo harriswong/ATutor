@@ -69,8 +69,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 <table class="data" summary="" rules="cols">
 <thead>
 <tr>
-	<th scope="col">&nbsp;</th>
-	<th scope="col"><?php echo _AT('title');         ?></th>
+	<th scope="col"><?php echo _AT('groups');         ?></th>
 </tr>
 </thead>
 <tfoot>
@@ -89,8 +88,10 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		do {
 ?>
 			<tr onmousedown="document.form['g_<?php echo $row['group_id']; ?>'].checked = true;">
-				<td><input type="radio" id="g_<?php echo $row['group_id']; ?>" name="group" value="<?php echo $row['group_id']; ?>" /></td>
-				<td><label for="g_<?php echo $row['group_id']; ?>"><?php echo $row['title']; ?></label></td>
+				<td>
+					<input type="radio" id="g_<?php echo $row['group_id']; ?>" name="group" value="<?php echo $row['group_id']; ?>" />
+					<label for="g_<?php echo $row['group_id']; ?>"><?php echo $row['title']; ?></label>
+				</td>
 			</tr>
 <?php
 		} while ($row = mysql_fetch_assoc($result));
