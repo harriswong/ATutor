@@ -91,8 +91,7 @@
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-<div class="input-form">
-	<input type="hidden" name="num_terms" value="<?php echo $num_terms; ?>" />
+<input type="hidden" name="num_terms" value="<?php echo $num_terms; ?>" />
 <?php
 	for ($i=0;$i<$num_terms;$i++) {
 		if ($glossary[$word[$i]] != '') {
@@ -111,6 +110,7 @@
 			$word[$i] = ContentManager::cleanOutput($_POST['word'][$i]);
 		}
 ?>
+	<div class="input-form">
 		<div class="row">
 			<label for="title<?php echo $i; ?>"><?php echo _AT('glossary_term');  ?>:</label><br />
 			<input type="text" name="word[<?php echo $i; ?>]" size="30" value="<?php echo trim($word[$i]); ?>" id="title<?php echo $i; ?>" /><?php			

@@ -57,9 +57,9 @@ $msg->printErrors();
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-<div class="input-form">
-	<input type="hidden" name="add_poll" value="true" />
-	
+<input type="hidden" name="add_poll" value="true" />
+
+<div class="input-form">	
 	<div class="row">
 		<label for="question"><?php  echo _AT('question'); ?>:</label><br />
 		<textarea name="question" cols="45" rows="3" id="question"></textarea>

@@ -74,9 +74,9 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 
 ?>
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-	<div class="input-form">
-		<input type="hidden" name="add_news" value="true" />
+	<input type="hidden" name="add_news" value="true" />
 
+	<div class="input-form">
 		<div class="row">
 			<label for="title"><?php echo _AT('title'); ?>:</label><br />
 			<input type="text" name="title" size="40" id="title" />

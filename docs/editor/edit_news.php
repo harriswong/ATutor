@@ -98,10 +98,10 @@ require(AT_INCLUDE_PATH.'html/editor_tabs/news.inc.php');
 
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
-<div class="input-form">
-	<input type="hidden" name="edit_news" value="true">
-	<input type="hidden" name="aid" value="<?php echo $row['news_id']; ?>">
+<input type="hidden" name="edit_news" value="true">
+<input type="hidden" name="aid" value="<?php echo $row['news_id']; ?>">
 
+<div class="input-form">
 	<div class="row">
 		<label for="title"><?php echo _AT('title'); ?>:</label><br />
 		<input type="text" name="title" id="title" value="<?php echo htmlspecialchars(stripslashes($row['title'])); ?>" size="40">

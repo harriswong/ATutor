@@ -79,11 +79,10 @@ $msg->printErrors();
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<input type="hidden" name="edit_poll" value="true" />
+<input type="hidden" name="poll_id" value="<?php echo $row['poll_id']; ?>" />
+
 <div class="input-form">
-	<input type="hidden" name="edit_poll" value="true" />
-	<input type="hidden" name="poll_id" value="<?php echo $row['poll_id']; ?>" />
-
-
 	<div class="row">
 		<label for="question"><?php echo _AT('question'); ?>:</label><br />
 		<textarea name="question" cols="55" rows="3" id="question"><?php echo $row['question']; ?></textarea>

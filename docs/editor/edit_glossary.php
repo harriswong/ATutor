@@ -89,9 +89,9 @@
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
+<input type="hidden" name="gid" value="<?php echo $gid; ?>" />
+
 <div class="input-form">
-	<input type="hidden" name="gid" value="<?php echo $gid; ?>" />
-	
 	<div class="row">
 		<label for="title"><?php echo _AT('glossary_term');  ?>:</label><br/ >
 		<input type="text" name="word" size="40" id="title" value="<?php echo htmlspecialchars(stripslashes($row['word'])); ?>" />
