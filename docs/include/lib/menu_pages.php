@@ -26,9 +26,13 @@ define('AT_NAV_ADMIN',  4);
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
-$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php');
-//$_pages[AT_NAV_COURSE][] = 'links/index.php';
-$_pages[AT_NAV_COURSE][] = 'glossary/index.php';
+$_pages[AT_NAV_COURSE] = array('index.php');
+
+$sql = "SELECT home_links, main_links FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
+$result = mysql_query($sql, $db);
+if (($row = mysql_fetch_assoc($result)) && $row['home_links'] && $row['main_links']) {
+	//debug($row);
+}
 
 if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
 	$_pages[AT_NAV_COURSE][] = 'tools/index.php';
@@ -177,18 +181,18 @@ $_pages['index.php']['parent'] = AT_NAV_COURSE;
 $_pages['tools/index.php']['title']    = _AT('manage');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
-	$_pages['discussions/polls.php']['title']  = _AT('polls');
-	$_pages['discussions/polls.php']['parent'] = 'tools/index.php';
-	$_pages['discussions/polls.php']['children'] = array('editor/add_poll.php');
+	$_pages['tools/polls/index.php']['title']  = _AT('polls');
+	$_pages['tools/polls/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/polls/index.php']['children'] = array('tools/polls/add.php');
 
-		$_pages['editor/add_poll.php']['title']  = _AT('add_poll');
-		$_pages['editor/add_poll.php']['parent'] = 'discussions/polls.php';
+		$_pages['tools/polls/add.php']['title']  = _AT('add_poll');
+		$_pages['tools/polls/add.php']['parent'] = 'tools/polls/index.php';
 
-		$_pages['editor/edit_poll.php']['title']  = _AT('edit_poll');
-		$_pages['editor/edit_poll.php']['parent'] = 'discussions/polls.php';
+		$_pages['tools/polls/edit.php']['title']  = _AT('edit_poll');
+		$_pages['tools/polls/edit.php']['parent'] = 'tools/polls/index.php';
 
-		$_pages['editor/delete_poll.php']['title']  = _AT('delete_poll');
-		$_pages['editor/delete_poll.php']['parent'] = 'discussions/polls.php';
+		$_pages['tools/polls/delete.php']['title']  = _AT('delete_poll');
+		$_pages['tools/polls/delete.php']['parent'] = 'tools/polls/index.php';
 
 
 	$_pages['tools/filemanager/index.php']['title']  = _AT('file_manager');
