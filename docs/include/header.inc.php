@@ -200,16 +200,12 @@ if ($_user_location == 'public') {
 
 	/* course specific elements: */
 	/* != 'public' special case for the about.php page, which is available from a course but hides the content menu */
-	if (($_SESSION['course_id'] > 0) && ($_user_location != 'public')) {
-		/* echo '<div style="float: right;">';
-		require(AT_INCLUDE_PATH.'html/dropdowns.inc.php');
-		echo '</div>'; */
-
+	if ($_SESSION['course_id'] > 0) {
 		$next_prev_links = $contentManager->generateSequenceCrumbs($cid);
 
-		//if ($_SESSION['prefs'][PREF_SEQ] != BOTTOM) {
-		//	echo '<div align="right" id="seqtop">' . $next_prev_links . '</div>';
-	//	}
+		$savant->assign('sequence_links', $next_prev_links);
+	} else {
+		$savant->assign('sequence_links', '');
 	}
 
 	$savant->display('include/header.tmpl.php');

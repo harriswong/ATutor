@@ -644,7 +644,7 @@ div#breadcrumbs {
 	background-color: #FCFCCE;
 	color: black;
 }
-h2#page-title {
+h2.page-title {
 	margin-bottom: 10px;
 	margin-top: 10px;
 	margin-left: 5px;
@@ -920,4 +920,10 @@ div.home-link a {
 
 div.home-link img {
 	border: 0px;
+}
+
+/* sequence links */
+div#sequence-links {
+	float: right;
+	margin-top: 10px;
 }

@@ -12,7 +12,7 @@
 /************************************************************************/
 if (!defined('AT_INCLUDE_PATH')) { exit; } ?>
 
-<div style="width: 60%; margin-left: auto; margin-right: auto; margin-top: -14px;">
+<div style="width: 75%; margin-left: auto; margin-right: auto; margin-top: -14px;">
 <?php foreach ($this->home_links as $link): ?>
 	<div class="home-link">
 		<a href="<?php echo $link['url']; ?>"><img src="<?php echo $link['img']; ?>" width="80" height="80" alt="" /><br /><?php echo $link['title']; ?></a>
@@ -22,6 +22,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; } ?>
 
 <br style="clear: left;" />
 
+<h2 class="page-title"><?php echo _AT('announcements'); ?></h2>
 <?php if ($this->announcements): ?>
 	<?php foreach ($this->announcements as $item): ?>
 		<div class="news">

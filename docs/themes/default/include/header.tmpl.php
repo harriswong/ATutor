@@ -152,27 +152,5 @@ global $system_courses;
 	</div>
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
 
-
-	<!-- div style="float: right">
-	<script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>jscripts/help.js" type="text/javascript"></script><div>
-	<a href="/svn/atutor/redesign/docs/?cid=123;g=7" accesskey="8" title="Previous: 5.7 Accessibility Features Alt-8"><img src="/svn/atutor/redesign/docs/images/previous.gif" class="menuimage" alt="Previous: 5.7 Accessibility Features" border="0" height="25" width="28"></a>  <a href="/svn/atutor/redesign/docs/?cid=117;g=7" accesskey="9" title="Next: 5.1 Register Alt-9"><img src="/svn/atutor/redesign/docs/images/next.gif" class="menuimage" alt="Next: 5.1 Register" border="0" height="25" width="28"></a>&nbsp;&nbsp;
-	</div-->
-	<!--
-	<script type="text/javascript">
-	if (document.getElementById) {
-		document.writeln('<div id=\'toctoggle\'>[<a href="javascript:toggleToc()" class="internal">' +
-		'<span id="showlink" style="display:none;">show</span>' +
-		'<span id="hidelink">hide</span>'
-		+ '</a>]</div>');
-	}
-	</script></div>
-
-	<h3 id="help-title">Help</h3>
-	<div id="help">
-		<p>this is a help message.</p>
-		<p>More help goes here..</p>
-		<p>And here</p>
-	</div>
-	-->
 <a name="content"></a>
 <?php global $msg; $msg->printAll(); ?>
