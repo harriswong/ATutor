@@ -288,14 +288,22 @@ if(authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)){
 if($to_cid) {
 	?>
 	<a name="show_pages"></a>
-	<p>[<a href="<?php echo $_SERVER['PHP_SELF'].'?stats=summary';?>#show_pages"><?php echo _AT('back_to_summary'); ?></a>]</p>
+	<p>
+		[<a href="<?php echo $_SERVER['PHP_SELF'].'?stats=summary';?>#show_pages"><?php echo _AT('back_to_summary'); ?></a>]
+	</p>
 
 	<h3><?php echo _AT('access_stats'); ?>: <?php echo $current['title']; ?></h3>
-	<table border="0" width="90%" class="bodyline" cellspacing="1" cellpadding="0" align="center">
-	<tr><th scope="col"  width="15%"><?php echo _AT('access_method'); ?></th><th scope="col" width="85%"><?php echo _AT('count'); ?></th></tr>
-	<tr><td height="1" class="row2" colspan="2"></td></tr>
-	<?php
 
+
+	<table class="data static" rules="cols" summary="">
+	<thead>
+	<tr>
+		<th scope="col"><?php echo _AT('access_method'); ?></th>
+		<th scope="col"><?php echo _AT('count'); ?></th>
+	</tr>
+	</thead>
+
+<?php
 	//get the number of clicks per g
 	$sql2 = "select
 			g,
@@ -308,21 +316,24 @@ if($to_cid) {
 			course_id='$_SESSION[course_id]'
 		group by
 			 g";
-
-
-
+	
 	if($result2 = mysql_query($sql2, $db)){
-			while($row = mysql_fetch_array($result2)){
-				echo '<tr><td class="row1"><small>';
-				foreach($refs AS $key => $value){
-					if($key==$row["g"]){
-						echo _AT($value);
-					}
+		echo '<tbody>';
+		while($row = mysql_fetch_array($result2)){
+			echo '<tr>';
+			echo '<td>';
+			foreach($refs AS $key => $value){
+				if($key==$row["g"]){
+					echo _AT($value);
 				}
-				echo '</small></td><td class="row1"><img src = "images/bar.gif" height="12" width="'.($row["cnt"]*2).'" alt="" /><small>'.$row["cnt"]."</small></td></tr>\n";	echo '<tr><td height="1" class="row2" colspan="2"></td></tr>';
 			}
+			echo '</td>';
+			echo '<td><img src="images/bar.gif" height="12" width="' . ($row["cnt"]*2) . '" alt="" />' . $row["cnt"] . '</td>';
+			echo '</tr>';
+		}
 
 	}
+	echo '</tbody>';
 	echo '</table>';
 	echo '<br />';
 
@@ -351,9 +362,17 @@ if($to_cid) {
 			echo '<br />';
 			echo '<a name="show_pages"></a>';
 			echo '<h3>'._AT('pages_stats', $current["title"]).'</h3>';
-			echo '<table border="0" width="90%" class="bodyline" cellspacing="1" cellpadding="0" align="center">';
-			echo '<tr><th scope="col" width="">'._AT('access_method').'</th><th scope="col">'._AT('duration_sec').'</th><th scope="col">'._AT('date').'</th><th scope="col">'._AT('student_id').'</th></tr>';
-			echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
+		
+			echo '<table class="data static" rules="cols" summary="">';
+			echo '<thead>';
+			echo '<tr>';
+				echo '<th scope="col">' . _AT('access_method') . '</th>';
+				echo '<th scope="col">' . _AT('duration_sec')  . '</th>';
+				echo '<th scope="col">' . _AT('date')          . '</th>';
+				echo '<th scope="col">' . _AT('student_id')    . '</th>';
+			echo '</tr>';
+			echo '<thead>';			
+			echo '<tbody>';
 			foreach($this_data AS $key => $value){
 				if(!$start_date){
 					$start_date=$pre_time;
@@ -361,27 +380,35 @@ if($to_cid) {
 				$diff = abs($value[t] - $pre_time);
 				if ($diff > 60*45) {
 					$end_date=$value[t];
-					echo '<tr><td colspan="4" bgcolor="#CCCCCC"><small>';
+					echo '<tr>';
+					echo '<td>';
 					if($start_date>0 && $start_date!=$pre_time){
-						echo _AT('session_start').' '.date("F j, Y,  g:i a", $start_date).' '._AT('session_end').' '.date("F j, Y,  g:i a", $pre_time).'     ('._AT('duration').':'.date('i \m\i\n s \s\e\c',($pre_time-$start_date)).')</small></td></tr>';
-					}elseif($value[g]==19){
+						echo _AT('session_start').' '.date("F j, Y,  g:i a", $start_date).' '._AT('session_end').' '.date("F j, Y,  g:i a", $pre_time).'     ('._AT('duration').':'.date('i \m\i\n s \s\e\c',($pre_time-$start_date)).')';
+						
+						echo '</td>';
+						echo '</tr>';
+					}
+					else if($value[g]==19) {
 						//don't do anything if its a logout
-					}else{
+					} 
+					else {
 						echo _AT('invalid_session');
 					}
 					$start_date='';
-				}else{
-					if(!$start_date){
+				}
+
+				else {
+					if (!$start_date) {
 						$start_date=$value[t];
 					}
 				}
 				echo '<tr>';
-				echo '<td class="row1"><small>';
+				echo '<td>';
 				$that_g=$refs[$value['g']];
 				echo _AT($that_g);
-				echo '</small></td>';
-				echo '<td class="row1"><small>';
-				//echo $that_time
+				echo '</td>';
+				echo '<td>';
+
 				if ($diff > 60*45) {
 					echo _AT('na');
 					$session_time='';
@@ -392,17 +419,17 @@ if($to_cid) {
 					$session_time=($session_time+$diff);
 				}
 				$remainder = $diff / 60;
-				echo '</small></td>';
-				echo '<td class="row1"><small>';
+				echo '</td>';
+				echo '<td>';
 				echo $that_date;
-				echo '</small></td>';
-				echo '<td class="row1"><small>'.$this_user[$value['m']].'</small></td>';
+				echo '</td>';
+				echo '<td>'.$this_user[$value['m']].'</td>';
 				echo '</tr>';
-				echo '<tr><td height="1" class="row2" colspan="6"></td></tr>';
 				$that_date=date("M-j-y g:i:s:a", $value[t]);
 				$that_title=$value[title]."&nbsp;";
 				$pre_time = $value['t'];
 			}
+			echo '</tbody>';
 			echo '</table>';
 		}
 	}
@@ -424,27 +451,37 @@ if($_GET['g_id']){
 	echo '<a name="show_pages"></a>';
 	echo '<h3>'._AT('tools_details').' ('._AT($title_refs2[$g_id]).')</h3>';
 	echo '<p>[<a href="'.$_SERVER['PHP_SELF'].'?stats=summary#show_pages">'._AT('back_to_summary'),'</a>]</p>';
-	echo '<table border="0" width="90%" class="bodyline" cellspacing="1" cellpadding="0" align="center">';
-	echo '<tr><th scope="col" width="">'._AT('origin_page').'</th><th scope="col">'._AT('duration_sec').'</th><th scope="col">'._AT('date').'</th><th scope="col">'._AT('student_id').'</th></tr>';
-	echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
+	
+	echo '<table class="data static" rules="cols" summary="">';
+	echo '<thead>';
+	echo '<tr>';
+		echo '<th scope="col">' . _AT('origin_page')  . '</th>';
+		echo '<th scope="col">' . _AT('duration_sec') . '</th>';
+		echo '<th scope="col">' . _AT('date')         . '</th>';
+		echo '<th scope="col">' . _AT('student_id')   . '</th>';
+	echo '</tr>';
+	echo '</thead>';
+
+	echo '<tbody>';
 
 	while ($row=mysql_fetch_array($result13)){
+		echo '<tr>';
+		if ($row['from_cid'] == 0) {
+			echo '<td>'._AT($title_refs2[$row['g']]).'</td>';
+		} 
+		else if ($title_refs[$row['from_cid']] != '') {
+			echo '<td>'.$title_refs[$row['from_cid']].'</td>';
 
-				echo '<tr>';
-				if($row['from_cid'] == 0){
-					echo '<td class="row1"><small>'._AT($title_refs2[$row['g']]).'</small></td>';
-				}else if ($title_refs[$row['from_cid']] != ''){
-					echo '<td class="row1"><small>'.$title_refs[$row['from_cid']].'</small></td>';
+		}
 
-				}
-				if ($title_refs[$row['from_cid']] != '' || $row['from_cid'] == 0){
-				echo '<td class="row1"><small>'.$row['duration'].'</small></td>';
-				echo '<td class="row1"><small>'.date("M-j-y g:i:s:a",$row['t'] ).'</small></td>';
-				echo '<td class="row1"><small>'.$this_user[$row['member_id']].'</small></td>';
-				echo '</tr>';
-				echo '<tr><td height="1" class="row2" colspan="4"></td></tr>';
-				}
+		if ($title_refs[$row['from_cid']] != '' || $row['from_cid'] == 0) {
+			echo '<td>'.$row['duration'].'</td>';
+			echo '<td>'.date("M-j-y g:i:s:a",$row['t'] ).'</td>';
+			echo '<td>'.$this_user[$row['member_id']].'</td>';
+		}
+		echo '</tr>';
 	}
+	echo '</tbody>';
 	echo '</table>';
 }
 
