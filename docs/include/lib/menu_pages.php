@@ -26,7 +26,11 @@ define('AT_NAV_ADMIN',  4);
 
 $_pages[AT_NAV_PUBLIC] = array('registration.php', 'browse.php',        'login.php',             'password_reminder.php');
 $_pages[AT_NAV_START]  = array('users/index.php',  'users/profile.php', 'users/preferences.php', 'users/inbox.php');
-$_pages[AT_NAV_COURSE] = array('index.php',        'tools/index.php',   'forum/list.php',        'resources/links/index.php');
+if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
+	$_pages[AT_NAV_COURSE] = array('index.php',  'forum/list.php',        'resources/links/index.php', 'tools/index.php');
+} else {
+	$_pages[AT_NAV_COURSE] = array('index.php',   'forum/list.php',        'resources/links/index.php');
+}
 $_pages[AT_NAV_ADMIN]  = array('admin/index.php',  'admin/users.php',   'admin/courses.php',     'admin/config_info.php');
 
 /* admin pages */
@@ -167,7 +171,7 @@ $_pages['users/inbox.php']['children'] = array('users/send_message.php');
 $_pages['index.php']['title']  = _AT('announcements');
 $_pages['index.php']['parent'] = AT_NAV_COURSE;
 
-$_pages['tools/index.php']['title']    = _AT('tools');
+$_pages['tools/index.php']['title']    = _AT('manage');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 //$_pages['tools/index.php']['children'] = array('forum/list.php');
 
@@ -217,8 +221,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['tools/delete_course.php']['title']  = _AT('delete_course');
 		$_pages['tools/delete_course.php']['parent'] = 'tools/course_properties.php';
 
-	$_pages['tools/sitemap/index.php']['title']  = _AT('sitemap');
-	$_pages['tools/sitemap/index.php']['parent'] = 'tools/index.php';
+	$_pages['sitemap.php']['title']  = _AT('sitemap');
+	$_pages['sitemap.php']['parent'] = 'index.php';
 
 	$_pages['tools/course_email.php']['title']  = _AT('course_email');
 	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
@@ -383,7 +387,7 @@ $_pages['resources/links/index.php']['title']  = _AT('links');
 $_pages['resources/links/index.php']['parent'] = AT_NAV_COURSE;
 $_pages['resources/links/index.php']['children'] = array('resources/links/add.php');
 
-	$_pages['resources/links/add.php']['title']  = _AT('add_link');
+	$_pages['resources/links/add.php']['title']  = _AT('suggest_link');
 	$_pages['resources/links/add.php']['parent'] = 'resources/links/index.php';
 
 $_pages['editor/edit_content.php']['title']  = _AT('edit_content');

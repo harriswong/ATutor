@@ -14,6 +14,23 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
+?>
+	<ol>
+		<li><a href="<?php echo $_base_path; ?>search.php">Search</a></li>
+		<li><a href="<?php echo $_base_path; ?>sitemap.php">Site-Map</a></li>
+		<li><a href="<?php echo $_base_path; ?>tools/ims/index.php"><?php echo _AT('export_content'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>discussions/achat/"><?php echo _AT('chat'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>links/index.php"><?php echo _AT('links'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>resources/tile/index.php"><?php echo _AT('tile_search'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>glossary/index.php"><?php echo _AT('glossary'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>tools/tracker.php"><?php echo _AT('my_tracker'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>tools/my_tests.php"><?php echo _AT('my_tests'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>forum/list.php"><?php echo _AT('forums'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>discussions/polls.php"><?php echo _AT('polls'); ?></a></li>
+		<li><a href="<?php echo $_base_path; ?>acollab.php">ACollab</a></li>
+	</ol>
+<?php
+
 	require_once(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 	
 	if (!authenticate(AT_PRIV_ANNOUNCEMENTS, AT_PRIV_RETURN) && $_SESSION['enroll'] == AT_ENROLL_NO) {

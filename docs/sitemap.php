@@ -13,13 +13,9 @@
 // $Id$
 
 $page = 'sitemap';
-define('AT_INCLUDE_PATH', '../../include/');
+define('AT_INCLUDE_PATH', 'include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/forums.inc.php');
-
-$_section[0][0] = _AT('tools');
-$_section[0][1] = 'tools/';
-$_section[1][0] = _AT('sitemap');
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
