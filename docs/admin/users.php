@@ -22,7 +22,7 @@ if (isset($_GET['delete'])) {
 	header('Location: admin_delete.php?id='.$_GET['id']);
 	exit;
 } else if (isset($_GET['profile'])) {
-	header('Location: profile.php?member_id='.$_GET['id']);
+	header('Location: profile.php?id='.$_GET['id']);
 	exit;
 }
 
@@ -83,12 +83,10 @@ if (($row = mysql_fetch_array($result))==0) {
 ?>
 
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table summary="" class="data" rules="cols" align="center">
+<table summary="" class="data" rules="cols" align="center" style="width: 90%;">
 <thead>
 <tr>
 	<th scope="col">&nbsp;</th>
-
-	<th scope="col"><a name="list"></a><small<?php echo $highlight_member_id; ?>><?php echo _AT('id'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=member_id<?php echo SEP; ?>order=asc#list" title="<?php echo _AT('id_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('id_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=member_id<?php echo SEP; ?>order=desc#list" title="<?php echo _AT('id_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('id_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
 
 	<th scope="col"><small<?php echo $highlight_login; ?>><?php echo _AT('username'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=asc#list" title="<?php echo _AT('username_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('username_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=login<?php echo SEP; ?>order=desc#list" title="<?php echo _AT('username_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('username_descending'); ?>" border="0" height="7" width="11" /></a></small></th>
 
@@ -103,7 +101,7 @@ if (($row = mysql_fetch_array($result))==0) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="7"><input type="submit" name="delete" value="Delete" /> <input type="submit" name="profile" value="View Profile" /></td>
+	<td colspan="6"><input type="submit" name="delete" value="Delete" /> <input type="submit" name="profile" value="View Profile" /></td>
 </tr>
 </tfoot>
 <tbody>
@@ -116,7 +114,6 @@ if (($row = mysql_fetch_array($result))==0) {
 	while ($row = mysql_fetch_assoc($result)) : ?>
 		<tr onmousedown="document.form['m<?php echo $row['member_id']; ?>'].checked = true;">
 			<td><input type="radio" name="id" value="<?php echo $row['member_id']; ?>" id="m<?php echo $row['member_id']; ?>"></td>
-			<td><?php echo $row['member_id']; ?></td>
 			<td><?php echo $row['login']; ?></td>
 			<td><?php echo AT_print($row['first_name'], 'members.first_name'); ?></td>
 			<td><?php echo AT_print($row['last_name'], 'members.last_name'); ?></td>

@@ -23,7 +23,7 @@ $msg->printAll();
 
 echo '<h3>' . _AT('profile') . '</h3>';
 
-$thismember_id = intval($_GET['member_id']);
+$thismember_id = intval($_GET['id']);
 
 $sql	= "SELECT * FROM ".TABLE_PREFIX."members WHERE member_id=$thismember_id";
 $result	= mysql_query($sql, $db);
@@ -131,7 +131,7 @@ if(isset($warnings)){ print_warnings($warnings); }
 	<td class="row1"><?php  echo _AT('status'); ?>:</td>
 	<td class="row1"><a href="admin/admin_edit.php?id=<?php echo $row['member_id']; ?>"><?php
 		if ($row['status']) {
-			echo _AT('instructor').'</a>,  <a href="admin/courses.php?member_id='.$row['member_id'].'">'. _AT('view_courses_taught') .'</a>';
+			echo _AT('instructor').'</a>,  <a href="admin/courses.php?id='.$row['member_id'].'">'. _AT('view_courses_taught') .'</a>';
 		} else {
 			echo _AT('student1').'</a>';
 		}

@@ -946,6 +946,12 @@ table.data tbody {
 	background-color: #fdfdfd;
 }
 
+table.data tbody th {
+	text-align: left;
+	background-color: #fdfdfd;
+	cursor: auto;
+}
+
 table.data td {
 	padding: 3px;
 }
