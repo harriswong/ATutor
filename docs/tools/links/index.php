@@ -102,7 +102,7 @@ if (!isset($_GET['cat_parent_id'])) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="3"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /> <input type="submit" name="view" value="<?php echo _AT('view'); ?>" /></td>
+	<td colspan="6"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /> <input type="submit" name="view" value="<?php echo _AT('view'); ?>" /></td>
 </tr>
 </tfoot>
 <tbody>
@@ -139,9 +139,6 @@ if (!isset($_GET['cat_parent_id'])) {
 						} ?></td>
 				<td align="center"><?php echo $row['hits']; ?></td>
 			</tr>
-
-			<input type="hidden" name="url[<?php echo $row['LinkID']; ?>]" value="<?php echo $row['Url']; ?>" />
-
 <?php 
 		} while ($row = mysql_fetch_assoc($result));					
 } else {
