@@ -25,7 +25,7 @@ $sql	= "SELECT status FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[mem
 $result = mysql_query($sql, $db);
 $row	= mysql_fetch_assoc($result);
 
-if ($row['status'] != 1) {
+/*if ($row['status'] != 1) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$msg->addError('CREATE_NOPERM');
@@ -33,7 +33,7 @@ if ($row['status'] != 1) {
 
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
-}
+}*/
 
 $_section[0][0] = _AT('my_courses');
 $_section[0][1] = 'users/index.php';
@@ -68,7 +68,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printAll();
 
-echo '<br>';
+//echo '<br />';
 require(AT_INCLUDE_PATH.'html/course_properties.inc.php');
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

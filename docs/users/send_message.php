@@ -135,7 +135,7 @@ if ($reply_to) {
 		<?php
 			if ($_GET['reply'] == '') {
 				//echo '<small class="spacer">'._AT('same_course_users').'</small><br />';
-				$sql	= "SELECT DISTINCT M.* FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a')ORDER BY M.login";
+				$sql	= "SELECT DISTINCT M.* FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a') ORDER BY M.login";
 
 				$result = mysql_query($sql, $db);
 				$row	= mysql_fetch_assoc($result);
