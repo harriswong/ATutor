@@ -28,7 +28,10 @@ $SITE_URL = 'resources/links/index.php';
 $FULL_ADMIN_ACCESS = true;		// True to allow admin to create categories
 $TOP_CAT_NAME = _AT('newest_links');			// Name of the top "category"
 
+require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
 
+global $savant;
+$msg =& new Message($savant);
 
 if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
 	$ADMIN_MODE = true;
@@ -37,8 +40,7 @@ if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]
 // Open the database
 $db2 = new MySQL;
 if(!$db2->init()) {
-	$errors[]=AT_ERROR_NO_DB_CONNECT;
-	print_errors($errors);
+	$msg->printErrors('NO_DB_CONNECT');
 	exit;
 }
 
@@ -137,18 +139,21 @@ function start_page($CatID="",$title="",$msg="")
 		print_feedback($msg);
 	}
 
-	print_warnings($warnings);
+	$msg->printWarnings();
 
 	if (authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN) && !$_SESSION['prefs'][PREF_EDIT]) {
-		$help[] = array(AT_HELP_ENABLE_EDITOR, $_my_uri);
+		$help = array('ENABLE_EDITOR', $_my_uri);
+		$msg->addHelp($help);
 	}
 
   	if(authenticate(AT_PRIV_LINKS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
-		$help[] = AT_HELP_CREATE_LINKS;
+		$msg->addHelp('CREATE_LINKS');
 	}
-	$help[] = AT_HELP_CREATE_LINKS1;
+	
+	$msg->addHelp('CREATE_LINKS1');
 
-	print_help($help);
+	$msg->printHelps();
+
 	echo '<p><strong><em>'._AT('links_windows').'</em></strong></p>';
 
 	print '<center><form action="'.$_SERVER['PHP_SELF'].'" method="post">';
@@ -436,10 +441,10 @@ function show_add_link($add = "NULL", $CatName = "unknown")
 	global $FULL_ADMIN_ACCESS;
 	global $UserName;		// Cookie
 	global $UserEmail;		// Cookie
-
-	$help[] = AT_HELP_ADD_RESOURCE;
-	$help[] = AT_HELP_ADD_RESOURCE1;
-	print_help($help);
+0
+	$msg->addHelp('ADD_RESOURCE'):
+	$msg->addHelp('ADD_RESOURCE1');
+	$msg->printHelps();
 	?><h3><?php echo _AT('add_link_in'); ?> <?php echo $CatName ?>:</h3>
 
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">

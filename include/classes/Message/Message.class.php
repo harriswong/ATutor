@@ -79,8 +79,10 @@ class Message {
 		
 		$payload =& $_SESSION['message'][$type];
 		
+		$_result = array();
+		 
 		foreach($payload as $e => $item) {
-			$result = array(); // lets build up all the elements of $item by translating everything piece by piece
+			$result = '';
 			
 			// $item is either just a code or an array of argument with a particular code
 			if (is_array($item)) {
@@ -98,13 +100,18 @@ class Message {
 				$result = vsprintf($result, $terms);
 				
 			} else {
+
 				$result = _AT($item);
 				if ($result == '') // if the code is not in the db lets just print out the code for easier trackdown
 					$result = '[' . $item . ']';
 			}
 			
-			$this->savant->assign('item', $result);	// pass translated payload to savant var for processing
-			
+			array_push($_result, $result); // append to array
+		}
+		
+		if (count($_result) > 0) {
+			$this->savant->assign('item', $_result);	// pass translated payload to savant var for processing
+				
 			if ($type == 'help') { // special case for help message, we need to check a few conditions
 				$a = (!isset($_GET['e']) && !$_SESSION['prefs']['PREF_HELP'] && !$_GET['h']);
 				$b = ($_SESSION['prefs']['PREF_CONTENT_ICONS'] == 2);
@@ -116,7 +123,7 @@ class Message {
 				$this->savant->assign('c', $c);
 				$this->savant->assign('d', $d);
 			}
-			
+		
 			$this->savant->display($this->tmpl[$type]);
 		}
 

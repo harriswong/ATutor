@@ -29,9 +29,9 @@ if (isset($_POST['cancel'])) {
 	exit;
 } else if (isset($_POST['course_id'])) {
 	require(AT_INCLUDE_PATH.'lib/course.inc.php');
-	add_update_course($_POST, TRUE);
+	$errors = add_update_course($_POST, TRUE);
 
-	if (!$msg->containsErrors()) {
+	if (is_numeric($errors)) {
 		if ($_REQUEST['show_courses']!="") {
 			
 			// feedback added inside add_update_course

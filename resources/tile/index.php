@@ -68,7 +68,12 @@ if ($_SESSION['prefs'][PREF_CONTENT_ICONS] != 1 && $_SESSION['prefs'][PREF_CONTE
 	echo '<h3>'._AT('tile_search').'</h3>';
 }
 
-require(AT_INCLUDE_PATH.'html/feedback.inc.php'); 
+require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
+
+global $savant;
+$msg =& new Message($savant);
+
+$msg->printAll();
 
 ?>
 <br />
@@ -119,8 +124,8 @@ if (isset($_GET['query'])) {
 	if ($err) {
 		// Display the error
 
-		$errors[] = AT_ERRORS_TILE_UNAVAILABLE;
-		require(AT_INCLUDE_PATH.'html/feedback.inc.php');
+		$msg->addError('TILE_UNAVAILABLE');
+		$msg->printAll();
 
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;

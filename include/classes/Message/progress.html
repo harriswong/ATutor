@@ -5,8 +5,20 @@ Jacek Materna<br/>
 TODO:<br/>
 Implement popup_help messages into messaging system and update those<br/>
 See line 96: /include/html/editor_tabs/accessibility.inc.php<br/>
-Achat conversion
-Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes
+/discussions/Achat conversion
+print_popup_help calls (alot in /themes
+install section
+/resources/links/index.php line 135, printfeedbakcs, $msg is not a prefixed lang code
+The system cannot handle this. Contents of $msg must be translated to lang codes
+i.e $msg = _AT('suggestion_submitted_approval'); Must be a lang code
+
+FileManager related files
+
+Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes<br/>
+ - /help/contact_instructor.php<br/>
+ - /users/private_enroll.php<br/>
+
+
 <h3>Files converted to new Message system</h3>
 
 /tools/take_test.php<br/>
@@ -55,6 +67,9 @@ Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes
 /admin/backup/restore.php<br/>
 /login.php<br/>
 /templates/login.tmpl.php<br/>
+/templates/password_reminder_feedback.tmpl.php<br/>
+/templates/password_reminder.tmpl.php<br/>
+/templates/registration.tmpl.php<br/>
 /admin/admin_delete.php<br/>
 /admin/admin_deny.php<br/>
 /admin/admin_edit.php<br/>
@@ -114,5 +129,27 @@ Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes
 /forum/stick.php<br/>
 /forum/subscribe.php<br/>
 /forum/view.php<br/>
-
+/help/about_help.php<br/>
+/help/contact_admin.php<br/>
+/help/contact_instrctor.php<br/>
+/index.php<br/>
+/logout.php<br/>
+/password_reminder.php<br/>
+/registration.php<br/>
+/resources/links/delete_cat.php<br/>
+/resources/links/edit_cat.php<br/>
+/resources/links/index.php<br/>
+/resources/tile/index.php<br/>
+/users/browse.php<br/>
+/users/contact_instructor.php<br/>
+/users/course_properties.php<br/>
+/users/course_stats.php<br/>
+/users/create_course.php<br/>
+/users/delete_course.php<br/>
+/users/edit.php<br/>
+/users/inbox.php<br/>
+/users/index.php<br/>
+/users/preferences.php<br/>
+/users/private_enrol.php<br/>
+/users/remove_course.php<br/>
 </body></html>
