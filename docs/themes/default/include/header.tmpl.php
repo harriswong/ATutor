@@ -234,7 +234,6 @@ $_current_sub_level_page = get_current_sub_navigation_page($current_page);
 $_path = get_path($current_page);
 $_path = array_reverse($_path);
 
-
 $_page_title = $_pages[$current_page]['title'];
 
 if (!$_SESSION['valid_user']) {
@@ -242,7 +241,7 @@ if (!$_SESSION['valid_user']) {
 } else if ($_SESSION['course_id'] < 0) {
 	$_section_title = 'Administration';
 } else if (!$_SESSION['course_id']) {
-	$_section_title = 'My Start Page';
+	$_section_title = _AT('my_start_page');
 } else {
 	$_section_title = $_SESSION['course_title'];
 }
@@ -267,8 +266,7 @@ if (!$_SESSION['valid_user']) {
 </head>
 <body <?php echo $this->tmpl_onload; ?>><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->tmpl_base_path; ?>overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
-<script>
-
+<script language="JavaScript">
 function toggleToc() {
 	//var tocmain = document.getElementById('help');
 	var toc = document.getElementById('help');
@@ -296,8 +294,9 @@ function toggleToc() {
 }
 
 </script>
-<div id="search-help-links">
-	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a><br />
+<h1 id="section"><?php echo $_section_title; ?></h1>
+<div align="right">
+	<a href="<?php echo $this->tmpl_base_path; ?>search.php">Search</a> | <a href="">Help</a> | <a href="<?php echo $this->tmpl_base_path; ?>logout.php"><?php echo _AT('logout'); ?></a><br />
 	<form method="post" action="<?php echo $this->tmpl_base_path; ?>bounce.php?p=<?php echo urlencode($this->tmpl_rel_url); ?>" target="_top">
 		<label for="jumpmenu" accesskey="j"></label>
 			<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  ALT-j">							
@@ -317,11 +316,9 @@ function toggleToc() {
 
 </div>
 
-<?php if ($_SESSION['course_id']): ?>
+<?php if ($_SESSION['course_id'] > 0): ?>
 	<a href="<?php echo $_base_path; ?>bounce.php?course=0" id="my-start-page">[x] Back to My Start Page</a>
 <?php endif; ?>
-
-<h1><?php echo $_section_title; ?></h1>
 
 <div id="breadcrumbs">
 	<?php echo $_section_title; ?> : <?php foreach ($_path as $page): ?>
