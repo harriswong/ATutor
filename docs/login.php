@@ -87,6 +87,8 @@ if (isset($this_login, $this_password)) {
 			setcookie('ATLogin', $this_login, $cookie_expire, $parts['path'], $parts['host'], 0);
 			setcookie('ATPass',  $row['pass'],  $cookie_expire, $parts['path'], $parts['host'], 0);
 		}
+
+		$msg->addFeedback('LOGIN_SUCCESS');
 		header('Location: bounce.php?course='.$_POST['form_course_id']);
 		exit;
 	} else {
