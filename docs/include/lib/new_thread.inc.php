@@ -36,42 +36,36 @@ if ($_POST['submit']) {
 
 ?>
 <form action="forum/new_thread.php" method="post" name="form">
+<input name="parent_id" type="hidden" value="<?php echo $parent_id; ?>" />
+<input name="fid" type="hidden" value="<?php echo $fid; ?>" />
+<input name="reply" type="hidden" value="<?php echo $_GET['reply']; ?>" />
+<input name="page" type="hidden" value="<?php echo $_GET['page']; ?>" />
+<input name="parent_name" type="hidden" value="<?php echo urlencode($parent_name); ?>" />
+
+<a name="post"></a>
+
 <div class="input-form">
-	<input name="parent_id" type="hidden" value="<?php echo $parent_id; ?>" />
-	<input name="fid" type="hidden" value="<?php echo $fid; ?>" />
-	<input name="reply" type="hidden" value="<?php echo $_GET['reply']; ?>" />
-	<input name="page" type="hidden" value="<?php echo $_GET['page']; ?>" />
-	<input name="parent_name" type="hidden" value="<?php echo urlencode($parent_name); ?>" />
-
-	<a name="post"></a>
-
 	<div class="row">
-		<label for="subject"><?php echo _AT('subject'); ?>:</label><br />
-		<input maxlength="80" name="subject" size="36" value="<?php echo stripslashes(htmlspecialchars($subject)); ?>" id="subject" />
+		<label for="subject"><?php echo _AT('subject'); ?></label><br />
+		<input type="text" maxlength="80" name="subject" size="36" value="<?php echo stripslashes(htmlspecialchars($subject)); ?>" id="subject" />
 	</div>
 
 	<div class="row">
-		<label for="body"><?php echo _AT('body'); ?>:</label><br />
+		<label for="body"><?php echo _AT('body'); ?></label><br />
 		<textarea cols="45" name="body" rows="10" id="body"><?php echo $body; ?></textarea>
-	</div>
 
 		<small class="spacer">&middot; <?php echo _AT('forum_links'); ?><br />
 		&middot; <?php echo _AT('forum_email_links'); ?><br />
 		&middot; <?php echo _AT('forum_html_disabled'); ?></small>
-
-
-
-<?php
-	if ($_GET['reply']) {
-?>
-	<div class="row">
-		<label for="body"><?php echo _AT('forum_reply_to'); ?>:</label><br />
-		<textarea cols="45" name="replytext" rows="5"><?php echo $saved_post['body']; ?></textarea>
 	</div>
 
-<?php
-	} /* end if ($_GET['reply']) */
-?>
+	<?php if ($_GET['reply']): ?>
+		<div class="row">
+			<label for="body"><?php echo _AT('forum_reply_to'); ?></label><br />
+			<textarea cols="45" name="replytext" rows="5"><?php echo $saved_post['body']; ?></textarea>
+		</div>
+
+	<?php endif; ?>
 
 	<div class="row">
 		<a name="jumpcodes"></a>
@@ -92,11 +86,9 @@ if ($_POST['submit']) {
 
 	<div class="row buttons">
 		<input name="submit" accesskey="s" type="submit" value=" <?php echo _AT('post'); ?>" />
-<?php 
-		if ($new_thread == TRUE) {
-			echo '<input name="cancel" type="submit" value="' . _AT('cancel') .'" />';
-		}
-?>
+		<?php if ($new_thread == TRUE) : ?>
+			<input name="cancel" type="submit" value="<?php echo _AT('cancel'); ?>" />
+		<?php endif; ?>
 	</div>
 </div>
 </form>

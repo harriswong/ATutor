@@ -22,13 +22,11 @@ $_section[1][1] = 'forum/list.php';
 
 require_once(AT_INCLUDE_PATH.'lib/forums.inc.php');
 require (AT_INCLUDE_PATH.'header.inc.php');
-
+/*
 $msg->addHelp('SHARED_FORUMS');
 $msg->addHelp('SUBSCRIBE_FORUMS');
 $msg->printHelps();
-
-$msg->printAll(); // print everything but the Helps which were printed first, above
-
+*/
 ?>
 <table class="data static" summary="" rules="groups">
 <thead>

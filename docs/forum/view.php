@@ -29,6 +29,16 @@ if (!valid_forum_user($fid)) {
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 }
 
+$_pages['forum/index.php?fid='.$fid]['title']    = get_forum_name($fid);
+$_pages['forum/index.php?fid='.$fid]['parent']   = 'forum/list.php';
+$_pages['forum/index.php?fid='.$fid]['children'] = array('forum/new_thread.php?fid='.$fid);
+
+$_pages['forum/new_thread.php?fid='.$fid]['title']  = _AT('new_thread');
+$_pages['forum/new_thread.php?fid='.$fid]['parent'] = 'forum/index.php?fid='.$fid;
+
+$_pages['forum/view.php']['parent'] = 'forum/index.php?fid='.$fid;
+
+/*
 $_section[0][0] = _AT('discussions');
 $_section[0][1] = 'discussions/';
 $_section[1][0] = _AT('forums');
@@ -36,7 +46,7 @@ $_section[1][1] = 'forum/list.php';
 $_section[2][0] = get_forum_name($fid);
 $_section[2][1] = 'forum/index.php?fid='.$_GET['fid'];
 $_section[3][0] = _AT('view_post');
-
+*/
 
 function print_entry($row) {
 	global $page;
@@ -67,13 +77,11 @@ function print_entry($row) {
 	echo '</p>';
 	echo '</td>';
 	echo '</tr>';
-	echo '<tr><td height="1" class="row2" colspan="'.$colspan.'"></td></tr>';
 }
 
 if ($_REQUEST['reply']) {
 	$onload = 'onload="document.form.subject.focus()"';
 }
-require(AT_INCLUDE_PATH.'header.inc.php');
 
 $pid = intval($_GET['pid']);
 
@@ -91,7 +99,18 @@ $start = ($page-1)*$num_per_page;
 $sql	= "SELECT * FROM ".TABLE_PREFIX."forums_threads WHERE post_id=$pid AND forum_id=$fid";
 $result	= mysql_query($sql, $db);
 
-if ($row = mysql_fetch_array($result)) {
+if (!($post_row = mysql_fetch_array($result))) {
+	require(AT_INCLUDE_PATH.'header.inc.php');
+	$_pages['forum/view.php']['title']  = _AT('no_post');
+
+	echo _AT('no_post');
+	require(AT_INCLUDE_PATH.'footer.inc.php');
+	exit;
+}
+
+$_pages['forum/view.php']['title']  = $post_row['subject'];
+
+require(AT_INCLUDE_PATH.'header.inc.php');
 
 	/**
 	* Jacek M.
@@ -109,26 +128,18 @@ if ($row = mysql_fetch_array($result)) {
 		}
 	}
 	
-	$num_threads = $row['num_comments']+1;
+	$num_threads = $post_row['num_comments']+1;
 	$num_pages = ceil($num_threads/$num_per_page);
-	$locked = $row['locked'];
+	$locked = $post_row['locked'];
 	if ($locked == 1) {
 		echo '<p><b>'._AT('lock_no_read1').'</b></p>';
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
 
-	echo '<h2>'.AT_Print($row['subject'], 'forums_threads.subject');
-	echo ' - <a href="forum/view.php?fid='.$row['forum_id'].SEP.'pid='.$pid;
-	echo SEP.'page='.$page.SEP.'g=34#post">'._AT('reply').'</a>';
+	$parent_name = $post_row['subject'];
 
-	echo '</h2>';
-
-	$parent_name = $row['subject'];
-
-
-	echo '<table border="0" cellpadding="0" cellspacing="1" width="97%" class="bodyline" align="center" summary="">';
-	echo '<tr><th class="cyan">'._AT('thread_messages').'</th></tr>';
+	echo '<table class="data static" summary="" rules="rows">';
 	echo '<tr>';
 	echo '<td class="row1" align="right">'._AT('page').': ';
 	for ($i=1; $i<=$num_pages; $i++) {
@@ -144,14 +155,12 @@ if ($row = mysql_fetch_array($result)) {
 	}
 	echo '</td>';
 	echo '</tr>';
-	echo '<tr><td height="1" class="row2"></td></tr>';
-	echo '<tr><td height="1" class="row2"></td></tr>';
 	
 	if ($page == 1) {
-		print_entry($row);
-		$subject   = $row['subject'];
-		if ($_GET['reply'] == $row['post_id']) {
-			$saved_post = $row;
+		print_entry($post_row);
+		$subject   = $post_row['subject'];
+		if ($_GET['reply'] == $post_row['post_id']) {
+			$saved_post = $post_row;
 		}
 		$num_per_page--;
 	} else {
@@ -167,7 +176,6 @@ if ($row = mysql_fetch_array($result)) {
 			$saved_post = $row;
 		}
 	}
-	echo '<tr><td height="1" class="row2"></td></tr>';
 	echo '<tr>';
 	echo '<td class="row1" align="right">'._AT('page').': ';
 	for ($i=1; $i<=$num_pages; $i++) {
@@ -209,9 +217,6 @@ if ($row = mysql_fetch_array($result)) {
 	} else {
 		echo '<p><b>'._AT('lock_no_post1').'</b></p>';
 	}
-} else {
-	echo _AT('no_post');
-}
 
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

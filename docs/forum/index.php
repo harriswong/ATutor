@@ -30,13 +30,12 @@ if (!valid_forum_user($fid)) {
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 }
 
-$_section[0][0] = _AT('discussions');
-$_section[0][1] = 'discussions/';
-$_section[1][0] = _AT('forums');
-$_section[1][1] = 'forum/list.php';
-$_section[2][0] = AT_print(get_forum_name($fid), 'forums.title');
-$_section[2][1] = 'forum/';
+$_pages['forum/index.php']['title']    = get_forum_name($fid);
+$_pages['forum/index.php']['parent']   = 'forum/list.php';
+$_pages['forum/index.php']['children'] = array('forum/new_thread.php?fid='.$fid);
 
+$_pages['forum/new_thread.php?fid='.$fid]['title']  = _AT('new_thread');
+$_pages['forum/new_thread.php?fid='.$fid]['parent'] = 'forum/index.php';
 
 /* the last accessed field */
 $last_accessed = array();
@@ -49,11 +48,12 @@ if ($_SESSION['valid_user'] && $_SESSION['enroll']) {
 		$last_accessed[$post_id] = $row;
 	}
 }
-
+/*
 if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN) && $_SESSION['prefs'][PREF_EDIT]) {
 	$msg->addHelp('FORUM_STICKY');
 	$msg->addHelp('FORUM_LOCK');
 }
+*/
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 

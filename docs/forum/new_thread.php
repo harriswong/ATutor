@@ -18,6 +18,14 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 $fid = intval($_REQUEST['fid']);
 $_POST['parent_id'] = intval($_REQUEST['parent_id']);
 
+$_pages['forum/index.php?fid='.$fid]['title']    = get_forum_name($fid);
+$_pages['forum/index.php?fid='.$fid]['parent']   = 'forum/list.php';
+$_pages['forum/index.php?fid='.$fid]['children'] = array('forum/new_thread.php');
+
+$_pages['forum/new_thread.php']['title']  = _AT('new_thread');
+$_pages['forum/new_thread.php']['parent'] = 'forum/index.php?fid='.$fid;
+
+/*
 $_section[0][0] = _AT('discussions');
 $_section[0][1] = 'discussions/';
 $_section[1][0] = _AT('forums');
@@ -25,6 +33,7 @@ $_section[1][1] = 'forum/list.php';
 $_section[2][0] = get_forum_name($fid);
 $_section[2][1] = 'forum/index.php?fid='.$fid;
 $_section[3][0] = _AT('new_thread');
+*/
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');

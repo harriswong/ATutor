@@ -40,8 +40,8 @@ $sql	= "SELECT *, last_comment + 0 AS stamp FROM ".TABLE_PREFIX."forums_threads 
 $result	= mysql_query($sql, $db);
 
 if ($row = mysql_fetch_assoc($result)) {
-	echo '<table cellspacing="1" cellpadding="0" border="0" class="bodyline" width="98%" align="center" summary="">';
-	echo '<tr><th class="cyan" colspan="5">'._AT('forum_threads').'</th></tr>';
+	echo '<table class="data static" summary="" rules="cols">';
+	echo '<thead>';
 	echo '<tr>';
 	echo '<th class="cat">'._AT('topic').' <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'fid='.$fid.SEP.'order=asc#list" title="'._AT('id_ascending').'"><img src="images/asc.gif" alt="'._AT('id_ascending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a> <a href="'.$_SERVER['PHP_SELF'].'?col=subject'.SEP.'order=desc'.SEP.'fid='.$fid.'#list" title="'._AT('id_descending').'"><img src="images/desc.gif" alt="'._AT('id_descending').'" style="height:0.50em; width:0.83em" border="0" height="7" width="11" /></a></th>';
 
@@ -58,6 +58,7 @@ if ($row = mysql_fetch_assoc($result)) {
 	}
 
 	echo '</tr>';
+	echo '</thead>';
 	echo '<tr>';
 	echo '<td class="row1" colspan="'.$colspan.'" align="right">'._AT('page').': ';
 
@@ -75,8 +76,6 @@ if ($row = mysql_fetch_assoc($result)) {
 	
 	echo '</td>';
 	echo '</tr>';
-	echo '<tr><td height="1" class="row2" colspan="5"></td></tr>';
-	echo '<tr><td height="1" class="row2" colspan="'.$colspan.'"></td></tr>';
 
 	$current_thread = $row['thread_id'];
 	do {
@@ -162,11 +161,9 @@ if ($row = mysql_fetch_assoc($result)) {
 			echo '</td>';
 		}
 		echo '</tr>';
-		echo '<tr><td height="1" class="row2" colspan="'.$colspan.'"></td></tr>';
 
 	} while ($row = mysql_fetch_assoc($result));
 
-	echo '<tr><td height="1" class="row2" colspan="'.$colspan.'"></td></tr>';
 	echo '<tr>';
 	echo '<td class="row1" colspan="'.$colspan.'" align="right">'._AT('page').': ';
 

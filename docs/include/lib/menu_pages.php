@@ -331,12 +331,10 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 
+	/*
 	$_pages['forum/index.php']['title']  = 'forum_name';
 	$_pages['forum/index.php']['parent'] = 'forum/list.php';
-
-	$_pages['forum/view.php']['title']  = 'thread_name';
-	$_pages['forum/view.php']['parent'] = 'forum/index.php';
-
+	*/
 
 $_pages['resources/links/index.php']['title']  = _AT('links');
 $_pages['resources/links/index.php']['parent'] = AT_NAV_COURSE;
