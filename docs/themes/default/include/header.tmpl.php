@@ -151,6 +151,21 @@ $_pages['tools/index.php']['title']    = _AT('tools');
 $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 //$_pages['tools/index.php']['children'] = array('forum/list.php');
 
+	$_pages['tools/news/index.php']['title']  = _AT('announcements');
+	$_pages['tools/news/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/news/index.php']['children'] = array('editor/add_news.php');
+
+	$_pages['editor/add_news.php']['title']  = _AT('add_announcement');
+	$_pages['editor/add_news.php']['parent'] = 'tools/news/index.php';
+
+	$_pages['tools/forums/index.php']['title']  = _AT('forums');
+	$_pages['tools/forums/index.php']['parent'] = 'tools/index.php';
+	$_pages['tools/forums/index.php']['children'] = array('editor/add_forum.php');
+
+	$_pages['editor/add_forum.php']['title']  = _AT('add_forum');
+	$_pages['editor/add_forum.php']['parent'] = 'tools/forums/index.php';
+
+
 $_pages['forum/list.php']['title']  = _AT('forums');
 $_pages['forum/list.php']['parent'] = AT_NAV_COURSE;
 
