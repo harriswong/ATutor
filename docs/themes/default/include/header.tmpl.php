@@ -94,6 +94,10 @@ $_pages['admin/courses.php']['children']   = array('admin/create_course.php', 'a
 
 	$_pages['admin/course_categories.php']['title']    = _AT('cats_categories');
 	$_pages['admin/course_categories.php']['parent']   = 'admin/courses.php';
+	$_pages['admin/course_categories.php']['children'] = array('admin/create_category.php');
+
+		$_pages['admin/create_category.php']['title']    = _AT('create_category');
+		$_pages['admin/create_category.php']['parent']   = 'admin/course_categories.php';
 
 $_pages['admin/config_info.php']['title']    = _AT('configuration');
 $_pages['admin/config_info.php']['parent']   = AT_NAV_ADMIN;
