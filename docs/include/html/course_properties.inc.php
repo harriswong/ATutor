@@ -41,6 +41,8 @@ if (isset($_POST['form_course'])) {
 	$row['primary_language']    = $_POST['pri_lang'];
 	$row['rss']                 = $_POST['rss'];
 
+	$row['copyright']			= $_POST['copyright'];
+
 } else if ($course) {
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
 	$result = mysql_query($sql, $db);
@@ -48,6 +50,7 @@ if (isset($_POST['form_course'])) {
 		echo _AT('no_course_found');
 		return;
 	}
+
 } else {
 	//new course defaults
 	$row['content_packaging']	= 'top';
@@ -312,12 +315,15 @@ if (isset($_POST['form_course'])) {
 	</div>		
 
 <?php else: ?>
-
 	<input type="hidden" name="quota" value="<?php echo $row['max_quota']; ?>" />
 	<input type="hidden" name="filesize" value="<?php echo $row['max_file_size']; ?>" />
 	<input type="hidden" name="tracking" value="<?php echo $row['tracking']; ?>" />
-
 <?php endif; ?>
+
+	<div class="row">
+		<label for="copyright"><?php echo _AT('course_copyright'); ?></label><br />
+		<textarea name="copyright" rows="5" cols="65" id="copyright"><?php echo $row['copyright']; ?></textarea>
+	</div>
 
 	<div class="buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /> 
