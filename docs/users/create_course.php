@@ -27,8 +27,7 @@ $row	= mysql_fetch_assoc($result);
 
 if ($row['status'] != 1) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
-	echo '<h2>'._AT('create_course').'</h2>';
-	
+
 	$msg->addError('CREATE_NOPERM');
 	$msg->printAll();
 

@@ -508,9 +508,11 @@ if ($_SESSION['course_id'] > 0) {
 
 <?php if ($_sub_level_pages): ?>
 	<div id="sub-navigation">
-		<div style="float: right; color: black;">
-			Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
-		</div>
+		<?php if (($_SESSION['course_id'] > 0) && show_pen()): ?>
+			<div style="float: right; color: black;">
+				Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
+			</div>
+		<?php endif; ?>
 
 		<?php if (isset($back_to_page)): ?>
 			<a href="<?php echo $back_to_page['url']; ?>" id="back-to">Back to <?php echo $back_to_page['title']; ?></a> | 
@@ -530,9 +532,11 @@ if ($_SESSION['course_id'] > 0) {
 	</div>
 <?php else: ?>
 	<div id="sub-navigation">
-		<div style="float: right; color: black;">
-			Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
-		</div>
+		<?php if (($_SESSION['course_id'] > 0) && show_pen()): ?>
+			<div style="float: right; color: black;">
+				Instructor tools: <a href="">Add Content</a> | <a href="">Add Test</a> | <a href="">File Manager</a> | <a href="">Properties</a>
+			</div>
+		<?php endif; ?>
 		&nbsp;
 	</div>
 <?php endif; ?>

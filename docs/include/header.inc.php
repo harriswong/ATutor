@@ -103,51 +103,9 @@ $savant->assign('tmpl_base_href', $_base_href);
 	}
 	$savant->assign('tmpl_bypass_links', $bypass_links);
 
-/*login/log-out link*/
-	if ($_SESSION['valid_user'] === true) {
-		$log_link = '<a href="'.$_base_path.'logout.php?g=19">'._AT('logout').'</a>';
-	} else {
-		$log_link = '<a href="'.$_base_path.'login.php">'._AT('login').'</a>';
-	}
-	$savant->assign('tmpl_log_link', $log_link);
 
 /* construct the page <title> */
-	$title = stripslashes(SITE_NAME);
-	if ($_SESSION['course_id'] && ($_SESSION['course_title'] != '')) { 
-		$title .= ' - '.$_SESSION['course_title'];
-	}
-	$breadcrumbs   = array();
-	$breadcrumbs[] = array('link'  => $_base_path.'?g=10', 'title' => _AT('home'));
-	if ($cid != 0) {
-		$myPath = $contentManager->getContentPath($cid);
-		$num_path = count($myPath);
-		for ($i =0; $i<$num_path; $i++) {
-			$title .= ' - ';
-			$title .= $myPath[$i]['title'];
 
-			$breadcrumbs[] = array('link'  => $_base_path . '?cid='.$myPath[$i]['content_id'].SEP.'g=10', 'title' => $myPath[$i]['title']);
-		}
-	} else if (is_array($_section) ) {
-		$num_sections = count($_section);
-		for($i = 0; $i < $num_sections; $i++) {
-			$title .= ' - ';
-			$title .= $_section[$i][0];
-
-			if (strpos($_section[$i][1], '?') === false) {
-				$delim = '?';
-			} else {
-				$delim = SEP;
-			}
-
-
-			$breadcrumbs[] = array('link'  => $_base_path . $_section[$i][1].$delim.'g=10' , 'title' => $_section[$i][0]);
-		}
-	}
-	/* remove the 'link' from the last item in the list: */
-	$current = array_pop($breadcrumbs);
-	unset($current['link']);
-	$breadcrumbs[] = $current;
-	$savant->assign('tmpl_title', stripslashes($addslashes($title)));
 
 if ($myLang->isRTL()) {
 	$savant->assign('tmpl_rtl_css', '<link rel="stylesheet" href="'.$_base_path.'rtl.css" type="text/css" />');
@@ -312,16 +270,12 @@ if ($_user_location == 'public') {
 		$savant->assign('tmpl_close_menu_url', $_my_uri.'disable='.PREF_MAIN_MENU);
 		$savant->assign('tmpl_open_menu_url', $_my_uri.($_SESSION['prefs'][PREF_MAIN_MENU] ? 'disable' : 'enable').'='.PREF_MAIN_MENU.$cid_url);
 
-		$savant->display('course_header.tmpl.php');
+		$savant->display('include/course_header.tmpl.php');
 
 		$next_prev_links = $contentManager->generateSequenceCrumbs($cid);
 
 		if ($_SESSION['prefs'][PREF_SEQ] != BOTTOM) {
 			echo '<div align="right" id="seqtop">' . $next_prev_links . '</div>';
-		}
-
-		if(ereg('Mozilla' ,$HTTP_USER_AGENT) && ereg('4.', $BROWSER['Version'])){
-			$msg->addHelp('NETSCAPE4');
 		}
 	}
 }
