@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: preferences.php 3193 2005-02-04 19:16:37Z joel $
+// $Id$
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
@@ -138,7 +138,7 @@ $msg->printAll();
 			<input type="radio" name ="use_jump_redirect" id="jump_dis" value="0" <?php echo $num2; ?> /><label for="jump_dis"><?php echo _AT('disable');  ?></label>
 	</div>
 
-	<div class="row">
+	<!--div class="row">
 		<label for="seq_icons"><?php echo _AT('menus'); ?></label><br />
 		<?php
 			$num_stack = count($_stacks);
@@ -156,7 +156,7 @@ $msg->printAll();
 				echo '</select>'."\n";
 				echo '<br />'; 
 			} ?>
-	</div>
+	</div-->
 
 	<div class="<?php $this->plugin('cycle', $this->cycle_input_rows, ++$i); ?> buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('apply'); ?>" accesskey="s" />

@@ -17,10 +17,7 @@ $_user_location	= 'users';
 define('AT_INCLUDE_PATH', '../include/');
 
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-
 require(AT_INCLUDE_PATH.'lib/themes.inc.php');
-
-$_section[0][0] = _AT('preferences');
 
 /* whether or not, any settings are being changed when this page loads. */
 /* ie. is ANY action being performed right now?							*/
@@ -135,16 +132,6 @@ if ($_GET['pref_id'] != '') {
 	$_SESSION['prefs_saved'] = true;
 	$action = true;
 
-} else if (($_GET['save'] == 4) && authenticate(AT_PRIV_STYLES, AT_PRIV_RETURN)) {
-	/* save prefs as this course's default, as an admin only. */
-
-	$data	= addslashes(serialize($_SESSION['prefs']));
-	$sql	= "UPDATE ".TABLE_PREFIX."courses SET preferences='$data' WHERE course_id=$_SESSION[course_id]";
-	$result = mysql_query($sql, $db);
-
-	$msg->addFeedback('COURSE_PREFS_SAVED');
-	header('Location: preferences.php');
-	exit;
 }
 
 /* page contents starts here */
