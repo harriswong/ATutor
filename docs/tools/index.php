@@ -41,6 +41,7 @@
 	<li><a href="tools/course_properties.php"><?php echo _AT('properties'); ?></a></li>
 	<li><a href="tools/backup/index.php"><?php echo _AT('backups'); ?></a></li>
 	<li><a href="tools/enrollment/index.php"><?php echo _AT('enrolment'); ?></a> ( send email, enrollment manager, tracker)</li>
+	<li><a href="discussions/polls.php"><?php echo _AT('polls'); ?></a></li>
 </tr>
 </ul>
 <?php

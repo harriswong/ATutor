@@ -43,11 +43,7 @@ $savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']
 $savant->assign('tmpl_lang',	$_SESSION['lang']);
 $savant->assign('tmpl_charset', $myLang->getCharacterSet());
 $savant->assign('tmpl_base_path', $_base_path);
-
-
 $savant->assign('tmpl_theme', $_SESSION['prefs']['PREF_THEME']);
-
-
 $savant->assign('tmpl_current_date', AT_date(_AT('announcement_date_format')));
 
 $theme_img  = $_base_path . 'themes/'. $_SESSION['prefs']['PREF_THEME'] . '/images/';

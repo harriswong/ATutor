@@ -109,11 +109,8 @@ function print_select($pid, $depth) {
 	<th scope="col">&nbsp;</th>
 
 	<th scope="col">#</th>
-
-	<th scope="col"><?php echo _AT('title'); ?> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=asc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('title_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=title<?php echo SEP; ?>order=desc<?php echo SEP; ?>id=<?php echo $_GET['id']; ?>" title="<?php echo _AT('title_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('title_descending'); ?>" border="0" height="7" width="11" /></a></th>
-
-	<th scope="col"><?php echo _AT('last_modified'); ?>  <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=last_modified<?php echo SEP; ?>order=asc<?php echo SEP; ?>" title="<?php echo _AT('last_modified_ascending'); ?>"><img src="images/asc.gif" alt="<?php echo _AT('last_modified_ascending'); ?>" border="0" height="7" width="11" /></a> <a href="<?php echo $_SERVER['PHP_SELF']; ?>?col=last_modified<?php echo SEP; ?>order=desc<?php echo SEP; ?>" title="<?php echo _AT('last_modified_descending'); ?>"><img src="images/desc.gif" alt="<?php echo _AT('last_modified_descending'); ?>" border="0" height="7" width="11" /></a></th>
-
+	<th scope="col"><?php echo _AT('title'); ?></th>
+	<th scope="col"><?php echo _AT('last_modified'); ?></th>
 	<th scope="col">[# pages]</th>
 
 </tr>

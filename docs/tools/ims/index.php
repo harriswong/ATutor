@@ -22,12 +22,6 @@ $_section[1][1] = 'tools/ims/';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-$msg->addHelp('EXPORT_PACKAGE');
-if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
-	$msg->addHelp('IMPORT_PACKAGE');
-}
-$msg->printAll();
-
 if (!isset($_main_menu)) {
 	$_main_menu = $contentManager->getContent();
 }
@@ -74,6 +68,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('export_content'); ?></h3>
+		<p><?php echo _AT('export_content_info'); ?></p>
 	</div>
 
 	<div class="row">
@@ -113,6 +108,7 @@ function print_menu_sections(&$menu, $parent_content_id = 0, $depth = 0, $orderi
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('import_content'); ?></h3>
+		<p><?php echo _AT('import_content_info'); ?></p>
 	</div>
 
 	<div class="row">

@@ -152,7 +152,7 @@ if ($_SESSION['course_id'] > 0) {
 		<?php elseif (FALSE && ($_SESSION['course_id'] > 0) && show_pen() && ($_SESSION['prefs']['PREF_EDIT'])): ?>
 			<a href="<?php echo $_my_uri; ?>disable=PREF_EDIT" id="editor-link" class="on"><?php echo _AT('disable_editor'); ?></a>
 		<?php else: ?>
-			&nbsp;
+			<small><?php echo $this->tmpl_current_date; ?>&nbsp;</small>
 		<?php endif; ?>
 	</th>
 	</tr>
