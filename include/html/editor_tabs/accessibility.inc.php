@@ -93,7 +93,6 @@ if ($_POST['desc_submit']) {
 			$report = @file_get_contents($checker_url);
 
 			if ($report == 1) {
-				// Need fix, must make AT_ERROR_INVALID_URL code - Jay
 				$errors = AT_INFOS_INVALID_URL;
 				print_errors($errors);
 			} else if ($report === false) {

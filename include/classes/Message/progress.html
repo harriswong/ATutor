@@ -4,41 +4,54 @@ Jacek Materna<br/>
 
 TODO:<br/>
 Implement popup_help messages into messaging system and update those<br/>
-See line 96: /include/html/editor_tabs/accessibility.inc.php<br/>
 /discussions/Achat conversion
-print_popup_help calls (alot in /themes
+print_popup_help calls (alot in /themes)
 install section
-/resources/links/index.php line 135, printfeedbakcs, $msg is not a prefixed lang code
+/resources/links/index.php line 135, printfeedbacks, $msg is not a prefixed lang code
 The system cannot handle this. Contents of $msg must be translated to lang codes
 i.e $msg = _AT('suggestion_submitted_approval'); Must be a lang code
 
-FileManager related files
+FileManager related files (/tools, /tools/filemanager)<br/>
 
 Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes<br/>
  - /help/contact_instructor.php<br/>
  - /users/private_enroll.php<br/>
+ - /users/request_instrcutor.php<br/>
+ - /include/html/editor_tabs/accessibility.inc.php<br/>
 
 
 <h3>Files converted to new Message system</h3>
 
-/tools/take_test.php<br/>
-/tools/my_tests.php<br/>
-/tools/tracker.php<br/>
+
 /include/lib/tracker2.inc.php<br/>
-/include/tools/ims/index.php<br/>
-/include/tools/ims/ims_export.php<br/>
-/include/tools/ims/ims_import.php<br/>
 /glossary/index.php<br/>
 /include/html/search.inc.php<br/>
 /tools/index.php</br>
 /tools/course_email.php</br>
+/tools/create_course_list.php<br/>
+/tools/edit_header.php<br/>
+/tools/edit_styles.php<br/>
+/tools/enroll_admin.php<br/>
+/tools/enroll_edit.php<br/>
+/tools/export_course_list.php<br/>
+/tools/import_course_list.php<br/>
+/tools/ims/index.php<br/>
+/tools/ims/ims_export.php<br/>
+/tools/ims/ims_import.php<br/>
+/tools/privileges.php<br/>
+/tools/upload.php<br/>
+/tools/view_results.php<br/>
+/tools/zip.php<br/>
+/tools/take_test.php<br/>
+/tools/my_tests.php<br/>
+/tools/tracker.php<br/>
 /tools/tests/index.php<br/>
 /tools/tests/add_question_likert.php<br/>
 /tools/tests/add_question_long.php<br/>
 /tools/tests/add_question_multi.php<br/>
 /tools/tests/add_question_tf.php<br/>
 /tools/tests/add_test.php<br/>
-/tools/tests//delete_question.php<br/>
+/tools/tests/delete_question.php<br/>
 /tools/tests/delete_result.php<br/>
 /tools/tests/delete_test.php<br/>
 /tools/tests/edit_question_likert.php<br/>
@@ -152,4 +165,6 @@ Some codes to need to be made AT_ERROR, some are AT_LANG posing as error codes<b
 /users/preferences.php<br/>
 /users/private_enrol.php<br/>
 /users/remove_course.php<br/>
+/users/request_instructor.php<br/>
+/users/send_message.php<br/>
 </body></html>

@@ -15,9 +15,13 @@ $_user_location	= 'users';
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
+require_once(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
+
+global $savant;
+$msg =& new Message($savant);
 
 if ( ($_POST['description'] == '') && isset($_POST['form_request_instructor'])){
-	$errors[]=AT_ERROR_DESC_REQUIRED;
+	$msg->addError('DESC_REQUIRED');
 } else if (isset($_POST['form_request_instructor'])) {
 	 if (AUTO_APPROVE_INSTRUCTORS == true) {
 		$sql	= "UPDATE ".TABLE_PREFIX."members SET status=1 WHERE member_id=$_SESSION[member_id]";
@@ -68,14 +72,13 @@ if ( ($_POST['description'] == '') && isset($_POST['form_request_instructor'])){
 $title = _AT('request_instructor_account');
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-if (isset($errors)) { print_errors($errors); }
+if ($msg->containsErrors()) { $msg->printErrors(); }
 
 if (ALLOW_INSTRUCTOR_REQUESTS && ($row['status']!= 1) ) {
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."instructor_approvals WHERE member_id=$_SESSION[member_id]";
 	$result = mysql_query($sql, $db);
 	if (!($row = mysql_fetch_array($result))) {
-		$infos[]=AT_INFOS_REQUEST_ACCOUNT;
-		print_infos($infos);
+		$msg->printInfos('REQUEST_ACCOUNT');
 ?>
 		<br /><form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 		<p align="center">
@@ -88,8 +91,7 @@ if (ALLOW_INSTRUCTOR_REQUESTS && ($row['status']!= 1) ) {
 <?php
 	} else {
 		/* already waiting for approval */
-		$infos[]=AT_INFOS_ACCOUNT_PENDING;
-		print_infos($infos);
+		$msg->printInfos('ACCOUNT_PENDING');
 	}
 } 
 
