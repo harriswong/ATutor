@@ -50,7 +50,7 @@ $_section = 'home';
 	} /* else: */
 
 	/* show the content page */
-	$result = $contentManager->getContentPage($cid);
+	$result = $contentManager->viewContentPage($cid);
 
 	if (!($content_row = mysql_fetch_assoc($result))) {
 		require(AT_INCLUDE_PATH.'header.inc.php');
