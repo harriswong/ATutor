@@ -43,14 +43,6 @@ if (!($test_row = mysql_fetch_assoc($result))) {
 $num_questions = $test_row['num_questions'];
 $rand_err = false;
 
-echo '<h4>'._AT('preview_of').' '.$test_row['title'].'</h4><br />';
-
-if ($row['instructions']!='') {
-	echo '<p><br /><strong>'._AT('special_instructions').'</strong>:  ';  
-	echo $row['instructions'];
-	echo '</p>';
-}
-
 if ($row['random']) {
 	/* !NOTE! this is a really awful way of randomizing questions !NOTE! */
 
@@ -108,6 +100,16 @@ $result	= mysql_query($sql, $db);
 $count = 1;
 if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 	echo '<div class="input-form">';
+	echo '<div class="row">';
+	echo '<h2>'.$test_row['title'].'</h2>';
+
+	if ($test_row['instructions']!='') {
+		echo '<h3>'._AT('special_instructions').'</h3><p>';
+		echo $test_row['instructions'];
+		echo '</p>';
+	}
+	echo '</div>';
+
 	do {
 		echo '<div class="row"><h3>'.$count.')</h3> ';
 		$count++;
