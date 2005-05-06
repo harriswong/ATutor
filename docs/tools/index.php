@@ -30,7 +30,9 @@
 						'tools/backup/index.php'     => AT_PRIV_ADMIN,
 						'tools/course_stats.php'     => AT_PRIV_ADMIN,
 						'tools/filemanager/index.php'=> AT_PRIV_FILES,
-						'tools/modules.php'          => AT_PRIV_STYLES);
+						'tools/modules.php'          => AT_PRIV_STYLES,
+						'tools/packages/index.php'   => AT_PRIV_FILES
+					);
 
 	require(AT_INCLUDE_PATH.'header.inc.php');
 	
