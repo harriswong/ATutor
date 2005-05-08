@@ -335,11 +335,12 @@ this.onunload=cleanup;
 </script>
 
 <?php
-	echo '<div id="scorm_1_2_toc" style="display:block">';
+	$p = "\n" . '<div id="scorm_1_2_toc" style="display:block">' . "\n";
 	for ($i=$c-1; $i>=0; $i--) {
-		echo $tree[$i] . '<br />';
+		$p .= $tree[$i] . '<br />' . "\n";
 	}
-	echo '</div>';
+	$p .= '</div>' . "\n";
+	echo utf8_decode($p); 
 ?>
 
 
