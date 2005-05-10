@@ -112,7 +112,7 @@ if (!$_FILES['file']['name']
 		exit;
 	}
 			
-	$package_path = AT_PACKAGE_DIR;
+	$package_path = AT_INCLUDE_PATH . '../sco/';
 	if (!is_dir($package_path)) {
 		if (!@mkdir($package_path, 0755)) {
 			require(AT_INCLUDE_PATH.'header.inc.php');
