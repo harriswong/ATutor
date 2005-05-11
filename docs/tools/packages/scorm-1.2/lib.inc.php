@@ -38,13 +38,16 @@ class package_handler_scorm_1_2 {
 				. '>'
 				.  $row['title'] .
 				'</a></div>' . '
-			<div class="scormfeedback" id="scorm_1_2_throb_' . $row['org_id'] . '" style="display:none;position:absolute;">
-			Loading SCORM-1.2 RTE<br />
-			Please be patient ...<br />
-			<img src="images/transfer.gif" height="20" width="90" alt="">
-			</div>
+			<div class="scormfeedback" id="scorm_1_2_throb_'
+			. $row['org_id']
+			. '" style="display:none;position:absolute;">'
+			. '<p>'
+			. _AT(package_scorm_1_2_rte_loading)
+			. '</p>'
+			. '<img src="images/transfer.gif" height="20" width="90" alt="">'
+			. '</div>'
 				
-			');
+			);
 		}
 		return $rv;
 	}
