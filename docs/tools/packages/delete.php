@@ -73,7 +73,7 @@ if ($num == 0) {
 <?php require(AT_INCLUDE_PATH.'header.inc.php');?>
 
 <div class="input-form">
-	<form method="post">
+	<form method="post" action="tools/packages/delete.php">
 		<ol>
 
 <?php echo $p;?>
