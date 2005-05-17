@@ -37,8 +37,7 @@ public	class ATutorApiAdapterApplet
 	}
 
 	public	final void init () {
-		//if (getParameter("verbose") != null)
-		isVerbose = true;
+		if (getParameter("verbose") != null) isVerbose = true;
 		ATutorStudentId     = getParameter ("student_id");
 		ATutorStudentName   = getParameter ("student_name");
 		say ("cmi.core.student_id=" +ATutorStudentId);
@@ -133,7 +132,7 @@ public	class ATutorApiAdapterApplet
 				l = s.substring (0, s.indexOf('='));
 				r = s.substring (s.indexOf('=')+1, s.length());
 				r = decode (r);
-				say (l + "="+r);
+				say (" "+l + "="+r);
 				ATutorScoCmi.put (l,r);
 			}
 		} catch (Exception e) {
@@ -141,7 +140,7 @@ public	class ATutorApiAdapterApplet
 			say (e.toString());
 		}
 		ATutorPreparedScoId = sco_id;
-		say ("Done. Note: this was cmi for the next sco to launch.");
+		say ("Done. Note: this was cmi for the next sco ("+sco_id+") to launch.");
 	}
 
 	public	final void ATutorReset (String s) {
@@ -238,6 +237,12 @@ public	class ATutorApiAdapterApplet
 			say (e.toString());
 			return "false";
 		}
+	}
+
+	public	final String ATutorGetValue (String l) {
+		String rv = core.LMSGetValue (l);
+		say ("ATutorGetValue("+l+")="+rv);
+		return rv;
 	}
 
 	/*

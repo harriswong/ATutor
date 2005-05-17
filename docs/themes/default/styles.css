@@ -1069,12 +1069,14 @@ label {
 	padding: 10px;
 	border: 1px solid black;
 }
+
 .scormitem  {
 	font-family : Arial, Helvetica, Arial Cyr, Arial Ua, sans-serif;
 	color: #152065; /* #D15600; */
 	background: white;
 	font-weight : normal;
-	padding: 2px;
+	padding: 0px;
+	display: inline;
 }
 
 .scorminput {
@@ -1087,7 +1089,7 @@ label {
 #rte {
 	float: right;
 	padding: 0px;
-	width: 0px;
-	height: 0px;
+	width:   0px;
+	height:  0px;
 }
 

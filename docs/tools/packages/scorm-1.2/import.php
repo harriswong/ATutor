@@ -34,8 +34,24 @@ require(AT_INCLUDE_PATH.'classes/pclzip.lib.php');
 
 authenticate(AT_PRIV_CONTENT);
 
-include ('./lib.inc.php');
 
+function chmodPackageDir ($path) {
+
+	if (!is_dir($path)) return;
+	else chmod ($path, 0755);
+
+	$h = opendir($path);
+	while ($f = readdir($h)) {
+		if ($f == '.' || $f == '..') continue;
+		$fpath = $path.'/'.$f;
+		if (!is_dir($fpath)) {
+   			chmod ($fpath, 0644);
+		} else {
+			chmodPackageDir ($fpath);
+		}
+	}
+	closedir ($h);
+}
 
 $package_base_path = '';
 

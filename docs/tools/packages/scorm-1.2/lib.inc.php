@@ -25,7 +25,7 @@ require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
 class package_handler_scorm_1_2 {
 
-	function getItemLinks ($id) {
+	function getManagerItemLinks ($id) {
 		$result = $this->getOrgs ($id);
 		$rv = Array();
 		while ($row = mysql_fetch_assoc($result)) {
@@ -47,6 +47,52 @@ class package_handler_scorm_1_2 {
 			. '<img src="images/transfer.gif" height="20" width="90" alt="">'
 			. '</div>'
 				
+			);
+		}
+		return $rv;
+	}
+
+	function getLearnerItemLinks ($id) {
+		$result = $this->getOrgs ($id);
+		$rv = Array();
+		while ($row = mysql_fetch_assoc($result)) {
+			array_push ($rv, ''
+				. '<div class="scormitem">'
+				. '<a href="tools/packages/scorm-1.2/learner_view.php?org_id='
+				. $row['org_id'].'"'
+			        . ' title="ADL SCORM-1.2 Package"'
+				. ' onclick="show(\'scorm_1_2_throb_' . $row['org_id'] . '\')"'
+				. '>'
+				.  $row['title'] 
+				. '</a>'
+				. '</div>'
+
+			. ' <div class="scormfeedback" id="scorm_1_2_throb_'
+			. $row['org_id']
+			. '" style="display:none;position:absolute;">'
+			. '<p>'
+			. _AT(package_scorm_1_2_rte_loading)
+			. '</p>'
+			. '<img src="images/transfer.gif" height="20" width="90" alt="">'
+			. '</div>'
+				
+			);
+		}
+		return $rv;
+	}
+
+	function getCMILinks ($id) {
+		$result = $this->getOrgs ($id);
+		$rv = Array();
+		while ($row = mysql_fetch_assoc($result)) {
+			array_push ($rv,
+				'<div class="scormitem">'
+				. '<a href="tools/packages/scorm-1.2/cmi.php?org_id='
+				. $row['org_id'].'"'
+			        . ' title="SCORM-1.2 CMI Data"'
+				. '>'
+				.  $row['title'] .
+				'</a></div>' 
 			);
 		}
 		return $rv;
@@ -151,7 +197,8 @@ class package_handler_scorm_1_2 {
 			}
 			
 			/*
-			 * Delete cmi data of all items in organization for all learners
+			 * Delete cmi data of all items in organization for
+			 * all learners
 			 */
 			$sql = "DELETE	FROM ".TABLE_PREFIX."cmi
 				WHERE	item_id in (" . implode (',', $items) . ")";
@@ -180,8 +227,10 @@ class package_handler_scorm_1_2 {
 			if (sizeOf ($orgs) == 1) {
 
 				/*
-				 * There is no more organization left from a particular
-				 * scorm-1.2 package we delete the package entry and the package files
+				 * There is no more organization left from
+				 * this  particular scorm-1.2 package, so
+				 * we delete the package entry and all files
+				 * which came with the package
 				 */
 
 				$sql = "DELETE	FROM ".TABLE_PREFIX."packages
@@ -189,7 +238,10 @@ class package_handler_scorm_1_2 {
 
 				$result = mysql_query ($sql);
 
-				$pdir = AT_CONTENT_DIR . 'packages/' . $_SESSION['course_id'] . '/' . $pkg . '/';
+				$pdir = AT_INCLUDE_PATH
+				. '../sco/'
+				. $_SESSION['course_id']
+				. '/' . $pkg . '/';
 
 				clr_dir ($pdir);
 			}

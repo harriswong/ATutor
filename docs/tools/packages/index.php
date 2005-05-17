@@ -24,50 +24,14 @@
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
+require ('lib.inc.php');
+$pkgs = getPackagesManagerLinkList();
+
 if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
-       $_pages['tools/packages/index.php']['children'] = array (
-	       'tools/packages/import.php'
-       );
-}
-
-$ptypes = explode (',', AT_PACKAGE_TYPES);
-$plug = Array();
-
-foreach ($ptypes as $type) {
-	include ('./' . $type . '/lib.inc.php');
-}
-
-$sql = "SELECT	package_id,
-		ptype
-	FROM  ".TABLE_PREFIX."packages
-	WHERE   course_id = $_SESSION[course_id]
-	ORDER	BY package_id
-	";
-
-$result = mysql_query($sql, $db);
-	
-
-$p  = '<p><ol>' . "\n";
-
-$num = 0;
-while ($row = mysql_fetch_assoc($result)) {
-	foreach ($plug[$row['ptype']]->getItemLinks(
-			$row['package_id']) as $l) {
-		$p .= '<li>' . $l . '</li>' . "\n";
-		$num++;
-	}
-}
-
-$p .= '</ol>' . "\n";
-$p .= '</p>' . "\n";
-if ($num == 0) {
-	require(AT_INCLUDE_PATH.'header.inc.php');
-	$msg->addInfo (NO_PACKAGES);
-	$msg->printAll();
-	require (AT_INCLUDE_PATH.'footer.inc.php');
-	exit;
-} else {
-	if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {	
+	$_pages['tools/packages/index.php']['children'] = array (
+	        'tools/packages/import.php'
+	);
+	if (sizeOf ($pkgs) > 0) {
 		array_push ($_pages['tools/packages/index.php']['children'], 
 	       		            'tools/packages/delete.php'
 		);
@@ -79,22 +43,18 @@ if ($num == 0) {
 
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-?>
 
-<script>
-function getObj (o) {
-	        if(document.getElementById) return document.getElementById(o);
-		        if(document.all) return document.all[o];
+if (sizeOf ($pkgs) == 0) {
+	$msg->addInfo (NO_PACKAGES);
+	$msg->printAll();
+} else {
+	echo getScript();
+        echo '<ol>' . "\n";
+	foreach ($pkgs as $pk) {
+		echo '<li>' . $pk . '</li>' . "\n";
+	}
+	echo '</ol>' . "\n";
 }
-function show (n) {
-	o = typeof(n)=='string'?getObj (n):n;
-	if (!o) return;
-	if(o.style) o.style.display = '';
-	else o.display='';
-}
-</script>
 
-<?php
-echo $p;
 require (AT_INCLUDE_PATH.'footer.inc.php');
 ?>

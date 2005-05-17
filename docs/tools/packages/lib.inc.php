@@ -21,29 +21,70 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-function chmodPackageDir ($path) {
+$ptypes = explode (',', AT_PACKAGE_TYPES);
+$plug = Array();
+foreach ($ptypes as $type) {
+	require ($type . '/lib.inc.php');
+}
 
-	if (!is_dir($path)) return;
-	else chmod ($path, 0755);
+$sql_get_pkgs = "SELECT  package_id,
+		ptype
+	FROM  ".TABLE_PREFIX."packages
+	WHERE   course_id = $_SESSION[course_id]
+	ORDER   BY package_id
+";
 
-	$h = opendir($path);
-	while ($f = readdir($h)) {
-		if ($f == '.' || $f == '..') continue;
-		$fpath = $path.'/'.$f;
-		if (!is_dir($fpath)) {
-   			chmod ($fpath, 0644);
-		} else {
-			chmodPackageDir ($fpath);
+function getPackagesLearnerLinkList () {
+	global $db;
+	global $plug;
+	global $sql_get_pkgs;
+
+	$rv = Array();
+
+	$result = mysql_query($sql_get_pkgs, $db);
+
+	while ($row = mysql_fetch_assoc($result)) {
+		foreach ($plug[$row['ptype']]->getLearnerItemLinks(
+			$row['package_id']) as $l) {
+			array_push ($rv, $l);
 		}
 	}
-	closedir ($h);
+	return $rv;
 }
 
+function getPackagesManagerLinkList () {
+	global $db;
+	global $plug;
+	global $sql_get_pkgs;
 
-function packagePreImportCallBack($p_event, &$p_header) {
+	$rv = Array();
 
-	return 1;
+	$result = mysql_query($sql_get_pkgs, $db);
+
+	while ($row = mysql_fetch_assoc($result)) {
+		foreach ($plug[$row['ptype']]->getManagerItemLinks(
+			$row['package_id']) as $l) {
+			array_push ($rv, $l);
+		}
+	}
+	return $rv;
 }
 
+function getScript () {
+	return "
+<script>
+function getObj (o) {
+	if(document.getElementById) return document.getElementById(o);
+	if(document.all) return document.all[o];
+}
+function show (n) {
+	o = typeof(n)=='string'?getObj (n):n;
+	if (!o) return;
+	if(o.style) o.style.display = '';
+	else o.display='';
+}
+</script>
+";
+}
 
 ?>

@@ -24,6 +24,8 @@
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
+define ('PACKAGE_TYPES', 'scorm-1.2');
+
 if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
        $_pages['tools/packages/import.php']['parent'] =
                'tools/packages/index.php';
@@ -57,7 +59,7 @@ if (!defined('AT_ENABLE_SCO') || !AT_ENABLE_SCO) {
 	<select name="type">
 
 	<?php
-	$ptypes = explode (',', AT_PACKAGE_TYPES);
+	$ptypes = explode (',', PACKAGE_TYPES);
 	foreach ($ptypes as $type) {
 		echo '<option value="' . $type . '">' . $type . '</option>';
 	}
