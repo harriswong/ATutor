@@ -76,7 +76,7 @@ if (isset ($_POST['upd'])) {
 	if ($result1 && $result2) {
 		$msg->addFeedback (SCORM_SETTINGS_SAVED);
 	} else {
-		$msg->addFeedback (SCORM_SETTINGS_SAVE_FAILED);
+		$msg->addError (SCORM_SETTINGS_SAVE_FAILED);
 	}
 }
 
