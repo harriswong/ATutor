@@ -62,7 +62,7 @@ if (isset($_POST['submit'])) {
 			}
 			if (!$existing_accounts[$row[0]]) {
 				$row[0] = addslashes($row[0]);
-				$row[1] = md5($row[1]); // this may be hashed
+				$row[1] = sha1($row[1]); // this may be hashed
 
 				$sql = "INSERT INTO ".TABLE_PREFIX."master_list VALUES ('$row[0]', '$row[1]', 0)";
 				mysql_query($sql, $db);
