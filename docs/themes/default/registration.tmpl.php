@@ -1,5 +1,9 @@
 <?php require(AT_INCLUDE_PATH.'header.inc.php'); ?>
 
+<?php if (!$_POST['email']) {
+	$_POST['email'] = 'firstname.lastname@fraserhealth.ca';
+}
+?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
 <?php global $languageManager; ?>
 <div class="input-form">
@@ -39,7 +43,7 @@
 				<option value="12">December</option>
 			</select>
 
-			<select name="date">
+			<select name="day">
 				<option value="0">Day</option>
 				<option value="1">1</option>
 				<option value="2">2</option>
@@ -107,7 +111,12 @@
 
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email"><?php echo _AT('email_address'); ?></label><br />
-		<input id="email" name="email" type="text" size="30" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>" />
+		<input id="email" name="email" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>" />
+	</div>
+
+	<div class="row">
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email2">Email Address Again</label><br />
+		<input id="email" name="email2" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email2'])); ?>" />
 	</div>
 
 	<div class="row">
@@ -175,6 +184,11 @@
 		<input id="last_name" name="last_name" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['last_name'])); ?>" />
 	</div>
 	
+	<div class="row">
+		<label for="email2">Alternate Email Address</label><br />
+		<input id="email" name="email3" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email3'])); ?>" />
+	</div>
+
 	<div class="row buttons">
 		<input type="submit" name="submit" value=" <?php echo _AT('save'); ?> " accesskey="s" />
 		<input type="submit" name="cancel" value=" <?php echo _AT('cancel'); ?> " />

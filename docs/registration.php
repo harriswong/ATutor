@@ -26,10 +26,13 @@ if (isset($_POST['cancel'])) {
 		$msg->addError('EMAIL_MISSING');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 		$msg->addError('EMAIL_INVALID');
-	}
-	$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."members WHERE email LIKE '$_POST[email]'",$db);
-	if (mysql_num_rows($result) != 0) {
-		$msg->addError('EMAIL_EXISTS');
+	} else {
+		$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."members WHERE email LIKE '$_POST[email]'",$db);
+		if (mysql_num_rows($result) != 0) {
+			$msg->addError('EMAIL_EXISTS');
+		} else if ($_POST['email'] != $_POST['email2']) {
+			$msg->addError('EMAIL_MISMATCH');
+		}
 	}
 
 	/* login name check */
@@ -89,7 +92,12 @@ if (isset($_POST['cancel'])) {
 	if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 		
 		$student_id  = $addslashes($_POST['student_id']);
-		$student_pin = md5($_POST['student_pin']);
+		$dob_y = intval($_POST['year']);
+		$dob_m = str_pad(intval($_POST['month']), 2, 0);
+		$dob_d = str_pad(intval($_POST['day']), 2, 0);
+		$dob = $dob_y . $dob_m . $dob_d;
+
+		$student_pin = sha1($dob);
 
 		$sql    = "SELECT member_id FROM ".TABLE_PREFIX."master_list WHERE public_field='$student_id' AND hash_field='$student_pin'";
 		$result = mysql_query($sql, $db);
@@ -100,7 +108,6 @@ if (isset($_POST['cancel'])) {
 			$master_list_sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=LAST_INSERT_ID() WHERE public_field='$student_id' AND hash_field='$student_pin'";
 		}
 	}
-
 
 	if (!$msg->containsErrors()) {
 		if (($_POST['website']) && (!ereg("://",$_POST['website']))) { 
