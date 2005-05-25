@@ -6,17 +6,73 @@
 
 	<?php if (!$_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST && !admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE)): ?>
 		<div class="row">
-			<h3><?php echo _AT('account_authorization'); ?></h3>
+			<h3>Account Authorization</h3>
 		</div>
 
 		<div class="row">
-			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="student_id"><?php echo _AT('student_id'); ?></label><br />
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="student_id">Employee Number</label><br />
 			<input id="student_id" name="student_id" type="text" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['student_id'])); ?>" /><br />
 		</div>
 
 		<div class="row">
-			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="student_pin"><?php echo _AT('student_pin'); ?></label><br />
-			<input id="student_pin" name="student_pin" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['student_pin'])); ?>" /><br />
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>Date of Birth<br />
+			<select name="year">
+				<option value="0">Year</option>
+				<?php for ($i=1920; $i<2000; $i++): ?>
+					<option value="<?php echo $i;?>"><?php echo $i;?></option>
+				<?php endfor; ?>
+			</select>
+			
+			<select name="month">
+				<option value="0">Month</option>
+				<option value="1">January</option>
+				<option value="2">February</option>
+				<option value="3">March</option>
+				<option value="4">April</option>
+				<option value="5">May</option>
+				<option value="6">June</option>
+				<option value="7">July</option>
+				<option value="8">August</option>
+				<option value="9">September</option>
+				<option value="10">October</option>
+				<option value="11">November</option>
+				<option value="12">December</option>
+			</select>
+
+			<select name="date">
+				<option value="0">Day</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+			</select>
 		</div>
 	<?php endif; ?>
 
@@ -117,51 +173,6 @@
 	<div class="row">
 		<label for="last_name"><?php echo _AT('last_name'); ?></label><br />
 		<input id="last_name" name="last_name" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['last_name'])); ?>" />
-	</div>
-	
-	<div class="row">
-		<?php echo _AT('date_of_birth'); ?><br />
-		<label for="year"><?php echo _AT('year'); ?>: </label><input id="year" class="formfield" name="year" type="text" size="4" maxlength="4" value="<?php echo $_POST['year']; ?>" />  <label for="month"><?php echo _AT('month'); ?>: </label><input id="month" class="formfield" name="month" type="text" size="2" maxlength="2" value="<?php echo $_POST['month']; ?>" /> <label for="day"><?php echo _AT('day'); ?>: </label><input id="day" class="formfield" name="day" type="text" size="2" maxlength="2" value="<?php echo $_POST['day']; ?>" />
-	</div>
-
-	<div class="row">
-		<?php echo _AT('gender'); ?><br />
-		<input type="radio" name="gender" id="m" value="m" <?php if ($_POST['gender'] == 'm') { echo 'checked="checked"'; } ?> /><label for="m"><?php echo _AT('male'); ?></label> <input type="radio" value="f" name="gender" id="f" <?php if ($_POST['gender'] == 'f') { echo 'checked="checked"'; } ?> /><label for="f"><?php echo _AT('female'); ?></label>  <input type="radio" value="ns" name="gender" id="ns" <?php if (($_POST['gender'] == 'ns') || ($_POST['gender'] == '')) { echo 'checked="checked"'; } ?> /><label for="ns"><?php echo _AT('not_specified'); ?></label>
-	</div>
-
-	<div class="row">
-		<label for="address"><?php echo _AT('street_address'); ?></label><br />
-		<input id="address" name="address" size="40" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['address'])); ?>" />
-	</div>
-
-	<div class="row">
-		<label for="postal"><?php echo _AT('postal_code'); ?></label><br />
-		<input id="postal" name="postal" size="7" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['postal'])); ?>" />
-	</div>
-
-	<div class="row">
-		<label for="city"><?php echo _AT('city'); ?></label><br />
-		<input id="city" name="city" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['city'])); ?>" />
-	</div>
-
-	<div class="row">
-		<label for="province"><?php echo _AT('province'); ?></label><br />
-		<input id="province" name="province" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['province'])); ?>" />
-	</div>
-
-	<div class="row">
-		<label for="country"><?php echo _AT('country'); ?></label><br />
-		<input id="country" name="country" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['country'])); ?>" />
-	</div>
-
-	<div class="row">
-		<label for="phone"><?php echo _AT('phone'); ?></label><br />
-		<input size="11" name="phone" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['phone'])); ?>" id="phone" />
-	</div>
-
-	<div class="row">
-		<label for="website"><?php echo _AT('web_site'); ?></label><br />
-		<input id="website" name="website" size="40" type="text" value="<?php if ($_POST['website'] == '') { echo 'http://'; } else { echo stripslashes(htmlspecialchars($_POST['website'])); } ?>" />
 	</div>
 	
 	<div class="row buttons">
