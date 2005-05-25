@@ -51,7 +51,7 @@
 					
 					
 					<?php if ($row['tests']): ?>
-						<?php echo _AT('tests'); ?>: 
+						Challenge Test: 
 						<?php foreach ($row['tests'] as $test): ?>
 							<a href="bounce.php?course=<?php echo $row['course_id'].SEP.'p='.urlencode('tools/take_test.php?tid='.$test['test_id']); ?>"><?php echo $test['title']; ?></a> 
 						<?php endforeach ;?>

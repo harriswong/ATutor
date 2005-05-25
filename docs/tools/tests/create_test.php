@@ -68,6 +68,15 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('END_DATE_INVALID');
 	}
 
+	if ($_POST['format']) {
+		$sql = "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."tests WHERE format=1 AND course_id=$_SESSION[course_id]";
+		$result = mysql_query($sql, $db);
+		$row = mysql_fetch_assoc($result);
+		if ($row['cnt']) {
+			$msg->addError('ONLY_ONE_CHALLENGE_TEST');
+		}
+	}
+
 	if (!$msg->containsErrors()) {
 		if (strlen($month_start) == 1){
 			$month_start = "0$month_start";
@@ -159,7 +168,7 @@ $msg->printErrors();
 	</div>
 
 	<div class="row">
-		<?php echo _AT('available_on_my_courses'); ?><br />
+		Challenge Test<br />
 		<?php 
 			if ($_POST['format'] == 1) {
 				$y = 'checked="checked"';

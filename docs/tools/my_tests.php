@@ -34,7 +34,6 @@ $result	= mysql_query($sql, $db);
 </tr>
 </thead>
 <tbody>
-
 <?php
 while (($row = mysql_fetch_assoc($result)) && authenticate_test($row['test_id'])) {
 	$count++;
@@ -48,6 +47,9 @@ while (($row = mysql_fetch_assoc($result)) && authenticate_test($row['test_id'])
 		echo '<strong><a href="tools/take_test.php?tid='.$row['test_id'].'">'.AT_print($row['title'], 'tests.title').'</a></strong>';
 	} else {
 		echo '<small class="bigspacer">'.AT_print($row['title'], 'tests.title').'';
+	}
+	if ($row['format'] == 1) {
+		echo ' - Challenge Test';
 	}
 	echo '</td><td">';
 	if ( ($row['us'] <= time()) && ($row['ue'] >= time() ) ) {

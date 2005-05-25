@@ -99,6 +99,14 @@ if (isset($_POST['cancel'])) {
 	$start_date = "$year_start-$month_start-$day_start $hour_start:$min_start:00";
 	$end_date	= "$year_end-$month_end-$day_end $hour_end:$min_end:00";
 
+	if ($_POST['format']) {
+		$sql = "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."tests WHERE format=1 AND course_id=$_SESSION[course_id]";
+		$result = mysql_query($sql, $db);
+		$row = mysql_fetch_assoc($result);
+		if ($row['cnt']) {
+			$msg->addError('ONLY_ONE_CHALLENGE_TEST');
+		}
+	}
 	if (!$msg->containsErrors()) {
 		// just to make sure we own this test:
 		$sql	= "SELECT * FROM ".TABLE_PREFIX."tests WHERE test_id=$tid AND course_id=$_SESSION[course_id]";
@@ -186,7 +194,7 @@ $msg->printErrors();
 	</div>
 	
 	<div class="row">
-		<?php echo _AT('available_on_my_courses'); ?><br />
+		Challenge Test<br />
 		<?php 
 			if ($_POST['format'] == 1) {
 				$y = 'checked="checked"';
