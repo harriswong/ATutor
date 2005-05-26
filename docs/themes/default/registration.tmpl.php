@@ -159,7 +159,7 @@
 
 	<?php if (!$_POST['member_id'] && admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
 		<div class="row">
-			<label for="student_id"><?php echo _AT('student_id'); ?></label><br />
+			<label for="student_id">Employee Number</label><br />
 				<?php
 					global $db;
 					$sql    = "SELECT public_field FROM ".TABLE_PREFIX."master_list WHERE member_id=0 ORDER BY public_field";
