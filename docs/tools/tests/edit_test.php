@@ -100,7 +100,7 @@ if (isset($_POST['cancel'])) {
 	$end_date	= "$year_end-$month_end-$day_end $hour_end:$min_end:00";
 
 	if ($_POST['format']) {
-		$sql = "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."tests WHERE format=1 AND course_id=$_SESSION[course_id]";
+		$sql = "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."tests WHERE format=1 AND test_id<>$tid AND course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql, $db);
 		$row = mysql_fetch_assoc($result);
 		if ($row['cnt']) {
