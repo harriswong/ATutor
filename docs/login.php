@@ -31,6 +31,16 @@ if (!$msg->containsFeedbacks()) {
 	if (isset($_COOKIE['ATPass'])) {
 		$cookie_pass  = $_COOKIE['ATPass'];
 	}
+	if (isset($_COOKIE['FHALoginLockout'])) {
+		$cookie_login_lockout = $_COOKIE['FHALoginLockout'];
+		if ($cookie_login_lockout - time() < 3600) {
+			$msg->addError('LOCKED');
+		} else {
+			setcookie('FHALoginLockout', $this_login , -1, $parts['path'], $parts['host'], 0);
+
+		}
+
+	}
 }
 
 if (isset($cookie_login, $cookie_pass) && !isset($_POST['submit'])) {
@@ -111,7 +121,22 @@ if (isset($this_login, $this_password)) {
 			exit;
 
 		} else {
-			$msg->addError('INVALID_LOGIN');
+			$_SESSION['login_attempts'] = intval($_SESSION['login_attempts']);
+			if ($_SESSION['login_attempts'] == 2) {
+				// note: if this IF statement executes, it is the 3rd failed attempt.
+				$last_attempt = time();
+				$cookie_expire = time()+20000; // arbitrary expiry past 1 hour.
+				setcookie('FHALoginLockout', $last_attempt, $cookie_expire, $parts['path'], $parts['host'], 0);
+				$msg->addError('LOCKED');
+			} else if ($_SESSION['login_attempts'] == 1) {
+				$msg->addError('LOCK_WARNING');
+				$_SESSION['login_attempts'] = 2;
+			}
+			else {
+				$_SESSION['login_attempts'] = 1;
+				$msg->addError('INVALID_LOGIN');
+			}
+
 		}
 	}
 }
