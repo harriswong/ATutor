@@ -17,6 +17,20 @@ $_user_location	= 'public';
 define('AT_INCLUDE_PATH', 'include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
+if (isset($_COOKIE['FHA'])) {
+	$cookie_login_lockout = $_COOKIE['FHA'];
+	if (time()-$cookie_login_lockout < 3600) {
+		$msg->addError('LOCKED');
+		require(AT_INCLUDE_PATH.'header.inc.php');
+		require(AT_INCLUDE_PATH.'footer.inc.php');
+		exit;
+	} else {
+		setcookie('FHA', 'garbage', time()-31536000);
+		unset ($_COOKIE['FHA']);
+	}
+}
+
+
 if (isset($_POST['cancel'])) {
 	header('Location: ./about.php');
 	exit;
@@ -80,13 +94,6 @@ if (isset($_POST['cancel'])) {
 	} 
 
 	$dob = $yr.'-'.$mo.'-'.$day;
-
-	if ($mo && $day && $yr && !checkdate($mo, $day, $yr)) {	
-		$msg->addError('DOB_INVALID');
-	} else if (!$mo || !$day || !$yr) {
-		$dob = '0000-00-00';
-		$yr = $mo = $day = 0;
-	}
 
 	unset($master_list_sql);
 	if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
@@ -177,9 +184,28 @@ if (isset($_POST['cancel'])) {
 			$msg->addFeedback('REG_THANKS');
 		}
 
+		unset($_SESSION['attempts']);
 		require(AT_INCLUDE_PATH.'header.inc.php');
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
+	} else {
+		$_SESSION['attempts']++;
+
+		if ($_SESSION['attempts'] == FHA_ATTEMPTS) {
+			// note: if this IF statement executes, it is the 3rd failed attempt.
+			$last_attempt = time();
+			$cookie_expire = time()+31536000; // Expire in 1 year.
+			setcookie('FHA', $last_attempt, $cookie_expire);
+			$msg->addError('LOCKED');
+			require(AT_INCLUDE_PATH.'header.inc.php');
+			require(AT_INCLUDE_PATH.'footer.inc.php');
+			exit;
+		} else if ($_SESSION['attempts'] == FHA_ATTEMPTS-1) {
+			$msg->addError('LOCK_WARNING2');
+		} else {
+			$msg->addError('LOCK_WARNING1');
+		}
+
 	}
 }
 
