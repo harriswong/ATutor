@@ -29,7 +29,7 @@ if (isset($_GET['view'], $_GET['id'])) {
 	header('Location: delete_course.php?course='.$_GET['id']);
 	exit;
 } else if (isset($_GET['report'], $_GET['id'])) {
-	header('Location: course_report.php?course='.$_GET['id']);
+	header('Location: course_tests.php?course='.$_GET['id']);
 	exit;
 } else if (!empty($_GET) && !$_GET['p'] && !$_GET['asc'] && !$_GET['desc']) {
 	$msg->addError('NO_ITEM_SELECTED');

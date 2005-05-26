@@ -227,6 +227,10 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 		$_pages['admin/delete_category.php']['title_var'] = 'delete_category';
 		$_pages['admin/delete_category.php']['parent']    = 'admin/course_categories.php';
 
+	$_pages['admin/course_tests.php']['title_var'] = 'tests';
+	$_pages['admin/course_tests.php']['parent']    = 'admin/courses.php';
+
+
 /* public pages */
 $_pages['registration.php']['title_var'] = 'register';
 $_pages['registration.php']['parent']    = AT_NAV_PUBLIC;

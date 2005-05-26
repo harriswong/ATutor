@@ -24,24 +24,25 @@ function quote_csv($line) {
 	return '"'.$line.'"';
 }
 
-//get course id
-$cid = intval($_GET['course']);
-//get course name 
-$sql	= "SELECT title FROM ".TABLE_PREFIX."courses WHERE course_id=$cid";
+$tid = intval($_GET['id']);
+
+//get course name, course id
+$sql	= "SELECT C.course_id, C.title FROM ".TABLE_PREFIX."courses C, ".TABLE_PREFIX."tests T WHERE test_id=$tid";
 $result = mysql_query($sql, $db);
 if (!($row = mysql_fetch_array($result))){
-	$msg->addError('COURSE_NOT_FOUND');
-	header("Location:courses.php");
+	$msg->addError('TEST_NOT_FOUND');
+	header("Location:course_tests.php?course=".$_GET['course']);
 	exit;
 }
 $course_title = $row['title'];
+$course_id = $row['course_id'];
 
 //get challenge tests ------ add AND T.format=1
-$sql	= "SELECT R.*, M.public_field FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."tests T, ".TABLE_PREFIX."master_list M WHERE R.test_id=T.test_id AND T.test_id=1 AND T.course_id=$cid AND R.final_score<>'' AND M.member_id=R.member_id ORDER BY R.date_taken";
+$sql	= "SELECT R.*, M.public_field FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."master_list M WHERE R.final_score<>'' AND M.member_id=R.member_id AND R.test_id=$tid ORDER BY M.public_field, R.date_taken";
 $result	= mysql_query($sql, $db);
 if (!($row = mysql_fetch_assoc($result))){
 	$msg->addError('RESULT_NOT_FOUND');
-	header("Location:courses.php");
+	header("Location:course_tests.php?course=".$_GET['course']);
 	exit;
 }  
 
@@ -54,11 +55,13 @@ header('Pragma: public');
 /* employee #, course id, course title, result, date */
 do {
 	echo quote_csv($row['public_field']).', ';
-	echo $cid.', ';
+	echo $course_id.', ';
 	echo quote_csv($course_title).', ';
 	echo $row['final_score'].', ';
-	echo quote_csv(AT_date('%j/%n/%y %G:%i', $row['date_taken'], AT_DATE_MYSQL_DATETIME));
+	echo quote_csv($row['date_taken']);
 	echo "\n";
 } while ($row = mysql_fetch_array($result));
+
+exit;
 
 ?>
