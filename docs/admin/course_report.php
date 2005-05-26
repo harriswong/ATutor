@@ -51,8 +51,6 @@ header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Pragma: public');
 
-$nl = "\n";
-
 /* employee #, course id, course title, result, date */
 do {
 	//get employee id
@@ -61,7 +59,7 @@ do {
 	echo quote_csv($course_title).', ';
 	echo $row['final_score'].', ';
 	echo quote_csv(AT_date('%j/%n/%y %G:%i', $row['date_taken'], AT_DATE_MYSQL_DATETIME));
-	echo $nl;
+	echo "\n";
 } while ($row = mysql_fetch_array($result));
 
 ?>
