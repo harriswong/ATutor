@@ -37,6 +37,9 @@ if (isset($_COOKIE['FHA'])) {
 	$cookie_login_lockout = $_COOKIE['FHA'];
 	if (time()-$cookie_login_lockout < 3600) {
 		$msg->addError('LOCKED');
+		require(AT_INCLUDE_PATH.'header.inc.php');
+		require(AT_INCLUDE_PATH.'footer.inc.php');
+		exit;
 	} else {
 		setcookie('FHA', 'garbage', time()-31536000);
 		unset ($_COOKIE['FHA']);
