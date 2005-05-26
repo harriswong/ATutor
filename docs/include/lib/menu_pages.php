@@ -199,6 +199,9 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 		$_pages['admin/backup/edit.php']['title_var'] = 'edit';
 		$_pages['admin/backup/edit.php']['parent']    = 'admin/backup/index.php';
 
+	$_pages['admin/course_report.php']['title_var'] = 'report';
+	$_pages['admin/course_report.php']['parent']    = 'admin/courses.php';
+
 
 	$_pages['admin/forums.php']['title_var'] = 'forums';
 	$_pages['admin/forums.php']['parent']    = 'admin/courses.php';

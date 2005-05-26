@@ -28,7 +28,10 @@ if (isset($_GET['view'], $_GET['id'])) {
 } else if (isset($_GET['delete'], $_GET['id'])) {
 	header('Location: delete_course.php?course='.$_GET['id']);
 	exit;
-}  else if (!empty($_GET) && !$_GET['p'] && !$_GET['asc'] && !$_GET['desc']) {
+} else if (isset($_GET['report'], $_GET['id'])) {
+	header('Location: course_report.php?course='.$_GET['id']);
+	exit;
+} else if (!empty($_GET) && !$_GET['p'] && !$_GET['asc'] && !$_GET['desc']) {
 	$msg->addError('NO_ITEM_SELECTED');
 }
 
@@ -113,10 +116,13 @@ $num_rows = mysql_num_rows($result);
 </thead>
 <tfoot>
 <tr>
-	<td colspan="7"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" /> 
-					<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
-					<input type="submit" name="backups" value="<?php echo _AT('backups'); ?>" /> 
-					<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
+	<td colspan="7">
+		<input type="submit" name="view" value="<?php echo _AT('view'); ?>" /> 
+		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
+		<input type="submit" name="backups" value="<?php echo _AT('backups'); ?>" /> 
+		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+		<input type="submit" name="report" value="<?php echo _AT('report'); ?>" />
+	</td>
 </tr>
 </tfoot>
 <tbody>
