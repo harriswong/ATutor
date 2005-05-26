@@ -43,6 +43,8 @@ if (isset($_COOKIE['FHA'])) {
 	} else {
 		setcookie('FHA', 'garbage', time()-31536000);
 		unset ($_COOKIE['FHA']);
+		unset ($_SESSION['login_attempts']);
+
 	}
 }
 
