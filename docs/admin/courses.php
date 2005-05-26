@@ -121,7 +121,7 @@ $num_rows = mysql_num_rows($result);
 		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
 		<input type="submit" name="backups" value="<?php echo _AT('backups'); ?>" /> 
 		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
-		<input type="submit" name="report" value="<?php echo _AT('report'); ?>" />
+		<input type="submit" name="report" value="Report" />
 	</td>
 </tr>
 </tfoot>

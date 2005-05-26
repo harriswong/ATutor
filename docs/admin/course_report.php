@@ -30,9 +30,8 @@ $cid = intval($_GET['course']);
 $sql	= "SELECT title FROM ".TABLE_PREFIX."courses WHERE course_id=$cid";
 $result = mysql_query($sql, $db);
 if (!($row = mysql_fetch_array($result))){
-	require (AT_INCLUDE_PATH.'header.inc.php');
-	$msg->printErrors('COURSE_NOT_FOUND');
-	require (AT_INCLUDE_PATH.'footer.inc.php');
+	$msg->addError('COURSE_NOT_FOUND');
+	header("Location:courses.php");
 	exit;
 }
 $course_title = $row['title'];
@@ -41,9 +40,8 @@ $course_title = $row['title'];
 $sql	= "SELECT R.*, M.public_field FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."tests T, ".TABLE_PREFIX."master_list M WHERE R.test_id=T.test_id AND T.test_id=1 AND T.course_id=$cid AND R.final_score<>'' AND M.member_id=R.member_id ORDER BY R.date_taken";
 $result	= mysql_query($sql, $db);
 if (!($row = mysql_fetch_assoc($result))){
-	require (AT_INCLUDE_PATH.'header.inc.php');
-	$msg->printErrors('RESULTS_NOT_FOUND');
-	require (AT_INCLUDE_PATH.'footer.inc.php');
+	$msg->addError('RESULT_NOT_FOUND');
+	header("Location:courses.php");
 	exit;
 }  
 
