@@ -5,6 +5,9 @@
 	<input type="hidden" name="form_course_id" value="<?php echo $this->course_id; ?>" />
 
 <div class="input-form" style="max-width: 400px">
+	<div class="row">
+		<p>Enter the Login Name and Password you chose when you first registered in the system. If you can't remember either, please use the I forgot my Password or Login Name link.</p>
+	</div>
 	<?php if ($_GET['course']): ?>
 		<div class="row">
 			<h3><?php echo _AT('login'). ' ' . $this->title; ?></h3>
@@ -21,9 +24,9 @@
 		<input type="password" class="formfield" name="form_password" id="pass" />
 	</div>
 
-	<div class="row">
+	<!--div class="row">
 		<input type="checkbox" name="auto" value="1" id="auto" /><label for="auto"><?php echo _AT('auto_login2'); ?></label>
-	</div>
+	</div-->
 
 	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('login'); ?>" /> 

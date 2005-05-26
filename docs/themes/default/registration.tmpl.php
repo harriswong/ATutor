@@ -2,6 +2,8 @@
 
 <?php if (!$_POST['email']) {
 	$_POST['email'] = 'firstname.lastname@fraserhealth.ca';
+} else if ($_POST['email']) {
+	$_POST['email2'] = $_POST['email'];
 }
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">

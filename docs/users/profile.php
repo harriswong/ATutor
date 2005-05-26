@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id: edit.php 3111 2005-01-18 19:32:00Z joel $
+// $Id$
 
 $page = 'profile';
 $_user_location	= 'users';
@@ -48,6 +48,8 @@ if (isset($_POST['submit'])) {
 		$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."members WHERE email='$_POST[email]' AND member_id<>$_SESSION[member_id]",$db);
 		if(mysql_num_rows($result) != 0) {
 			$msg->addError('EMAIL_EXISTS');
+		} else if ($_POST['email'] != $_POST['email2']) {
+			$msg->addError('EMAIL_MISMATCH');
 		}
 	}
 
@@ -88,16 +90,17 @@ if (isset($_POST['submit'])) {
 		if ($_POST['web_site'] == 'http://') { $_POST['web_site'] = ''; }
 
 		// insert into the db.
-		$_POST['password'] = $addslashes($_POST['password']);
-		$_POST['website'] = $addslashes($_POST['website']);
+		$_POST['password']   = $addslashes($_POST['password']);
+		$_POST['website']    = ''; //$addslashes($_POST['website']);
 		$_POST['first_name'] = $addslashes($_POST['first_name']);
-		$_POST['last_name'] = $addslashes($_POST['last_name']);
-		$_POST['address'] = $addslashes($_POST['address']);
-		$_POST['postal'] = $addslashes($_POST['postal']);
-		$_POST['city'] = $addslashes($_POST['city']);
-		$_POST['province'] = $addslashes($_POST['province']);
-		$_POST['country'] = $addslashes($_POST['country']);
-		$_POST['phone'] = $addslashes($_POST['phone']);
+		$_POST['last_name']  = $addslashes($_POST['last_name']);
+		$_POST['address']    = ''; //$addslashes($_POST['address']);
+		$_POST['postal']     = ''; //$addslashes($_POST['postal']);
+		$_POST['city']       = ''; //$addslashes($_POST['city']);
+		$_POST['province']   = ''; //$addslashes($_POST['province']);
+		$_POST['country']    = ''; //$addslashes($_POST['country']);
+		$_POST['phone']      = ''; //$addslashes($_POST['phone']);
+		$_POST['email3']     = $addslashes($_POST['email3']);
 
 		if (!defined('AT_EMAIL_CONFIRMATION') || !AT_EMAIL_CONFIRMATION) {
 			$email = "email='$_POST[email]', ";
@@ -105,7 +108,7 @@ if (isset($_POST['submit'])) {
 			$email = '';
 		}
 
-		$sql = "UPDATE ".TABLE_PREFIX."members SET password='$_POST[password]', $email website='$_POST[website]', first_name='$_POST[first_name]', last_name='$_POST[last_name]', dob='$dob', gender='$_POST[gender]', address='$_POST[address]', postal='$_POST[postal]', city='$_POST[city]', province='$_POST[province]', country='$_POST[country]', phone='$_POST[phone]', language='$_SESSION[lang]' WHERE member_id=$_SESSION[member_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."members SET password='$_POST[password]', $email website='$_POST[website]', first_name='$_POST[first_name]', last_name='$_POST[last_name]', dob='$dob', gender='$_POST[gender]', address='$_POST[address]', postal='$_POST[postal]', city='$_POST[city]', province='$_POST[province]', country='$_POST[country]', phone='$_POST[phone]', language='$_SESSION[lang]', alternate_email='$_POST[email3]' WHERE member_id=$_SESSION[member_id]";
 
 		$result = mysql_query($sql,$db);
 		if (!$result) {
