@@ -130,7 +130,7 @@ if (isset($this_login, $this_password)) {
 				// note: if this IF statement executes, it is the 3rd failed attempt.
 				$last_attempt = time();
 				$cookie_expire = time()+31536000; // arbitrary expiry past 1 hour.
-				setcookie('FHALoginLockout', $last_attempt, $cookie_expire);
+				setcookie('FHA', $last_attempt, $cookie_expire);
 				$msg->addError('LOCKED');
 				require(AT_INCLUDE_PATH.'header.inc.php');
 				require(AT_INCLUDE_PATH.'footer.inc.php');
