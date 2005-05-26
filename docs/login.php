@@ -100,6 +100,7 @@ if (isset($this_login, $this_password)) {
 		}
 
 		$msg->addFeedback('LOGIN_SUCCESS');
+		unset($_SESSION['login_attempts']);
 		header('Location: bounce.php?course='.$_POST['form_course_id']);
 		exit;
 	} else {
