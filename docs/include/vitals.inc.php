@@ -15,7 +15,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_DEVEL', 1);
 define('AT_DEVEL_TRANSLATE', 0);
-
+define('FHA_ATTEMPTS', 3);
 /*
  * structure of this document (in order):
  *
