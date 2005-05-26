@@ -53,7 +53,6 @@ header('Pragma: public');
 
 /* employee #, course id, course title, result, date */
 do {
-	//get employee id
 	echo quote_csv($row['public_field']).', ';
 	echo $cid.', ';
 	echo quote_csv($course_title).', ';
