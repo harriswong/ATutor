@@ -101,10 +101,9 @@ if (isset($_POST['cancel'])) {
 		
 		$student_id  = $addslashes($_POST['student_id']);
 		$dob_y = intval($_POST['year']);
-		$dob_m = str_pad(intval($_POST['month']), 2, 0);
-		$dob_d = str_pad(intval($_POST['day']), 2, 0);
+		$dob_m = str_pad(intval($_POST['month']), 2, 0, STR_PAD_LEFT);
+		$dob_d = str_pad(intval($_POST['day']), 2, 0, STR_PAD_LEFT);
 		$dob = $dob_y . $dob_m . $dob_d;
-
 		$student_pin = sha1($dob);
 
 		$sql    = "SELECT member_id FROM ".TABLE_PREFIX."master_list WHERE public_field='$student_id' AND hash_field='$student_pin'";
