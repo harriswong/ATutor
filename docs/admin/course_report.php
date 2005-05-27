@@ -52,7 +52,7 @@ function make_csv($test_id) {
 		$csv_data .= "\n";
 	} 	
 
-	$csv['name'] = $course_title.'_'.$test_title.'_results.csv';
+	$csv['name'] = $course_title.'_'.$test_title.'_'.date('y_m_d').'.csv';
 	$csv['name'] = str_replace("\\", '_', $csv['name']);
 	$csv['name'] = str_replace(" ", '_', $csv['name']);
 	$csv['data'] = $csv_data;
@@ -78,7 +78,7 @@ if (count($_GET['id']) > 1) {
 
 	if ($zipfile->num_entries > 0) {
 		$zipfile->close();
-		$zipfile->send_file($course_title.'_test_results');
+		$zipfile->send_file($course_title.'_'.date('y_m_d'));
 	} else {
 		$msg->addError('RESULT_NOT_FOUND');
 		header("Location:course_tests.php?course=".$_GET['course']);
