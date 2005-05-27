@@ -38,30 +38,30 @@ $num_rows = mysql_num_rows($result);
 	<tr>
 		<th scope="col">&nbsp;</th>
 		<th scope="col"><?php echo _AT('title'); ?></th>
-		<th scope="col">#<?php echo _AT('results'); ?></th>
 	</tr>
 </thead>
 <tfoot>
 	<tr>
 		<td colspan="7">
-			<input type="submit" name="report" value="Report" />
+			<input type="submit" name="report" value="Get Reports" />
 		</td>
 	</tr>
 </tfoot>
 <tbody>
-<?php if ($num_rows): ?>
-	<?php while ($row = mysql_fetch_assoc($result)): ?>
-		<tr onmousedown="document.form['m<?php echo $row['course_id']; ?>'].checked = true;">
-			<td width="1"><input type="radio" name="id" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" /></td>
-			<td><label for="t<?php echo $row['test_id']; ?>"><?php echo AT_print($row['title'], 'tests.title'); ?></label></td>
-			<td><?php echo ""; ?></td>
+	<?php if ($num_rows): ?>
+		<?php while ($row = mysql_fetch_assoc($result)): ?>
+			<tr onmousedown="document.form['m<?php echo $row['course_id']; ?>'].checked = true;">
+				<td width="1"><input type="checkbox" name="id[]" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" /></td>
+				<td><label for="t<?php echo $row['test_id']; ?>"><?php echo AT_print($row['title'], 'tests.title'); ?>
+					<?php if ($row['format'] == 1) { echo " - <strong>Challenge Test</strong>"; } ?>					
+				</label></td>
+			</tr>
+		<?php endwhile; ?>
+	<?php else: ?>
+		<tr>
+			<td colspan="7"><?php echo _AT('none_found'); ?></td>
 		</tr>
-	<?php endwhile; ?>
-<?php else: ?>
-	<tr>
-		<td colspan="7"><?php echo _AT('none_found'); ?></td>
-	</tr>
-<?php endif; ?>
+	<?php endif; ?>
 </tbody>
 </table>
 
