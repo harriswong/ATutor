@@ -50,7 +50,7 @@ $num_rows = mysql_num_rows($result);
 <tbody>
 	<?php if ($num_rows): ?>
 		<?php while ($row = mysql_fetch_assoc($result)): ?>
-			<tr onmousedown="document.form['t<?php echo $row['course_id']; ?>'].checked = true;">
+			<tr onmousedown="document.form['t<?php echo $row['test_id']; ?>'].checked = true;">
 				<td width="1"><input type="checkbox" name="id[]" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" /></td>
 				<td><label for="t<?php echo $row['test_id']; ?>"><?php echo AT_print($row['title'], 'tests.title'); ?>
 					<?php if ($row['format'] == 1) { echo " - <strong>Challenge Test</strong>"; } ?>					

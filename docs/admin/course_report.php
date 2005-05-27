@@ -25,28 +25,21 @@ function quote_csv($line) {
 }
 
 function make_csv($test_id) {
-	global $msg, $db;
+	global $msg, $db, $system_courses;
 
 	//get course name, course id
-	$sql	= "SELECT C.course_id, C.title, T.title as test_title FROM ".TABLE_PREFIX."courses C, ".TABLE_PREFIX."tests T WHERE test_id=$test_id";
+	$sql	= "SELECT course_id, title FROM ".TABLE_PREFIX."tests WHERE test_id=$test_id";
 	$result = mysql_query($sql, $db);
-	if (!($row = mysql_fetch_array($result))){
-		$msg->addError('TEST_NOT_FOUND');
-		header("Location:course_tests.php?course=".$_GET['course']);
-		exit;
-	}
-	$course_title = $row['title'];
+	$row = mysql_fetch_array($result);
+
 	$course_id = $row['course_id'];
-	$test_title = $row['test_title'];
+	$test_title = $row['title'];
+	$course_title = $system_courses[$course_id]['title'];
 
 	//get test
 	$sql	= "SELECT R.*, M.public_field FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."master_list M WHERE R.final_score<>'' AND M.member_id=R.member_id AND R.test_id=$test_id ORDER BY M.public_field, R.date_taken";
 	$result	= mysql_query($sql, $db);
-	if (!($row = mysql_fetch_assoc($result))){
-		$msg->addError('RESULT_NOT_FOUND');
-		header("Location:course_tests.php?course=".$_GET['course']);
-		exit;
-	}  
+	$row = mysql_fetch_assoc($result);  
 
 	/* employee #, course id, course title, result, date */
 	$csv = array();
@@ -58,42 +51,57 @@ function make_csv($test_id) {
 		$csv_data .= $row['final_score'].', ';
 		$csv_data .= quote_csv($row['date_taken']);
 		$csv_data .= "\n";
-	} while ($row = mysql_fetch_array($result));
+	} while ($row = mysql_fetch_array($result));	
 
 	$csv['name'] = $course_title.'_'.$test_title.'_results.csv';
+	$csv['name'] = str_replace("\\", '_', $csv['name']);
+	$csv['name'] = str_replace(" ", '_', $csv['name']);
 	$csv['data'] = $csv_data;
+
 	return $csv;
 }
 
 if (count($_GET['id']) > 1) {
 	require(AT_INCLUDE_PATH.'classes/zipfile.class.php');
 
-	//get course name
-	$sql	= "SELECT C.title FROM ".TABLE_PREFIX."courses C, ".TABLE_PREFIX."tests T WHERE test_id=".$_GET['id'][0];
-	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);
-	$course_title = $row['title'];
+	$course_title = $system_courses[$_GET['course']]['title'];
+	$course_title = str_replace("//", '_', $course_title);
+	$course_title = str_replace(" ", '_', $course_title);
 
 	$zipfile = new zipfile();
 
 	foreach($_GET['id'] as $test_id) {
 		$csv = make_csv($test_id);
-		$zipfile->add_file($csv['data'], $csv['name']);
+		if ($csv['data']) {
+			$zipfile->add_file($csv['data'], $csv['name']);
+		}
 	}
 
-	$zipfile->close();
-	$zipfile->send_file($course_title.'_test_results');
+	if ($zipfile->num_entries > 0) {
+		$zipfile->close();
+		$zipfile->send_file($course_title.'_test_results');
+	} else {
+		$msg->addError('RESULT_NOT_FOUND');
+		header("Location:course_tests.php?course=".$_GET['course']);
+		exit;
+	}
 
 } else if (count($_GET['id']) == 1) {
 	$csv = make_csv($_GET['id'][0]);
 
-	header('Content-Type: application/x-excel');
-	header('Content-Disposition: inline; filename="'.$csv['name'].'"');
-	header('Expires: 0');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-	header('Pragma: public');
+	if ($csv['data']) {
+		header('Content-Type: application/x-excel');
+		header('Content-Disposition: inline; filename="'.$csv['name'].'"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
 
-	echo $csv['data'];
+		echo $csv['data'];
+	} else {
+		$msg->addError('RESULT_NOT_FOUND');
+		header("Location:course_tests.php?course=".$_GET['course']);
+		exit;
+	}
 } 
 
 exit;
