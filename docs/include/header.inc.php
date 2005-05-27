@@ -135,7 +135,7 @@ $savant->assign('back_to_page', $back_to_page);
 $savant->assign('page_title', $_page_title);
 $savant->assign('top_level_pages', $_top_level_pages);
 $savant->assign('section_title', $section_title);
-if (isset($_pages[$current_page]['guide'])) {
+if (defined('AT_USE_GUIDE') && AT_USE_GUIDE && isset($_pages[$current_page]['guide'])) {
 	$savant->assign('guide', AT_GUIDES_PATH . $_pages[$current_page]['guide']);
 }
 
