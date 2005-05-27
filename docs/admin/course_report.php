@@ -39,19 +39,18 @@ function make_csv($test_id) {
 	//get test
 	$sql	= "SELECT R.*, M.public_field FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."master_list M WHERE R.final_score<>'' AND M.member_id=R.member_id AND R.test_id=$test_id ORDER BY M.public_field, R.date_taken";
 	$result	= mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);  
 
 	/* employee #, course id, course title, result, date */
 	$csv = array();
 	$csv_data = "";
-	do {
+	while ($row = mysql_fetch_array($result)) {
 		$csv_data .= quote_csv($row['public_field']).', ';
 		$csv_data .= $course_id.', ';
 		$csv_data .= quote_csv($course_title).', ';
 		$csv_data .= $row['final_score'].', ';
 		$csv_data .= quote_csv($row['date_taken']);
 		$csv_data .= "\n";
-	} while ($row = mysql_fetch_array($result));	
+	} 	
 
 	$csv['name'] = $course_title.'_'.$test_title.'_results.csv';
 	$csv['name'] = str_replace("\\", '_', $csv['name']);
