@@ -50,11 +50,11 @@ $num_rows = mysql_num_rows($result);
 <tbody>
 	<?php if ($num_rows): ?>
 		<?php while ($row = mysql_fetch_assoc($result)): ?>
-			<tr onmousedown="document.form['t<?php echo $row['test_id']; ?>'].checked = true;">
-				<td width="1"><input type="checkbox" name="id[]" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" /></td>
-				<td><label for="t<?php echo $row['test_id']; ?>"><?php echo AT_print($row['title'], 'tests.title'); ?>
+			<tr onmousedown="document.form['t<?php echo $row['test_id']; ?>'].checked = !document.form['t<?php echo $row['test_id']; ?>'].checked;">
+				<td width="1"><input type="checkbox" name="id[]" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" onmouseup="this.checked=!this.checked" /></td>
+				<td><?php echo AT_print($row['title'], 'tests.title'); ?>
 					<?php if ($row['format'] == 1) { echo " - <strong>Challenge Test</strong>"; } ?>					
-				</label></td>
+				</td>
 			</tr>
 		<?php endwhile; ?>
 	<?php else: ?>
