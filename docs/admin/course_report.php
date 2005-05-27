@@ -25,15 +25,19 @@ function quote_csv($line) {
 }
 
 function make_csv($test_id) {
-	global $msg, $db, $system_courses;
+	global $db, $system_courses;
+
+	$test_id = intval($test_id);
 
 	//get course name, course id
 	$sql	= "SELECT course_id, title FROM ".TABLE_PREFIX."tests WHERE test_id=$test_id";
 	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_array($result);
+	if (!($row = mysql_fetch_assoc($result))) {
+		return FALSE;
+	}
 
-	$course_id = $row['course_id'];
-	$test_title = $row['title'];
+	$course_id    = $row['course_id'];
+	$test_title   = $row['title'];
 	$course_title = $system_courses[$course_id]['title'];
 
 	//get test
@@ -43,7 +47,7 @@ function make_csv($test_id) {
 	/* employee #, course id, course title, result, date */
 	$csv = array();
 	$csv_data = "";
-	while ($row = mysql_fetch_array($result)) {
+	while ($row = mysql_fetch_assoc($result)) {
 		$csv_data .= quote_csv($row['public_field']).', ';
 		$csv_data .= $course_id.', ';
 		$csv_data .= quote_csv($course_title).', ';
