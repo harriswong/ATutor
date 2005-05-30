@@ -50,7 +50,7 @@ if (isset($_POST['cancel'])) {
 		}
 	}
 
-	if ($_POST['secret'] != $_SESSION['secret']) {
+	if (intval($_POST['secret']) != $_SESSION['secret']) {
 		$msg->addError('SECRET_ERROR');
 	}
 
