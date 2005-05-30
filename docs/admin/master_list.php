@@ -117,6 +117,7 @@ if ($_GET['reset_filter']) {
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('update_list'); ?></h3>
+		<p>File must be comma seperated file where each row contains: <code>"employee_number","YYYYMMDD"</code>.</p>
 		<label for="file"><?php echo _AT('file'); ?></label><br />
 		<input type="file" name="file" size="40" id="file" />
 	</div>
