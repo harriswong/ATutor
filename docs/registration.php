@@ -20,7 +20,7 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 if (isset($_COOKIE['FHA_REGISTER'])) {
 	$cookie_registration_lockout = $_COOKIE['FHA_REGISTER'];
 	if (time()-$cookie_registration_lockout < 3600) {
-		$msg->addError('LOCKED');
+		$msg->addError('REGISTRATION_LOCKED');
 		require(AT_INCLUDE_PATH.'header.inc.php');
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
@@ -196,14 +196,14 @@ if (isset($_POST['cancel'])) {
 			$last_attempt = time();
 			$cookie_expire = time()+31536000; // Expire in 1 year.
 			setcookie('FHA_REGISTER', $last_attempt, $cookie_expire);
-			$msg->addError('LOCKED');
+			$msg->addError('REGISTRATION_LOCKED');
 			require(AT_INCLUDE_PATH.'header.inc.php');
 			require(AT_INCLUDE_PATH.'footer.inc.php');
 			exit;
 		} else if ($_SESSION['register_attempts'] == FHA_ATTEMPTS-1) {
-			$msg->addError('LOCK_WARNING2');
+			$msg->addError('REGISTRATION_LOCK_WARNING2');
 		} else {
-			$msg->addError('LOCK_WARNING1');
+			$msg->addError('REGISTRATION_LOCK_WARNING1');
 		}
 
 	}
