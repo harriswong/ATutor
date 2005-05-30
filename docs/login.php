@@ -36,7 +36,7 @@ if (!$msg->containsFeedbacks()) {
 if (isset($_COOKIE['FHA'])) {
 	$cookie_login_lockout = $_COOKIE['FHA'];
 	if (time()-$cookie_login_lockout < 3600) {
-		$msg->addError('LOCKED');
+		$msg->addError('LOGIN_LOCKED');
 		require(AT_INCLUDE_PATH.'header.inc.php');
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
@@ -133,12 +133,12 @@ if (isset($this_login, $this_password)) {
 				$last_attempt = time();
 				$cookie_expire = time()+31536000; // arbitrary expiry past 1 hour.
 				setcookie('FHA', $last_attempt, $cookie_expire);
-				$msg->addError('LOCKED');
+				$msg->addError('LOGIN_LOCKED');
 				require(AT_INCLUDE_PATH.'header.inc.php');
 				require(AT_INCLUDE_PATH.'footer.inc.php');
 				exit;
 			} else if ($_SESSION['login_attempts'] == FHA_ATTEMPTS-1) {
-				$msg->addError('LOCK_WARNING');
+				$msg->addError('LOGIN_LOCK_WARNING');
 			} else {
 				$msg->addError('INVALID_LOGIN');
 			}
