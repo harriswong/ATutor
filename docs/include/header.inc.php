@@ -180,12 +180,14 @@ if ($_SESSION['course_id'] > -1) {
 	}
 
 	//side menu array
+	/*
 	if ($_SESSION['course_id'] > 0) {
 		$side_menu = array();
 		$side_menu = explode('|', $system_courses[$_SESSION['course_id']]['side_menu']);
 		$side_menu = array_intersect($side_menu, $_stacks);
 		$savant->assign('side_menu', $side_menu);
 	}
+	*/
 }
 
 /* Register our Errorhandler on everypage */
