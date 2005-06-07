@@ -268,7 +268,8 @@ function LMSFinish (s) {
 		o.title = stat;
 		if (stat == 'not attempted') stat = 'not-attempted';
 		o.src = '<?php echo $im;?>'+stat+'.png';
-		if (!autonext && auto_advance && !initstat.equals(stat)) {
+
+		if (!autonext && auto_advance && initstat != stat) {
 			if (stat == 'completed' ||
 			    stat == 'passed'    ||
 			    stat == 'browsed') {
