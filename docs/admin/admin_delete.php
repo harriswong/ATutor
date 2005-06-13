@@ -36,6 +36,10 @@ if (isset($_POST['submit_yes'])) {
 	mysql_query($sql, $db);
 	write_to_log(AT_ADMIN_LOG_DELETE, 'forums_subscriptions', mysql_affected_rows($db), $sql);
 
+	$sql	= "UPDATE ".TABLE_PREFIX."master_list SET member_id=0 WHERE member_id=$id";
+	mysql_query($sql, $db);
+	write_to_log(AT_ADMIN_LOG_DELETE, 'master_list', mysql_affected_rows($db), $sql);
+
 
 	/****/
 	/* delete forum threads block: */
