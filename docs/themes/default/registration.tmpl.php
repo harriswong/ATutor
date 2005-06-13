@@ -138,22 +138,10 @@ if (!$_POST['email']) {
 		<h3><?php echo _AT('personal_information').' ('._AT('optional').')'; ?></h3>
 	</div>
 
-	<?php if (!$_POST['member_id'] && admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+	<?php if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
 		<div class="row">
 			<label for="student_id">Employee Number</label><br />
-				<?php
-					global $db;
-					$sql    = "SELECT public_field FROM ".TABLE_PREFIX."master_list WHERE member_id=0 ORDER BY public_field";
-					$result = mysql_query($sql, $db);
-					if ($row = mysql_fetch_assoc($result)) {
-						echo '<select name="student_id" id="student_id">';
-						echo '<option value=""></option>';
-						do {
-							echo '<option value="'.$row['public_field'].'">'.$row['public_field'].'</option>';
-						} while ($row = mysql_fetch_assoc($result));
-						echo '</select>';
-					}
-				?><br />
+				<input type="text" name="student_id" value="<?php echo $_POST['student_id']; ?>" size="20" /><br />
 		</div>
 	<?php endif; ?>
 
@@ -173,7 +161,7 @@ if (!$_POST['email']) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value=" <?php echo _AT('save'); ?> " accesskey="s" />
+		<input type="submit" name="submit" value=" <?php echo _AT('submit'); ?> " accesskey="s" />
 		<input type="submit" name="cancel" value=" <?php echo _AT('cancel'); ?> " />
 	</div>
 </div>

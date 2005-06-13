@@ -1,7 +1,21 @@
-<?php require('../common/body_header.inc.php'); ?>
+<?php
+/************************************************************************/
+/* ATutor																*/
+/************************************************************************/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Adaptive Technology Resource Centre / University of Toronto			*/
+/* http://atutor.ca														*/
+/*																		*/
+/* This program is free software. You can redistribute it and/or		*/
+/* modify it under the terms of the GNU General Public License			*/
+/* as published by the Free Software Foundation.						*/
+/************************************************************************/
+// $Id$
+
+require('../common/body_header.inc.php'); ?>
 
 <h2>6.3 Groups</h2>
 
-<p>Students can be placed into groups which allows the instructor administer different tests to different groups.</p>
+<p>Students can be assigned into groups created through the Enrollment Manager. This allows the instructor to administer different tests to different groups. When <a href="./15.1.creating_tests_surveys.php">creating a test</a>, groups will be available as a test property.</p>
 
 <?php require('../common/body_footer.inc.php'); ?>

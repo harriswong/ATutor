@@ -70,6 +70,7 @@ class Backup {
 	function generateFileName( ) {
 		global $system_courses;
 		$title = $system_courses[$this->course_id]['title'];
+
 		$title = str_replace(' ',  '_', $title);
 		$title = str_replace('%',  '',  $title);
 		$title = str_replace('\'', '',  $title);

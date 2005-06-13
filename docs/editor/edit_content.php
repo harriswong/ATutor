@@ -31,6 +31,10 @@ if ($_POST['close'] || $_GET['close']) {
 		$msg->addFeedback('CONTENT_UPDATED');
 	} else {
 		$msg->addFeedback('CLOSED');
+		if ($cid == 0) {
+			header('Location: '.$_base_href.'tools/content/index.php');
+			exit;
+		}
 	}
 	
 	if ($_REQUEST['cid'] == 0) {
@@ -87,7 +91,7 @@ if ($current_tab == 0) {
 if ($cid) {
 	$result = $contentManager->getContentPage($cid);
 
-	if (!($content_row = @mysql_fetch_assoc($result)) ) {
+	if (!($content_row = @mysql_fetch_assoc($result))) {
 		require(AT_INCLUDE_PATH.'header.inc.php');
 		$msg->printErrors('PAGE_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
@@ -255,12 +259,15 @@ $pid = intval($_REQUEST['pid']);
 
 	<?php if ($changes_made): ?>
 		<div class="unsaved">
-			<span style="color:red;"><?php echo _AT('save_changes_unsaved'); ?></span> <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" style="border: 1px solid red;" /> <input type="submit" name="close" class="button green" value="<?php echo _AT('close'); ?>" />  <input type="checkbox" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> /><label for="close"><?php echo _AT('close_after_saving'); ?></label>
+			<span style="color:red;"><?php echo _AT('save_changes_unsaved'); ?></span> 
+				<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" style="border: 1px solid red;" /> 
+				<input type="submit" name="close" class="button green" value="<?php echo _AT('close'); ?>" />  <input type="checkbox" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> />
+				<label for="close"><?php echo _AT('close_after_saving'); ?></label>
 		</div>
 
 	<?php else: ?>
 		<div class="saved">
-			<?php //if ($cid) { echo _AT('save_changes_saved'); } ?> <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" /> <input type="submit" name="close" value="<?php echo _AT('close'); ?>" /> <input type="checkbox" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> /><label for="close"><?php echo _AT('close_after_saving'); ?></label>
+			<?php //if ($cid) { echo _AT('save_changes_saved'); } ?> <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" /> <input type="submit" name="close" value="<?php echo _AT('close'); ?>" /> <input type="checkbox" style="border:0px;" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> /><label for="close"><?php echo _AT('close_after_saving'); ?></label>
 		</div>
 	<?php endif; ?>
 

@@ -1,14 +1,28 @@
-<?php require('../common/body_header.inc.php'); ?>
+<?php
+/************************************************************************/
+/* ATutor																*/
+/************************************************************************/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Adaptive Technology Resource Centre / University of Toronto			*/
+/* http://atutor.ca														*/
+/*																		*/
+/* This program is free software. You can redistribute it and/or		*/
+/* modify it under the terms of the GNU General Public License			*/
+/* as published by the Free Software Foundation.						*/
+/************************************************************************/
+// $Id$
+
+require('../common/body_header.inc.php'); ?>
 
 <h2>8.4 Managing Forums</h2>
 
-<p>Once a forum has been created, you should become familiar with the forum management tools. To access these tools you simply browse a forum while logged in as an instructor.</p>
+<p>Once a forum has been created, you should become familiar with the forum management tools. To access these tools browse a forum while logged in as an instructor, or as a student with forum management privilieges.</p>
 
 <h3>8.4.1 Managing Threads</h3>
 <p>For each thread in a forum, you can perform the following actions:</p>
 <dl>
 <dt>Stick Thread</dt>
-<dd><p>This keeps the specified thread at the top of the list. This is useful for keeping important information visible to forum users. Once a post has been stuck, it will have a "!" icon and remain at the top of the forum.</p>
+<dd><p>This keeps the specified thread at the top of the list. This is useful for keeping important information visible to forum users. Once a post has been stuck, it will have an exclamation ( ! ) icon next to it and remain at the top of the forum's thread list.</p>
 
 <p>To unstick a thread, just select the "Sticky Thread" icon again.</p>
 
@@ -24,7 +38,7 @@
 </dl>
 
 <h3>8.4.1 Managing Posts</h3>
-<p>For each post in a given thread, the course instructor can perform the following administrative actions: Edit, and Delete.</p>
+<p>For each post in a given thread, the course instructor, or privileged students, can perform the following administrative actions: Edit, and Delete.</p>
 
 <dl>
 <dt>Edit</dt>

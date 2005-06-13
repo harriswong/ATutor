@@ -60,27 +60,29 @@ $cols=6;
 	<th scope="col"><?php echo _AT('availability');   ?></th>
 	<th scope="col"><?php echo _AT('result_release'); ?></th>
 	<th scope="col"><?php echo _AT('submissions'); ?></th>
+	<th scope="col"><?php echo _AT('assigned_to'); ?></th>
 </tr>
 </thead>
-<tfoot>
-<tr>
-	<td colspan="6">
-		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" />
-		<input type="submit" name="preview" value="<?php echo _AT('preview'); ?>" />
-		<input type="submit" name="questions" value="<?php echo _AT('questions'); ?>" />
-	</td>
-</tr>
-<tr>	
-	<td colspan="6" style="padding-left:38px;">
-		<input type="submit" name="submissions" value="<?php echo _AT('submissions'); ?>" />
-		<input type="submit" name="statistics" value="<?php echo _AT('statistics'); ?>" />
-		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
-	</td>
-</tr>
-</tfoot>
 
-<tbody>
 <?php if ($num_tests): ?>
+	<tfoot>
+	<tr>
+		<td colspan="7">
+			<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" />
+			<input type="submit" name="preview" value="<?php echo _AT('preview'); ?>" />
+			<input type="submit" name="questions" value="<?php echo _AT('questions'); ?>" />
+		</td>
+	</tr>
+	<tr>	
+		<td colspan="7" style="padding-left:38px;">
+			<input type="submit" name="submissions" value="<?php echo _AT('submissions'); ?>" />
+			<input type="submit" name="statistics" value="<?php echo _AT('statistics'); ?>" />
+			<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+		</td>
+	</tr>
+	</tfoot>
+	<tbody>
+
 	<?php while ($row = mysql_fetch_assoc($result)) : ?>
 		<tr onmousedown="document.form['t<?php echo $row['test_id']; ?>'].checked = true;">
 			<td><input type="radio" name="id" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" /></td>
@@ -119,11 +121,35 @@ $cols=6;
 				echo $row_sub['marked_cnt'].' '._AT('unmarked');
 				?>
 			</td>
+			<td><?php
+				//get assigned groups
+				$sql_sub = "SELECT group_id FROM ".TABLE_PREFIX."tests_groups WHERE test_id=".$row['test_id'];
+				$result_sub	= mysql_query($sql_sub, $db);	
+				if (mysql_num_rows($result_sub) == 0) {					
+					echo _AT('everyone');
+				} else {
+					$groups = array();
+					$sql_group = "SELECT title, group_id FROM ".TABLE_PREFIX."groups WHERE course_id=".$_SESSION['course_id'];
+					$result_group	= mysql_query($sql_group, $db);
+					while ($row_group = mysql_fetch_assoc($result_group)) {
+						$groups[$row_group['group_id']] = $row_group['title'];
+					}
+
+					$groups_str = "";
+					while($row_sub = mysql_fetch_assoc($result_sub)) {						
+						$groups_str .=  $groups[$row_sub['group_id']].', ';
+					}
+					$groups_str = substr($groups_str, 0 , -2);
+					echo $groups_str;
+				}				
+				?>
+			</td>
 		</tr>
 	<?php endwhile; ?>
 <?php else: ?>
+	<tbody>
 	<tr>
-		<td colspan="6"><?php echo _AT('none_found'); ?></td>
+		<td colspan="7"><?php echo _AT('none_found'); ?></td>
 	</tr>
 <?php endif; ?>
 </tbody>

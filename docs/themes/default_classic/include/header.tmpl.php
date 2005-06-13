@@ -123,9 +123,9 @@ function toggleToc(objId) {
 <div id="breadcrumbs" style="border-bottom:1pt solid #152065;">
 	<div style="float: right; color: #5E6D89;">
 		<!-- hidden direct link to content -->
-		<a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content" style="border: 0px;"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" accesskey="c" /></a>
+		<a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content" style="border: 0px;" accesskey="c"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" /></a>
 
-	<?php if (isset($_SESSION['course_id']) && ($_SESSION['course_id'] >= 0)): ?>
+		<?php if (isset($_SESSION['course_id']) && ($_SESSION['course_id'] >= 0)): ?>
 			<!-- start the jump menu -->
 			<?php if (empty($_GET)): ?>
 				<form method="post" action="<?php echo $this->base_path; ?>bounce.php?p=<?php echo urlencode($this->rel_url); ?>" target="_top">
@@ -137,12 +137,12 @@ function toggleToc(objId) {
 					<option value="0" id="start-page"><?php echo _AT('my_start_page'); ?></option>
 					<optgroup label="<?php echo _AT('courses_below'); ?>">
 						<?php foreach ($this->nav_courses as $this_course_id => $this_course_title): ?>
-							<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
+							<option value="<?php echo $this_course_id; ?>"><?php echo $thisc_ourse_title; ?></option>
 						<?php endforeach; ?>
 					</optgroup>
 				</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /></form>
 			<!-- /end the jump menu -->
-	<?php endif; ?>
+		<?php endif; ?>
 
 		<?php if ($_SESSION['valid_user']): ?>
 			<img src="<?php echo $this->img;?>user-star.gif" style="vertical-align: middle;" class="img-size-star" alt="" /><strong style="color: white;"><?php echo $_SESSION['login']; ?></strong>  | 
@@ -163,14 +163,21 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
-	<small><?php echo _AT('back_to'); ?>
+	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;"><?php echo $this->section_title; ?>:
+	<?php if ($this->sequence_links['resume']): ?>
+			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
+	<?php endif; ?>
 	<?php foreach ($this->path as $page): ?>
-		<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
-	<?php endforeach; ?> <?php echo $this->page_title; ?></small>
+		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> » 
+	<?php endforeach; ?> <?php echo $this->page_title; ?></span>
 </div>
 
 <div>
 	<div style="float:right;text-align:right;padding-top:5px;">
+	<?php if ($_SESSION['valid_user']) : 
+		echo '<span style="font-size:small;font-weight:bold;padding-left:5px;">'.stripslashes(SITE_NAME).'</span>'; 
+	endif; ?>
+
 	<h1 class="section-title">
 		<?php if (defined('HEADER_LOGO') && HEADER_LOGO): ?>
 			<img src="<?php echo HEADER_LOGO; ?>" border="0" alt="<?php echo SITE_NAME; ?>" />
@@ -191,10 +198,10 @@ function toggleToc(objId) {
 	<td id="left-empty-tab">&nbsp;</td>
 	<?php foreach ($this->top_level_pages as $page): ?>
 		<?php if ($page['url'] == $this->current_top_level_page): ?>
-			<td class="selected"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>"><?php echo $page['title']; ?></a></td>
+			<td class="selected"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></td>
 			<td class="tab-spacer">&nbsp;</td>
 		<?php else: ?>
-			<td class="tab"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>"><?php echo $page['title']; ?></a></td>
+			<td class="tab"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></td>
 			<td class="tab-spacer">&nbsp;</td>
 		<?php endif; ?>
 	<?php endforeach; ?>
