@@ -47,6 +47,11 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('EMAIL_EXISTS');
 		} else if ($_POST['email'] != $_POST['email2']) {
 			$msg->addError('EMAIL_MISMATCH');
+		} else if ((strpos($_POST['email'], 'fraserhealth.ca') !== FALSE) && (substr_count($_POST['email'], '.') != 2)) {
+			// if email uses FHA email then check for the dot.
+			$msg->addError('EMAIL_FHA_MISMATCH');
+		} else if ($_POST['email'] == 'firstname.lastname@fraserhealth.ca') {
+			$msg->addError('EMAIL_FHA_MISMATCH');
 		}
 	}
 
