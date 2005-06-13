@@ -199,6 +199,7 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 		$_pages['admin/backup/edit.php']['title_var'] = 'edit';
 		$_pages['admin/backup/edit.php']['parent']    = 'admin/backup/index.php';
 
+
 	$_pages['admin/forums.php']['title_var'] = 'forums';
 	$_pages['admin/forums.php']['parent']    = 'admin/courses.php';
 	$_pages['admin/forums.php']['guide']     = 'admin/?p=4.2.forums.php';
@@ -226,10 +227,6 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 
 		$_pages['admin/delete_category.php']['title_var'] = 'delete_category';
 		$_pages['admin/delete_category.php']['parent']    = 'admin/course_categories.php';
-
-	$_pages['admin/course_tests.php']['title_var'] = 'tests';
-	$_pages['admin/course_tests.php']['parent']    = 'admin/courses.php';
-
 
 /* public pages */
 $_pages['registration.php']['title_var'] = 'register';
@@ -288,6 +285,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/polls/index.php']['title_var']  = 'polls';
 	$_pages['tools/polls/index.php']['parent'] = 'tools/index.php';
 	$_pages['tools/polls/index.php']['children'] = array('tools/polls/add.php');
+	$_pages['tools/polls/index.php']['guide']     = 'instructor/?p=11.0.polls.php';
 
 		$_pages['tools/polls/add.php']['title_var']  = 'add_poll';
 		$_pages['tools/polls/add.php']['parent'] = 'tools/polls/index.php';
@@ -300,7 +298,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/filemanager/index.php']['title_var'] = 'file_manager';
 	$_pages['tools/filemanager/index.php']['parent']    = 'tools/index.php';
-	$_pages['tools/filemanager/index.php']['guide']     = 'instructor/?p=6.0.file_manager.php';
+	$_pages['tools/filemanager/index.php']['guide']     = 'instructor/?p=7.0.file_manager.php';
 	$_pages['tools/filemanager/index.php']['children'] = array('tools/filemanager/new.php');
 
 		$_pages['tools/filemanager/new.php']['title_var']  = 'create_new_file';
@@ -323,10 +321,13 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/course_stats.php']['title_var']  = 'statistics';
 	$_pages['tools/course_stats.php']['parent'] = 'tools/index.php';
+	$_pages['tools/course_stats.php']['guide']     = 'instructor/?p=13.0.statistics.php';
+
 
 	$_pages['tools/course_properties.php']['title_var']    = 'properties';
 	$_pages['tools/course_properties.php']['parent']   = 'tools/index.php';
 	$_pages['tools/course_properties.php']['children'] = array('tools/delete_course.php');
+	$_pages['tools/course_properties.php']['guide']     = 'instructor/?p=12.0.properties.php';
 
 		$_pages['tools/delete_course.php']['title_var']  = 'delete_course';
 		$_pages['tools/delete_course.php']['parent'] = 'tools/course_properties.php';
@@ -334,12 +335,15 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/modules.php']['title_var']  = 'student_tools';
 	$_pages['tools/modules.php']['parent'] = 'tools/index.php';
 	$_pages['tools/modules.php']['children'] = array('tools/side_menu.php');
+	$_pages['tools/modules.php']['guide']     = 'instructor/?p=14.0.student_tools.php';
 
 		$_pages['tools/side_menu.php']['title_var']  = 'side_menu';
 		$_pages['tools/side_menu.php']['parent'] = 'tools/modules.php';
+		$_pages['tools/side_menu.php']['guide']     = 'instructor/?p=course_stats.php';
 
 	$_pages['tools/course_email.php']['title_var']  = 'course_email';
 	$_pages['tools/course_email.php']['parent'] = 'tools/index.php';
+	$_pages['tools/course_email.php']['guide']     = 'instructor/?p=5.0.course_email.php';
 
 	$_pages['tools/content/index.php']['title_var'] = 'content';
 	$_pages['tools/content/index.php']['parent']    = 'tools/index.php';
@@ -384,7 +388,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/enrollment/index.php']['title_var'] = 'enrolment';
 	$_pages['tools/enrollment/index.php']['parent']    = 'tools/index.php';
-	$_pages['tools/enrollment/index.php']['guide']     = 'instructor/?p=5.0.enrollment.php';
+	$_pages['tools/enrollment/index.php']['guide']     = 'instructor/?p=6.0.enrollment.php';
 	$_pages['tools/enrollment/index.php']['children'] = array('tools/enrollment/export_course_list.php', 'tools/enrollment/import_course_list.php', 'tools/enrollment/create_course_list.php', 'tools/enrollment/groups.php');
 
 		$_pages['tools/enrollment/export_course_list.php']['title_var']    = 'list_export_course_list';
@@ -406,9 +410,13 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 			$_pages['tools/enrollment/groups_manage.php']['title_var']  = 'create_group';
 			$_pages['tools/enrollment/groups_manage.php']['parent'] = 'tools/enrollment/groups.php';
 
+			$_pages['tools/enrollment/groups_members.php']['title_var'] = 'group_members';
+			$_pages['tools/enrollment/groups_members.php']['parent']    = 'tools/enrollment/groups.php';
+
 		$_pages['tools/enrollment/privileges.php']['title_var']  = 'roles_privileges';
 		$_pages['tools/enrollment/privileges.php']['parent'] = 'tools/enrollment/index.php';
-
+		$_pages['tools/enrollment/privileges.php']['guide']     = 'instructor/?p=6.1.roles_privileges.php';
+		
 		$_pages['tools/enrollment/enroll_edit.php']['title_var']    = 'edit';
 		$_pages['tools/enrollment/enroll_edit.php']['parent']   = 'tools/enrollment/index.php';
 
@@ -505,25 +513,28 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['tools/links/categories_delete.php']['title_var']  = 'delete_category';
 		$_pages['tools/links/categories_delete.php']['parent'] = 'tools/links/categories.php';
 
-
 	// tests
 	$_pages['tools/tests/index.php']['title_var'] = 'tests';
 	$_pages['tools/tests/index.php']['parent']    = 'tools/index.php';
-	$_pages['tools/tests/index.php']['guide']     = 'instructor/?p=7.0.tests_surveys.php';
+	$_pages['tools/tests/index.php']['guide']     = 'instructor/?p=15.0.tests_surveys.php';
 	$_pages['tools/tests/index.php']['children']  = array('tools/tests/create_test.php', 'tools/tests/question_db.php', 'tools/tests/question_cats.php');
 
 	$_pages['tools/tests/create_test.php']['title_var']  = 'create_test';
 	$_pages['tools/tests/create_test.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/create_test.php']['guide']     = 'instructor/?p=15.1.creating_tests_surveys.php';
 
 	$_pages['tools/tests/question_db.php']['title_var']  = 'question_database';
 	$_pages['tools/tests/question_db.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/question_db.php']['guide']     = 'instructor/?p=15.2.question_database.php';
 
 		$_pages['tools/tests/create_question_multi.php']['title_var']  = 'create_question_multi';
 		$_pages['tools/tests/create_question_multi.php']['parent'] = 'tools/tests/question_db.php';
 
+
 	$_pages['tools/tests/question_cats.php']['title_var']  = 'question_categories';
 	$_pages['tools/tests/question_cats.php']['parent'] = 'tools/tests/index.php';
 	$_pages['tools/tests/question_cats.php']['children'] = array('tools/tests/question_cats_manage.php');
+	$_pages['tools/tests/question_cats.php']['guide']     = 'instructor/?p=15.3.question_categories.php';
 
 	$_pages['tools/tests/question_cats_manage.php']['title_var']  = 'create_category';
 	$_pages['tools/tests/question_cats_manage.php']['parent'] = 'tools/tests/question_cats.php';
@@ -543,8 +554,11 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/tests/results.php']['title_var']  = 'submissions';
 	$_pages['tools/tests/results.php']['parent'] = 'tools/tests/index.php';
 
-	//$_pages['tools/tests/results_all_quest.php']['title_var']  = _AT('statistics');
+	$_pages['tools/tests/results_all.php']['guide']     = 'instructor/?p=15.5.student_submissions.php';
+
+	//$_pages['tools/tests/results_all_quest.php']['title_var']  =  _AT('question')." "._AT('statistics');
 	//$_pages['tools/tests/results_all_quest.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/results_all_quest.php']['guide']     = 'instructor/?p=15.6.test_statistics.php';
 
 	$_pages['tools/tests/delete_test.php']['title_var']  = 'delete_test';
 	$_pages['tools/tests/delete_test.php']['parent'] = 'tools/tests/index.php';
@@ -597,6 +611,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 	$_pages['tools/packages/index.php']['title_var'] = 'packages';
 	$_pages['tools/packages/index.php']['parent']    = 'tools/index.php';
 	$_pages['tools/packages/index.php']['children']  = array('tools/packages/import.php', 'tools/packages/delete.php', 'tools/packages/settings.php');
+	$_pages['tools/packages/index.php']['guide']    = 'instructor/?p=4.5.scorm_packages.php';
 		
 		$_pages['tools/packages/import.php']['title_var'] = 'import_package';
 		$_pages['tools/packages/import.php']['parent']    = 'tools/packages/index.php';
