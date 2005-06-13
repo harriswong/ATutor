@@ -194,7 +194,7 @@ function toggleToc(objId) {
 					<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?></a> | 
 				<?php endif; ?>
 			<?php endif; ?>
-			<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> | 
+			<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> |
 			<a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a> |
 			<a href="<?php echo $this->base_path; ?>logout.php"><?php echo _AT('logout'); ?></a>
 		<?php else: ?>
@@ -206,7 +206,7 @@ function toggleToc(objId) {
 
 	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;"><?php echo $this->section_title; ?>:
 	<?php if ($this->sequence_links['resume']): ?>
-			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('back_to').' '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
+			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
 	<?php endif; ?>
 	<?php foreach ($this->path as $page): ?>
 		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> » 
@@ -214,17 +214,34 @@ function toggleToc(objId) {
 </div>
 
 
-<div width="100%" class="header">
-	<!-- section title -->
-	<br /><br /><h1><span style="font-size:medium;"><?php echo stripslashes(SITE_NAME); ?>:</span> <?php echo $this->section_title; ?>
+<div class="header">
+	<!-- section title -->	
+	<?php if ($_SESSION['valid_user']) : 
+		echo '<span style="font-size:small;font-weight:bold;padding-left:5px;">'.stripslashes(SITE_NAME).'</span>'; 
+	endif; ?>
+	<h1><?php echo $this->section_title; ?>
+
 	<?php if (($_SESSION['course_id'] > 0) && ($_SESSION['enroll'] == AT_ENROLL_NO)) : ?>
 		- <a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
 	<?php endif; ?></h1>
 
+<div id="topnavlistcontainer">
+<ul id="topnavlist">
+	<?php foreach ($this->top_level_pages as $page): ?>
+		<?php if ($page['url'] == $this->current_top_level_page): ?>
+			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
+		<?php else: ?>
+			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
+		<?php endif; ?>
+	<?php endforeach; ?>
+</ul>
+</div>
+
 	<!-- the main navigation. in our case, tabs -->
+	<!--
 	<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr valign="bottom">
-		<td id="left-empty-tab">&nbsp;</td>
+		<td class="left-empty-tab">&nbsp;</td>
 		<?php foreach ($this->top_level_pages as $page): ?>
 			<?php if ($page['url'] == $this->current_top_level_page): ?>
 				<td class="selected"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></td>
@@ -234,9 +251,10 @@ function toggleToc(objId) {
 				<td class="tab-spacer">&nbsp;</td>
 			<?php endif; ?>
 		<?php endforeach; ?>
-		<td id="right-empty-tab">&nbsp;</td>
+		<td class="right-empty-tab">&nbsp;</td>
 	</tr>
 	</table>
+	-->
 </div>
 
 <!-- the sub navigation -->
@@ -276,7 +294,7 @@ function toggleToc(objId) {
 <!-- the page title -->
 	<div style="text-align: right; padding-bottom: 10px; padding-right: 10px; float: right; margin-top: 10px; padding-right: 5px;">
 		<?php if ($this->guide): ?>
-			<a href="<?php echo $this->guide; ?>" id="guide" onClick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
+			<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
 		<?php endif; ?>
 
 		<?php if ($_SESSION['course_id'] > 0 && $this->side_menu): ?>
