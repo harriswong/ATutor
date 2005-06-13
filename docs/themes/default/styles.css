@@ -1152,8 +1152,6 @@ ul#topnavlist li a {
 	background: #A9CEE5;
 	text-decoration: none;
 	margin-left: 3px;
-	-moz-border-radius-topright: 4px;
-	-moz-border-radius-topleft: 4px;
 	white-space: nowrap;
 	font-size: larger;
 }
