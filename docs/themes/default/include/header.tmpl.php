@@ -195,7 +195,7 @@ function toggleToc(objId) {
 				<?php endif; ?>
 			<?php endif; ?>
 			<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> |
-			<a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a> |
+			<a href="<?php echo $this->base_path; ?>help/index.php" style="color:red;"><?php echo _AT('help'); ?></a> |
 			<a href="<?php echo $this->base_path; ?>logout.php"><?php echo _AT('logout'); ?></a>
 		<?php else: ?>
 			<a href="<?php echo $this->base_path; ?>login.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('login'); ?></a> | 
@@ -225,17 +225,17 @@ function toggleToc(objId) {
 		- <a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
 	<?php endif; ?></h1>
 
-<div id="topnavlistcontainer">
-<ul id="topnavlist">
-	<?php foreach ($this->top_level_pages as $page): ?>
-		<?php if ($page['url'] == $this->current_top_level_page): ?>
-			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
-		<?php else: ?>
-			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
-		<?php endif; ?>
-	<?php endforeach; ?>
-</ul>
-</div>
+	<div id="topnavlistcontainer">
+	<ul id="topnavlist">
+		<?php foreach ($this->top_level_pages as $page): ?>
+			<?php if ($page['url'] == $this->current_top_level_page): ?>
+				<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
+			<?php else: ?>
+				<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
+			<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+	</div>
 
 	<!-- the main navigation. in our case, tabs -->
 	<!--

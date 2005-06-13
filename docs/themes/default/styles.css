@@ -1130,6 +1130,7 @@ ul.users{
 /* enrollment tabs */
 div#topnavlistcontainer {
 	border-bottom: 1px solid #9DAB9A;
+	padding-top:3px;
 }
 ul#topnavlist {
 	padding: 0px;
