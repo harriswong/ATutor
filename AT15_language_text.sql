@@ -16,5 +16,7 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_SECRET_ERROR','You did not correctly enter the numbers as they appear in the Image Validation field.',NOW(),'If user enters wrong capcha.'),
 
+
 ('en','_msgs','AT_ERROR_EMAIL_FHA_MISMATCH','The email address specified does not appear to be a valid Fraser Health email address.',NOW(),''),
+('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), '')
 ;
