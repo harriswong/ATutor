@@ -18,11 +18,6 @@ define('AT_INCLUDE_PATH', 'include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
 
-if (isset($_POST['cancel'])) {
-	header('Location: about.php');
-	exit;
-}
-
 // check if we have a cookie
 if (!$msg->containsFeedbacks()) {
 	if (isset($_COOKIE['ATLogin'])) {
@@ -47,19 +42,25 @@ if (isset($_COOKIE['FHA'])) {
 	}
 }
 
-if (isset($cookie_login, $cookie_pass) && !isset($_POST['submit'])) {
+if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
 	/* auto login */
 	$this_login		= $cookie_login;
 	$this_password	= $cookie_pass;
 	$auto_login		= 1;
 	$used_cookie	= true;
 	
-} else if (isset($_POST['submit'])) {
+} else if (isset($_POST['login'])) {
 	/* form post login */
 	$this_login		= $_POST['form_login'];
 	$this_password  = $_POST['form_password'];
 	$auto_login		= intval($_POST['auto']);
 	$used_cookie	= false;
+} else if (isset($_POST['register'])) {
+	header('Location: registration.php');
+	exit;
+} else if (isset($_POST['forgot'])) {
+	header('Location: password_reminder.php');
+	exit;
 }
 
 if (isset($this_login, $this_password)) {
