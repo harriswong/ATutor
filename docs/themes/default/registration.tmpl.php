@@ -57,9 +57,10 @@ if (!$_POST['email']) {
 
 		<div class="row">
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>Image Validation<br />
-			<p>Enter the following numbers as in the field below.</p>
-			<label for="secret"><img src="secret.php" alt="" /></label>
+			<p>In this image (<img src="secret.php" alt="" />) there are characters (numbers and/or letters). <br />Please type these characters into the following field.<br />
 			<input id="secret" name="secret" type="text" size="6" maxlength="6" value="" />
+			<br />
+			<small>&middot; This helps ensure a live person is registering on this system.<br /></small>
 		</div>
 	<?php endif; ?>
 
@@ -68,7 +69,7 @@ if (!$_POST['email']) {
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="login"><?php echo _AT('login_name'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="login">Choose a <?php echo _AT('login_name'); ?></label><br />
 		<?php if ($_POST['member_id']) : ?>
 				<span id="login"><?php echo stripslashes(htmlspecialchars($_POST['login'])); ?></span>
 				<input name="member_id" type="hidden" value="<?php echo intval($_POST['member_id']); ?>" />
@@ -81,14 +82,14 @@ if (!$_POST['email']) {
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password"><?php echo _AT('password'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password">Choose a <?php echo _AT('password'); ?></label><br />
 		<input id="password" name="password" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['password'])); ?>" /><br />
 		<small>&middot; <?php echo _AT('combination'); ?><br />
 		       &middot; <?php echo _AT('15_max_chars'); ?></small>
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password2"><?php echo _AT('password_again'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password2">Type the <?php echo _AT('password_again'); ?></label><br />
 		<input id="password2" name="password2" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['password2'])); ?>" />
 	</div>
 
