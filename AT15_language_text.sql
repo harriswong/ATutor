@@ -22,5 +22,6 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), ''),
 
-('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), '')
+('en','_msgs','AT_ERROR_REGISTER_MASTER_USED', 'The Employee Number and Date of Birth combination you provided is either being used or is incorrect.', NOW(), '')
+
 ;
