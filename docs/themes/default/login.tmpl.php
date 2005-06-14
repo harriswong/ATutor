@@ -8,8 +8,8 @@
 <thead>
 <tr>
 <th><h3><?php echo _AT('login') ?></h3></th>
-<th><h3><?php echo _AT('register') ?></h3></th>
-<th><h3><?php echo _AT('forgot') ?></h3></th>
+<th><h3>New User</h3></th>
+<th><h3>Password and Login Reminder</h3></th>
 </tr>
 </thead>
 
