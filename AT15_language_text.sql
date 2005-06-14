@@ -2,7 +2,9 @@ INSERT INTO AT15_language_text VALUES
 
 ('en', '_msgs', 'AT_ERROR_LOGIN_LOCKED','Maximum login attempts has been reached. Login has been temporarily disabled for 1 hour. Please <a href="./help/contact_support.php">contact FHA</a> if you forgot your login or password.',NOW(),'reached maximum login attempts. Now locked'),
 
-('en','_msgs','AT_ERROR_LOGIN_LOCK_WARNING','Please <a href="./help/contact_support.php">contact FHA</a> if you forgot your login or password. One more login attempt remains before login is temporarily disabled.',NOW(),'one more attempt before login lock'),
+('en','_msgs','AT_ERROR_LOGIN_LOCK_WARNING','Please <a href="./help/contact_support.php">contact FHA</a> if you forgot your login or password. You have one more attempt before the login page is disabled.',NOW(),'one more attempt before login lock'),
+
+('en','_msgs','AT_ERROR_LOGIN_WARNING1','You have entered an unrecognized login and password combination. If you forgot your login or password, please <a href="./help/contact_support.php">contact FHA</a>. You have two more attempts before the login page is disabled.',NOW(),'two more attempt before login lock'),
 
 ('en','_msgs','AT_ERROR_REGISTRATION_LOCKED','Maximum registration attempts has been reached. Registration has been temporarily disabled for 1 hour. Please <a href="./help/contact_support.php">contact FHA</a> if you require assistance.',NOW(),'failed registration attempts. Now locked'),
 
@@ -16,7 +18,9 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_SECRET_ERROR','You did not correctly enter the numbers as they appear in the Image Validation field.',NOW(),'If user enters wrong capcha.'),
 
-
 ('en','_msgs','AT_ERROR_EMAIL_FHA_MISMATCH','The email address specified does not appear to be a valid Fraser Health email address.',NOW(),''),
+
+('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), ''),
+
 ('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), '')
 ;
