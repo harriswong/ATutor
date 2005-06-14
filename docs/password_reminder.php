@@ -40,7 +40,7 @@ if (isset($_POST['cancel'])) {
 
 		$mail->From     = EMAIL;
 		$mail->AddAddress($r_email);
-		$mail->Subject = 'ATutor '._AT('password_reminder');
+		$mail->Subject = 'FHA Online Learning System Reminder';
 		$mail->Body    = $message;
 
 		if(!$mail->Send()) {
