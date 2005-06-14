@@ -94,7 +94,7 @@ $count  = (($page-1) * $results_per_page) + 1;
 $offset = ($page-1)*$results_per_page;
 
 if (isset($search) && admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-	$sql = "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status  FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE  WHERE M.status $status AND ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
+	$sql = "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status  FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE M.status $status AND ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
 } else if(isset ($search)) {
 	$sql = "SELECT member_id, login, first_name, last_name, email, status FROM ".TABLE_PREFIX."members WHERE status $status AND ((first_name LIKE '$search') OR (last_name LIKE '$search') OR (email LIKE '$search') OR (login LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
 }	else {
