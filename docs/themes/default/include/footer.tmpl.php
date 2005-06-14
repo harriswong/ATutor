@@ -8,10 +8,13 @@
 		<?php if ($this->sequence_links['resume']): ?>
 				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>" alt="<?php echo $this->sequence_links['resume']['title']; ?>"></a>
 
-		<?php else: ?>
-			<a href="<?php echo $this->sequence_links['previous']['url']; ?>" title="<?php echo _AT('previous_topic').': '. $this->sequence_links['previous']['title']; ?>" accesskey=","><img src="<?php echo $this->base_path; ?>images/previous.gif" border="0"></a>
-
-			<a href="<?php echo $this->sequence_links['next']['url']; ?>" title="<?php echo _AT('next_topic').': '.$this->sequence_links['next']['title']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/next.gif" border="0"></a>
+		<?php else: 
+			if ($this->sequence_links['previous']): ?>
+				<a href="<?php echo $this->sequence_links['previous']['url']; ?>" title="<?php echo _AT('previous_topic').': '. $this->sequence_links['previous']['title']; ?>" accesskey=","><img src="<?php echo $this->base_path; ?>images/previous.gif" border="0"></a>
+			<?php endif;
+			if ($this->sequence_links['next']): ?>
+				<a href="<?php echo $this->sequence_links['next']['url']; ?>" title="<?php echo _AT('next_topic').': '.$this->sequence_links['next']['title']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/next.gif" border="0"></a>
+			<?php endif; ?>
 		<?php endif; ?>
 	</div>
 	</td>
