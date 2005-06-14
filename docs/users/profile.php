@@ -157,6 +157,15 @@ if (!isset($_POST['submit'])) {
 	$_POST['password2'] = $_POST['password'];
 }
 
+//get employee # for user profile display
+if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) { 
+	$sql	= 'SELECT public_field FROM '.TABLE_PREFIX.'master_list WHERE member_id='.$_SESSION['member_id'];
+	$result_stud_id = mysql_query($sql,$db);
+	$row_stud_id = mysql_fetch_assoc($result_stud_id);
+	$_POST['student_id'] = $row_stud_id['public_field'];
+}
+
+
 /* template starts here */
 
 $savant->assign('row', $row);

@@ -74,16 +74,25 @@ if (!$_POST['email']) {
 		<h3><?php echo _AT('required_information'); ?></h3>
 	</div>
 
+	<?php if ($_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+		<div class="row">
+			Employee Number<br />
+			<?php echo $_POST['student_id']; ?>
+		</div>
+	<?php endif; ?>
+
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="login">Choose a <?php echo _AT('login_name'); ?></label><br />
-		<?php if ($_POST['member_id']) : ?>
-				<span id="login"><?php echo stripslashes(htmlspecialchars($_POST['login'])); ?></span>
-				<input name="member_id" type="hidden" value="<?php echo intval($_POST['member_id']); ?>" />
-				<input name="login" type="hidden" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" />
-		<?php else: ?>
+		<?php if ($_POST['member_id']): ?>
+			Login Name<br />
+			<span id="login"><?php echo stripslashes(htmlspecialchars($_POST['login'])); ?></span>
+			<input name="member_id" type="hidden" value="<?php echo intval($_POST['member_id']); ?>" />
+			<input name="login" type="hidden" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" />
+		<?php else: ?>		
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>
+			<label for="login">Choose a <?php echo _AT('login_name'); ?></label><br />
 			<input id="login" name="login" type="text" maxlength="20" size="15" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" /><br />
 			<small>&middot; <?php echo _AT('contain_only'); ?><br />
-				   &middot; <?php echo _AT('20_max_chars'); ?></small>
+				   &middot; <?php echo _AT('20_max_chars'); ?></small>			
 		<?php endif; ?>
 	</div>
 
