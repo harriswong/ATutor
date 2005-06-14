@@ -67,13 +67,17 @@ if ($_GET['search']) {
 	$search = $addslashes($_GET['search']);
 	$search = str_replace(array('%','_'), array('\%', '\_'), $search);
 	$search = '%'.$search.'%';
-	$search = "((first_name LIKE '$search') OR (last_name LIKE '$search') OR (email LIKE '$search') OR (login LIKE '$search'))";
+//	$search = "((first_name LIKE '$search') OR (last_name LIKE '$search') OR (email LIKE '$search') OR (login LIKE '$search'))";
+
+	$sql = "SELECT COUNT(M.member_id) AS cnt FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search'))";
+
 } else {
-	$search = '1';
+	unset ($search);
+	$sql = "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status";
 }
 
-$sql	= "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status AND $search";
 $result = mysql_query($sql, $db);
+
 //debug($sql);
 $row = mysql_fetch_assoc($result);
 $num_results = $row['cnt'];
@@ -87,7 +91,11 @@ if (!$page) {
 $count  = (($page-1) * $results_per_page) + 1;
 $offset = ($page-1)*$results_per_page;
 
-$sql	= "SELECT member_id, login, first_name, last_name, email, status FROM ".TABLE_PREFIX."members WHERE status $status AND $search ORDER BY $col $order LIMIT $offset, $results_per_page";
+if (isset($search)) {
+	$sql = "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status  FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
+} else {
+	$sql	= "SELECT member_id, login, first_name, last_name, email, status FROM ".TABLE_PREFIX."members WHERE status $status ORDER BY $col $order LIMIT $offset, $results_per_page";
+}
 $result = mysql_query($sql, $db);
 
 ?>
