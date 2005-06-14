@@ -216,8 +216,10 @@ function toggleToc(objId) {
 
 <div class="header">
 	<!-- section title -->	
-	<?php if ($_SESSION['valid_user']) : 
+	<?php if ($_SESSION['valid_user']): 
 		echo '<span style="font-size:small;font-weight:bold;padding-left:5px;">'.stripslashes(SITE_NAME).'</span>'; 
+	else: 
+		echo '<br />';	
 	endif; ?>
 	<h1><?php echo $this->section_title; ?>
 
