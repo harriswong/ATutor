@@ -140,6 +140,8 @@ if (isset($this_login, $this_password)) {
 				exit;
 			} else if ($_SESSION['login_attempts'] == FHA_ATTEMPTS-1) {
 				$msg->addError('LOGIN_LOCK_WARNING');
+			} else if ($_SESSION['login_attempts'] == FHA_ATTEMPTS-2){
+				$msg->addError('LOGIN_WARNING1');
 			} else {
 				$msg->addError('INVALID_LOGIN');
 			}
