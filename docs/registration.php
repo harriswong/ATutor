@@ -171,10 +171,13 @@ if (isset($_POST['cancel'])) {
 		if (isset($master_list_sql)) {
 			mysql_query($master_list_sql, $db);
 		}
-
+		
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION) {
-			$msg->addFeedback('REG_THANKS_CONFIRM');
+//			$msg->addFeedback('REG_THANKS_CONFIRM');
 
+			$FHA_reg_feedback="<p>Thank you for registering.</p> <p>We are going to be sending you an e-mail shortly. Please follow the instructions in the e-mail on how to confirm your account. You will need to confirm your account before you can login.</p> <p>If you don’t receive an e-mail at all in the next hour or two, it may be because there was a typo in the address. In that case, please contact us via the <a href=\"./help/contact_support.php\">Help link</a>.</p>";
+
+			$msg->printNoLookupFeedback($FHA_reg_feedback);
 			$code = substr(md5($_POST['email'] . $now . $m_id), 0, 10);
 			$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 
@@ -190,7 +193,9 @@ if (isset($_POST['cancel'])) {
 			$mail->Send();
 
 		} else {
-			$msg->addFeedback('REG_THANKS');
+			$FHA_reg_feedback="<p>Thank you for registering.</p> <p>You may now log into your account. If you need help, please contact us via the <a href=\"./help/contact_support.php\">Help link</a>.</p>";
+			$msg->printNoLookupFeedback($FHA_reg_feedback);
+//			$msg->addFeedback('REG_THANKS');
 		}
 
 		unset($_SESSION['register_attempts']);
