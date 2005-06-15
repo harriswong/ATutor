@@ -125,7 +125,12 @@ $result = mysql_query($sql, $db);
 		</div>
 
 		<div class="row">
-			<label for="search"><?php echo _AT('search'); ?> (<?php echo _AT('login_name').', '._AT('first_name').', '._AT('last_name') .', '._AT('email'); ?>)</label><br />
+			<label for="search"><?php echo _AT('search'); ?> (<?php echo _AT('login_name').', '._AT('first_name').', '._AT('last_name') .', '._AT('email');
+			if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
+				echo ', '._AT('student_id');
+			}
+			
+			?>)</label><br />
 			<input type="text" name="search" id="search" size="20" value="<?php echo htmlspecialchars($_GET['search']); ?>" />
 		</div>
 
