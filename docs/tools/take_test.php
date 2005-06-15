@@ -27,7 +27,7 @@ if ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUM
 
 $tid = intval($_REQUEST['tid']);
 
-if (!authenticate_test($tid)) {
+if (!authenticate_test($tid, $take_test = true)) {
 	header('Location: my_tests.php');
 	exit;
 }
