@@ -1164,3 +1164,7 @@ ul#topnavlist li a:hover, ul#topnavlist li a.active, ul#topnavlist li a:focus {
 	background: #D1E3ED;
 	border-bottom: 1px solid #D1E3ED;
 }
+
+input[type=submit]:hover {
+	cursor: pointer;
+}
