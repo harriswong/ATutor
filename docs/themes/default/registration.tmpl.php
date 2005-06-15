@@ -74,7 +74,7 @@ if (!$_POST['email']) {
 		<h3><?php echo _AT('required_information'); ?></h3>
 	</div>
 
-	<?php if ($_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+	<?php if ($_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST && !admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE)): ?>
 		<div class="row">
 			Employee Number<br />
 			<?php if($_POST['student_id']) { 
