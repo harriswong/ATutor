@@ -24,4 +24,7 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_REGISTER_MASTER_USED', 'The Employee Number and Date of Birth combination you provided is either being used or is incorrect.', NOW(), '')
 
+('en','_msgs','AT_ERROR_EMPLOYEE_NUMBER_NOT_FOUND', 'The Employee Number <b>%s</b> could not be found in the Master Student List.', NOW(), '')
+
+
 ;
