@@ -1,4 +1,18 @@
-<?php require('../common/body_header.inc.php'); ?>
+<?php
+/************************************************************************/
+/* ATutor																*/
+/************************************************************************/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg 		*/
+/* Adaptive Technology Resource Centre / University of Toronto			*/
+/* http://atutor.ca														*/
+/*																		*/
+/* This program is free software. You can redistribute it and/or		*/
+/* modify it under the terms of the GNU General Public License			*/
+/* as published by the Free Software Foundation.						*/
+/************************************************************************/
+// $Id: 10.1.link_categories.php 4824 2005-06-08 19:27:33Z joel $
+
+require('../common/body_header.inc.php'); ?>
 
 <h2>2.3.1 Importing Languages</h2>
 	<p>Language packs can be imported either manually by retreiving the package and then importing it into ATutor, or automatically by having ATutor connect to the atutor.ca language repository directly.</p>
@@ -10,7 +24,7 @@
 		<li>Use the <code>Import</code> button to import the language.</li>
 	</ol>
 
-	<p>If your ATutor installation is connected to the Internet and can contact the atutor.ca website then it will try to retrieve the list remotely. To automatically import a new language pack from within ATutor:</p>
+	<p>If your ATutor installation is connected to the Internet and can contact the atutor.ca website then it will try to retrieve the list remotely. To <em>automatically</em> import a new language pack from within ATutor:</p>
 
 	<ol>
 		<li>Select the language you want to import from the drop down.</li>

@@ -25,7 +25,7 @@
 	$_pages['2.3.2.managing_existing_languages.php'] = 'Managing Existing Languages';
 	$_pages['2.3.3.translating_atutor.php']          = 'Translating ATutor';
 	$_pages['2.4.themes.php']                        = 'Themes';
-	$_pages['2.4.1.importing_themes.php']            = 'Importing Themes';
+	$_pages['2.4.1.importing_themes.php']            = 'Importing/Exporting Themes';
 	$_pages['2.4.2.managing_existing_themes.php']    = 'Managing Existing Themes';
 	$_pages['2.4.3.creating_themes.php']             = 'Creating Themes';
 	$_pages['2.5.error_logging.php']                 = 'Error Logging';
@@ -41,6 +41,6 @@
 	$_pages['4.1.1.creating_backups.php']            = 'Creating Backups';
 	$_pages['4.1.2.restoring_backups.php']           = 'Restoring Backups';
 	$_pages['4.2.forums.php']                        = 'Forums';
-	$_pages['4.3.categories.php']                    = 'Categories';
+	$_pages['4.3.categories.php']                    = 'Course Categories';
 	$_pages['5.troubleshooting.php']                 = 'Troubleshooting';
 ?>
