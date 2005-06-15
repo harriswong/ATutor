@@ -13,7 +13,7 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 // returns T/F whether or not this member can view this test:
-function authenticate_test($tid) {
+function authenticate_test($tid, $taking_test = false) {
 	if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) {
 		return TRUE;
 	}
@@ -22,18 +22,21 @@ function authenticate_test($tid) {
 	}
 	global $db;
 
-	$sql = "SELECT format FROM ".TABLE_PREFIX."tests WHERE course_id=$_SESSION[course_id] AND test_id=$tid";
-	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);
-	if ($row['format']) {
-		$sql    = "SELECT UNIX_TIMESTAMP(MAX(date_taken)) AS last_taken FROM ".TABLE_PREFIX."tests_results WHERE member_id=$_SESSION[member_id] AND test_id=$tid";
+	if ($taking_test) {
+		$sql = "SELECT format FROM ".TABLE_PREFIX."tests WHERE course_id=$_SESSION[course_id] AND test_id=$tid";
 		$result = mysql_query($sql, $db);
-		if ($row    = mysql_fetch_assoc($result)) {
-			$seven_days_past = time() - 7 * 24 * 60 * 60;
-			if ($row['last_taken'] > $seven_days_past) {
-				global $msg;
-				$msg->addError('TEST_SEVEN_DAYS');
-				return FALSE;
+		$row = mysql_fetch_assoc($result);
+
+		if ($row['format']) {
+			$sql    = "SELECT UNIX_TIMESTAMP(MAX(date_taken)) AS last_taken FROM ".TABLE_PREFIX."tests_results WHERE member_id=$_SESSION[member_id] AND test_id=$tid";
+			$result = mysql_query($sql, $db);
+			if ($row    = mysql_fetch_assoc($result)) {
+				$seven_days_past = time() - 7 * 24 * 60 * 60;
+				if ($row['last_taken'] > $seven_days_past) {
+					global $msg;
+					$msg->addError('TEST_SEVEN_DAYS');
+					return FALSE;
+				}
 			}
 		}
 	}
