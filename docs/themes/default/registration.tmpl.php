@@ -59,12 +59,6 @@ if (!$_POST['email']) {
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>Image Validation<br />
 			<p>In this image (<img src="secret.php" alt="" />) there is a number displayed. <br />Please type this number into the following field.<br />
 			<input id="secret" name="secret" type="text" size="6" maxlength="6" value="" />
-
-			<?php
-			///////////////// REMOVE BEFORE COMITTING!!!!!
-			echo $_SESSION['secret'];
-			///////////////// REMOVE BEFORE COMITTING!!!!!
-			?>
 			<br />
 			<small>&middot; This helps ensure a live person is registering on this system.<br /></small>
 		</div>
