@@ -1,4 +1,4 @@
-INSERT INTO AT15_language_text VALUES 
+REPLACE INTO AT15b_language_text VALUES 
 
 ('en', '_msgs', 'AT_ERROR_LOGIN_LOCKED','Maximum login attempts has been reached. Login has been temporarily disabled for 1 hour. Please <a href="./help/contact_support.php">contact FHA</a> if you forgot your login or password.',NOW(),'reached maximum login attempts. Now locked'),
 
@@ -22,9 +22,7 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), ''),
 
-('en','_msgs','AT_ERROR_REGISTER_MASTER_USED', 'The Employee Number and Date of Birth combination you provided is either being used or is incorrect.', NOW(), '')
+('en','_msgs','AT_ERROR_REGISTER_MASTER_USED', 'The Employee Number and Date of Birth combination you provided is either being used or is incorrect.', NOW(), ''),
 
 ('en','_msgs','AT_ERROR_EMPLOYEE_NUMBER_NOT_FOUND', 'The Employee Number <b>%s</b> could not be found in the Master Student List.', NOW(), '')
-
-
 ;
