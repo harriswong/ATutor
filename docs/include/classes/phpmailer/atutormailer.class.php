@@ -58,7 +58,7 @@ class ATutorMailer extends PHPMailer {
 
 		// attach the ATutor footer to the body first:
 		$this->Body .= 	"\n\n".'----------------------------------------------'."\n";
-		$this->Body .= _AT('sent_via_atutor', $_base_href);
+		$this->Body .=  "Sent via Fraser Health Online Learning System: ".$_base_href;
 		if ($_SESSION['course_id'] > 0) {
 			$this->Body .= 'login.php?course='.$_SESSION['course_id'].' | ' . $_SESSION['course_title'];
 		}

@@ -72,7 +72,7 @@ if ($_POST['submit']) {
 		}
 		require(AT_INCLUDE_PATH.'header.inc.php');
 //		$msg->printFeedbacks('APPROVAL_PENDING');
-		$FHS_approval_pending="Your request has been sent. You will be notified by e-mail when your request has been approved. If you don’t receive an e-mail at all in the next couple of days, please contact us via the <a href=\"./help/contact_support.php\">Help link</a> on the main page.";
+		$FHS_approval_pending="Your request has been sent. You will be notified by e-mail when your request has been approved. If you don’t receive an e-mail at all in the next couple of days, it may be because there was a typo in the address.  In that case, please contact us via the <a href=\"./help/contact_support.php\">Help link</a>.";
 		$msg->printNoLookupFeedback($FHS_approval_pending);
 		require(AT_INCLUDE_PATH.'footer.inc.php');
 		exit;

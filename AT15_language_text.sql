@@ -10,7 +10,7 @@ INSERT INTO AT15_language_text VALUES
 
 ('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING2','One more registration attempt remains before registration is temporarily disabled. Please <a href="./help/contact_support.php">contact FHA</a> if you require assistance.',NOW(),'second/final warning before registration lock.'),
 
-('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance.',NOW(),'first warning before registration lock.'),
+('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. ',NOW(),'first warning before registration lock.'),
 
 ('en','_msgs','AT_ERROR_EMAIL_MISMATCH','Email addresses do not match. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance.',NOW(),'If email addresses do not match.'),
 

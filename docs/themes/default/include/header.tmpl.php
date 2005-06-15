@@ -195,7 +195,7 @@ function toggleToc(objId) {
 				<?php endif; ?>
 			<?php endif; ?>
 			<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> |
-			<a href="<?php echo $this->base_path; ?>help/index.php" style="color:red;"><?php echo _AT('help'); ?></a> |
+			<strong><a href="<?php echo $this->base_path; ?>help/index.php" style="color:red;"><?php echo _AT('help'); ?></a></strong> |
 			<a href="<?php echo $this->base_path; ?>logout.php"><?php echo _AT('logout'); ?></a>
 		<?php else: ?>
 			<a href="<?php echo $this->base_path; ?>login.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('login'); ?></a> | 
