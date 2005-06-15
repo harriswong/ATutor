@@ -94,6 +94,9 @@ foreach ($path as $page) {
 }
 
 $last_page = array_pop($_pages);
+if ($_SESSION['prefs'][PREF_NUMBERING]) {
+	$last_page['title'] = $top_num . ' ' .$last_page['title'];
+}
 $_pages['content.php'] = $last_page;
 
 reset($path);
