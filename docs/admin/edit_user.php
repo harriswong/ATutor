@@ -123,8 +123,15 @@ if (isset($_POST['submit'])) {
 			$result = mysql_query($sql, $db);
 
 			if ($_POST['student_id']) {
-				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$id WHERE public_field='$_POST[student_id]'";
+				$sql = "SELECT public_field from ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]'";
 				$result = mysql_query($sql, $db);
+
+				if ($row=mysql_fetch_assoc($result)) {
+					$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$id WHERE public_field='$_POST[student_id]'";
+					$result = mysql_query($sql, $db);
+				} else {
+					$msg->addError(array('EMPLOYEE_NUMBER_NOT_FOUND',$_POST[student_id]));
+				}
 			}
 		}
 

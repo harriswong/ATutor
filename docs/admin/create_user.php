@@ -115,7 +115,10 @@ if (isset($_POST['submit'])) {
 
 		/* insert into the db. (the last 0 for status) */
 		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]','$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]',$_POST[status],'', '$now','$_SESSION[lang]',0, '$_POST[email3]')";
+
 		$result = mysql_query($sql, $db);
+
+
 		$m_id	= mysql_insert_id($db);
 		if (!$result) {
 			require(AT_INCLUDE_PATH.'header.inc.php');
@@ -129,8 +132,17 @@ if (isset($_POST['submit'])) {
 			
 			$student_id  = $addslashes($_POST['student_id']);
 			if ($student_id) {
-				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=LAST_INSERT_ID() WHERE public_field='$student_id'";
-				mysql_query($sql, $db);
+				if ($_POST['student_id']) {
+					$sql = "SELECT public_field from ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]'";
+					$result = mysql_query($sql, $db);
+
+					if ($row=mysql_fetch_assoc($result)) {
+						$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=LAST_INSERT_ID() WHERE public_field='$student_id'";
+						$result=mysql_query($sql, $db);
+					} else {
+						$msg->addError(array('EMPLOYEE_NUMBER_NOT_FOUND',$_POST[student_id]));
+					}
+				}
 			}
 		}
 
