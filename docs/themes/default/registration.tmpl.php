@@ -77,7 +77,11 @@ if (!$_POST['email']) {
 	<?php if ($_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
 		<div class="row">
 			Employee Number<br />
-			<?php echo $_POST['student_id']; ?>
+			<?php if($_POST['student_id']) { 
+				echo $_POST['student_id']; 
+			} else {
+				echo '--';
+			}?>
 		</div>
 	<?php endif; ?>
 
