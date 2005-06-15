@@ -50,9 +50,12 @@ if ($_SESSION['course_id'] > 0) {
 if (isset($err)) {
 	$err->showErrors(); // print all the errors caught on this page
 }
-if ($_SERVER['PHP_SELF'] != '/svn/atutor/fha/docs/tools/take_test.php') {
+
+$file_info = pathinfo($_SERVER['PHP_SELF']);
+if ($file_info['basename'] != 'take_test.php') {
 	$savant->assign('side_menu', $side_menu);
 }
+
 
 if ($framed || $popup) {
 	$savant->display('include/fm_footer.tmpl.php');
