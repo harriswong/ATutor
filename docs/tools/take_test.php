@@ -121,7 +121,18 @@ if (isset($_POST['submit'])) {
 		$result	= mysql_query($sql, $db);
 	}
 
-	$msg->addFeedback('TEST_SAVED');
+	$sql	= "SELECT COUNT(test_id) AS cnt FROM ".TABLE_PREFIX."tests WHERE test_id=$tid AND format=1";
+	$result	= mysql_query($sql, $db);
+	$row = mysql_fetch_assoc($result);
+	$num_results = $row['cnt'];
+
+	if ($num_results>0) {
+		$test_feedback = array('TEST_SAVED', "<p><ul><li>If you have passed this quiz, please click on the “Jump” icon at the top of this page to return to <strong>My Start Page</strong>.</li> <li>If you want to exit the system, please click on <strong>Logout</strong> at the top of this page.</li> <li>If you did not pass this quiz, you can review any part of the lesson by clicking on the <strong>Home</strong> icon at the top of this page.</li> <li>Once you open the lesson, you can move around by clicking on the <strong>Content Navigation</strong> menu on the right hand side of the first page of the lesson.</li></ul></p>");
+	} else {
+		$test_feedback = array('TEST_SAVED', " ");
+	}
+	$msg->addFeedback($test_feedback);
+	
 	header('Location: ../tools/my_tests.php');
 	exit;		
 }
