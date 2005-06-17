@@ -200,23 +200,10 @@ $msg->printErrors();
 
 	<div class="row">
 		<?php echo _AT('result_release'); ?><br />
-		<?php 
-			if ($_POST['result_release'] == AT_RELEASE_IMMEDIATE) {
-				$check_marked = $check_never = '';
-				$check_immediate = 'checked="checked"';
-		
-			} else if ($_POST['result_release'] == AT_RELEASE_MARKED) {
-				$check_immediate = $check_never = '';
-				$check_marked = 'checked="checked"';
 
-			} else if ($_POST['result_release'] == AT_RELEASE_NEVER) {
-				$check_immediate = $check_marked = '';
-				$check_never = 'checked="checked"';
-			}
-		?>
-		<input type="radio" name="result_release" id="release1" value="<?php echo AT_RELEASE_IMMEDIATE; ?>" <?php echo $check_immediate; ?> /><label for="release1"><?php echo _AT('release_immediate'); ?></label><br />
-		<input type="radio" name="result_release" id="release2" value="<?php echo AT_RELEASE_MARKED; ?>" <?php echo $check_marked; ?> /><label for="release2"><?php echo _AT('release_marked'); ?></label><br />
-		<input type="radio" name="result_release" id="release3" value="<?php echo AT_RELEASE_NEVER; ?>" <?php echo $check_never; ?>/><label for="release3"><?php echo _AT('release_never'); ?></label>
+		<input type="radio" name="result_release" id="release1" value="<?php echo AT_RELEASE_IMMEDIATE; ?>" checked="checked" /><label for="release1"><?php echo _AT('release_immediate'); ?></label><br />
+		<input type="radio" name="result_release" id="release2" value="<?php echo AT_RELEASE_MARKED; ?>" /><label for="release2"><?php echo _AT('release_marked'); ?></label><br />
+		<input type="radio" name="result_release" id="release3" value="<?php echo AT_RELEASE_NEVER; ?>" /><label for="release3"><?php echo _AT('release_never'); ?></label>
 	</div>
 
 	<div class="row">
