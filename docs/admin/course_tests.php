@@ -34,7 +34,7 @@ $result = mysql_query($sql, $db);
 $num_rows = mysql_num_rows($result);
 ?>
 
-<form name="form" method="get" action="admin/course_report.php">
+<form name="form" method="get" action="<?php echo $_base_href; ?>admin/course_report.php">
 <input type="hidden" name="course" value="<?php echo $course; ?>" />
 
 <table class="data" summary="" style="width:60%;">

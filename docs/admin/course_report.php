@@ -57,6 +57,7 @@ function make_csv($test_id) {
 	} 	
 
 	$csv['name'] = $course_title.'_'.$test_title.'_'.date('y_m_d').'.csv';
+	$csv['name'] = str_replace("/", '_', $csv['name']);
 	$csv['name'] = str_replace("\\", '_', $csv['name']);
 	$csv['name'] = str_replace(" ", '_', $csv['name']);
 	$csv['data'] = $csv_data;
@@ -68,7 +69,8 @@ if (count($_GET['id']) > 1) {
 	require(AT_INCLUDE_PATH.'classes/zipfile.class.php');
 
 	$course_title = $system_courses[$_GET['course']]['title'];
-	$course_title = str_replace("//", '_', $course_title);
+	$course_title = str_replace("/", '_', $course_title);
+	$course_title = str_replace("\\", '_', $course_title);
 	$course_title = str_replace(" ", '_', $course_title);
 
 	$zipfile = new zipfile();
@@ -106,6 +108,8 @@ if (count($_GET['id']) > 1) {
 		exit;
 	}
 } 
+
+header("Location:course_tests.php?course=".$_GET['course']);
 
 exit;
 
