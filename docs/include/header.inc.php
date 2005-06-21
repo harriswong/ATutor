@@ -180,14 +180,11 @@ if ($_SESSION['course_id'] > -1) {
 	}
 
 	//side menu array
-	/*
-	if ($_SESSION['course_id'] > 0) {
-		$side_menu = array();
-		$side_menu = explode('|', $system_courses[$_SESSION['course_id']]['side_menu']);
-		$side_menu = array_intersect($side_menu, $_stacks);
-		$savant->assign('side_menu', $side_menu);
+	$file_info = pathinfo($_SERVER['PHP_SELF']);
+	if ($file_info['basename'] != 'take_test.php') {
+		$savant->assign('side_menu', TRUE);
 	}
-	*/
+
 }
 
 /* Register our Errorhandler on everypage */

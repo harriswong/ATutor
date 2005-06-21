@@ -299,7 +299,8 @@ function toggleToc(objId) {
 			<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
 		<?php endif; ?>
 
-		<?php if ($_SESSION['course_id'] > 0 && $this->side_menu): ?>
+		<?php 
+		if ($_SESSION['course_id'] > 0 && $this->side_menu): ?>
 			<script type="text/javascript" language="javascript">
 			//<![CDATA[
 			var state = getcookie("side-menu");
@@ -325,6 +326,7 @@ function toggleToc(objId) {
 				<a href="<?php echo $this->sequence_links['next']['url']; ?>" title="<?php echo _AT('next_topic').': '.$this->sequence_links['next']['title']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/next.gif" border="0"></a>
 			<?php endif; ?>
 		<?php endif; ?>
+		&nbsp;
 	</div>
 
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
