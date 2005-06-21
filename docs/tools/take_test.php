@@ -19,7 +19,9 @@ require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 /* check to make sure we can access this test: */
 if ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUMNUS) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
-	$msg->printInfos('NOT_ENROLLED');
+	$FHA_info = "You need to be enrolled in this course to access this area. Please click on the Enroll Me link above.";
+	$msg->printInfos($FHA_info);
+	/*$msg->printInfos('NOT_ENROLLED');*/
 
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;

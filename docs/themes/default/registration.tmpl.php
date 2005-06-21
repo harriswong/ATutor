@@ -108,7 +108,7 @@ if (!$_POST['email']) {
 
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email"><?php echo _AT('email_address'); ?></label><br />
-		<input id="email" name="email" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>" />
+		<input id="email" name="email" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>" /> (e.g. firstname.lastname@fraserhealth.ca)
 	</div>
 
 	<div class="row">

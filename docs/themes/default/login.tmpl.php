@@ -23,7 +23,7 @@
 				<input type="password" class="formfield" name="form_password" id="pass" tabindex="2" /><br />
 			</div>
 		</td>
-		<td width="33%" valign="top">If you do not have an account on this system,  please create a new account.  		
+		<td width="33%" valign="top">If you do not have an account on this system,  please create a new account by clicking on the Register Button below.  		
 		
 		<?php if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION): ?>
 					<br /><br />If you have already registered but did not confirm your account and have lost your confirmation email: <a href="confirm.php" tabindex="4">resend confirmation email<?php //echo _AT('confirm_account'); ?></a>.<br />
