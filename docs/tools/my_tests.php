@@ -56,7 +56,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($row['format'] == 1) {
 		echo ' - Challenge Test';
 	}
-	echo '</td><td">';
+	echo '</td><td>';
 
 	if ( ($row['us'] <= time()) && ($row['ue'] >= time() ) ) {
 		echo '<i><b>'._AT('ongoing').'</b></i>';

@@ -19,6 +19,10 @@ admin_authenticate(AT_ADMIN_PRIV_COURSES);
 //get course id
 $course = intval($_GET['course']);
 
+$_pages['admin/course_tests.php']['title'] = 'Course Tests';
+$_pages['admin/course_tests.php']['parent']    = 'admin/courses.php';
+
+
 if (isset($_GET['report']) && !$_GET['id']) {
 	$msg->addError('NO_ITEM_SELECTED');
 }
