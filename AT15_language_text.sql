@@ -20,7 +20,7 @@ REPLACE INTO AT15b_language_text VALUES
 
 ('en','_msgs','AT_ERROR_EMAIL_FHA_MISMATCH','The email address specified does not appear to be a valid Fraser Health email address.',NOW(),''),
 
-('en','_msgs','AT_ERROR_TEST_SEVEN_DAYS', 'You cannot take a challenge tests more than once every seven days.', NOW(), ''),
+('en','_msgs','AT_ERROR_TEST_24HOURS', 'You cannot take a Challenge Test or Final Quiz more than once every 24 hours.', NOW(), ''),
 
 ('en','_msgs','AT_ERROR_REGISTER_MASTER_USED', 'The Employee Number and Date of Birth combination you provided is either being used or is incorrect.', NOW(), ''),
 

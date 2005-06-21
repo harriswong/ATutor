@@ -31,10 +31,11 @@ function authenticate_test($tid, $taking_test = false) {
 			$sql    = "SELECT UNIX_TIMESTAMP(MAX(date_taken)) AS last_taken FROM ".TABLE_PREFIX."tests_results WHERE member_id=$_SESSION[member_id] AND test_id=$tid";
 			$result = mysql_query($sql, $db);
 			if ($row    = mysql_fetch_assoc($result)) {
-				$seven_days_past = time() - 7 * 24 * 60 * 60;
-				if ($row['last_taken'] > $seven_days_past) {
+				//$seven_days_past = time() - 7 * 24 * 60 * 60;
+				$twenty_four_hours = time() - 24 * 60 * 60;
+				if ($row['last_taken'] > $twenty_four_hours) {
 					global $msg;
-					$msg->addError('TEST_SEVEN_DAYS');
+					$msg->addError('TEST_24HOURS');
 					return FALSE;
 				}
 			}
