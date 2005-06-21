@@ -9,14 +9,14 @@ $msg->printAll();
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
 	<input type="hidden" name="form_password_reminder" value="true" />
 
-	<div class="input-form" style="max-width: 400px;">
+	<div class="input-form" style="max-width: 600px;">
 		<div class="row">
 			<?php echo _AT('password_blurb'); ?>
 		</div>
 
 		<div class="row">
 			<label for="email"><?php echo _AT('email_address'); ?></label><br />
-			<input type="text" name="form_email" id="email" />
+			<input type="text" name="form_email" id="email" size="50" maxlength="60" />
 		</div>
 
 		<div class="row buttons">
