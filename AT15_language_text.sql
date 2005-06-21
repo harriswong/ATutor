@@ -26,6 +26,10 @@ REPLACE INTO AT15b_language_text VALUES
 
 ('en','_msgs','AT_ERROR_EMPLOYEE_NUMBER_NOT_FOUND', 'The Employee Number <b>%s</b> could not be found in the Master Student List.', NOW(), ''),
 
-('en','_msgs','AT_FEEDBACK_TEST_SAVED', 'Your test/survey results have been saved and appear below. %s', NOW(), '')
+('en','_msgs','AT_FEEDBACK_TEST_SAVED', 'Your test/survey results have been saved and appear below. %s', NOW(), ''),
+
+('en','_msgs','AT_ERROR_ALT_EMAIL_CONFIRM','You must confirm your Alternate Email address by entering it again.', NOW(),'If alternate email address2 empty.'),
+
+('en','_msgs','AT_ERROR_ALT_EMAIL_MISMATCH','Alternate Email addresses do not match.', NOW(),'If alternate email addresses do not match.')
 
 ;

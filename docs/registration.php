@@ -55,6 +55,15 @@ if (isset($_POST['cancel'])) {
 		}
 	}
 
+	/* if alternate email not empty */
+	if ($_POST['email3'] != '') {
+		if ($_POST['email4'] == '') {
+			$msg->addError('ALT_EMAIL_CONFIRM');
+		} else if ($_POST['email3'] != $_POST['email4']) {
+			$msg->addError('ALT_EMAIL_MISMATCH');
+		}
+	}
+
 	if (intval($_POST['secret']) != $_SESSION['secret']) {
 		$msg->addError('SECRET_ERROR');
 	}

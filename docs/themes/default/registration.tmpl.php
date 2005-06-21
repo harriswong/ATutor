@@ -23,8 +23,8 @@ if (!$_POST['email']) {
 		</div>
 
 		<div class="row">
-			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>Date of Birth<br />
-			<select name="year">
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="dob">Date of Birth</label><br />
+			<select name="year" id="dob">
 				<option value="0">Year</option>
 				<?php for ($i=1920; $i<2000; $i++): ?>
 					<option value="<?php echo $i;?>" <?php if ($i == $_POST['year']) { echo 'selected="selected"';} ?>><?php echo $i;?></option>
@@ -56,7 +56,7 @@ if (!$_POST['email']) {
 		</div>
 
 		<div class="row">
-			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>Image Validation<br />
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="secret">Image Validation</label><br />
 			<p>In this image (<img src="secret.php" alt="" />) there is a number displayed. <br />Please type this number into the following field.<br />
 			<input id="secret" name="secret" type="text" size="6" maxlength="6" value="" />
 			<br />
@@ -113,7 +113,7 @@ if (!$_POST['email']) {
 
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email2">Email Address Again</label><br />
-		<input id="email" name="email2" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email2'])); ?>" />
+		<input id="email2" name="email2" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email2'])); ?>" />
 	</div>
 
 	<div class="row">
@@ -170,8 +170,13 @@ if (!$_POST['email']) {
 	</div>
 	
 	<div class="row">
-		<label for="email2">Alternate Email Address</label><br />
-		<input id="email" name="email3" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email3'])); ?>" />
+		<label for="email3">Alternate Email Address</label><br />
+		<input id="email3" name="email3" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email3'])); ?>" />
+	</div>
+
+	<div class="row">
+		<label for="email4">Alternate Email Address Again</label><br />
+		<input id="email4" name="email4" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email4'])); ?>" />
 	</div>
 
 	<div class="row buttons">
