@@ -36,9 +36,12 @@ $result	= mysql_query($sql, $db);
 <tbody>
 <?php
 while ($row = mysql_fetch_assoc($result)) {
+	/*
+	// This code hid tests from unenrolled students.
 	if (!authenticate_test($row['test_id'])) {
 		continue;
 	}
+	*/
 
 	$count++;
 	echo '<tr>';
