@@ -153,21 +153,29 @@ if (isset($_POST['submit'])) {
 			unset($_SESSION['member_id']);
 		}
 
+
+		require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
+		$mail = new ATutorMailer();
+		$mail->AddAddress($_POST['email']);
+		$mail->From    = EMAIL;
+		
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION && ($_POST['status'] == AT_STATUS_UNCONFIRMED)) {
 			$code = substr(md5($_POST['email'] . $now . $m_id), 0, 10);
 			$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 
 			/* send the email confirmation message: */
-			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
-			$mail = new ATutorMailer();
-
-			$mail->AddAddress($_POST['email']);
-			$mail->From    = EMAIL;
 			$mail->Subject = SITE_NAME . ' - ' . _AT('email_confirmation_subject');
-			$mail->Body    = _AT('email_confirmation_message', SITE_NAME, $confirmation_link);
+			$body .= _AT('admin_new_account_confirm', SITE_NAME, $confirmation_link)."\n\n";
 
-			$mail->Send();
+		} else {
+			$mail->Subject = SITE_NAME;
+			$body .= _AT('admin_new_account', SITE_NAME)."\n\n";
 		}
+		$body .= _AT('web_site') .' : '.$_base_href."\n";
+		$body .= _AT('login_name') .' : '.$_POST[login] . "\n";
+		$body .= _AT('password') .' : '.$_POST[password] . "\n";
+		$mail->Body    = $body;
+		$mail->Send();
 
 		$msg->addFeedback('PROFILE_CREATED_ADMIN');
 		header('Location: '.$_base_href.'admin/users.php');

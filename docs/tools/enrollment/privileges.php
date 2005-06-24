@@ -14,7 +14,12 @@
 $page = 'enrollment';
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
-authenticate(AT_PRIV_ADMIN);
+
+if (!authenticate(AT_PRIV_ADMIN, true)) {
+	$msg->addError('ACCESS_DENIED');
+	header('Location: index.php');
+	exit;
+}
 
 $num_cols = 2;
 
@@ -49,7 +54,7 @@ if (isset($_POST['cancel'])) {
 	}
 	
 	$msg->addFeedback('PRIVS_CHANGED');
-	header('Location: index.php');
+	header('Location: index.php?tab=1');
 	exit;
 }
 

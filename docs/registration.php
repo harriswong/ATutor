@@ -33,7 +33,7 @@ if (isset($_COOKIE['FHA_REGISTER'])) {
 
 
 if (isset($_POST['cancel'])) {
-	header('Location: ./about.php');
+	header('Location: ./login.php');
 	exit;
 } else if (isset($_POST['submit'])) {
 	/* email check */

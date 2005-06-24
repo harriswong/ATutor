@@ -16,7 +16,11 @@ $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-authenticate(AT_PRIV_TEST_CREATE);
+if (!authenticate(AT_PRIV_TEST_CREATE, true)) {
+	$msg->addError('ACCESS_DENIED');
+	header('Location: index.php');
+	exit;
+}
 
 $tid = intval($_POST['tid']);
 
@@ -52,14 +56,14 @@ if (isset($_POST['cancel'])) {
 	exit;
 }
 
-require(AT_INCLUDE_PATH.'header.inc.php');
-
 if (!is_array($_POST['add_questions']) || !count($_POST['add_questions'])) {
 	$msg->addError('NO_QUESTIONS_SELECTED');
-	$msg->printErrors();
+	header('Location: add_test_questions.php?tid='.$tid);
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
+
+require(AT_INCLUDE_PATH.'header.inc.php');
 
 foreach ($_POST['add_questions'] as $cat_array) {
 	$questions .= addslashes(implode(',',$cat_array)).',';

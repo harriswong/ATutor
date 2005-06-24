@@ -64,6 +64,8 @@ function check_roles ($member_ids) {
 * @param   array $list			the IDs of the members to be removed
 * @author  Shozub Qureshi
 */
+/*
+// no longer used. Unenroll does this job AND removes groups too.
 function remove ($list) {
 	global $db;
 
@@ -73,7 +75,7 @@ function remove ($list) {
 	}
 	$sql	= "DELETE FROM ".TABLE_PREFIX."course_enrollment WHERE course_id = $_SESSION[course_id] AND ($members)";	
 	$result = mysql_query($sql, $db);
-}
+}*/
 
 /**
 * Unenrolls students from course enrollement
@@ -88,13 +90,8 @@ function unenroll ($list) {
 	if ($members) {
 		$members = addslashes($members);
 
-		if ($system_courses[$_SESSION['course_id']]['access'] == 'private') {
-			$sql    = "UPDATE ".TABLE_PREFIX."course_enrollment SET approved='n',`privileges`=0, role='' WHERE course_id=$_SESSION[course_id] AND member_id IN ($members)";
-			$result = mysql_query($sql, $db);
-		} else {
-			$sql    = "DELETE FROM ".TABLE_PREFIX."course_enrollment WHERE course_id=$_SESSION[course_id] AND member_id IN ($members)";
-			$result = mysql_query($sql, $db);
-		}
+		$sql    = "DELETE FROM ".TABLE_PREFIX."course_enrollment WHERE course_id=$_SESSION[course_id] AND member_id IN ($members)";
+		$result = mysql_query($sql, $db);
 
 		$sql    = "DELETE FROM ".TABLE_PREFIX."groups_members WHERE member_id IN ($members)";
 		$result = mysql_query($sql, $db);
@@ -212,7 +209,9 @@ if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
 	header('Location: index.php?current_tab='.$_POST['curr_tab']);
 	exit;
-} else if (isset($_POST['submit_yes']) && $_POST['func'] =='remove' ) {
+} /*
+// No longer used. Unenroll does the same job and removes from groups too.
+else if (isset($_POST['submit_yes']) && $_POST['func'] =='remove' ) {
 	//Remove student from list (unenrolls automatically)
 
 	//you cannot remove anyone unless you are the course owner
@@ -222,36 +221,37 @@ if (isset($_POST['submit_no'])) {
 	remove($_POST['id']);
 
 	$msg->addFeedback('MEMBERS_REMOVED');
-	header('Location: index.php?current_tab='.$_POST['current_tab']);
+	header('Location: index.php?current_tab=4');
 	exit;
-} else if (isset($_POST['submit_yes']) && $_POST['func'] =='unenroll' ) {
+}*/
+else if (isset($_POST['submit_yes']) && $_POST['func'] =='unenroll' ) {
 	//Unenroll student from course
 	unenroll($_POST['id']);
 
-	$msg->addFeedback('MEMBERS_UNENROLLED');
-	header('Location: index.php?current_tab='.$_POST['current_tab']);
+//	$msg->addFeedback('MEMBERS_UNENROLLED');
+	$msg->addFeedback('MEMBERS_REMOVED');
+	header('Location: index.php?current_tab=4');
 	exit;
 } else if (isset($_POST['submit_yes']) && $_POST['func'] =='enroll' ) {
 	//Enroll student in course
 	enroll($_POST['id']);
 
 	$msg->addFeedback('MEMBERS_ENROLLED');
-	header('Location: index.php?current_tab='.$_POST['current_tab']);
+	header('Location: index.php?current_tab=0');
 	exit;
 } else if (isset($_POST['submit_yes']) && $_POST['func'] =='alumni' ) {
 	//Mark student as course alumnus
 	alumni($_POST['id']);
 	
 	$msg->addFeedback('MEMBERS_ALUMNI');
-	header('Location: index.php?current_tab='.$_POST['current_tab']);
+	header('Location: index.php?current_tab=2');
 	exit;
 } else if (isset($_POST['submit_yes']) && $_POST['func'] =='group' ) {
 	//Mark student as a member of the group
 	group($_POST['id'],$_POST['gid']);
 	
-//	$msg->addFeedback('MEMBERS_GROUP');
 	$msg->addFeedback('STUDENT_ADDED_GROUP');
-	header('Location: index.php?current_tab='.$_POST['current_tab']);
+	header('Location: index.php?current_tab=');
 	exit;
 } else if (isset($_POST['submit_yes']) && $_POST['func'] =='group_remove' ) {
 	// Remove student as a member of the group
@@ -260,7 +260,7 @@ if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('STUDENT_REMOVE_GROUP');
 	header('Location: index.php?current_tab='.$_POST['current_tab']);
 	exit;
-} 
+}
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 //course_owner

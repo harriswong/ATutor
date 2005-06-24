@@ -189,7 +189,7 @@ function toggleToc(objId) {
 			<img src="<?php echo $this->img;?>user-star.gif" style="vertical-align: middle;" class="img-size-star" alt="" /><strong><?php echo $_SESSION['login']; ?></strong>  |
 			<?php if ($_SESSION['course_id'] > -1): ?>
 				<?php if (get_num_new_messages()): ?>
-					<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?> (<?php echo get_num_new_messages(); ?>)</a> | 
+					<strong><a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?> - <?php echo get_num_new_messages(); ?></a></strong> | 
 				<?php else: ?>
 					<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?></a> | 
 				<?php endif; ?>
@@ -218,7 +218,6 @@ function toggleToc(objId) {
 	<!-- section title -->	
 	<?php if ($_SESSION['valid_user']): 
 		echo '<span style="font-size:small;font-weight:bold;padding-left:5px;">'.stripslashes(SITE_NAME).'</span>'; 
-	else: 
 		echo '<br />';	
 	endif; ?>
 	<h1><?php echo $this->section_title; ?>
@@ -227,36 +226,18 @@ function toggleToc(objId) {
 		- <a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
 	<?php endif; ?></h1>
 
-	<div id="topnavlistcontainer">
-	<ul id="topnavlist">
-		<?php foreach ($this->top_level_pages as $page): ?>
-			<?php if ($page['url'] == $this->current_top_level_page): ?>
-				<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
-			<?php else: ?>
-				<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
-			<?php endif; ?>
-		<?php endforeach; ?>
-	</ul>
-	</div>
-
+<div id="topnavlistcontainer">
 	<!-- the main navigation. in our case, tabs -->
-	<!--
-	<table class="tabbed-table" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
-	<tr valign="bottom">
-		<td class="left-empty-tab">&nbsp;</td>
-		<?php foreach ($this->top_level_pages as $page): ?>
-			<?php if ($page['url'] == $this->current_top_level_page): ?>
-				<td class="selected"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></td>
-				<td class="tab-spacer">&nbsp;</td>
-			<?php else: ?>
-				<td class="tab"><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></td>
-				<td class="tab-spacer">&nbsp;</td>
-			<?php endif; ?>
-		<?php endforeach; ?>
-		<td class="right-empty-tab">&nbsp;</td>
-	</tr>
-	</table>
-	-->
+<ul id="topnavlist">
+	<?php foreach ($this->top_level_pages as $page): ?>
+		<?php if ($page['url'] == $this->current_top_level_page): ?>
+			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
+		<?php else: ?>
+			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
+		<?php endif; ?>
+	<?php endforeach; ?>
+</ul>
+</div>
 </div>
 
 <!-- the sub navigation -->
@@ -314,7 +295,6 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
-	<!-- previous/next/resume icons/links -->
 	<div style="float:right;padding-top:7px;">
 		<?php if ($this->sequence_links['resume']): ?>
 				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>" alt="<?php echo $this->sequence_links['resume']['title']; ?>" /></a>

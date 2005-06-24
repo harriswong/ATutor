@@ -13,7 +13,7 @@
 // $Id$
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-define('AT_DEVEL', 0);
+define('AT_DEVEL', 1);
 define('AT_DEVEL_TRANSLATE', 0);
 define('FHA_ATTEMPTS', 4);
 define('AT_USE_GUIDE', 1);
@@ -74,6 +74,7 @@ define('AT_USE_GUIDE', 1);
 	}
 
 	ob_start();
+		//session_set_cookie_params(0, $_base_path);
 		session_start();
 		$str = ob_get_contents();
 	ob_end_clean();

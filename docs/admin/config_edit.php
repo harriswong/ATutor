@@ -87,7 +87,8 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('CACHE_DIR_NOT_WRITEABLE');
 		}
 	}
-	if ($_POST['enable_sco'] != 'FALSE') {
+
+	if ($_POST['enable_sco']=="TRUE") {
 		if (!is_dir(realpath('../sco'))) {
 			$msg->addError('SCO_DIR_NOT_EXIST');
 		} else if (!is_writeable(realpath('../sco'))) {

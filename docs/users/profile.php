@@ -170,6 +170,8 @@ if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 
 $savant->assign('row', $row);
 
+$onload = 'document.form.password.focus();';
+
 $savant->display('registration.tmpl.php');
 
 ?>

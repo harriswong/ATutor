@@ -77,7 +77,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		exit;
 	}
 	
-	$sql = "SELECT * FROM ".TABLE_PREFIX."news WHERE news_id=$aid AND member_id=$_SESSION[member_id] AND course_id=$_SESSION[course_id]";
+	$sql = "SELECT * FROM ".TABLE_PREFIX."news WHERE news_id=$aid AND course_id=$_SESSION[course_id]";
 	$result = mysql_query($sql,$db);
 	if (!($row = mysql_fetch_array($result))) {
 		$msg->printErrors('ANN_NOT_FOUND');
@@ -97,18 +97,15 @@ require(AT_INCLUDE_PATH.'html/editor_tabs/news.inc.php');
 
 <div class="input-form">
 	<div class="row">
-		<label for="title"><div class="required" title="<?php echo _AT('required_field'); ?>">*</div><?php echo _AT('title'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="title"><?php echo _AT('title'); ?></label><br />
 		<input type="text" name="title" id="title" value="<?php echo htmlspecialchars(stripslashes($row['title'])); ?>" size="40">
 	</div>
 
 	<div class="row">
-		<label for="formatting"><?php echo _AT('formatting'); ?></label><br />
-		<input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] === 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisual.disabled=true;" <?php if ($_POST['setvisual'] && !$_POST['settext']) { echo 'disabled="disabled"'; } ?> />
-		
-		<label for="text"><?php echo _AT('plain_text'); ?></label>,
-		<input type="radio" name="formatting" value="1" id="html" <?php if ($_POST['formatting'] == 1 || $_POST['setvisual']) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisual.disabled=false;"  />
-		
-		<label for="html"><?php echo _AT('html'); ?></label>
+		<?php echo _AT('formatting'); ?><br />
+		<input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] === 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisual.disabled=true;" <?php if ($_POST['setvisual'] && !$_POST['settext']) { echo 'disabled="disabled"'; } ?> /><label for="text"><?php echo _AT('plain_text'); ?></label>,
+
+		<input type="radio" name="formatting" value="1" id="html" <?php if ($_POST['formatting'] == 1 || $_POST['setvisual']) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisual.disabled=false;"  /> <label for="html"><?php echo _AT('html'); ?></label>
 		<?php
 			if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
 				echo '<input type="hidden" name="setvisual" value="'.$_POST['setvisual'].'" />';
@@ -122,7 +119,7 @@ require(AT_INCLUDE_PATH.'html/editor_tabs/news.inc.php');
 	</div>
 
 	<div class="row">
-		<label for="body_text"><div class="required" title="<?php echo _AT('required_field'); ?>">*</div><?php echo _AT('body'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="body_text"><?php echo _AT('body'); ?></label><br />
 		<textarea name="body_text" cols="55" rows="15" id="body_text" wrap="wrap"><?php echo $row['body']; ?></textarea>
 	</div>
 

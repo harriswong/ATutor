@@ -91,6 +91,7 @@ div#toc{
 .button input:hover {
 	background-color: #f5f5ff;
 	border: 1px solid blue;
+	cursor: pointer;
 }
 
 input.button {
@@ -419,9 +420,9 @@ div#breadcrumbs {
 	padding-right: 5px;
 	padding-bottom: 10px;
 	font-size: small;
-	background-color: #efefef;
+	background-color: #E4EDF3;
 	color: black;
-	border-bottom:solid 1pt #e1e1e1;
+	border-bottom:solid 1pt #DAD9D8;
 }
 div#breadcrumbs a {
 	color: black;
@@ -623,6 +624,7 @@ table.data.static tbody tr:hover {
 
 table.data tfoot input[type=submit]:hover {
 	background-color: #f5f5ff;
+	cursor: pointer;
 }
 
 /* course browser */
@@ -782,9 +784,10 @@ option#start-page {
 
 #jump-button {
 	padding: 0px;
-	background-color: transparent;
+	margin: 1px;
+	background-color: #A9CEE5;
 	color: black;
-	border: 1px solid #cccccc;
+	border: 1px solid gray;
 	cursor: pointer;
 }
 #jump-button:focus, #jump-button:hover {
@@ -974,23 +977,11 @@ body.chat{
 	border-right: #006699 solid 1px;
 }
 
-table.box2 {
-	background-color: #DDF0FF;
-	border-right: #006699 solid 1px;
-	border-left: #006699 solid 1px;
-	border-top: #006699 solid 1px;
-	border-bottom: #006699 solid 1px;
-	margin-left:4px;
-	padding-bottom:5px;
+table.chat-display {
+	border: #006699 solid 1px;
+	line-height:150%;
 }
 
-ul.users{
-	background-color: #DDF0FF;
-	border-right: #006699 solid 1px;
-	border-left: #006699 solid 1px;
-	margin-left:15px;
-	margin-right:2em;
-}
 /* image relative sizing */
 
 /* course home imgs */
@@ -1050,8 +1041,8 @@ ul.users{
 
 /* asc/desc arrows */
 .img-size-ascdesc {
-	height: 6.5em;
-	width:.8em;
+	height: 1.95em;
+	width:  1.95em;
 }
 
 .scormfeedback  {
@@ -1089,7 +1080,7 @@ ul.users{
 .header {	
 	background-image:url('images/FHA-Logo.gif');
 	background-repeat:no-repeat;
-	background-color:#F9F9F9;
+	background-color: #EBF4FA /*#F9F9F9*/;
 	background-position:top right;
 }
 
@@ -1127,7 +1118,6 @@ ul.users{
 }
 
 /* MAIN TABS */
-/* enrollment tabs */
 div#topnavlistcontainer {
 	border-bottom: 1px solid #9DAB9A;
 	padding-top:3px;
@@ -1151,12 +1141,12 @@ ul#topnavlist li a {
 	border: 1px solid #9DAB9A;
 	background: #A9CEE5;
 	text-decoration: none;
-	margin-left: 3px;
+	margin-left: 1px;
 	white-space: nowrap;
-	font-size: larger;
+	font-weight: bold;
 }
 ul#topnavlist li:first-child a {
-	margin-left: 8px;
+	margin-left: 10px;
 }
 
 ul#topnavlist li a:hover, ul#topnavlist li a.active, ul#topnavlist li a:focus {

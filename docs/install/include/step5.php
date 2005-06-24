@@ -118,13 +118,41 @@ if (isset($_POST['step1']['old_version'])) {
 	$headers = array();
 	$path  = substr($_SERVER['PHP_SELF'], 0, -strlen('install/install.php')) . 'get.php/?test';
 	$port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80;
-	$fp   = fsockopen($_SERVER['HTTP_HOST'], $port, $errno, $errstr, 30);
-	if($fp) {
-		$head = 'HEAD '.@$path. " HTTP/1.0\r\nHost: ".@$_SERVER['HTTP_HOST']."\r\n\r\n";
-		fputs($fp, $head);
-		while(!feof($fp)) {
-			if ($header = trim(fgets($fp, 1024))) {
-				$headers[] = $header;
+
+	$host = parse_url($_SERVER['HTTP_HOST']);
+
+	if (isset($host['path'])) {
+		$host = $host['path'];
+	} else if (isset($host['host'])) {
+		$host = $host['host'];
+	} else {
+		$_SERVER['HTTP_HOST'];
+	}
+	if ($port == 443) {
+		// if we're using SSL, but don't know if support is compiled into PHP:
+		$fd = @fopen('https://'.$host.$path, 'rb');
+		if ($fd === false) {
+			$content = false;
+		} else {
+			$content = @fread($fd, filesize($filename));
+			@fclose($fd);
+		}
+
+		if (strlen($content) == 0) {
+			$headers[] = 'ATutor-Get: OK';
+		} else {
+			$headers[] = '';
+		}
+	} else {
+		$fp   = fsockopen($host, $port, $errno, $errstr, 15);
+
+		if($fp) {
+			$head = 'HEAD '.@$path. " HTTP/1.0\r\nHost: ".@$host."\r\n\r\n";
+			fputs($fp, $head);
+			while(!feof($fp)) {
+				if ($header = trim(fgets($fp, 1024))) {
+					$headers[] = $header;
+				}
 			}
 		}
 	}
@@ -155,8 +183,8 @@ if (isset($_POST['step1']['old_version'])) {
 
 	<table width="80%" class="tableborder" cellspacing="0" cellpadding="1" align="center">	
 	<tr>
-		<td class="row1"><b><label for="contentdir">Content Directory:</label></b><br />
-		It has been detected that your server does not support the protected content directory feature. The content directory stores all the courses' files.<br /><br />Due to that restriction your content directory must exist within your ATutor installation directory and cannot be moved. Its path is specified below:
+		<td class="row1"><div class="required" title="Required Field">*</div><b><label for="contentdir">Content Directory:</label></b><br />
+		It has been detected that your webserver does not support the protected content directory feature. The content directory stores all of the courses' files.<br /><br />Due to that restriction your content directory must exist within your ATutor installation directory and cannot be moved. Its path is specified below. Please create it if it does not already exist.
 		<br /><br />
 		<input type="text" name="content_dir_disabled" id="contentdir" value="<?php if (!empty($_POST['content_dir'])) { echo stripslashes($addslashes($_POST['content_dir'])); } else { echo $_defaults['content_dir']; } ?>" class="formfield" size="70" disabled="disabled" /></td>
 	</tr>
@@ -164,8 +192,8 @@ if (isset($_POST['step1']['old_version'])) {
 <?php else: ?>
 	<table width="80%" class="tableborder" cellspacing="0" cellpadding="1" align="center">	
 	<tr>
-		<td class="row1"><b><label for="contentdir">Content Directory:</label></b><br />
-		Please specify where the content directory should be. The content directory stores all the courses' files. As a security measure, the content directory should be placed outside of your ATutor installation (for example, to a non-web-accessible location that is not publically available). On a Windows machine, the path should look like <kbd>C:\content</kbd>, while on Unix it should look like <kbd>/var/content</kbd>. The directory you specify must be created if it does not already exist and be writeable by the webserver. On Unix machines issue the command <kbd>chmod a+rwx content</kbd>, additionally the path may not contain any symbolic links.
+		<td class="row1"><div class="required" title="Required Field">*</div><b><label for="contentdir">Content Directory:</label></b><br />
+		Please specify where the content directory should be. The content directory stores all of the courses' files. As a security measure, the content directory should be placed outside of your ATutor installation (for example, to a non-web-accessible location that is not publically available). On a Windows machine, the path should look like <kbd>C:\content</kbd>, while on Unix it should look like <kbd>/var/content</kbd>. The directory you specify must be created if it does not already exist and be writeable by the webserver. On Unix machines issue the command <kbd>chmod a+rwx content</kbd>, additionally the path may not contain any symbolic links.
 		<br /><br />
 		<input type="text" name="content_dir" id="contentdir" value="<?php if (!empty($_POST['content_dir'])) { echo stripslashes($addslashes($_POST['content_dir'])); } else { echo $_defaults['content_dir']; } ?>" class="formfield" size="70" /></td>
 	</tr>

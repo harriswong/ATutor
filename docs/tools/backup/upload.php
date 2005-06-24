@@ -31,9 +31,7 @@ if (isset($_POST['cancel'])) {
 	$_SESSION['done'] = 1;
 
 	if($msg->containsErrors()) {
-		require(AT_INCLUDE_PATH.'header.inc.php');
-		$msg->printErrors();
-		require(AT_INCLUDE_PATH.'footer.inc.php');
+		header('Location: upload.php');
 		exit;
 	} else {
 		$msg->addFeedback('BACKUP_UPLOADED');
@@ -46,8 +44,10 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 $msg->printAll();
 
+//<form onsubmit="openWindow('php echo $_base_href; tools/prog.php');" name="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']; " enctype="multipart/form-data" > 
 ?>
-<form onsubmit="openWindow('<?php echo $_base_href; ?>tools/prog.php');" name="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data" >
+
+<form name="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data" >
 <div class="input-form">
 	<div class="row">
 		<p><?php echo _AT('restore_upload'); ?></p>
@@ -69,7 +69,7 @@ $msg->printAll();
 		</div>
 
 		<div class="row buttons">
-			<input type="submit" name="upload" value="<?php echo _AT('upload'); ?>" /> 
+		<input type="submit" name="upload" value="<?php echo _AT('upload'); ?>" onclick="openWindow('<?php echo $_base_href; ?>tools/prog.php');" /> 
 			<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 		</div>
 	<?php endif; ?>

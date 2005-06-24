@@ -36,17 +36,14 @@ $result	= mysql_query($sql, $db);
 <tbody>
 <?php
 while ($row = mysql_fetch_assoc($result)) {
-	/*
-	// This code hid tests from unenrolled students.
 	if (!authenticate_test($row['test_id'])) {
 		continue;
 	}
-	*/
-
 	$count++;
 	echo '<tr>';
 	echo '<td>';
 	$sql		= "SELECT COUNT(test_id) AS cnt FROM ".TABLE_PREFIX."tests_results WHERE test_id=".$row['test_id']." AND member_id=".$_SESSION['member_id'];
+
 	$takes_result= mysql_query($sql, $db);
 	$takes = mysql_fetch_assoc($takes_result);
 	if ( ($row['us'] <= time() && $row['ue'] >= time()) && 
@@ -146,7 +143,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		echo '<td>';
 
 		if ( ($row['result_release']==AT_RELEASE_IMMEDIATE) || (($row['final_score'] != '') && ($row['result_release']==AT_RELEASE_MARKED)) ) {
-			echo '<a href="tools/view_results.php?tid='.$row['test_id'].SEP.'rid='.$row['result_id'].'">'._AT('view').'</a>';
+			echo '<a href="tools/view_results.php?tid='.$row['test_id'].SEP.'rid='.$row['result_id'].'">'._AT('view_results').'</a>';
 		} else {
 			echo '<em>'._AT('no_results_yet').'</em>';
 		}
