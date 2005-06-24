@@ -314,6 +314,7 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
+	<!-- previous/next/resume icons/links -->
 	<div style="float:right;padding-top:7px;">
 		<?php if ($this->sequence_links['resume']): ?>
 				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->base_path; ?>images/resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>" alt="<?php echo $this->sequence_links['resume']['title']; ?>" /></a>
