@@ -102,6 +102,7 @@ if (count($_GET['id']) > 1) {
 		header('Pragma: public');
 
 		echo $csv['data'];
+		exit;
 	} else {
 		$msg->addError('RESULT_NOT_FOUND');
 		header("Location:course_tests.php?course=".$_GET['course']);
