@@ -213,7 +213,7 @@ $ext = pathinfo($_FILES['file']['name']);
 $ext = $ext['extension'];
 
 if ($ext != 'zip') {
-	$msg->addError('IMPORTDIR_NOTVALID');
+	$msg->addError('IMPORTDIR_IMS_NOTVALID');
 } else if ($_FILES['file']['error'] == 1) {
 	$errors = array('FILE_MAX_SIZE', ini_get('upload_max_filesize'));
 	$msg->addError($errors);
@@ -398,8 +398,9 @@ $package_base_name = str_replace(array('\'', '"', ' ', '|', '\\', '/', '<', '>',
 $package_base_name = preg_replace("/[^A-Za-z0-9._\-]/", '', $package_base_name);
 
 if (is_dir(AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$package_base_name)) {
-	$package_base_name .= '_'.date('ymdHi');
+	$package_base_name .= '_'.date('ymdHis');
 }
+
 
 if ($package_base_path) {
 	$package_base_path = implode('/', $package_base_path);
@@ -507,6 +508,9 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 	if ($package_base_path == '.') {
 		$package_base_path = '';
 	}
+	if (is_dir(AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name)) {
+
+	}
 	rename(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$package_base_path, AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name);
 	clr_dir(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id']);
 
@@ -516,11 +520,11 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 
 
 if ($_POST['s_cid']){
-	$msg->addFeedback('IMPORT_SUCCESS');
+	$msg->addFeedback('IMS_IMPORT_SUCCESS');
 	header('Location: ../../editor/edit_content.php?cid='.$_POST['cid']);
 	exit;
 } else {
-	$msg->addFeedback('IMPORT_SUCCESS');
+	$msg->addFeedback('IMS_IMPORT_SUCCESS');
 	if ($_GET['tile']) {
 		header('Location: '.$_base_href.'tools/tile/index.php');
 	} else {

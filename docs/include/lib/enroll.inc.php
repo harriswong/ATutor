@@ -58,9 +58,11 @@ function checkUserInfo($record) {
 		$record['err_uname'] = _AT('import_err_username_invalid');
 	} 
 
-	if ($record['status'] < 2) {
+	if (isset($record['status']) && $record['status'] == AT_STATUS_DISABLED) {
 		$record['err_disabled'] = true;
-	} 
+	} else {
+		$record['err_disabled'] = false;
+	}
 
 	$record['uname'] = $addslashes($record['uname']);
 
@@ -128,11 +130,10 @@ function add_users($user_list, $enroll, $course) {
 							$code = substr(md5($student['email'] . $now . $m_id), 0, 10);
 							$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 			
-							$subject = SITE_NAME.': '._AT('account_information');
-							//$body  =  _AT('email_confirmation_message', SITE_NAME, $confirmation_link)."\n\n";
+							$subject = SITE_NAME.': '._AT('email_confirmation_subject');
 							$body .= _AT(array('new_account_enroll_confirm', $_SESSION['course_title'], $confirmation_link))."\n\n";
 						} else {
-							$subject = SITE_NAME;
+							$subject = SITE_NAME.': '._AT('account_information');
 							$body .= _AT(array('new_account_enroll',$_base_href, $_SESSION['course_title']))."\n\n";
 						}
 						

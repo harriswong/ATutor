@@ -94,7 +94,6 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 		$mail->AddAddress($_POST['email']);
 		$mail->Subject = SITE_NAME . ' - ' . _AT('email_confirmation_subject');
 		$mail->Body    = "Please confirm your Fraser Health Online Learning System account email address by clicking on the link immediately following. ".$confirmation_link;
-
 		$mail->Send();
 
 		$msg->addFeedback('CONFIRMATION_SENT');

@@ -205,9 +205,7 @@ function toggleToc(objId) {
 	</div>
 
 	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;"><?php echo $this->section_title; ?>:
-	<?php if ($this->sequence_links['resume']): ?>
-			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
-	<?php endif; ?>
+	
 	<?php foreach ($this->path as $page): ?>
 		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> » 
 	<?php endforeach; ?> <?php echo $this->page_title; ?></span>
@@ -226,6 +224,7 @@ function toggleToc(objId) {
 	<?php if (($_SESSION['course_id'] > 0) && ($_SESSION['enroll'] == AT_ENROLL_NO)) : ?>
 		- <a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
 	<?php endif; ?></h1>
+	<br />
 
 <div id="topnavlistcontainer">
 	<!-- the main navigation. in our case, tabs -->
@@ -267,7 +266,7 @@ function toggleToc(objId) {
 	</div>
 <?php endif; ?>
 
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="99%">
 	<tr>
 		<?php if ($_SESSION['course_id'] > 0): ?>
 			<td valign="top" width="100%">

@@ -157,7 +157,7 @@ function highlight(page) {
 		<ul>
 			<li><a href="../instructor/4.1.creating_editing_content.php" class="tree" id="id4.1.creating_editing_content.php">Creating &amp; Editing Content</a>
 				<ul>
-					<li><a href="../instructor/4.1.1.content.php" class="leaf" id="id4.1.1.content.php">Edit Content</a></li>
+					<li><a href="../instructor/4.1.1.content.php" class="leaf" id="id4.1.1.content.php">Entering Content</a></li>
 					<li><a href="../instructor/4.1.2.content_properties.php" class="leaf" id="id4.1.2.content_properties.php">Content Properties</a></li>
 					<li><a href="../instructor/4.1.3.glossary_terms.php" class="leaf" id="id4.1.3.glossary_terms.php">Glossary Terms</a></li>
 					<li><a href="../instructor/4.1.4.preview.php" class="leaf" id="id4.1.4.preview.php">Preview</a></li>
@@ -175,7 +175,7 @@ function highlight(page) {
 
 	<li><a href="../instructor/6.0.enrollment.php" class="tree" id="id6.0.enrollment.php">Enrollment</a>
 		<ul>
-			<li><a href="../instructor/6.1.roles_privileges.php" class="leaf" id="id6.1.roles_privileges.php">Roles &amp; Privileges</a></li>
+			<li><a href="../instructor/6.1.privileges.php" class="leaf" id="id6.1.privileges.php">Privileges</a></li>
 			<li><a href="../instructor/6.2.alumni.php" class="leaf" id="id6.2.alumni.php">Alumni</a></li>
 			<li><a href="../instructor/6.3.groups.php" class="leaf" id="id6.3.groups.php">Groups</a></li>
 			<li><a href="../instructor/6.4.course_list.php" class="leaf" id="id6.4.course_list.php">Course Lists</a></li>
@@ -197,7 +197,7 @@ function highlight(page) {
 	<li><a href="../instructor/8.0.forums.php" class="tree" id="id8.0.forums.php">Forums</a>
 		<ul>
 			<li><a href="../instructor/8.1.creating_forums.php" class="leaf" id="id8.1.creating_forums.php">Creating Forums</a></li>
-			<li><a href="../instructor/8.2.editing_forums.php" class="leaf" id="id8.2.editing_forums.php">Editing Forums</a></li>
+			<li><a href="../instructor/8.2.editing_forums.php" class="leaf" id="id8.2.editing_forums.php">Editing & Deleting Forums</a></li>
 			<li><a href="../instructor/8.3.shared_forums.php" class="leaf" id="id8.3.shared_forums.php">Shared Forums</a></li>
 			<li><a href="../instructor/8.4.managing_forums.php" class="leaf" id="id8.4.managing_forums.php">Managing Forums</a></li>
 		</ul>
