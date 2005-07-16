@@ -185,8 +185,7 @@ width="0" height="0" >
 <?php	if ($prefs['show_rte_communication'] == 1) {
 		echo '<param name="verbose" value="1" />' . "\n";
 	}
-?>"
-       	echo ($prefs['show_rte_communication'] == 1?'true':'false');
+?>
 </applet>
 </div>
 
