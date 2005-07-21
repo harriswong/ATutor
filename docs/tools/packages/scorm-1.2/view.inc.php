@@ -260,8 +260,6 @@ function LMSInitialize (s) {
 
 function LMSFinish (s) {
 
-	checkResize();
-
 	var stat = window.document.RTE.ATutorGetValue ('cmi.core.lesson_status');
 	if (stat != '') {
 		var o = getObj ('im'+scoidx);
