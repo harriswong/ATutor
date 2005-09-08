@@ -25,6 +25,12 @@ function treeEl ($s) {
 	return '<img src="images/tree/tree_' . $s . '.gif" alt="">';
 }
 
+define('AT_INCLUDE_PATH', '../../../include/');
+require(AT_INCLUDE_PATH.'vitals.inc.php');
+
+$me = 'tools/packages/scorm-1.2/view.php';
+$im = 'tools/packages/scorm-1.2/images/';
+
 if (!$_GET['org_id']) {
 	header('Location: ../index.php');
 	exit;
@@ -39,7 +45,7 @@ $result = mysql_query($sql, $db);
 $q_row  = mysql_fetch_assoc($result);
 $student_name = $q_row['last_name'] . ', ' . $q_row['first_name'];
 
-if ($student_name == ', ') $msg->addWarning ('packages_no_student_name');
+//if ($student_name == ', ') $msg->addWarning ('packages_no_student_name');
 
 	$sql = "SELECT	package_id
 		FROM	".TABLE_PREFIX."scorm_1_2_org
@@ -185,8 +191,7 @@ width="0" height="0" >
 <?php	if ($prefs['show_rte_communication'] == 1) {
 		echo '<param name="verbose" value="1" />' . "\n";
 	}
-?>"
-       	echo ($prefs['show_rte_communication'] == 1?'true':'false');
+?>
 </applet>
 </div>
 
@@ -239,6 +244,9 @@ var show_comm = <?php
 ?>;
 
 function LMSInitialize (s) {
+	rv = window.document.RTE.LMSInitialize (s);
+	if (rv != 'true') return rv;
+
 	isRunning   = true;
 	isLaunching = false;
 
@@ -250,7 +258,6 @@ function LMSInitialize (s) {
 	o.src = '<?php echo $im;?>busy.png';
 	o.alt   = '<?php echo _AT('scorm_sco_is_running')?>';
 	o.title = '<?php echo _AT('scorm_sco_is_running')?>';
-	rv = window.document.RTE.LMSInitialize (s);
 	initstat = window.document.RTE.ATutorGetValue (
 		'cmi.core.lesson_status'
 	);

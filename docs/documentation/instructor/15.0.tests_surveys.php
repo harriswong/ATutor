@@ -15,8 +15,6 @@
 require('../common/body_header.inc.php'); ?>
 
 <h2>15. Tests and Surveys</h2>
-	<p>Instructor and privileged course members can create tests and surveys to be administered to students enrolled in a course. There are a variety of options for delivering tests such as randomized questions, or group-specific tests.</p>
-
-	<p>A test is created by defining the properties using <em>Create Test/Survey</em>, then selecting questions from the Question Database to add to the test.</p>
+	<p>The instructor, and course members with test privileges, can create tests and surveys to be administered to enrolled students. There are a variety of options for defining tests like setting the release date, and using randomized questions or group-specific tests. Once a test or survey has been created, add questions to the Question Database, and then add these questions to the new test. </p>
 
 <?php require('../common/body_footer.inc.php'); ?>

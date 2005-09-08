@@ -24,6 +24,13 @@ global $system_courses;
 <body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
 //<!--
+
+var newwindow;
+function poptastic(url) {
+	newwindow=window.open(url,'popup','height=600,width=600,scrollbars=yes,resizable=yes');
+	if (window.focus) {newwindow.focus()}
+}
+
 function getexpirydate(nodays){
 	var UTCstring;
 	Today = new Date();
@@ -168,7 +175,7 @@ function toggleToc(objId) {
 			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
 	<?php endif; ?>
 	<?php foreach ($this->path as $page): ?>
-		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> » 
+		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> &raquo; 
 	<?php endforeach; ?> <?php echo $this->page_title; ?></span>
 </div>
 
@@ -189,7 +196,7 @@ function toggleToc(objId) {
 		<?php endif; ?></h1>
 	</div>
 
-	<div style="background-image: url('<?php echo AT_HEADER_IMAGE; ?>'); background-repeat: no-repeat; background-position:left;height:60px; width:250px" nowrap="nowrap" align="right" valign="top">&nbsp;</div>
+	<div style="background-image: url('<?php echo AT_HEADER_IMAGE; ?>'); background-repeat: no-repeat; background-position:left;height:60px; width:250px; vertical-align:top; text-aling:right;">&nbsp;</div>
 
 <div id="topnavlistcontainer">
 	<!-- the main navigation. in our case, tabs -->
@@ -242,7 +249,7 @@ function toggleToc(objId) {
 <!-- the page title -->
 	<div style="text-align: right; padding-bottom: 10px; padding-right: 10px; float: right; margin-top: 10px; padding-right: 5px;">
 		<?php if ($this->guide): ?>
-			<a href="<?php echo $this->guide; ?>" id="guide" target="_new"><em><?php echo $this->page_title; ?></em></a>
+			<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
 		<?php endif; ?>
 
 		<?php if ($_SESSION['course_id'] > 0): ?>
@@ -257,6 +264,20 @@ function toggleToc(objId) {
 			//]]>
 			</script>
 		<?php endif; ?>
+	</div>
+
+	<div style="float:right;padding-top:7px;">
+		<?php if ($this->sequence_links['resume']): ?>
+				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->base_href; ?>themes/default/images/resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?> Alt+." alt="<?php echo $this->sequence_links['resume']['title']; ?> Alt+." class="img-size-ascdesc" /></a>
+		<?php else:
+			if ($this->sequence_links['previous']): ?>
+				<a href="<?php echo $this->sequence_links['previous']['url']; ?>" title="<?php echo _AT('previous_topic').': '. $this->sequence_links['previous']['title']; ?> Alt+," accesskey=","><img src="<?php echo $this->base_href; ?>themes/default/images/previous.gif" border="0" alt="<?php echo _AT('previous_topic').': '. $this->sequence_links['previous']['title']; ?> Alt+," class="img-size-ascdesc" /></a>
+			<?php endif;
+			if ($this->sequence_links['next']): ?>
+				<a href="<?php echo $this->sequence_links['next']['url']; ?>" title="<?php echo _AT('next_topic').': '.$this->sequence_links['next']['title']; ?> Alt+." accesskey="."><img src="<?php echo $this->base_href; ?>themes/default/images/next.gif" border="0" alt="<?php echo _AT('next_topic').': '.$this->sequence_links['next']['title']; ?> Alt+." class="img-size-ascdesc" /></a>
+			<?php endif; ?>
+		<?php endif; ?>
+		&nbsp;
 	</div>
 
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>

@@ -23,9 +23,15 @@ if (substr($svn_data[1], 0, 1) == 'r') {
 	$svn_data = $svn_data[2];
 }
 
-$svn_data   = explode(' ', $svn_data);
-$build      = $svn_data[0];
-$build_date = $svn_data[4] .' '. $svn_data[5];
+if (count($svn_data) > 1) {
+	$build = 'unknown';
+	$build_date = date('Y-m-d H:i:s');
+} else {
+	$svn_data   = explode(' ', $svn_data);
+
+	$build      = $svn_data[0];
+	$build_date = $svn_data[4] .' '. $svn_data[5];
+}
 
 if (!$build) {
 	$build = 'unknown';
@@ -112,7 +118,7 @@ print_progress($step);
 		<td class="row1"><?php
 
 			if ($_POST['step1']['old_path'] != '') {
-				$db     = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], $_POST['step1']['db_password']);
+				$db     = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], urldecode($_POST['step1']['db_password']));
 			} else {
 				$db     = @mysql_connect($_POST['step2']['db_host'] . ':' . $_POST['step2']['db_port'], $_POST['step2']['db_login'], $_POST['step2']['db_password']);
 			}
@@ -136,6 +142,6 @@ print_progress($step);
 	</table>
 
 <br />
-<p align="center"><input type="submit" class="button" value=" Next » " name="submit" />
+<p align="center"><input type="submit" class="button" value=" Next &raquo; " name="submit" />
 
 </form>

@@ -135,10 +135,14 @@ if ((	($content_row['r_date'] <= $content_row['n_date'])
 }
 
 if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
-	$shortcuts[] = array('title' => _AT('edit_this_page'), 'url' => $_base_href . 'editor/edit_content.php?cid='.$cid);
-	$shortcuts[] = array('title' => _AT('add_sub_page'),   'url' => $_base_href . 'editor/edit_content.php?pid='.$cid);
-	$shortcuts[] = array('title' => _AT('delete_this_page'),   'url' => $_base_href . 'editor/delete_content.php?cid='.$cid);
-	$shortcuts[] = array('title' => _AT('manage_content'), 'url' => $_base_href . 'tools/content/index.php');
+	$shortcuts[] = array('title' => _AT('edit_this_page'),   'url' => $_base_href . 'editor/edit_content.php?cid='.$cid);
+	$shortcuts[] = array('title' => _AT('add_top_page'),     'url' => $_base_href . 'editor/edit_content.php');
+	if ($contentManager->_menu_info[$cid]['content_parent_id']) {
+		$shortcuts[] = array('title' => _AT('add_sibling_page'), 'url' => $_base_href .
+			'editor/edit_content.php?pid='.$contentManager->_menu_info[$cid]['content_parent_id']);
+	}
+	$shortcuts[] = array('title' => _AT('add_sub_page'),     'url' => $_base_href . 'editor/edit_content.php?pid='.$cid);
+	$shortcuts[] = array('title' => _AT('delete_this_page'), 'url' => $_base_href . 'editor/delete_content.php?cid='.$cid);
 }
 $savant->assign('shortcuts', $shortcuts);
 
@@ -157,7 +161,7 @@ if ($contentManager->isReleased($cid) || authenticate(AT_PRIV_CONTENT, AT_PRIV_R
 			unset($infos);
 		}
 
-		/* @See: include/lib/format_content.inc.php */
+		/* @See: include/lib/output.inc.php */
 		$savant->assign('body', format_content($content_row['text'], $content_row['formatting'], $glossary));
 	}
 } else {

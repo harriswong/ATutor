@@ -49,10 +49,10 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		}
 
 		if (!isset($errors)) {
-			$db = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], $_POST['step1']['db_password']);
+			$db = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], urldecode($_POST['step1']['db_password']));
 			@mysql_select_db($_POST['step1']['db_name'], $db);
 
-			$sql = "INSERT INTO ".$_POST['step1']['tb_prefix']."admins VALUES ('$_POST[admin_username]', '$_POST[admin_password]', '', '$_POST[admin_email]', 1, NOW())";
+			$sql = "INSERT INTO ".$_POST['step1']['tb_prefix']."admins VALUES ('$_POST[admin_username]', '$_POST[admin_password]', '', '$_POST[admin_email]', 'en', 1, NOW())";
 			$result= mysql_query($sql, $db);
 
 			unset($_POST['admin_username']);
@@ -130,5 +130,5 @@ if (isset($errors)) {
 
 	<br />
 	<br />
-	<div align="center"><input type="submit" class="button" value=" Next »" name="submit" /></div>
+	<div align="center"><input type="submit" class="button" value=" Next &raquo;" name="submit" /></div>
 </form>

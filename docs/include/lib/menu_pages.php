@@ -121,6 +121,9 @@ $_pages['admin/users.php']['children']  = array('admin/create_user.php', 'admin/
 	$_pages['admin/instructor_requests.php']['parent']    = 'admin/users.php';
 	$_pages['admin/instructor_requests.php']['guide']     = 'admin/?p=3.1.instructor_requests.php';
 
+		$_pages['admin/admin_deny.php']['title_var'] = 'deny_instructor_request';
+		$_pages['admin/admin_deny.php']['parent']    = 'admin/instructor_requests.php';
+
 	$_pages['admin/master_list.php']['title_var'] = 'master_student_list';
 	$_pages['admin/master_list.php']['parent']    = 'admin/users.php';
 	$_pages['admin/master_list.php']['guide']     = 'admin/?p=3.2.master_student_list.php';
@@ -181,17 +184,17 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 
 	$_pages['admin/backup/index.php']['title_var'] = 'backups';
 	$_pages['admin/backup/index.php']['parent']    = 'admin/courses.php';
-	$_pages['admin/backup/index.php']['guide']     = 'admin/?p=4.1.backups.php';
+	$_pages['admin/backup/index.php']['guide']     = 'admin/?p=4.2.backups.php';
 	$_pages['admin/backup/index.php']['children']  = array('admin/backup/create.php');
 
 		$_pages['admin/backup/create.php']['title_var'] = 'create_backup';
 		$_pages['admin/backup/create.php']['parent']    = 'admin/backup/index.php';
-		$_pages['admin/backup/create.php']['guide']     = 'admin/?p=4.1.backups.php';
+		$_pages['admin/backup/create.php']['guide']     = 'admin/?p=4.2.backups.php';
 	
 		// this item is a bit iffy:
 		$_pages['admin/backup/restore.php']['title_var'] = 'restore';
 		$_pages['admin/backup/restore.php']['parent']    = 'admin/backup/index.php';
-		$_pages['admin/backup/restore.php']['guide']     = 'admin/?p=4.1.backups.php';
+		$_pages['admin/backup/restore.php']['guide']     = 'admin/?p=4.2.backups.php';
 
 		$_pages['admin/backup/delete.php']['title_var'] = 'delete';
 		$_pages['admin/backup/delete.php']['parent']    = 'admin/backup/index.php';
@@ -202,7 +205,7 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 
 	$_pages['admin/forums.php']['title_var'] = 'forums';
 	$_pages['admin/forums.php']['parent']    = 'admin/courses.php';
-	$_pages['admin/forums.php']['guide']     = 'admin/?p=4.2.forums.php';
+	$_pages['admin/forums.php']['guide']     = 'admin/?p=4.3.forums.php';
 	$_pages['admin/forums.php']['children']  = array('admin/forum_add.php');
 
 		$_pages['admin/forum_add.php']['title_var'] = 'create_forum';
@@ -216,7 +219,7 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 
 	$_pages['admin/course_categories.php']['title_var'] = 'cats_categories';
 	$_pages['admin/course_categories.php']['parent']    = 'admin/courses.php';
-	$_pages['admin/course_categories.php']['guide']     = 'admin/?p=4.3.categories.php';
+	$_pages['admin/course_categories.php']['guide']     = 'admin/?p=4.4.categories.php';
 	$_pages['admin/course_categories.php']['children']  = array('admin/create_category.php');
 
 		$_pages['admin/create_category.php']['title_var'] = 'create_category';
@@ -257,6 +260,7 @@ $_pages['users/index.php']['children']  = array('users/browse.php', 'users/creat
 	
 	$_pages['users/create_course.php']['title_var'] = 'create_course';
 	$_pages['users/create_course.php']['parent']    = 'users/index.php';
+	$_pages['users/create_course.php']['guide']    = 'instructor/?p=0.1.creating_courses.php';
 
 	$_pages['users/private_enroll.php']['title_var'] = 'enroll';
 	$_pages['users/private_enroll.php']['parent']    = 'users/index.php';
@@ -269,6 +273,7 @@ $_pages['users/profile.php']['parent']   = AT_NAV_START;
 	
 $_pages['users/preferences.php']['title_var']  = 'preferences';
 $_pages['users/preferences.php']['parent'] = AT_NAV_START;
+$_pages['users/preferences.php']['guide']  = 'general/?p=5.3.preferences.php';
 
 
 /* course pages */
@@ -547,6 +552,7 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 
 	$_pages['tools/tests/preview.php']['title_var']  = 'preview_questions';
 	$_pages['tools/tests/preview.php']['parent'] = 'tools/tests/index.php';
+	$_pages['tools/tests/preview.php']['guide']     = 'instructor/?p=15.5.preview.php';
 
 	$_pages['tools/tests/preview_question.php']['title_var']  = 'preview';
 	$_pages['tools/tests/preview_question.php']['parent'] = 'tools/tests/question_db.php';
@@ -622,6 +628,8 @@ $_pages['tools/index.php']['parent']   = AT_NAV_COURSE;
 		$_pages['tools/packages/settings.php']['title_var'] = 'package_settings';
 		$_pages['tools/packages/settings.php']['parent']    = 'tools/packages/index.php';
 
+		$_pages['tools/packages/scorm-1.2/view.php']['parent']    = 'tools/packages/index.php';
+
 /* student pages: */
 $_pages['sitemap.php']['title_var'] = 'sitemap';
 $_pages['sitemap.php']['parent']    = 'index.php';
@@ -676,6 +684,8 @@ $_pages['acollab/bounce.php']['img']       = 'images/home-acollab.gif';
 
 $_pages['export.php']['title_var'] = 'export_content';
 $_pages['export.php']['img']       = 'images/home-export_content.gif';
+$_pages['export.php']['guide']     = 'general/?p=6.1.export_content.php';
+
 
 $_pages['directory.php']['title_var'] = 'directory';
 $_pages['directory.php']['img']       = 'images/home-directory.gif';
@@ -686,6 +696,8 @@ $_pages['profile.php']['parent']    = 'index.php';
 $_pages['packages/index.php']['title_var'] = 'packages';
 $_pages['packages/index.php']['img']       = 'images/content_pkg.gif';
 $_pages['packages/index.php']['children']  = array ('packages/preferences.php');
+$_pages['packages/index.php']['guide']     = 'general/?p=6.2.packages.php';
+
 
 	$_pages['packages/preferences.php']['title_var'] = 'package_preferences';
 	$_pages['packages/preferences.php']['parent']    = 'packages/index.php';
@@ -750,10 +762,12 @@ $_pages['help/index.php']['children'] = array('help/accessibility.php', 'help/co
 	$_pages['help/accessibility.php']['title_var']  = 'accessibility';
 	$_pages['help/accessibility.php']['parent'] = 'help/index.php';
 
-	$_pages['help/contact_support.php']['title_var']  = 'contact_support';
+	$_pages['help/contact_support.php']['title_var']  = array ('contact_support',SITE_NAME);
 	$_pages['help/contact_support.php']['parent'] = 'help/index.php';
 
 $_pages['search.php']['title_var']      = 'search';
+
+$_pages['contact_instructor.php']['title_var']  = 'contact_instructor';
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 

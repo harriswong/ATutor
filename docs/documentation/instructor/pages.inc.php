@@ -13,6 +13,7 @@
 // $Id$
 
     $_pages['0.0.introduction.php']                  = 'Introduction';
+    $_pages['0.1.creating_courses.php']				 = 'Creating Courses';
     $_pages['1.0.announcements.php']                 = 'Announcements';
     $_pages['2.0.backups.php']                       = 'Backups';
     $_pages['2.1.creating_restoring.php']            = 'Creating &amp; Restoring Backups';
@@ -42,13 +43,14 @@
     $_pages['7.3.creating_new_files.php']            = 'Creating New Files';
     $_pages['7.4.editing_files.php']                 = 'Editing Files';
     $_pages['7.5.previewing_files.php']              = 'Previewing Files';
-    $_pages['7.6.deleting_files_folders.php']        = 'Deleting Files &amp; Folder';
+    $_pages['7.6.managing_files_folders.php']        = 'Managing Files &amp; Folders';
     $_pages['7.7.extracting_zip_archives.php']       = 'Extracting Zip Archives';
     $_pages['8.0.forums.php']                        = 'Forums';
     $_pages['8.1.creating_forums.php']               = 'Creating Forums';
     $_pages['8.2.editing_forums.php']                = 'Editing Forums';
     $_pages['8.3.shared_forums.php']                 = 'Shared Forums';
-    $_pages['8.4.managing_forums.php']               = 'Managing Forums';
+    $_pages['8.4.managing_threads.php']              = 'Managing Forum Threads';
+    $_pages['8.4.1.managing_posts.php']				 = 'Managing Forum Posts';
     $_pages['9.0.glossary.php']                      = 'Glossary';
     $_pages['10.0.links.php']                        = 'Links';
     $_pages['10.1.link_categories.php']              = 'Link Categories';
@@ -63,7 +65,9 @@
     $_pages['15.2.question_database.php']            = 'Question Database';
     $_pages['15.2.1.creating_questions.php']         = 'Creating Questions';
     $_pages['15.3.question_categories.php']          = 'Question Categories';
-    $_pages['15.4.managing_test_questions.php']      = 'Managing Test Questions';
-    $_pages['15.5.student_submissions.php']          = 'Student Submissions';
-    $_pages['15.6.test_statistics.php']          = 'Question Statistics';
+    $_pages['15.4.edit_delete_tests.php']			 = 'Editing &amp; Deleting Tests';
+    $_pages['15.5.preview.php']						 = 'Previewing Tests';
+	$_pages['15.6.add_questions.php']				 = 'Test Questions';
+	$_pages['15.7.student_submissions.php']			 = 'Test Submissions';
+    $_pages['15.8.statistics.php']					 = 'Test Statistics';
 ?>

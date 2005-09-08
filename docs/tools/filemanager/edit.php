@@ -36,19 +36,23 @@ if (isset($_POST['cancel'])) {
 if (isset($_POST['save'])) {
 	$content = str_replace("\r\n", "\n", stripslashes($addslashes($_POST['body_text'])));
 	$file = $_POST['file'];
-	if (($f = @fopen($current_path.$pathext.$file, 'w')) && (@fwrite($f, $content) !== false) && @fclose($f)) {
-		$msg->addFeedback(array('FILE_SAVED', $file));
-		header('Location: index.php?pathext='.$_POST['pathext'].SEP.'framed='.$_POST['framed'].SEP.'popup='.$_POST['popup']);
-		exit;		
-	} else {
+
+	if (course_realpath($current_path . $pathext . $file) == FALSE) {
 		$msg->addError('FILE_NOT_SAVED');
-		header('Location: index.php?pathext='.$_POST['pathext'].SEP.'framed='.$_POST['framed'].SEP.'popup='.$_POST['popup']);
-		exit;
+	} else {
+		if (($f = @fopen($current_path.$pathext.$file, 'w')) && (@fwrite($f, $content) !== false) && @fclose($f)) {
+			$msg->addFeedback(array('FILE_SAVED', $file));
+			header('Location: index.php?pathext='.$_POST['pathext'].SEP.'framed='.$_POST['framed'].SEP.'popup='.$_POST['popup']);
+			exit;
+		} else {
+			$msg->addError('FILE_NOT_SAVED');
+		}
 	}
+	header('Location: index.php?pathext='.$_POST['pathext'].SEP.'framed='.$_POST['framed'].SEP.'popup='.$_POST['popup']);
+	exit;
 }
 
 
-$filedata = stat($current_path.$pathext.$file);
 $path_parts = pathinfo($current_path.$pathext.$file);
 $ext = strtolower($path_parts['extension']);
 

@@ -157,7 +157,6 @@ require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
 		echo 'There are no languages installed!';
 		exit;
 	}
-
 	$myLang->saveToSession();
 	$myLang->sendContentTypeHeader();
 
@@ -181,35 +180,42 @@ require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
 
 	// set default template paths:
 	$savant =& new Savant2();
-
 	$savant->addPath('template', AT_INCLUDE_PATH . '../themes/default/');
 
-	//if (isset($_SESSION['prefs']['PREF_THEME']) && ($_user_location != 'public') && ($_SESSION['course_id'] > -1)) {
-	if (isset($_SESSION['prefs']['PREF_THEME']) && file_exists(AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME']) && ($_SESSION['course_id'] > -1)) {
-		//check if enabled
-		$sql    = "SELECT status FROM ".TABLE_PREFIX."themes WHERE dir_name = '".$_SESSION['prefs']['PREF_THEME']."'";
-		$result = mysql_query($sql, $db);
-		$row = mysql_fetch_assoc($result);
-		if ($row['status'] > 0) {
+	if (isset($_SESSION['prefs']['PREF_THEME']) && file_exists(AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME']) && $_SESSION['valid_user']) {
+
+		if ($_SESSION['course_id'] == -1) {
 			$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME'] . '/');
 		} else {
-			// get default
-			$default_theme = get_default_theme();
-			$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name'] . '/');
-			$_SESSION['prefs']['PREF_THEME'] = $default_theme['dir_name'];
+			//check if enabled
+			$sql    = "SELECT status FROM ".TABLE_PREFIX."themes WHERE dir_name = '".$_SESSION['prefs']['PREF_THEME']."'";
+			$result = mysql_query($sql, $db);
+			$row = mysql_fetch_assoc($result);
+			if ($row['status'] > 0) {
+				$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME'] . '/');
+			} else {
+				// get default
+				$default_theme = get_default_theme();
+				$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name'] . '/');
+				$_SESSION['prefs']['PREF_THEME'] = $default_theme['dir_name'];
+			}
 		}
 	} else {
+
 		// get default
 		$default_theme = get_default_theme();
 		$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name'] . '/');
 		$_SESSION['prefs']['PREF_THEME'] = $default_theme['dir_name'];
 	}
 
+	require(AT_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME'] . '/theme.cfg.php');
+
+
 	require(AT_INCLUDE_PATH.'classes/Message/Message.class.php');
 	$msg =& new Message($savant);
 
 	$contentManager = new ContentManager($db, $_SESSION['course_id']);
-	$contentManager->initContent( );
+	$contentManager->initContent();
 /**************************************************/
 
 if (($_user_location == 'users') && $_SESSION['valid_user'] && ($_SESSION['course_id'] > 0)) {
@@ -627,17 +633,19 @@ function admin_authenticate($privilege = 0, $check = false) {
 		return true;
 	}
 
-	$auth = query_bit($_SESSION['privileges'], $privilege);
+	if ($privilege) {
+		$auth = query_bit($_SESSION['privileges'], $privilege);
 
-	if (!$auth) {
-		if ($check) {
-			return false;
+		if (!$auth) {
+			if ($check) {
+				return false;
+			}
+			global $msg;
+			$msg->addError('ACCESS_DENIED');
+			require(AT_INCLUDE_PATH.'header.inc.php'); 
+			require(AT_INCLUDE_PATH.'footer.inc.php'); 
+			exit;
 		}
-		global $msg;
-		$msg->addError('ACCESS_DENIED');
-		require(AT_INCLUDE_PATH.'header.inc.php'); 
-		require(AT_INCLUDE_PATH.'footer.inc.php'); 
-		exit;
 	}
 	return true;
 }

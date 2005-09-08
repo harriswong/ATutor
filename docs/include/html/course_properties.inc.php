@@ -134,17 +134,15 @@ if (isset($_POST['form_course'])) {
 		<div class="row">
 		<label for="cat"><?php echo _AT('category'); ?></label><br />
 			<select name="category_parent" id="cat">
-				<option value="0">&nbsp;&nbsp;&nbsp;[ <?php echo _AT('cats_uncategorized'); ?> ]&nbsp;&nbsp;&nbsp;</option>
-				<option value="0"></option>
+				<option value="0">&nbsp;&nbsp;&nbsp;[&nbsp;&nbsp;<?php echo _AT('cats_uncategorized'); ?>&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;</option>
 				<?php select_categories($categories, 0, $row['cat_id'], false); ?>
 
 			</select>
 		</div>
 	<?php endif; ?>
 
-
 	<div class="row">
-		<?php  echo _AT('content_packaging'); ?><br />
+		<?php  echo _AT('export_content'); ?><br />
 		<?php
 			switch ($row['content_packaging']) {
 				case 'none':

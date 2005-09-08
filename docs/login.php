@@ -48,8 +48,7 @@ if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
 	$this_password	= $cookie_pass;
 	$auto_login		= 1;
 	$used_cookie	= true;
-	
-} else if (isset($_POST['login'])) {
+} else if (isset($_POST['form_login_action'])) {
 	/* form post login */
 	$this_login		= $_POST['form_login'];
 	$this_password  = $_POST['form_password'];
@@ -92,6 +91,7 @@ if (isset($this_login, $this_password)) {
 		assign_session_prefs(unserialize(stripslashes($row['preferences'])));
 		$_SESSION['is_guest']	= 0;
 		$_SESSION['lang']		= $row['language'];
+		$_SESSION['course_id']  = 0;
 
 		if ($auto_login == 1) {
 			$parts = parse_url($_base_href);
@@ -107,7 +107,7 @@ if (isset($this_login, $this_password)) {
 		exit;
 	} else {
 		// check if it's an admin login.
-		$sql = "SELECT login, `privileges` FROM ".TABLE_PREFIX."admins WHERE login='$this_login' AND PASSWORD(password)=PASSWORD('$this_password') AND `privileges`>0";
+		$sql = "SELECT login, `privileges`, language FROM ".TABLE_PREFIX."admins WHERE login='$this_login' AND PASSWORD(password)=PASSWORD('$this_password') AND `privileges`>0";
 		$result = mysql_query($sql, $db);
 
 		if ($row = mysql_fetch_assoc($result)) {
@@ -118,12 +118,17 @@ if (isset($this_login, $this_password)) {
 			$_SESSION['valid_user'] = true;
 			$_SESSION['course_id']  = -1;
 			$_SESSION['privileges'] = intval($row['privileges']);
+			$_SESSION['lang'] = $row['language'];
 
 			write_to_log(AT_ADMIN_LOG_UPDATE, 'admins', mysql_affected_rows($db), $sql);
 
 			$msg->addFeedback('LOGIN_SUCCESS');
 
-			header('Location: admin/index.php');
+			if ($_SESSION['privileges'] == 1) {
+				header('Location: admin/index.php');
+			} else {
+				header('Location: admin/admins/my_edit.php');
+			}
 			exit;
 
 		} else {
@@ -155,13 +160,12 @@ if (isset($_SESSION['member_id'])) {
 	$result = @mysql_query($sql, $db);
 }
 
-//@session_destroy(); 
-
 unset($_SESSION['login']);
 unset($_SESSION['valid_user']);
 unset($_SESSION['member_id']);
 unset($_SESSION['is_admin']);
 unset($_SESSION['course_id']);
+
 
 /*****************************/
 /* template starts down here */
@@ -176,6 +180,6 @@ if (isset($_GET['course'])) {
 	$savant->assign('title',  ' ');
 }
 
-
+header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 $savant->display('login.tmpl.php');
 ?>

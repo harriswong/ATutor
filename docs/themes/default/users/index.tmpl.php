@@ -20,9 +20,6 @@
 				//if notenrolled
 				echo _AT('pending_approval');
 				$link  = $link2 = "";
-			} else if ($row['role'] != '') {
-				//if custom role
-				echo AT_print($row['role'], 'members.role');
 			} else {
 				//if no role and enrolled
 				echo _AT('student1');
@@ -46,7 +43,9 @@
 				<br />
  
 				<p>
-					<small><?php echo _AT('instructor');?>: <?php echo get_login($row['member_id']); ?><br />
+					<small><?php echo _AT('instructor');?>: <?php echo get_login($row['member_id']); ?>
+					<?php echo ' - <a href="'. $_base_href.'inbox/send_message.php?id='.$row['member_id'].'">'._AT('send_message').'</a>'; ?>
+					<br />
 					<?php echo _AT('category'); ?>: <?php echo get_category_name($row['cat_id']); ?><br />
 					
 					

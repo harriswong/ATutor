@@ -29,7 +29,7 @@ unset($progress);
 if ( file_exists($file) ) {
 	@chmod($file, 0666);
 	if (!is_writeable($file)) {
-		$errors[] = '<strong>' . $file . '</strong> is not writeable.';
+		$errors[] = '<strong>' . $file . '</strong> is not writeable. Use <kbd>chmod a+rw '.$file.'</kbd> to change permissions.';
 	}else{
 		$progress[] = '<strong>' . $file . '</strong> is writeable.';
 	}
@@ -90,7 +90,7 @@ if (isset($errors)) {
 
 		print_feedback($progress);
 
-		echo '<p align="center"><input type="submit" class="button" value=" Next » " name="submit" />';
+		echo '<p align="center"><input type="submit" class="button" value=" Next &raquo; " name="submit" />';
 		
 	}
 }

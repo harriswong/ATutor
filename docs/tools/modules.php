@@ -147,20 +147,20 @@ $count = 0;
 <?php foreach ($_current_modules as $module): ?>
 <?php $count++; ?>
 <?php if ((!AC_PATH) && ($_pages[$module]['title_var'] == 'acollab')): ?>
-<?php else: //do nothign ?>
+<?php else: ?>
 <tr>
 	<td><?php echo _AT($_pages[$module]['title_var']); ?></td>
 	<td>
 		<?php if (in_array($module, $_pages[AT_NAV_COURSE])): ?>
-			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" checked="checked" /><label for="m<?php echo $module; ?>"><?php echo _AT('main_navigation'); ?></label>
+			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $count; ?>" checked="checked" /><label for="m<?php echo $count; ?>"><?php echo _AT('main_navigation'); ?></label>
 		<?php else: ?>
-			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $module; ?>" /><label for="m<?php echo $module; ?>"><?php echo _AT('main_navigation'); ?></label>
+			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $count; ?>" /><label for="m<?php echo $count; ?>"><?php echo _AT('main_navigation'); ?></label>
 		<?php endif; ?>
 
 		<?php if (in_array($module, $_pages[AT_NAV_HOME])): ?>
-			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" checked="checked" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
+			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $count; ?>" checked="checked" /><label for="h<?php echo $count; ?>"><?php echo _AT('home'); ?></label>
 		<?php else: ?>
-			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $module; ?>" /><label for="h<?php echo $module; ?>"><?php echo _AT('home'); ?></label>
+			<input type="checkbox" name="home[]" value="<?php echo $module; ?>" id="h<?php echo $count; ?>" /><label for="h<?php echo $count; ?>"><?php echo _AT('home'); ?></label>
 		<?php endif; ?>
 	</td>
 	<td align="right">
@@ -168,12 +168,12 @@ $count = 0;
 			&nbsp;
 		<?php else: ?>
 			<?php if (($count != $num_main+1) && ($count > 1)): ?>
-				<input type="submit" name="up[<?php echo $module; ?>]" value="" title="<?php echo _AT('move_up'); ?>" style="color: white; background-color: white; width: 10px; background-image: url('images/move-up.gif'); background-repeat: no-repeat; background-position: 0px 6px; border: 0;" />
+				<input type="submit" name="up[<?php echo $module; ?>]" value="<?php echo _AT('move_up'); ?>" title="<?php echo _AT('move_up'); ?>" style="background-color: white; border: 1px solid; padding: 0px;" />
 			<?php else: ?>
 				<img src="images/clr.gif" alt="" width="12" />
 			<?php endif; ?>
 			<?php if (($count != $num_main) && ($count < $num_modules)): ?>
-				<input type="submit" name="down[<?php echo $module; ?>]" value="" title="<?php echo _AT('move_down'); ?>" style="background-color: white; width: 10px; background-image: url('images/move-down.gif'); background-repeat: no-repeat; background-position: -3px 6px; border: 0;"/>
+				<input type="submit" name="down[<?php echo $module; ?>]" value="<?php echo _AT('move_down'); ?>" title="<?php echo _AT('move_down'); ?>" style="background-color: white; border: 1px solid; padding: 0px;"/>
 			<?php else: ?>
 				<img src="images/clr.gif" alt="" width="12" />
 			<?php endif; ?>

@@ -23,6 +23,7 @@ CREATE TABLE `admins` (
    `password` VARCHAR( 30 ) NOT NULL ,
    `real_name` VARCHAR( 30 ) NOT NULL ,
    `email` VARCHAR( 50 ) NOT NULL ,
+   `language` varchar(5) NOT NULL default '',
    `privileges` MEDIUMINT UNSIGNED NOT NULL ,
    `last_login` DATETIME NOT NULL ,
    PRIMARY KEY ( `login` )
@@ -236,6 +237,20 @@ CREATE TABLE `groups_members` (
 `member_id` MEDIUMINT UNSIGNED NOT NULL default '0',
  PRIMARY KEY  (`group_id`,`member_id`)
 );
+
+# --------------------------------------------------------
+# Table structure for table `handbook_notes`
+
+CREATE TABLE `handbook_notes` (
+`note_id` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`date` DATETIME NOT NULL ,
+`section` VARCHAR( 15 ) NOT NULL ,
+`page` VARCHAR( 50 ) NOT NULL ,
+`email` VARCHAR( 50 ) NOT NULL ,
+`note` TEXT NOT NULL ,
+PRIMARY KEY ( `note_id` )
+);
+
 
 # --------------------------------------------------------
 # Table structure for table `instructor_approvals`

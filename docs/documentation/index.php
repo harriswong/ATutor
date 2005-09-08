@@ -18,6 +18,8 @@ if (substr($parts['dirname'], -5) == 'admin') {
 	$section = 'admin';
 } else if (substr($parts['dirname'], -10) == 'instructor') {
 	$section = 'instructor';
+} else if (substr($parts['dirname'], -7) == 'general') {
+	$section = 'general';
 } else {
 	header('Location: index_list.php');
 	exit;
@@ -28,7 +30,7 @@ $path = '../common/';
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html lang="en">
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<title>Documentation</title>
+	<title>ATutor Handbook</title>
 <script type="text/javascript">
 
 var i = 0;
@@ -85,7 +87,7 @@ if (isset($_GET['p'])) {
 </head>
 <frameset rows="24,*">
 	<frame src="<?php echo $path; ?>frame_header.php?<?php echo $section; ?>" frameborder="0" name="header" title="header" scrolling="no" noresize="noresize">
-	<frameset cols="28%, *" id="frameset1">
+	<frameset cols="22%, *" id="frameset1">
 		<frame frameborder="0" scrolling="auto" marginwidth="0" marginheight="0" src="<?php echo $path; ?>frame_toc.php?<?php echo $section; ?>" name="toc" id="toc" title="TOC">
 		<frame frameborder="0" src="<?php echo $body; ?>" name="body" title="blank">
 	</frameset>

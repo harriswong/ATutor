@@ -19,10 +19,14 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_USERS);
 
 if (isset($_GET['deny']) && isset($_GET['id'])) {
+	header('Location: admin_deny.php?id='.$_GET['id']);
+	exit;
+	/*
 	$sql = 'DELETE FROM '.TABLE_PREFIX.'instructor_approvals WHERE member_id='.intval($_GET['id']);
 	$result = mysql_query($sql, $db);
 
 	write_to_log(AT_ADMIN_LOG_DELETE, 'instructor_approvals', mysql_affected_rows($db), $sql);
+	*/
 
 } else if (isset($_GET['approve']) && isset($_GET['id'])) {
 	$id = intval($_GET['id']);
@@ -44,9 +48,9 @@ if (isset($_GET['deny']) && isset($_GET['id'])) {
 		$to_email = $row['email'];
 
 		if ($row['first_name']!="" || $row['last_name']!="") {
-			$message  = $row['first_name'].' '.$row['last_name'].",\n\n";		
+			$tmp_message  = $row['first_name'].' '.$row['last_name'].",\n\n";		
 		}	
-		$message .= _AT('instructor_request_reply', $_base_href);
+		$tmp_message .= _AT('instructor_request_reply', $_base_href);
 
 		if ($to_email != '') {
 			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
@@ -54,19 +58,19 @@ if (isset($_GET['deny']) && isset($_GET['id'])) {
 			$mail = new ATutorMailer;
 
 			$mail->From     = EMAIL;
-				$mail->AddAddress($to_email);
-				$mail->Subject = _AT('instructor_request');
-				$mail->Body    = $message;
+			$mail->AddAddress($to_email);
+			$mail->Subject = _AT('instructor_request');
+			$mail->Body    = $tmp_message;
 
-				if(!$mail->Send()) {
-				   //echo 'There was an error sending the message';
-				   $msg->printErrors('SENDING_ERROR');
-				   exit;
-				}
-
-				unset($mail);
+			if(!$mail->Send()) {
+			   //echo 'There was an error sending the message';
+			   $msg->printErrors('SENDING_ERROR');
+			   exit;
 			}
+
+			unset($mail);
 		}
+	}
 
 	$msg->addFeedback('PROFILE_UPDATED_ADMIN');
 } else if (!empty($_GET) && !$_GET['submit']) {
@@ -94,7 +98,8 @@ $num_pending = mysql_num_rows($result);
 </thead>
 <tfoot>
 <tr>
-	<td colspan="6"><input type="submit" name="deny" value="<?php echo _AT('deny'); ?>" /> 
+	<td colspan="6">
+	<input type="submit" name="deny" value="<?php echo _AT('deny'); ?>" /> 
 	<input type="submit" name="approve" value="<?php echo _AT('approve'); ?>" /></td>
 </tr>
 </tfoot>

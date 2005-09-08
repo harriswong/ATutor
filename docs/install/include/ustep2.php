@@ -27,7 +27,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	unset($errors);
 	//check DB & table connection
 
-	$db = @mysql_connect($_POST['db_host'] . ':' . $_POST['db_port'], $_POST['db_login'], $_POST['db_password']);
+	$db = @mysql_connect($_POST['db_host'] . ':' . $_POST['db_port'], $_POST['db_login'], urldecode($_POST['db_password']));
 
 	if (!$db) {
 		$error_no = mysql_errno();
@@ -103,7 +103,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 				<input type="hidden" name="step" value="3" />
 				<input type="hidden" name="upgrade_action" value="true" />';
 				print_hidden(3);
-				echo '<p align="center"><input type="submit" class="button" value=" Next » " name="submit" /></p></form>';
+				echo '<p align="center"><input type="submit" class="button" value=" Next &raquo; " name="submit" /></p></form>';
 				return;
 			}
 		}

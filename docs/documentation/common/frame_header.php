@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title>Documentation Header</title>
+	<title>Handbook Header</title>
 <style type="text/css">
 body {
     font-family: Verdana,Arial,sans-serif;
@@ -92,9 +92,12 @@ function toggleToc(override) {
 <?php if (isset($_GET['admin'])) : ?>
 	<?php $section = 'admin'; ?>
 	<input type="hidden" name="admin" value="" />
-<?php else: ?>
+<?php elseif (isset($_GET['instructor'])): ?>
 	<?php $section = 'instructor'; ?>
 	<input type="hidden" name="instructor" value="" />
+<?php else: ?>
+	<?php $section = 'general'; ?>
+	<input type="hidden" name="general" value="" />
 <?php endif; ?>
 <script type="text/javascript">
 // <!--
@@ -103,6 +106,9 @@ if (top.name == 'popup') {
 }
 // -->
 </script>
+
+<a href="../index_list.php" target="_top">Return to Handbook</a> | 
+
 <input type="text" name="query" /> <input type="submit" name="search" value="Search" /> |  <a href="print.php?<?php echo $section; ?>" target="_top">Print Version</a>
 			<script type="text/javascript">
 			//<!--

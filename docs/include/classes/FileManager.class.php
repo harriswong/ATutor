@@ -1,4 +1,5 @@
 <?php
+exit('not yet complete');
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
@@ -46,9 +47,10 @@ class FileManager {
 	}
 
 	/**
-	* Creates a directory
+	* Creates a directory recursivelly.
 	* @access  public
-	* @param   string $dir      relative path and name of the directory to create
+	* @param   string $dir      relative path and name of the directory to create.
+	*                           dir can be a full path of a dir structure to create.
 	* @return  boolean			whether or not the directory was created
 	* @author  Joel Kronenberg
 	*/
@@ -58,7 +60,7 @@ class FileManager {
 		// sanitise the dir name
 
 		// Note: would it be easier to receive the path and directory name separately?
-
+		
 	}
 
 	/**
@@ -147,11 +149,12 @@ class FileManager {
 	/**
 	* Returns size of a directory (recursively)
 	* @access  public
-	* @param   string $dir     relative path to the directory
-	* @return  int             size of directory in Bytes, FALSE on failure
+	* @param   string $dir         relative path to the directory
+	* @param   boolean $recursive  whether or not to recurse down directories
+	* @return  int                 size of directory in Bytes, FALSE on failure
 	* @author  Joel Kronenberg
 	*/
-	function getDirectorySize($dir) {
+	function getDirectorySize($dir, $recursive = TRUE) {
 		$dir = $this->_getRealPath($dir);
 
 		if (($dir !== FALSE) && is_dir($dir)) {
@@ -164,7 +167,7 @@ class FileManager {
 		while (($file = readdir($dh)) !== false) {
 			if (($file != '.') && ($file != '..')) {
 				$path = $dir . $file;
-				if (is_dir($path)) {
+				if (is_dir($path) && ($recursive === TRUE)) {
 					$size += $this->getDirectorySize($path . DIRECTORY_SEPARATOR);
 				} elseif (is_file($path)) {
 					$size += filesize($path);
@@ -276,4 +279,266 @@ class FileManager {
 
 	}
 }
+
+
+/**
+* FileManagerFactory
+* Class for creating AbstractFileManager Objects
+* @access	public
+* @author	Joel Kronenberg
+* @package	FileManager
+*/
+class FileManagerFactory {
+
+	function FileManagerFactory() { }
+
+	function createFileManagerFile($name) {
+		$obj = new FileManagerFile($name);
+		if ($obj->isOkay()) {
+			return $obj;
+		}
+		return NULL;
+	}
+	function createFileManagerDirectory($name) {
+		$obj= new FileManagerDirectory($name);
+		if ($obj->isOkay()) {
+			return $obj;
+		}
+		return NULL;
+	}
+
+	function open($name) {
+		if (is_dir($name)) {
+			$obj = new FileManagerDirectory($name);
+		} else if (is_file($name)) {
+			$obj = new FileManagerFile($name);
+		} else {
+			// file not found
+			return NULL;
+		}
+		if ($obj->isOkay()) {
+			return $obj;
+		}
+		return NULL;
+	}
+}
+
+class AbstractFileManager {
+	var $_type; // private
+	var $_name; // private
+	var $_path; // private
+	var $_filename; // private
+	var $_exists; // private
+
+	// var $_old_filename;
+	// var $_old_path; // maybe?
+
+	var $_fp; // private, file/dir pointer
+
+	function AbstractFileManager( ) {
+		$this->contentDirectory = AT_CONTENT_DIR . $_SESSION['course_id'];
+	}
+
+	function create() { }
+
+	function isOkay() {
+		// this is where the important authentication check is done!
+		echo 'authenticating '.$this->_filename.'<br>';
+		if (file_exists($this->_path . DIRECTORY_SEPARATOR . $this->_filename)) {
+			$this->_exists = TRUE;
+		}
+		$this->_exists = FALSE;
+		if ($this->isIllegalType()) {
+			return FALSE;
+		}
+		return TRUE;
+	}
+	
+	function exists() {
+		return $this->_exists;
+	}
+
+}
+
+class FileManagerFile extends AbstractFileManager {
+	var $_extension; // private
+
+	function FileManagerFile($file) {
+		$this->_type = 'file';
+
+		$pathinfo = pathinfo($file);
+		$this->_extension = $pathinfo['extension'];
+		$this->_path      = $pathinfo['dirname'];
+		$this->_filename  = $pathinfo['basename'];
+
+		// set whether or not this file/dir is safe.
+	}
+
+	function rename($newName) {
+		$return = FALSE;
+
+		$fileManagerFactory = new FileManagerFactory();
+		$fileObj = $fileManagerFactory->createFileManagerFile($this->_path . DIRECTORY_SEPARATOR . $newName);
+		if (($fileObj !== NULL) && !$fileObj->exists()) {
+			if (@rename($this->_path . DIRECTORY_SEPARATOR . $this->_filename, $this->_path . DIRECTORY_SEPARATOR . $newName)) {
+				$this->_filename = $newName;
+				$return = TRUE;
+			}
+		}
+		return $return;
+	}
+
+	function delete() {
+		return unlink($this->_path . DIRECTORY_SEPARATOR . $this->_filename);
+	}
+
+	function isIllegalType($name = '') {
+		// get file extension
+		if ($name) {
+			$pathinfo = pathinfo($name);
+			$ext = $pathinfo['extension'];
+		} else {
+			$ext = $this->_extension;
+		}
+
+		if (in_array($ext, array('txt', 'html'))) {
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	function create($content) {
+		if (!is_dir($this->_path)) {
+			$fileManagerFactory = new FileManagerFactory();
+			$dirObj = $fileManagerFactory->createFileManagerDirectory($this->_path);
+			if ($dirObj !== NULL) {
+				$dirObj->create(0666);
+			}
+		}
+
+		// save $contents into $file
+		$return = FALSE;
+		if (($fp = @fopen($this->_path . DIRECTORY_SEPARATOR . $this->_filename, 'wb+')) !== FALSE) {
+			$return = @fwrite($fp, $content, strlen($content));
+			@fclose($fp);
+		}
+		return $return;
+	}
+
+}
+
+class FileManagerDirectory extends AbstractFileManager {
+
+	function FileManagerDirectory($dir) {
+		$this->_type = 'directory';
+
+		$pathinfo = pathinfo($dir);
+		$this->_path     = $pathinfo['dirname'];
+		$this->_filename = $pathinfo['basename'];
+	}
+
+	function isIllegalType() {
+		return FALSE;
+	}
+
+	function getDirectoryListing() {
+
+	}
+
+	// creates dir
+	function create($mode = 0666) {
+		if (is_dir($this->_path)) {
+			return @mkdir($this->_path . DIRECTORY_SEPARATOR . $this->_filename, $mode);
+		} else {
+			$fileManagerFactory = new FileManagerFactory();
+			$dirObj = $fileManagerFactory->createFileManagerDirectory($this->_path);
+			if ($dirObj !== NULL) {
+				if ($dirObj->create(0666) !== FALSE) {
+					return @mkdir($this->_path . DIRECTORY_SEPARATOR . $this->_filename, $mode);
+				}
+			}
+		}
+	}
+
+	function delete() {}
+
+	function getDirectorySize($recursive = TRUE) {
+
+	}
+
+	// private
+	function _getDirectorySize($recursive = TRUE) {
+
+	}
+
+}
+
+$fileManagerFactory = new FileManagerFactory();
+
+$fileObj = $fileManagerFactory->createFileManagerFile('/content/meow.txt');
+
+if ($fileObj !== NULL) {
+	$data = 'stuff goes in here';
+	if ($fileObj->create($data) !== FALSE) {
+		echo 'create good: ' . $fileObj->_filename .' in '. $fileObj->_path;
+	}
+}
+echo '<hr>';
+
+$fileObj = $fileManagerFactory->open('/content/meow.txt');
+if ($fileObj !== NULL) {
+	if ($fileObj->rename('cow.txt') !== FALSE) {
+		echo 'rename good: ' . $fileObj->_filename .' in '. $fileObj->_path;
+	}
+}
+
+echo '<hr>';
+
+$fileObj = $fileManagerFactory->open('/content/cow.txt');
+if ($fileObj !== NULL) {
+	if ($fileObj->delete() !== FALSE) {
+		echo 'delete good: ' . $fileObj->_filename .' in '. $fileObj->_path;
+	}
+}
+
+echo '<hr>';
+
+$dirObj = $fileManagerFactory->createFileManagerDirectory('/content/test1/test2/test3/test4/');
+if ($dirObj !== NULL) {
+	if ($dirObj->create(0666) !== FALSE) {
+		echo 'create good: ' . $dirObj->_filename .' in '. $dirObj->_path;
+	} else {
+		echo 'dir exists: ' . $dirObj->_filename .' in '. $dirObj->_path;
+	}
+}
+
+echo '<hr>';
+
+
+$fileObj = $fileManagerFactory->createFileManagerFile('/content/test3/test122/quack.txt');
+if ($fileObj !== NULL) {
+	$data = 'quack file goes here';
+	if ($fileObj->create($data) !== FALSE) {
+		echo 'create good: ' . $fileObj->_filename .' in '. $fileObj->_path;
+	}
+}
+
+echo '<hr>';
+
+/*
+- create/overwrite file
+- move file
+- rename file
+- delete file
+- copy file
+
+
+- create dir
+- move dir (and its files)
+- rename dir
+- delete dir
+- copy dir
+
+
+*/
 ?>
