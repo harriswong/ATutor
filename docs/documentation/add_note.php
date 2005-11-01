@@ -83,7 +83,7 @@ div.input-form div.row {
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <input type="hidden" name="section" value="<?php echo key($_GET); ?>" />
-<input type="hidden" name="page" value="<?php echo $_GET['p']; ?>" />
+<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['p']); ?>" />
 
 
 <div class="input-form">
