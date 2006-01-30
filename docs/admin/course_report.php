@@ -66,25 +66,33 @@ function make_csv($test_id) {
 }
 
 if (count($_GET['id']) > 1) {
-	require(AT_INCLUDE_PATH.'classes/zipfile.class.php');
+	//require(AT_INCLUDE_PATH.'classes/zipfile.class.php');
 
+	/*
 	$course_title = $system_courses[$_GET['course']]['title'];
 	$course_title = str_replace("/", '_', $course_title);
 	$course_title = str_replace("\\", '_', $course_title);
 	$course_title = str_replace(" ", '_', $course_title);
 
 	$zipfile = new zipfile();
-
+	*/
+	$total_csv = '';
 	foreach($_GET['id'] as $test_id) {
 		$csv = make_csv($test_id);
 		if ($csv['data']) {
-			$zipfile->add_file($csv['data'], $csv['name']);
+			$total_csv .= $csv['data'];
 		}
 	}
 
-	if ($zipfile->num_entries > 0) {
-		$zipfile->close();
-		$zipfile->send_file($course_title.'_'.date('y_m_d'));
+	if ($total_csv) {
+		header('Content-Type: application/x-excel');
+		header('Content-Disposition: inline; filename="Reports"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+
+		echo $total_csv;
+		exit;
 	} else {
 		$msg->addError('RESULT_NOT_FOUND');
 		header("Location:course_tests.php?course=".$_GET['course']);

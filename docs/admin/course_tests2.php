@@ -1,0 +1,88 @@
+<?php
+/****************************************************************************/
+/* ATutor																	*/
+/****************************************************************************/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Adaptive Technology Resource Centre / University of Toronto				*/
+/* http://atutor.ca															*/
+/*																			*/
+/* This program is free software. You can redistribute it and/or			*/
+/* modify it under the terms of the GNU General Public License				*/
+/* as published by the Free Software Foundation.							*/
+/****************************************************************************/
+// $Id: courses.php 4717 2005-05-26 16:26:43Z heidi $
+
+define('AT_INCLUDE_PATH', '../include/');
+require(AT_INCLUDE_PATH.'vitals.inc.php');
+admin_authenticate(AT_ADMIN_PRIV_COURSES);
+
+//get course id
+$course = intval($_GET['course']);
+
+$_pages['admin/course_tests.php']['title'] = 'Course Tests';
+$_pages['admin/course_tests.php']['parent']    = 'admin/courses.php';
+
+
+if (isset($_GET['report']) && !$_GET['id']) {
+	$msg->addError('NO_ITEM_SELECTED');
+}
+
+require(AT_INCLUDE_PATH.'header.inc.php'); 
+
+?>
+
+<form name="form" method="get" action="<?php echo $_base_href; ?>admin/course_report.php">
+<input type="hidden" name="course" value="<?php echo $course; ?>" />
+
+<table class="data" summary="" style="width:60%;">
+<tfoot>
+	<tr>
+		<td colspan="7">
+			<input type="submit" name="report" value="Get Reports" />
+		</td>
+	</tr>
+</tfoot>
+<tr>
+	<td colspan="2"><input type="checkbox" onclick="CheckAll(this);" name="all" value="1" id="all" /><label for="all"><?php echo _AT('select_all'); ?></label></td>
+</tr>
+<?php foreach ($system_courses as $course => $info): ?>
+
+	<?php
+	$sql	= "SELECT * FROM ".TABLE_PREFIX."tests WHERE course_id=$course ORDER BY course_id, title";
+	$result = mysql_query($sql, $db);
+	$num_rows = mysql_num_rows($result);
+	?>
+		<tbody>
+			<tr>
+				<th colspan="2"><?php echo $info['title']; ?></th>
+			</tr>
+			<?php if ($num_rows): ?>
+				<?php while ($row = mysql_fetch_assoc($result)): ?>
+					<tr onmousedown="document.form['t<?php echo $row['test_id']; ?>'].checked = !document.form['t<?php echo $row['test_id']; ?>'].checked;">
+						<td width="1"><input type="checkbox" name="id[]" value="<?php echo $row['test_id']; ?>" id="t<?php echo $row['test_id']; ?>" onmouseup="this.checked=!this.checked" /></td>
+						<td><?php echo AT_print($row['title'], 'tests.title'); ?>
+							<?php if ($row['format'] == 1) { echo " - <strong>Challenge Test</strong>"; } ?>					
+						</td>
+					</tr>
+				<?php endwhile; ?>
+			<?php else: ?>
+				<tr>
+					<td colspan="7"><?php echo _AT('none_found'); ?></td>
+				</tr>
+			<?php endif; ?>
+		</tbody>
+<?php endforeach; ?>
+</table>
+</form>
+
+<script type="text/javascript">
+
+function CheckAll(obj) {
+	for (var i=0;i<document.form.elements.length;i++) {
+		var e = document.form.elements[i];
+		if (e.type == 'checkbox')
+			e.checked = obj.checked;
+	}
+}
+</script>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

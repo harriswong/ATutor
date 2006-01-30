@@ -182,6 +182,9 @@ $_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'ad
 	$_pages['admin/create_course.php']['title_var'] = 'create_course';
 	$_pages['admin/create_course.php']['parent']    = 'admin/courses.php';
 
+	$_pages['admin/course_tests2.php']['title'] = 'Reports';
+	$_pages['admin/course_tests2.php']['parent']    = 'admin/courses.php';
+
 	$_pages['admin/backup/index.php']['title_var'] = 'backups';
 	$_pages['admin/backup/index.php']['parent']    = 'admin/courses.php';
 	$_pages['admin/backup/index.php']['guide']     = 'admin/?p=4.2.backups.php';
@@ -725,7 +728,7 @@ if (($_SESSION['course_id'] > 0) && isset($_modules)) {
 		}
 		if (admin_authenticate(AT_ADMIN_PRIV_COURSES, TRUE)) {
 			$_pages[AT_NAV_ADMIN][] = 'admin/courses.php';
-			$_pages['admin/courses.php']['children'] = array('admin/create_course.php');
+			$_pages['admin/courses.php']['children'] = array('admin/create_course.php', 'admin/course_tests2.php');
 			$_pages['admin/courses.php']['parent'] = AT_NAV_ADMIN;
 		}
 		if (admin_authenticate(AT_ADMIN_PRIV_BACKUPS, TRUE)) {
