@@ -86,7 +86,7 @@ if (count($_GET['id']) > 1) {
 
 	if ($total_csv) {
 		header('Content-Type: application/x-excel');
-		header('Content-Disposition: inline; filename="Reports"');
+		header('Content-Disposition: inline; filename="Reports.csv"');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
