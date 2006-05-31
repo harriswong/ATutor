@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -52,11 +52,28 @@ if(isset($_POST['submit'])) {
 		} else if (!is_writable($_POST['content_dir'].'/backups')){
 			$errors[] = '<strong>'.$_POST['content_dir'].'/backups</strong> directory is not writable.';
 		}
+		if (!is_dir($_POST['content_dir'].'/feeds')) {
+			if (!@mkdir($_POST['content_dir'].'/feeds')) {
+				$errors[] = '<strong>'.$_POST['content_dir'].'/feeds</strong> directory does not exist and cannot be created.';  
+			}
+		} else if (!is_writable($_POST['content_dir'].'/feeds')){
+			$errors[] = '<strong>'.$_POST['content_dir'].'/feeds</strong> directory is not writable.';
+		}
+
+		if (!is_dir($_POST['content_dir'].'/file_storage')) {
+			if (!@mkdir($_POST['content_dir'].'/file_storage')) {
+				$errors[] = '<strong>'.$_POST['content_dir'].'/file_storage</strong> directory does not exist and cannot be created.';  
+			}
+		} else if (!is_writable($_POST['content_dir'].'/file_storage')){
+			$errors[] = '<strong>'.$_POST['content_dir'].'/file_storage</strong> directory is not writable.';
+		}
 
 		// save blank index.html pages to those directories
 		@copy('../images/index.html', $_POST['content_dir'] . '/import/index.html');
 		@copy('../images/index.html', $_POST['content_dir'] . '/chat/index.html');
 		@copy('../images/index.html', $_POST['content_dir'] . '/backups/index.html');
+		@copy('../images/index.html', $_POST['content_dir'] . '/feeds/index.html');
+		@copy('../images/index.html', $_POST['content_dir'] . '/file_storage/index.html');
 		@copy('../images/index.html', $_POST['content_dir'] . '/index.html');
 	}
 
@@ -144,7 +161,7 @@ if (isset($_POST['step1']['old_version'])) {
 			$headers[] = '';
 		}
 	} else {
-		$fp   = fsockopen($host, $port, $errno, $errstr, 15);
+		$fp   = @fsockopen($host, $port, $errno, $errstr, 15);
 
 		if($fp) {
 			$head = 'HEAD '.@$path. " HTTP/1.0\r\nHost: ".@$host."\r\n\r\n";
@@ -193,7 +210,7 @@ if (isset($_POST['step1']['old_version'])) {
 	<table width="80%" class="tableborder" cellspacing="0" cellpadding="1" align="center">	
 	<tr>
 		<td class="row1"><div class="required" title="Required Field">*</div><b><label for="contentdir">Content Directory:</label></b><br />
-		Please specify where the content directory should be. The content directory stores all of the courses' files. As a security measure, the content directory should be placed outside of your ATutor installation (for example, to a non-web-accessible location that is not publically available). On a Windows machine, the path should look like <kbd>C:\content</kbd>, while on Unix it should look like <kbd>/var/content</kbd>. The directory you specify must be created if it does not already exist and be writeable by the webserver. On Unix machines issue the command <kbd>chmod a+rwx content</kbd>, additionally the path may not contain any symbolic links.
+		Please specify where the content directory should be. The content directory stores all of the courses' files. As a security measure, the content directory should be placed <em>outside</em> of your ATutor installation (for example, to a non-web-accessible location that is not publically available). On a Windows machine, the path should look like <kbd>C:\content</kbd>, while on Unix it should look like <kbd>/var/content</kbd>. The directory you specify must be created if it does not already exist and be writeable by the webserver. On Unix machines issue the command <kbd>chmod a+rwx content</kbd>, additionally the path may not contain any symbolic links.
 		<br /><br />
 		<input type="text" name="content_dir" id="contentdir" value="<?php if (!empty($_POST['content_dir'])) { echo stripslashes($addslashes($_POST['content_dir'])); } else { echo $_defaults['content_dir']; } ?>" class="formfield" size="70" /></td>
 	</tr>

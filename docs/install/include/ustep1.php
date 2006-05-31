@@ -59,7 +59,7 @@ if (isset($_POST['submit']) && (trim($_POST['old_path']) != '')) {
 					echo '<input type="hidden" name="tb_prefix" value="" />';
 				}
 				if (defined('SITE_NAME')) {
-					echo '<input type="hidden" name="site_name" value="'.SITE_NAME.'" />';
+					echo '<input type="hidden" name="site_name" value="'.urlencode(SITE_NAME).'" />';
 				} else {
 					echo '<input type="hidden" name="site_name" value="'.$_defaults['site_name'].'" />';
 				}
@@ -79,6 +79,16 @@ if (isset($_POST['submit']) && (trim($_POST['old_path']) != '')) {
 					echo '<input type="hidden" name="home_url" value="'.$_defaults['home_url'].'" />';
 				}
 
+				if (defined('MAIL_USE_SMTP')) {
+					echo '<input type="hidden" name="smtp" value="'.(MAIL_USE_SMTP ? 'TRUE' : 'FALSE').'" />';
+				} else {
+					echo '<input type="hidden" name="smtp" value="FALSE" />';
+				}
+				if (defined('AT_FORCE_GET_FILE')) {
+					echo '<input type="hidden" name="get_file" value="'.(AT_FORCE_GET_FILE ? 'TRUE' : 'FALSE').'" />';
+				} else {
+					echo '<input type="hidden" name="get_file" value="FALSE" />';
+				}
 				echo '<input type="hidden" name="admin_password" value="'.urlencode(ADMIN_PASSWORD).'" />';
 
 				if (defined('ADMIN_USERNAME')) {
@@ -92,6 +102,13 @@ if (isset($_POST['submit']) && (trim($_POST['old_path']) != '')) {
 				} else {
 					echo '<input type="hidden" name="admin_email" value="'.$_defaults['admin_email'].'" />';
 				}
+				if (defined('EMAIL')) {
+					echo '<input type="hidden" name="contact_email" value="'.EMAIL.'" />';
+				} else if (defined('ADMIN_EMAIL')) {
+					echo '<input type="hidden" name="contact_email" value="'.ADMIN_EMAIL.'" />';
+				} else {
+					echo '<input type="hidden" name="contact_email" value="'.$_defaults['admin_email'].'" />';
+				}
 				if (defined('EMAIL_NOTIFY')) {
 					echo '<input type="hidden" name="email_notification" value="'.(EMAIL_NOTIFY ? 'TRUE' : 'FALSE').'" />';
 				} else {
@@ -103,6 +120,22 @@ if (isset($_POST['submit']) && (trim($_POST['old_path']) != '')) {
 					echo '<input type="hidden" name="allow_instructor_requests" value="'.$_defaults['allow_instructor_requests'].'" />';
 				}
 
+				if (defined('AT_EMAIL_CONFIRMATION')) {
+					echo '<input type="hidden" name="email_confirmation" value="'.(AT_EMAIL_CONFIRMATION ? 'TRUE' : 'FALSE').'" />';
+				} else {
+					echo '<input type="hidden" name="email_confirmation" value="FALSE" />';
+				}
+				
+				if (defined('AT_MASTER_LIST')) {
+					echo '<input type="hidden" name="master_list" value="'.(AT_MASTER_LIST ? 'TRUE' : 'FALSE').'" />';
+				} else {
+					echo '<input type="hidden" name="master_list" value="FALSE" />';
+				}
+				if (defined('AT_ENABLE_HANDBOOK_NOTES')) {
+					echo '<input type="hidden" name="enable_handbook_notes" value="'.(AT_ENABLE_HANDBOOK_NOTES ? 'TRUE' : 'FALSE').'" />';
+				} else {
+					echo '<input type="hidden" name="enable_handbook_notes" value="FALSE" />';
+				}
 				if (defined('AUTO_APPROVE_INSTRUCTORS')) {
 					echo '<input type="hidden" name="auto_approve" value="'.(AUTO_APPROVE_INSTRUCTORS ? 'TRUE' : 'FALSE').'" />';
 				} else {
@@ -156,29 +189,6 @@ if (isset($_POST['submit']) && (trim($_POST['old_path']) != '')) {
 				echo '<input type="hidden" name="new_version" value="'.$new_version.'" />';
 				echo '<input type="hidden" name="old_version" value="'.VERSION.'" />';
 				echo '<p align="center"><input type="submit" class="button" value=" Next &raquo; " name="submit" /></p></form>';
-
-
-				$db = @mysql_connect(DB_HOST . ':' . DB_PORT, DB_USER, DB_PASSWORD);
-				@mysql_select_db(DB_NAME, $db);
-
-				$sql    = "SELECT content_id, content_parent_id, ordering, course_id FROM ".TABLE_PREFIX."content ORDER BY course_id, content_parent_id, ordering";
-				$result = mysql_query($sql, $db);
-				while ($row = mysql_fetch_assoc($result)) {
-					if ($current_course_id != $row['course_id']) {
-						$current_course_id = $row['course_id'];
-						unset($current_parent_id);
-						unset($ordering);
-					}
-					if ($current_parent_id != $row['content_parent_id']) {
-						$current_parent_id = $row['content_parent_id'];
-						$ordering = 1;
-					}
-
-					if ($row['ordering'] != $ordering) {
-						mysql_query("UPDATE ".TABLE_PREFIX."content SET ordering=$ordering WHERE content_id=$row[content_id]", $db);
-					}
-					$ordering++;
-				}
 				return;
 			}
 		} else {
@@ -198,7 +208,15 @@ if (isset($errors)) {
 }
 
 ?>
-<p>Please specify where the old installation of ATutor is and review the notes at the bottom carefully.</p>
+<p>Please specify the location of the old ATutor installation.</p>
+
+<ol>
+	<li>Release Candidate (RC) installations cannot be upgraded.</li>
+	<li>Depending on the size of the existing courses, some steps of the upgrade may require considerable time to complete (in particular steps 2 and 6).</li>
+	<li>All installed language packs and changes made to the default English language will be deleted.</li>
+	<li>Some installed themes may not be supported by this version of ATutor.</li>
+	<li>All extra modules will have to be reinstalled before they can be enabled again.</li>
+</ol>
 
 <p>If the old ATutor installation directory was renamed to <kbd>ATutor_old</kbd> then enter that name below. The old version must be at the same directory level as the new version.</p>
 
@@ -215,13 +233,6 @@ if (isset($errors)) {
 </table>
 
 <br />
-<p><strong>Note 1:</strong> Release Candidate (RC) installations cannot be upgraded.</p>
-
-<p><strong>Note 2:</strong> Depending on the size of the existing courses, some steps of the upgrade may require considerable time to complete (in particular steps 2 and 6).</p>
-
-<p><strong>Note 3:</strong> All installed language packs and changes made to the default English language will be deleted.</p>
-
-<p><strong>Note 4:</strong> Some installed themes may not be supported by this version of ATutor.</p>
 
 <br /><p align="center"><input type="submit" class="button" value="Next &raquo; " name="submit" /></p>
 

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -62,9 +62,9 @@ $no_good = FALSE;
 			<th scope="cols">Status</th>
 		</tr>
 		<tr>
-			<td>PHP 4.2.0+</td>
+			<td>PHP 4.3.0+</td>
 			<td><?php echo phpversion(); ?></td>
-			<td align="center"><?php	if (version_compare(phpversion(), '4.2.0', '>=')) {
+			<td align="center"><?php	if (version_compare(phpversion(), '4.3.0', '>=')) {
 							echo $good;
 						} else {
 							echo $bad;
@@ -72,8 +72,8 @@ $no_good = FALSE;
 						} ?></td>
 		</tr>
 		<tr>
-			<td><kbd>--with-zlib</kbd></td>
-			<td><?php if (defined('FORCE_GZIP')) {
+			<td><kbd>zlib</kbd></td>
+			<td><?php if (extension_loaded('zlib')) {
 						echo 'Enabled</td><td align="center">';
 						echo $good;
 					} else {
@@ -83,8 +83,8 @@ $no_good = FALSE;
 					} ?></td>
 		</tr>
 		<tr>
-			<td><kbd>--with-mysql</kbd></td>
-			<td><?php if (defined('MYSQL_NUM')) {
+			<td><kbd>mysql</kbd></td>
+			<td><?php if (extension_loaded('mysql')) {
 						echo 'Enabled</td><td align="center">';
 						echo $good;
 					} else {
@@ -184,6 +184,17 @@ $no_good = FALSE;
 				?></td>
 		</tr>
 		<tr>
+			<td><kbd>sessions</kbd></td>
+			<td><?php if (extension_loaded('session')) {
+						echo 'Enabled</td><td align="center">';
+						echo $good;
+					} else {
+						echo 'Disabled</td><td align="center">';
+						echo $bad;
+						$no_good = TRUE;
+					} ?></td>
+		</tr>
+		<tr>
 			<td><kbd>session.save_path</kbd></td>
 			<td><?php
 				if ($session_error == '') {
@@ -191,6 +202,20 @@ $no_good = FALSE;
 					echo $good;
 				} else {
 					echo 'Directory Not Writeable</td><td align="center">';
+					echo $bad;
+					$no_good = TRUE;					
+				}
+			?></td>
+		</tr>
+		<tr>
+			<td><kbd>.</kbd> in <kbd>include_path</kbd></td>
+			<td><?php
+				$include_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+				if (in_array('.', $include_path)) {
+					echo 'Enabled</td><td align="center">';
+					echo $good;
+				} else {
+					echo 'Disabled</td><td align="center">';
 					echo $bad;
 					$no_good = TRUE;					
 				}
@@ -204,7 +229,7 @@ $no_good = FALSE;
 			<th scope="cols">Status</th>
 		</tr>
 		<tr>
-			<td>MySQL 3.23.0+ or 4.0.16+</td>
+			<td>MySQL 4.0.2+</td>
 			<td><?php if (defined('MYSQL_NUM')) {
 						echo 'Found Unknown Version</td><td align="center">';
 						echo $good;
@@ -228,7 +253,7 @@ $no_good = FALSE;
 <?php else: ?>
 	<table cellspacing="0" class="tableborder" cellpadding="1" align="center" width="70%">
 	<tr>
-		<td align="right" class="row1" nowrap="nowrap"><strong>Install a Fresh Version &raquo;</strong></td>
+		<td align="right" class="row1" nowrap="nowrap"><strong>New Installation &raquo;</strong></td>
 		<td class="row1" width="150" align="center"><form action="install.php" method="post" name="form">
 		<input type="hidden" name="new_version" value="<?php echo $new_version; ?>" />
 		<input type="submit" class="button" value="  Install  " name="next" />

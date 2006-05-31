@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -21,6 +21,7 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 	$_POST['admin_email']    = trim($_POST['admin_email']);
 	$_POST['site_name']      = trim($_POST['site_name']);
 	$_POST['home_url']	     = trim($_POST['home_url']);
+	$_POST['email']	         = trim($_POST['email']);
 
 	/* Super Administrator Account checking: */
 	if ($_POST['admin_username'] == ''){
@@ -85,8 +86,22 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."admins VALUES ('$_POST[admin_username]', '$_POST[admin_password]', '', '$_POST[admin_email]', 'en', 1, NOW())";
 		$result= mysql_query($sql, $db);
 
-		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."members VALUES (0,'$_POST[account_username]','$_POST[account_password]','$_POST[account_email]','','','', '','', '','','','','', '',$status,'', NOW(),'en', '')";
+		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."members VALUES (0,'$_POST[account_username]','$_POST[account_password]','$_POST[account_email]','','','','', '','', '','','','','', '',$status,'', NOW(),'en', 0, 1)";
 		$result = mysql_query($sql ,$db);
+
+		$_POST['site_name'] = $addslashes($_POST['site_name']);
+		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."config VALUES ('site_name', '$_POST[site_name]')";
+		$result = mysql_query($sql ,$db);
+
+		$_POST['email'] = $addslashes($_POST['email']);
+		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."config VALUES ('contact_email', '$_POST[email]')";
+		$result = mysql_query($sql ,$db);
+
+		$_POST['home_url'] = $addslashes($_POST['home_url']);
+		if ($_POST['home_url'] != '') {
+			$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."config VALUES ('home_url', '$_POST[home_url]')";
+			$result = mysql_query($sql ,$db);
+		}
 
 		if ($_POST['welcome_course'] && $_POST['instructor']) {
 			$_POST['tb_prefix'] = $_POST['step2']['tb_prefix'];
@@ -99,6 +114,9 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		unset($_POST['account_username']);
 		unset($_POST['account_password']);
 		unset($_POST['account_email']);
+		unset($_POST['home_url']);
+		unset($_POST['email']);
+		unset($_POST['site_name']);
 
 		unset($errors);
 		unset($_POST['submit']);
@@ -124,24 +142,6 @@ if (isset($_POST['step1']['old_version']) && $_POST['upgrade_action']) {
 	$defaults['header_img']  = urldecode($_POST['step1']['header_img']);
 	$defaults['header_logo'] = urldecode($_POST['step1']['header_logo']);
 	$defaults['home_url']    = urldecode($_POST['step1']['home_url']);
-
-	$defaults['email_notification'] = $_POST['step1']['email_notification'];
-	$defaults['email_confirmation'] = $_POST['step1']['email_confirmation'];
-	$defaults['allow_instructor_requests'] = $_POST['step1']['allow_instructor_requests'];
-	$defaults['auto_approve_instructors'] = $_POST['step1']['auto_approve_instructors'];
-
-	$defaults['max_file_size'] = $_POST['step1']['max_file_size'];
-	$defaults['max_course_size'] = $_POST['step1']['max_course_size'];
-	$defaults['max_course_float'] = $_POST['step1']['max_course_float'];
-	$defaults['ill_ext'] = urldecode($_POST['step1']['ill_ext']);
-	$defaults['theme_categories'] = $_POST['step1']['theme_categories'];
-	$defaults['cache_dir'] = urldecode($_POST['step1']['cache_dir']);
-	$defaults['course_backups'] = intval($_POST['step1']['course_backups']);
-
-	$_POST['email_notification'] = $defaults['email_notification'];
-	$_POST['allow_instructor_requests'] = $defaults['allow_instructor_requests'];
-	$_POST['auto_approve_instructors'] = $defaults['auto_approve_instructors'];
-
 } else {
 	$defaults = $_defaults;
 }
@@ -167,7 +167,7 @@ if (isset($_POST['step1']['old_version']) && $_POST['upgrade_action']) {
 			<th colspan="2">Super Administrator Account</th>
 		<tr>
 		<tr>
-			<td colspan="2" class="row1">The Super Administrator account is used for managing ATutor. The Super Administrator can also create additional Administrators each with their own privileges and roles. Administrator accounts cannot enroll or create courses.</td>
+			<td colspan="2" class="row1">The Super Administrator account is used for managing ATutor. The Super Administrator can also create additional Administrators each with their own privileges and roles. Administrator accounts cannot enroll in courses.</td>
 		</tr>
 		<tr>
 			<td class="row1"><div class="required" title="Required Field">*</div><b><label for="username">Administrator Username:</label></b><br />

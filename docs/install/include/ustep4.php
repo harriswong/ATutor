@@ -77,6 +77,7 @@ if ($_POST['step4']['copy_from'] && ($_POST['step4']['copy_from'] != DIRECTORY_S
 } else {
 	$progress[] = 'Using existing content directory <strong>'.$content_dir.'</strong>.';
 }
+
 echo '<br />';
 if (isset($progress)) {
 	print_feedback($progress);
@@ -85,8 +86,8 @@ if (isset($errors)) {
 	print_errors($errors);
 }
 
-if ($_POST['step3']['cache_dir'] != '') {
-	define('CACHE_DIR', urldecode($_POST['step3']['cache_dir']));
+if ($_POST['step1']['cache_dir'] != '') {
+	define('CACHE_DIR', urldecode($_POST['step1']['cache_dir']));
 	define('CACHE_ON', 1);
 	require('../include/phpCache/phpCache.inc.php');
 	cache_gc(NULL, 1, true);

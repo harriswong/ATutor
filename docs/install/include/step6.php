@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -103,8 +103,10 @@ if (isset($errors)) {
 			@mkdir($cdir.'/1');
 			@mkdir($cdir.'/chat/1');
 			@mkdir($cdir.'/backups/1');
+			@mkdir($cdir.'/feeds/1');
 			@copy('../images/index.html', $cdir . '/index.html');
 			@copy('../images/index.html', $cdir . '/backups/1/index.html');
+			@copy('../images/index.html', $cdir . '/feeds/1/index.html');
 			@copy('../images/index.html', $cdir . '/chat/1/index.html');
 			@copy('../images/index.html', $cdir . '/1/index.html');
 		}

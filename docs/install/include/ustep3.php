@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -15,6 +15,9 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 	unset($errors);
+
+	$db = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], urldecode($_POST['step1']['db_password']));
+	@mysql_select_db($_POST['step1']['db_name'], $db);
 
 	if (version_compare($_POST['step1']['old_version'], '1.5', '<')) {
 		$_POST['admin_username'] = trim($_POST['admin_username']);
@@ -49,9 +52,6 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		}
 
 		if (!isset($errors)) {
-			$db = @mysql_connect($_POST['step1']['db_host'] . ':' . $_POST['step1']['db_port'], $_POST['step1']['db_login'], urldecode($_POST['step1']['db_password']));
-			@mysql_select_db($_POST['step1']['db_name'], $db);
-
 			$sql = "INSERT INTO ".$_POST['step1']['tb_prefix']."admins VALUES ('$_POST[admin_username]', '$_POST[admin_password]', '', '$_POST[admin_email]', 'en', 1, NOW())";
 			$result= mysql_query($sql, $db);
 
@@ -60,7 +60,93 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 			unset($_POST['admin_email']);
 		}
 	}
+	if (version_compare($_POST['step1']['old_version'], '1.5.2', '<')) {
+		// update config table
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('contact_email', '".urldecode($_POST['step1']['contact_email'])."')";
+		mysql_query($sql, $db);
 
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('email_notification', '".($_POST['step1']['email_notification'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('allow_instructor_requests', '".($_POST['step1']['allow_instructor_requests'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('auto_approve_instructors', '".($_POST['step1']['auto_approve'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('max_file_size', '".(int) $_POST['step1']['max_file_size']."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('max_course_size', '".(int) $_POST['step1']['max_course_size']."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('max_course_float', '".(int) $_POST['step1']['max_course_float']."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('illegal_extentions', '".str_replace(',','|',urldecode($_POST['step1']['ill_ext']))."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('site_name', '".urldecode($_POST['step1']['site_name'])."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('home_url', '".urldecode($_POST['step1']['home_url'])."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('default_language', 'en')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('cache_dir', '".urldecode($_POST['step1']['cache_dir'])."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('enable_category_themes', '".($_POST['step1']['theme_categories'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('course_backups', '". (int) $_POST['step1']['course_backups']."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('email_confirmation', '".($_POST['step1']['email_confirmation'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('master_list', '".($_POST['step1']['master_list'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+
+		$sql = "REPLACE INTO ".$_POST['step1']['tb_prefix']."config VALUES ('enable_handbook_notes', '".($_POST['step1']['enable_handbook_notes'] ? 1 : 0)."')";
+		mysql_query($sql, $db);
+	}
+
+	if (version_compare($_POST['step1']['old_version'], '1.5.2', '<')) {
+		// check for bits 8192 and 4096 and remove them if they're set.
+		$sql = "UPDATE ".$_POST['step1']['tb_prefix']."course_enrollment SET `privileges` = `privileges` - 8192 WHERE `privileges` & 8192";
+		mysql_query($sql, $db);
+
+		$sql = "UPDATE ".$_POST['step1']['tb_prefix']."course_enrollment SET `privileges` = `privileges` - 4096 WHERE `privileges` & 4096";
+		mysql_query($sql, $db);
+	}
+
+	if (version_compare($_POST['step1']['old_version'], '1.5.3', '<')) {
+		$sql = "DELETE FROM ".$_POST['step1']['tb_prefix']."groups";
+		mysql_query($sql, $db);
+
+		$sql = "DELETE FROM ".$_POST['step1']['tb_prefix']."groups_members";
+		mysql_query($sql, $db);
+
+		$sql = "DELETE FROM ".$_POST['step1']['tb_prefix']."tests_groups";
+		mysql_query($sql, $db);
+	}
+
+	/* deal with the extra modules: */
+	/* for each module in the modules table check if that module still exists in the mod directory. */
+	/* if that module does not exist then check the old directory and prompt to have it copied */
+	/* or delete it from the modules table. or maybe disable it instead? */
+	define('TABLE_PREFIX', $_POST['step1']['tb_prefix']);
+	require(AT_INCLUDE_PATH . 'classes/Module/Module.class.php');
+	$moduleFactory = new ModuleFactory(FALSE);
+	$module_list =& $moduleFactory->getModules(AT_MODULE_STATUS_DISABLED | AT_MODULE_STATUS_ENABLED);
+	$keys = array_keys($module_list);
+	foreach($keys as $dir_name) {
+		$module =& $module_list[$dir_name];
+		$module->setIsMissing();
+	}
 
 	if (!isset($errors)) {
 		unset($errors);
@@ -124,6 +210,9 @@ if (isset($errors)) {
 			<td class="row1"><input type="text" name="email" id="cemail" size="30" value="<?php if (!empty($_POST['email'])) { echo stripslashes(htmlspecialchars($_POST['admin_email'])); } else { echo urldecode($_POST['step1']['admin_email']); } ?>" class="formfield" /></td>
 		</tr>
 		</table>
+<?php endif; ?>
+<?php if (version_compare($_POST['step1']['old_version'], '1.5.3', '<')): ?>
+	<p>Groups made prior to 1.5.3 are not backwards compatible and will be removed.</p>
 <?php else: ?>
 	<p>There are no new configuration options for this version.</p>
 <?php endif; ?>

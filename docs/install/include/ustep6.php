@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -18,7 +18,7 @@ print_progress($step);
 ?>
 <p><strong>Congratulations on your installation of ATutor <?php echo $new_version; ?><i>!</i></strong></p>
 
-<p>You should now login to the Administration section to review and set any new System Configuration options.</p>
+<p>It is important that you login to the Administration section to review and set any new System Configuration options.</p>
 
 <p>See the <a href="http://atutor.ca/forums/">Support Forums</a> on <a href="http://atutor.ca">atutor.ca</a> for additional help &amp; support.</p>
 

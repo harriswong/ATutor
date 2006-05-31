@@ -4,7 +4,7 @@ exit('this file is no longer used');
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg, Heidi Hazelton	*/
 /* http://atutor.ca														*/
 /*																		*/
 /* This program is free software. You can redistribute it and/or		*/
@@ -61,7 +61,7 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		$db = mysql_connect($_POST['step2']['db_host'] . ':' . $_POST['step2']['db_port'], $_POST['step2']['db_login'], urldecode($_POST['step2']['db_password']));
 		mysql_select_db($_POST['step2']['db_name'], $db);
 
-		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."members VALUES (0,'$_POST[username]','$_POST[password]','$_POST[email]','','','', '','', '','','','','', '',$status,'', NOW(),'en', '')";
+		$sql = "INSERT INTO ".$_POST['step2']['tb_prefix']."members VALUES (0,'$_POST[username]','$_POST[password]','$_POST[email]','','','','', '','', '','','','','', '',$status,'', NOW(),'en', 0, 1)";
 		$result = mysql_query($sql ,$db);
 		$m_id	= mysql_insert_id($db);
 
