@@ -1,8 +1,7 @@
 <?php
 
 function blogs_delete($course) {
-	global $db;
-
+	// course blogs are not implemented
 }
 
 ?>

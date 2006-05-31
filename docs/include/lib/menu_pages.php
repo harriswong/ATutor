@@ -135,6 +135,7 @@ if ($_SESSION['course_id'] > 0) {
 	}
 }
 
+
 /* public pages */
 $_pages['registration.php']['title_var'] = 'register';
 $_pages['registration.php']['parent']    = AT_NAV_PUBLIC;
@@ -211,6 +212,7 @@ $_pages['inbox/index.php']['children']  = array('inbox/send_message.php');
 
 $_pages['profile.php']['title_var'] = 'profile';
 $_pages['profile.php']['parent']    = 'index.php';
+
 
 /* global pages */
 $_pages['about.php']['title_var']  = 'about_atutor';
