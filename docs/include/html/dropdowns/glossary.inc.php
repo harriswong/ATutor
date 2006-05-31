@@ -1,14 +1,15 @@
 <?php
-/****************************************************************/
-/* ATutor														*/
-/****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
-/* http://atutor.ca												*/
-/*                                                              */
-/* This program is free software. You can redistribute it and/or*/
-/* modify it under the terms of the GNU General Public License  */
-/* as published by the Free Software Foundation.				*/
-/****************************************************************/
+/************************************************************************/
+/* ATutor																*/
+/************************************************************************/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Adaptive Technology Resource Centre / University of Toronto			*/
+/* http://atutor.ca														*/
+/*																		*/
+/* This program is free software. You can redistribute it and/or		*/
+/* modify it under the terms of the GNU General Public License			*/
+/* as published by the Free Software Foundation.						*/
+/************************************************************************/
 // $Id$
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
@@ -24,36 +25,45 @@ $result = $contentManager->getContentPage($_GET['cid']);
 if ($result && ($row = mysql_fetch_array($result))) {
 	$matches = find_terms($row['text']);
 	$matches = $matches[0];
-	$word = str_replace(array('[?]', '[/?]'), '', $matches);
-	$word = str_replace("\n", ' ', $word);
-	$word = array_unique($word);
+	$words = str_replace(array('[?]', '[/?]'), '', $matches);
+	$words = str_replace("\n", ' ', $words);
 
-	if (count($word) > 0) {
+	//case-insensitive, unique array of words
+	for($i=0;$i<count($words);$i++) {
+		$words[$i] = strtolower($words[$i]);
+	}
+	$words = array_unique($words);
+
+	if (count($words) > 0) {
 		$count = 0;
 
-		foreach ($word as $k => $v) {
+		$glossary_key_lower = array_change_key_case($glossary);
+
+		foreach ($words as $k => $v) {
 			$original_v = $v;
 			$v = urlencode($v);
-			if ($glossary[$v] != '') {
-				if (strlen($original_v) > 26 ) {
-					$v_formatted = substr($original_v, 0, 26-4).'...';
-				}else{
-					$v_formatted = $original_v;
-				}
-				
-				$def = AT_print($glossary[$v], 'glossary.definition');
+
+			if ($glossary_key_lower[$v] != '') {
+
+				$v_formatted = urldecode(array_search($glossary_key_lower[$v], $glossary));
+
+				$def = AT_print($glossary_key_lower[$v], 'glossary.definition');
 
 				$count++;
 				//echo '&#176; <a href="'.$_base_path.'glossary/index.php?g_cid='.$_SESSION['s_cid'].SEP.'w='.$v.'" title="'.$original_v.'">'.$v_formatted.'</a>';
 
-				echo '<a href="'.$_base_path.'glossary/index.php?g_cid='.$_SESSION['s_cid'].SEP.'w='.urlencode($original_v).'#term" onmouseover="return overlib(\''.$def.'\', CAPTION, \''.addslashes($original_v).'\', AUTOSTATUS);" onmouseout="return nd();" onfocus="return overlib(\''.$def.'\', CAPTION, \''.addslashes($original_v).'\', AUTOSTATUS);" onblur="return nd();">'.AT_print($v_formatted, 'glossary.word').'</a>';
+				echo '<a href="'.$_base_path.'glossary/index.php?g_cid='.$_SESSION['s_cid'].SEP.'w='.urlencode($original_v).'#term" onmouseover="return overlib(\''.$def.'\', CAPTION, \''.addslashes($v_formatted).'\', AUTOSTATUS);" onmouseout="return nd();" onfocus="return overlib(\''.$def.'\', CAPTION, \''.addslashes($v_formatted).'\', AUTOSTATUS);" onblur="return nd();">';
+				if (strlen($original_v) > 26 ) {
+					$v_formatted = substr($v_formatted, 0, 26-4).'...';
+				}
+				echo AT_print($v_formatted, 'glossary.word').'</a>';
 				echo '<br />';
 			}
 		}
 
 		if ($count == 0) {
 			/* there are defn's, but they're not defined in the glossary */
-			echo '<em>'._AT('none_found').'</em>';
+			echo '<em>'._AT('no_terms_found').'</em>';
 		}
 	} else {
 		/* there are no glossary terms on this page */
