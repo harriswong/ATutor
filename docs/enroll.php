@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca                                             */
 /*                                                              */
@@ -56,7 +56,7 @@ if ($_POST['submit']) {
 
 				$mail = new ATutorMailer;
 
-				$mail->From     = EMAIL;
+				$mail->From     = $_config['contact_email'];
 				$mail->AddAddress($to_email);
 				$mail->Subject = _AT('course_enrolment');
 				$mail->Body    = $tmp_message;

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -39,7 +39,7 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 
 			$msg->addFeedback('CONFIRM_GOOD');
 
-			header('Location: '.$_base_href.'login.php');
+			header('Location: '.$_base_href.'users/index.php');
 			exit;
 		} else {
 			$msg->addError('CONFIRM_BAD');
@@ -89,8 +89,7 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 		require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
 		$mail = new ATutorMailer();
 
-
-		$mail->From     = EMAIL;
+		$mail->From     = $_config['contact_email'];
 		$mail->AddAddress($_POST['email']);
 		$mail->Subject = SITE_NAME . ' - ' . _AT('email_confirmation_subject');
 		$mail->Body    = "Please confirm your Fraser Health Online Learning System account email address by clicking on the link immediately following. ".$confirmation_link;

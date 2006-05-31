@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -26,7 +26,7 @@ if (!$_SESSION['valid_user']) {
 
 $_GET['id'] = intval($_GET['id']);
 
-$sql	= 'SELECT member_id, login, website, first_name, last_name FROM '.TABLE_PREFIX.'members WHERE member_id='.$_GET['id'];
+$sql	= 'SELECT member_id, login, website, first_name, second_name, last_name, email, private_email, phone FROM '.TABLE_PREFIX.'members WHERE member_id='.$_GET['id'];
 $result = mysql_query($sql,$db);
 if ($row = mysql_fetch_assoc($result)) {
 	
@@ -38,12 +38,13 @@ if ($row = mysql_fetch_assoc($result)) {
 	if ($system_courses[$_SESSION['course_id']]['member_id'] == $_GET['id']) {
 		$status = _AT('instructor');
 	} else if ( ($row_en['approved'] == 'y') && $row_en['privileges'] ) {
-		$status = _AT('enrolled_w_privs');
+		$status = _AT('assistant');
 	} else if ($row_en['approved'] == 'y') {
 		$status = _AT('enrolled');
 	}
 
 	$privs = array();
+	$_privs = array();
 	foreach ($_privs as $key => $priv) {		
 		if (query_bit($row_en['privileges'], $key)) { 
 			$privs[] = $priv['name'];

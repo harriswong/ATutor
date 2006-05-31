@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -39,7 +39,10 @@ if (isset($_GET['online_status']) && ($_GET['online_status'] != '')) {
 	$all = 'checked="checked"';
 }
 
+$group = abs($_GET['group']);
+
 require(AT_INCLUDE_PATH.'header.inc.php');
+
 ?>
 
 <form name="form" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
@@ -51,6 +54,23 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		<input type="radio" name="online_status" id="s2" value="2" <?php echo $all; ?> /><label for="s2"><?php echo _AT('all');          ?></label>
 	</div>
 
+		<div class="row">
+
+			<label for="groups"><?php echo _AT('groups'); ?></label><br />
+			<?php
+			$sql_groups = implode(',', $_SESSION['groups']);
+			$sql = "SELECT G.title, G.group_id, T.title AS type_title FROM ".TABLE_PREFIX."groups G INNER JOIN ".TABLE_PREFIX."groups_types T USING (type_id) WHERE T.course_id=$_SESSION[course_id] AND G.group_id IN ($sql_groups) ORDER BY T.title";
+			$result = mysql_query($sql, $db);
+			?>
+			<select name="group" id="groups">
+				<option value="0" id="g0" ><?php echo _AT('entire_course'); ?></option>
+			<?php while ($row = mysql_fetch_assoc($result)): ?>
+				<option value="<?php echo $row['group_id']; ?>" id="g<?php echo $row['group_id']; ?>" <?php if ($group == $row['group_id']) { echo 'selected="selected"'; } ?> ><?php echo $row['type_title'] . ': ' . $row['title']; ?></option>
+			<?php endwhile; ?>
+			</select>
+
+		</div>
+
 	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('filter'); ?>" />
 		<input type="submit" name="reset_filter" value="<?php echo _AT('reset_filter'); ?>" />
@@ -59,16 +79,25 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 </form>
 
 <?php
-
 if ($_GET['order'] == 'asc') {
 	$order = 'desc';
 } else {
 	$order = 'asc';
 }
 
+$group_members = '';
+if ($group) {
+	$group_members = array();
+	$sql = "SELECT member_id FROM ".TABLE_PREFIX."groups_members WHERE group_id=$group";
+	$result = mysql_query($sql, $db);
+	while ($row = mysql_fetch_assoc($result)) {
+		$group_members[] = $row['member_id'];
+	}
+	$group_members = ' AND C.member_id IN (' . implode(',', $group_members) . ')';
+}
 
 /* look through enrolled students list */
-$sql_members = "SELECT C.member_id, C.approved, C.privileges, M.login FROM ".TABLE_PREFIX."course_enrollment C, ".TABLE_PREFIX."members M	WHERE C.course_id=$_SESSION[course_id] AND C.member_id=M.member_id AND (C.approved='y' OR C.approved='a')	ORDER BY M.login $order";
+$sql_members = "SELECT C.member_id, C.approved, C.privileges, M.login, M.first_name, M.second_name, M.last_name FROM ".TABLE_PREFIX."course_enrollment C, ".TABLE_PREFIX."members M	WHERE C.course_id=$_SESSION[course_id] AND C.member_id=M.member_id AND (C.approved='y' OR C.approved='a')	$group_members ORDER BY M.login $order";
 
 $result_members = mysql_query($sql_members, $db);
 
@@ -104,6 +133,7 @@ if ($all) {
 <thead>
 <tr>
 	<th scope="col"><?php echo _AT('login_name'); ?></th>
+	<th scope="col"><?php echo _AT('full_name'); ?></th>
 	<th scope="col"><?php echo _AT('status'); ?></th>
 	<th scope="col"><?php echo _AT('online_status'); ?></th>
 </tr>
@@ -113,11 +143,17 @@ if ($all) {
 if ($final) {
 	foreach ($final as $user_id=>$attrs) {
 		echo '<tr onmousedown="document.location=\''.$_base_href.'profile.php?id='.$user_id.'\'">';
-		echo '<td><a href="profile.php?id='.$user_id.'">'.AT_print($attrs['login'], 'members.login') . '</a></td>';
+		$type = 'class="user"';
+		if ($system_courses[$_SESSION['course_id']]['member_id'] == $user_id) {
+			$type = 'class="user instructor" title="'._AT('instructor').'"';
+		}
+		echo '<td><a href="profile.php?id='.$user_id.'" '.$type.'>'.AT_print($attrs['login'], 'members.login') . '</a></td>';
+
+		echo '<td>'.AT_print($attrs['first_name'] .' '. $attrs['second_name'] .' '. $attrs['last_name'],'members.first_name').'</td>';
 		
 		
 		if ($attrs['privileges'] != 0) {
-			echo '<td>'._AT('assistants').'</td>';
+			echo '<td>'._AT('assistant').'</td>';
 		} else if ($attrs['approved'] == 'a') {
 			/* if alumni display alumni */
 			echo '<td>'._AT('alumni').'</td>';
@@ -132,7 +168,7 @@ if ($final) {
 		}
 		
 		if ($attrs['online'] == TRUE) {
-			echo '<td>'._AT('user_online').'</td>';
+			echo '<td><strong>'._AT('user_online').'</strong></td>';
 		} else {
 			echo '<td>'._AT('user_offline').'</td>';
 		}

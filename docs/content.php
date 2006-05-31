@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -20,7 +20,6 @@ if ($cid == 0) {
 	header('Location: '.$_base_href.'index.php');
 	exit;
 }
-
 
 /* show the content page */
 $result = $contentManager->getContentPage($cid);
@@ -108,6 +107,9 @@ $_pages['content.php'] = $last_page;
 reset($path);
 $first_page = current($path);
 
+// use any styles that were part of the imported document
+$_custom_css = $_base_href.'headstuff.php?cid='.$cid.SEP.'path='.urlEncode($_base_href.$course_base_href.$content_base_href);
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 save_last_cid($cid);
@@ -115,7 +117,7 @@ if ($top_num != (int) $top_num) {
 	$top_num = substr($top_num, 0, strpos($top_num, '.'));
 }
 
-/* TOC: */
+/* TOC: 
 ob_start();
 $contentManager->printTOCMenu($first_page['content_id'], $top_num);
 $content_stuff = ob_get_contents();
@@ -124,6 +126,7 @@ ob_end_clean();
 if ($content_stuff != '') {
 	$savant->assign('table_of_contents', $content_stuff);
 }
+*/
 
 $shortcuts = array();
 if ((	($content_row['r_date'] <= $content_row['n_date'])

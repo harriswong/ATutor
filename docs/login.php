@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -17,6 +17,12 @@ $_user_location	= 'public';
 define('AT_INCLUDE_PATH', 'include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
+
+if (isset($_GET['course'])) {
+	$_GET['course'] = intval($_GET['course']);
+} else {
+	$_GET['course'] = 0;
+}
 
 // check if we have a cookie
 if (!$msg->containsFeedbacks()) {
@@ -42,16 +48,30 @@ if (isset($_COOKIE['FHA'])) {
 	}
 }
 
-if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
+//if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
+if (!isset($_SESSION['token']) || !$_SESSION['token']) {
+	$_SESSION['token'] = md5(mt_rand());
+}
+
+if (isset($cookie_login, $cookie_pass) && !isset($_POST['submit'])) {
 	/* auto login */
 	$this_login		= $cookie_login;
 	$this_password	= $cookie_pass;
 	$auto_login		= 1;
 	$used_cookie	= true;
-} else if (isset($_POST['form_login_action'])) {
+
+//} else if (isset($_POST['form_login_action'])) {
+
+} else if (isset($_POST['submit'])) {
 	/* form post login */
+
+	if (strlen($_POST['form_password_hidden']) < 40) { // <noscript> on client end
+		$this_password = sha1($_POST['form_password'] . $_SESSION['token']);
+	} else { // sha1 ok
+		$this_password = $_POST['form_password_hidden'];
+	}
+
 	$this_login		= $_POST['form_login'];
-	$this_password  = $_POST['form_password'];
 	$auto_login		= intval($_POST['auto']);
 	$used_cookie	= false;
 } else if (isset($_POST['register'])) {
@@ -62,8 +82,14 @@ if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
 	exit;
 }
 
-if (isset($this_login, $this_password)) {
-	if ($_GET['course'] != '') {
+if (isset($this_login, $this_password) && !isset($_SESSION['token'])) {
+	$msg->addError('SESSION_COOKIES');
+} else if (isset($this_login, $this_password)) {
+	if (version_compare(PHP_VERSION, '5.1.0', '>=')) {
+		session_regenerate_id(TRUE);
+	}
+
+	if ($_GET['course']) {
 		$_POST['form_course_id'] = intval($_GET['course']);
 	} else {
 		$_POST['form_course_id'] = intval($_POST['form_course_id']);
@@ -73,13 +99,13 @@ if (isset($this_login, $this_password)) {
 
 	if ($used_cookie) {
 		// check if that cookie is valid
-		$sql = "SELECT member_id, login, preferences, PASSWORD(password) AS pass, language, status FROM ".TABLE_PREFIX."members WHERE login='$this_login' AND PASSWORD(password)='$this_password'";
+		$sql = "SELECT member_id, login, preferences, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass, language, status FROM ".TABLE_PREFIX."members WHERE login='$this_login' AND SHA1(CONCAT(password, '-', '".DB_PASSWORD."'))='$this_password'";
 
 	} else {
-		$sql = "SELECT member_id, login, preferences, PASSWORD(password) AS pass, language, status FROM ".TABLE_PREFIX."members WHERE login='$this_login' AND PASSWORD(password)=PASSWORD('$this_password')";
+		$sql = "SELECT member_id, login, preferences, language, status, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass FROM ".TABLE_PREFIX."members WHERE (login='$this_login' OR email='$this_login') AND SHA1(CONCAT(password, '$_SESSION[token]'))='$this_password'";
 	}
-
 	$result = mysql_query($sql, $db);
+
 	if (($row = mysql_fetch_assoc($result)) && ($row['status'] == AT_STATUS_UNCONFIRMED)) {
 		$msg->addError('NOT_CONFIRMED');
 	} else if ($row && $row['status'] == AT_STATUS_DISABLED) {
@@ -107,7 +133,7 @@ if (isset($this_login, $this_password)) {
 		exit;
 	} else {
 		// check if it's an admin login.
-		$sql = "SELECT login, `privileges`, language FROM ".TABLE_PREFIX."admins WHERE login='$this_login' AND PASSWORD(password)=PASSWORD('$this_password') AND `privileges`>0";
+		$sql = "SELECT login, `privileges`, language FROM ".TABLE_PREFIX."admins WHERE login='$this_login' AND SHA1(CONCAT(password, '$_SESSION[token]'))='$this_password' AND `privileges`>0";
 		$result = mysql_query($sql, $db);
 
 		if ($row = mysql_fetch_assoc($result)) {
@@ -124,11 +150,7 @@ if (isset($this_login, $this_password)) {
 
 			$msg->addFeedback('LOGIN_SUCCESS');
 
-			if ($_SESSION['privileges'] == 1) {
-				header('Location: admin/index.php');
-			} else {
-				header('Location: admin/admins/my_edit.php');
-			}
+			header('Location: admin/index.php');
 			exit;
 
 		} else {
@@ -165,7 +187,9 @@ unset($_SESSION['valid_user']);
 unset($_SESSION['member_id']);
 unset($_SESSION['is_admin']);
 unset($_SESSION['course_id']);
+unset($_SESSION['is_super_admin']);
 
+$_SESSION['prefs']['PREF_FORM_FOCUS'] = 1;
 
 /*****************************/
 /* template starts down here */
