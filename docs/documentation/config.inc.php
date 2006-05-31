@@ -1,6 +1,6 @@
 <?php
 /* this is an optional configuration file. */
-/* it is use only when the ATutor configuration cannot be found, or if it */
+/* it is used only when the ATutor configuration cannot be found, or if it */
 /* can be found but AT_ENABLE_HANDBOOK_NOTES is set to false. */
 /* */
 /* use the settings found here to enable/disable user notes. */
@@ -24,7 +24,7 @@ define('AT_HANDBOOK_DB_TABLE_PREFIX', 'AT_');
 define('AT_HANDBOOK_ADMIN_USERNAME', '');
 define('AT_HANDBOOK_ADMIN_PASSWORD', '');
 
-define('AT_HANDBOOK_ENABLE', false);
+define('AT_HANDBOOK_ENABLE', true);
 
 /*
 # Note: you will have to add the table prefix!!

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -23,6 +23,11 @@ if (substr($parts['dirname'], -5) == 'admin') {
 } else {
 	header('Location: index_list.php');
 	exit;
+}
+
+$req_lang = 'en';
+if (!empty($_GET)) {
+	$req_lang = key($_GET);
 }
 
 $path = '../common/';
@@ -81,15 +86,15 @@ function hide() {
 if (isset($_GET['p'])) {
 	$body = $_GET['p'];
 } else {
-	$body = '0.0.introduction.php';
+	$body = 'introduction.php';
 } 
 ?>
 </head>
 <frameset rows="24,*">
-	<frame src="<?php echo $path; ?>frame_header.php?<?php echo $section; ?>" frameborder="0" name="header" title="header" scrolling="no" noresize="noresize">
+	<frame src="<?php echo $path; ?>frame_header.php?<?php echo $section; ?>&amp;<?php echo $req_lang; ?>" frameborder="0" name="header" title="header" scrolling="no" noresize="noresize">
 	<frameset cols="22%, *" id="frameset1">
-		<frame frameborder="0" scrolling="auto" marginwidth="0" marginheight="0" src="<?php echo $path; ?>frame_toc.php?<?php echo $section; ?>" name="toc" id="toc" title="TOC">
-		<frame frameborder="0" src="<?php echo $body; ?>" name="body" title="blank">
+		<frame frameborder="0" scrolling="auto" marginwidth="0" marginheight="0" src="<?php echo $path; ?>frame_toc.php?<?php echo $section; ?>&amp;<?php echo $req_lang; ?>" name="toc" id="toc" title="TOC">
+		<frame frameborder="0" src="<?php echo $body.'?'.$req_lang; ?>" name="body" title="blank">
 	</frameset>
 
 	<noframes>
