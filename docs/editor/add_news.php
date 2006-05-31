@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -11,8 +11,9 @@
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
 // $Id$
-	define('AT_INCLUDE_PATH', '../include/');
-	require (AT_INCLUDE_PATH.'vitals.inc.php');
+define('AT_INCLUDE_PATH', '../include/');
+require (AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
 
 authenticate(AT_PRIV_ANNOUNCEMENTS);
 
@@ -28,48 +29,46 @@ if (isset($_POST['cancel'])) {
 	exit;
 } 
 
-if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
-	$onload = 'initEditor();';
-}else {
+if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
 	$onload = 'document.form.title.focus();';
 }
 
-
-	if (isset($_POST['add_news'])&& isset($_POST['submit'])) {
-		$_POST['formatting'] = intval($_POST['formatting']);
-		
-		if (($_POST['title'] == '') && ($_POST['body_text'] == '') && !isset($_POST['setvisual'])) {
-			$msg->addError('ANN_BOTH_EMPTY');
-		}
-		if (!$msg->containsErrors() && (!isset($_POST['setvisual']) || isset($_POST['submit']))) {
-
-			$_POST['formatting']  = $addslashes($_POST['formatting']);
-			$_POST['title']  = $addslashes($_POST['title']);
-			$_POST['body_text']  = $addslashes($_POST['body_text']);
-
-			$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (0, $_SESSION[course_id], $_SESSION[member_id], NOW(), $_POST[formatting], '$_POST[title]', '$_POST[body_text]')";
-			mysql_query($sql, $db);
-		
-			$msg->addFeedback('NEWS_ADDED');
-
-			/* update announcement RSS: */
-			if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml')) {
-				@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml');
-			}
-			if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml')) {
-				@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
-			}
-
-			header('Location: '.$_base_href.'tools/news/index.php');
-			exit;
-		}
+if (isset($_POST['add_news'])&& isset($_POST['submit'])) {
+	$_POST['formatting'] = intval($_POST['formatting']);
+	
+	if (($_POST['title'] == '') && ($_POST['body_text'] == '') && !isset($_POST['setvisual'])) {
+		$msg->addError('ANN_BOTH_EMPTY');
 	}
+	if (!$msg->containsErrors() && (!isset($_POST['setvisual']) || isset($_POST['submit']))) {
 
-	$_section[0][0] = _AT('add_announcement');
+		$_POST['formatting']  = $addslashes($_POST['formatting']);
+		$_POST['title']  = $addslashes($_POST['title']);
+		$_POST['body_text']  = $addslashes($_POST['body_text']);
 
-	require(AT_INCLUDE_PATH.'header.inc.php');
-	require(AT_INCLUDE_PATH.'html/editor_tabs/news.inc.php');
-	$msg->printErrors();
+		$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (0, $_SESSION[course_id], $_SESSION[member_id], NOW(), $_POST[formatting], '$_POST[title]', '$_POST[body_text]')";
+		mysql_query($sql, $db);
+	
+		$msg->addFeedback('NEWS_ADDED');
+
+		/* update announcement RSS: */
+		if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml')) {
+			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml');
+		}
+		if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml')) {
+			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
+		}
+
+		header('Location: '.$_base_href.'tools/news/index.php');
+		exit;
+	}
+}
+
+require(AT_INCLUDE_PATH.'header.inc.php');
+
+if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']) {
+	load_editor();
+}
+$msg->printErrors();
 
 ?>
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">

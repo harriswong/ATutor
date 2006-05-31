@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2003 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -91,7 +91,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 }
 if (!$count) {
-	echo '<tr><td colspan="7"><i>'._AT('no_tests').'</i></td></tr>';
+	echo '<tr><td colspan="7">'._AT('none_found').'</td></tr>';
 }
 ?>
 	</tbody>
@@ -101,9 +101,9 @@ if (!$count) {
 <table class="data static" summary="" rules="cols">
 <thead>
 <tr>
-	<th scope="col"><?php echo _AT('title'); ?></th>
+	<th scope="col"><?php echo _AT('title');      ?></th>
 	<th scope="col"><?php echo _AT('date_taken'); ?></th>
-	<th scope="col"><?php echo _AT('mark'); ?></th>
+	<th scope="col"><?php echo _AT('mark');       ?></th>
 	<th scope="col"><?php echo _AT('submission'); ?></th>
 </tr>
 </thead>
@@ -119,7 +119,7 @@ if ($row = mysql_fetch_assoc($result)) {
 
 	do {
 		echo '<tr>';
-		echo '<td><b>'.AT_print($row['title'], 'tests.title').'</b></td>';
+		echo '<td><strong>'.AT_print($row['title'], 'tests.title').'</strong></td>';
 		echo '<td>'.$row['date_taken'].'</td>';
 		echo '<td>';
 
@@ -152,7 +152,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		echo '</tr>';
 	} while ($row = mysql_fetch_assoc($result));
 } else {
-	echo '<tr><td><em>'._AT('none_found').'</em></td></tr>';
+	echo '<tr><td colspan="4">'._AT('none_found').'</td></tr>';
 }
 ?>
 </tbody>

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -31,5 +31,5 @@ global $system_courses;
 	*/
 ?>
 	<small><?php echo _AT('copyright').'. '; echo '<a href="'.$_base_path.'about.php">'._AT('about_atutor').'</a>.'; ?><br />
-	<span id="howto"><?php echo _AT('general_help', AT_GUIDES_PATH); ?></span></small>
+	<span id="howto"><?php echo _AT('general_help', AT_GUIDES_PATH.'index_list.php?lang='.$_SESSION['lang']); ?></span></small>
 </div>

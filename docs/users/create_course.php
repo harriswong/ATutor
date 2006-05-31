@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -78,7 +78,7 @@ if (isset($_POST['cancel'])) {
 	
 	if ($errors !== FALSE) {
 		$msg->addFeedback('COURSE_CREATED');
-		header('Location: '.$_base_href.'bounce.php?course='.$errors.SEP.'p='.urlencode('index.php'));
+		header('Location: '.$_base_href.'bounce.php?course='.$addslashes($errors).SEP.'p='.urlencode('index.php'));
 		exit;
 	}
 

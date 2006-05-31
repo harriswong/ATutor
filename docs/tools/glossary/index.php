@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -98,7 +98,7 @@ if(!empty($gloss_results)) {
 			$def_trunc .= ' &#8230;';
 		}
 	?>
-			<tr onmousedown="document.form['m<?php echo $row['word_id']; ?>'].checked = true;">
+			<tr onmousedown="document.form['m<?php echo $row['word_id']; ?>'].checked = true; rowselect(this);" id="r_<?php echo $row['word_id']; ?>">
 				<td valign="top" width="10"><input type="radio" name="word_id" value="<?php echo $row['word_id']; ?>" id="m<?php echo $row['word_id']; ?>" /></td>
 				<td valign="top"><label for="m<?php echo $row['word_id']; ?>"><?php echo AT_print($row['word'],	'glossary.word'); ?></label></td>
 				<td style="whitespace:nowrap;"><?php echo AT_print($def_trunc,		'glossary.definition'); ?></td>

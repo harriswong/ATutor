@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -24,13 +24,9 @@ if (!authenticate(AT_PRIV_ADMIN, true)) {
 $num_cols = 2;
 
 /* make sure we own this course that we're approving for! */
-$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id] AND member_id=$_SESSION[member_id]";
-$result	= mysql_query($sql, $db);
-
-if (!($result) || !authenticate(AT_PRIV_ENROLLMENT, AT_PRIV_RETURN)) {
+if (!authenticate(AT_PRIV_ENROLLMENT, AT_PRIV_RETURN) || !$_SESSION['is_admin']) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
 	$msg->printErrors('NOT_OWNER');
-	
 	require (AT_INCLUDE_PATH.'footer.inc.php'); 
 	exit;
 }
@@ -41,6 +37,7 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+
 	//update privileges	
 	$mid   = $_POST['dmid'];
 	$privs = $_POST['privs'];
@@ -49,10 +46,10 @@ if (isset($_POST['cancel'])) {
 	//loop through selected users to perform update
 	$i=0;
 	while ($mid[$i]) { 
-		change_privs(intval($mid[$i]), $privs[$i], $addslashes($role[$i]));
+		change_privs(intval($mid[$i]), $privs[$i]);
 		$i++;
 	}
-	
+
 	$msg->addFeedback('PRIVS_CHANGED');
 	header('Location: index.php?tab=1');
 	exit;
@@ -73,19 +70,17 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	}
 
 	//loop through all the students
-	for ($k = 0; $k < $j; $k++) {
-?>
-<?php
+for ($k = 0; $k < $j; $k++) {
 	$mem_id = $_GET['mid'.$k];
 
 	//NO!!! extra check to ensure that user doesnt send in instructor for change privs
-	$sql = "SELECT cm.privileges, m.login FROM ".TABLE_PREFIX."course_enrollment cm JOIN ".TABLE_PREFIX."members m ON cm.member_id = m.member_id WHERE m.member_id=($mem_id) AND cm.course_id = $_SESSION[course_id]";
+	$sql = "SELECT CE.privileges, M.login FROM ".TABLE_PREFIX."course_enrollment CE INNER JOIN ".TABLE_PREFIX."members M USING (member_id) WHERE M.member_id=$mem_id AND CE.course_id=$_SESSION[course_id] AND CE.approved='y'";
 
 	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);
+	$student_row = mysql_fetch_assoc($result);
 ?>
 	<div class="row">
-		<h3><?php echo $row['login']; ?></h3>
+		<h3><?php echo $student_row['login']; ?></h3>
 	</div>
 
 	<div class="row">
@@ -94,16 +89,23 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			<tr>
 			<?php		
 			$count =0;
-
-			foreach ($_privs as $key => $priv) {		
+			$student_row['privileges'] = intval($student_row['privileges']);
+			$module_list = $moduleFactory->getModules(AT_MODULE_STATUS_ENABLED, 0, TRUE);
+			$keys = array_keys($module_list);
+			foreach ($keys as $module_name) {
+				$module =& $module_list[$module_name];
+				if (!($module->getPrivilege() > 1)) {
+					continue;
+				}
 				$count++;
-				echo '<td><label><input type="checkbox" name="privs['.$k.']['.$key.']" value="'.$key.'" ';
+				echo '<td><label><input type="checkbox" name="privs['.$k.'][]" value="'.$module->getPrivilege().'" ';
 
-				if (query_bit($row['privileges'], $key)) { 
+				if (query_bit($student_row['privileges'], $module->getPrivilege())) { 
 					echo 'checked="checked"';
 				} 
 
-				echo ' />'._AT($priv['name']).'</label></td>'."\n";
+				echo ' />'.$module->getName().'</label></td>';
+
 				if (!($count % $num_cols)) {
 					echo '</tr><tr>';
 				}
@@ -134,23 +136,34 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 * @access  private
 * @param   int $member			The member_id of the user whose values are to be updated
 * @param   int $privs			value of the privileges of the user
-* @param   string $role			The role of the user
 * @author  Joel Kronenberg
 */
-function change_privs ($member, $privs, $role) {
+function change_privs ($member, $privs) {
 	global $db;
 
 	//calculate privileges
 	$privilege = 0;
 	if (!(empty($privs))) {
-		foreach ($privs as $key => $priv) {	
-			$privilege += intval($key);
+		foreach ($privs as $priv) {	
+			$privilege += intval($priv);
 		}	
 	}
-	
-	$sql = "UPDATE ".TABLE_PREFIX."course_enrollment SET `privileges`=($privilege), `role`='$role' WHERE member_id=($member) AND course_id=$_SESSION[course_id] AND `approved`='y'";
 
+	/*
+	* if we're making a student a TA then we have to remove them
+	* from all the groups they may belong to. TAs cannot belong to groups.
+	*/
+	if ($privilege > 0) {
+		$group_list = implode(',', $_SESSION['groups']);
+		if ($group_list) {
+			$sql = "DELETE FROM ".TABLE_PREFIX."groups_members WHERE group_id IN ($group_list) AND member_id=$member";
+			$result = mysql_query($sql,$db);
+		}
+	}
+
+	$sql = "UPDATE ".TABLE_PREFIX."course_enrollment SET `privileges`=$privilege WHERE member_id=$member AND course_id=$_SESSION[course_id] AND `approved`='y'";
 	$result = mysql_query($sql,$db);
+
 
 	//print error or confirm change
 	if (!$result) {

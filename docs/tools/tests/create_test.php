@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -16,11 +16,7 @@ $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (!authenticate(AT_PRIV_TEST_CREATE, true)) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
+authenticate(AT_PRIV_TESTS);
 
 $test_type = 'normal';
 
@@ -231,7 +227,7 @@ $msg->printErrors();
 		<?php
 			$today_day  = date('d');
 			$today_mon  = date('m');
-			$today_year = date('Y')+1;
+			$today_year = date('Y');
 			$today_hour = date('H');
 			$today_min  = 0;
 
@@ -246,7 +242,7 @@ $msg->printErrors();
 		<?php
 			$today_day  = date('d');
 			$today_mon  = date('m');
-			$today_year = date('Y')+1;
+			$today_year = date('Y');
 			$today_hour = date('H');
 			$today_min  = 0;
 					
@@ -259,21 +255,20 @@ $msg->printErrors();
 		<label for="inst"><?php echo _AT('limit_to_group'); ?></label><br />
 		<?php
 			//show groups
-			$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE course_id=$_SESSION[course_id] ORDER BY title";
-			$result	= mysql_query($sql, $db);
+			$sql	= "SELECT * FROM ".TABLE_PREFIX."groups_types WHERE course_id=$_SESSION[course_id] ORDER BY title";
+			$result = mysql_query($sql, $db);
+			while ($row = mysql_fetch_assoc($result)) {
+				echo '<em>'.$row['title'].'</em><br />';
 
-			echo _AT('everyone');
-		
-			if ($row = mysql_fetch_assoc($result)) { 
-				echo ' <strong>'._AT('or').'</strong><br />';
-	
-				do {
-					echo '<label><input type="checkbox" value="'.$row['group_id'].'" name="groups['.$row['group_id'].']" '; 
-					if (is_array($current_groups) && in_array($row['group_id'], $current_groups)) {
+				$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE type_id=$row[type_id] ORDER BY title";
+				$g_result = mysql_query($sql, $db);
+				while ($grow = mysql_fetch_assoc($g_result)) {
+					echo '&nbsp;<label><input type="checkbox" value="'.$grow['group_id'].'" name="groups['.$grow['group_id'].']" '; 
+					if (is_array($current_groups) && in_array($grow['group_id'], $current_groups)) {
 						echo 'checked="checked"';
 					}
-					echo '/>'.$row['title'].'</label><br />';
-				} while ($row = mysql_fetch_assoc($result));
+					echo '/>'.$grow['title'].'</label><br />';
+				}
 			}
 		?>
 	</div>

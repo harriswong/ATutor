@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -14,19 +14,16 @@
 
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
-authenticate(AT_PRIV_LINKS);
+require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
-$link_id = intval($_REQUEST['lid']);
+$lid = explode('-', $_REQUEST['lid']);
+$link_id = intval($lid[0]);
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 	header('Location: '.$_base_href.'tools/links/index.php');
 	exit;
-} 
-
-require (AT_INCLUDE_PATH.'lib/links.inc.php');
-
-if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
+} else if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 
 	if ($_POST['title'] == '') {		
 		$msg->addError('TITLE_EMPTY');
@@ -34,7 +31,7 @@ if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 	if ($_POST['cat'] == 0) {		
 		$msg->addError('CAT_EMPTY');
 	}
-	if ($_POST['url'] == '') {		
+	if (($_POST['url'] == '') || ($_POST['url'] == 'http://')) {
 		$msg->addError('URL_EMPTY');
 	}
 	if ($_POST['description'] == '') {		
@@ -51,37 +48,53 @@ if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 		$name = $_SESSION['login'];
 		$email = '';
 
-		$sql	= "UPDATE ".TABLE_PREFIX."resource_links SET CatID=$_POST[cat], Url='$_POST[url]', LinkName='$_POST[title]', Description='$_POST[description]', SubmitName='$name', Approved=$_POST[approved] WHERE LinkID=".$link_id;
+		//check if new cat is auth? -- shouldn't be a prob. since cat dropdown is already filtered
+
+		$sql	= "UPDATE ".TABLE_PREFIX."links SET cat_id=$_POST[cat], Url='$_POST[url]', LinkName='$_POST[title]', Description='$_POST[description]', SubmitName='$name', Approved=$_POST[approved] WHERE link_id=".$link_id;
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_UPDATED');
 
 		header('Location: '.$_base_href.'tools/links/index.php');
 		exit;
+	} else {
+		$_POST['title']  = stripslashes($_POST['title']);
+		$_POST['url'] == stripslashes($_POST['url']);
+		$_POST['description']  = stripslashes($_POST['description']);
+	}
+} else {
+	$sql = "SELECT * FROM ".TABLE_PREFIX."links WHERE link_id=".$link_id;
+	$result = mysql_query($sql, $db);
+	if ($row = mysql_fetch_assoc($result)) {
+
+		//auth based on the link's cat
+		$cat_row = get_cat_info($row['cat_id']);
+
+		if (!links_authenticate($cat_row['owner_type'], $cat_row['owner_id'])) {
+			$msg->addError('ACCESS_DENIED');
+			header('Location: '.$_base_href.'tools/links/index.php');
+			exit;
+		}
+
+		$_POST['title']			= $row['LinkName'];
+		$_POST['cat']			= $row['cat_id'];
+		$_POST['url']			= $row['Url'];
+		$_POST['description']	= $row['Description'];
+		$_POST['approved']		= $row['Approved'];
 	}
 }
 
 $onload = 'document.form.title.focus();';
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-$categories = get_link_categories();
-
-$sql = "SELECT * FROM ".TABLE_PREFIX."resource_links WHERE LinkID=".$link_id;
-$result = mysql_query($sql, $db);
-if ($row = mysql_fetch_assoc($result)) {
-	$_POST['title']			= $row['LinkName'];
-	$_POST['cat']			= $row['CatID'];
-	$_POST['url']			= $row['Url'];
-	$_POST['description']	= $row['Description'];
-	$_POST['approved']		= $row['Approved'];
-}
+$categories = get_link_categories(true);
 
 $msg->printErrors();
 
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
 <input type="hidden" name="edit_link" value="true" />
-<input type="hidden" name="lid" value="<?php echo $link_id; ?>" />
+<input type="hidden" name="lid" value="<?php echo $_REQUEST['lid']; ?>" />
 
 <div class="input-form">
 	<div class="row">
@@ -91,16 +104,8 @@ $msg->printErrors();
 
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="cat"><?php echo _AT('category'); ?></label><br />
-		<select name="cat" id="cat"><?php
-			if ($pcat_id) {
-				$current_cat_id = $pcat_id;
-				$exclude = false; /* don't exclude the children */
-			} else {
-				$current_cat_id = $cat_id;
-				$exclude = true; /* exclude the children */
-			}
-			select_link_categories($categories, 0, $_POST['cat'], FALSE);
-			?>
+		<select name="cat" id="cat">
+			<?php select_link_categories($categories, 0, $_POST['cat'], FALSE);	?>
 		</select>
 	</div>
 	

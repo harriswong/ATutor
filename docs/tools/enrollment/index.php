@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -131,7 +131,7 @@ if (isset($_GET['asc'])) {
 $view_select = intval($_POST['view_select']);
 
 // the possible tabs. order matters.
-$tabs = array('enrolled', 'enrolled_privileges', 'alumni', 'pending_enrollment', 'not_enrolled');
+$tabs = array('enrolled', 'assistants', 'alumni', 'pending_enrollment', 'not_enrolled');
 
 $num_tabs = count($tabs);
 if (isset($_REQUEST['tab'])) {

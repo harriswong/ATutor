@@ -95,6 +95,8 @@ function unenroll ($list) {
 
 		$sql    = "DELETE FROM ".TABLE_PREFIX."groups_members WHERE member_id IN ($members)";
 		$result = mysql_query($sql, $db);
+		// $groupModule->unenroll(course_id, user_id);
+		// $forumModule->unenroll(course_id, user_id);
 	}
 }
 
@@ -140,8 +142,8 @@ function enroll ($list) {
 		$body = SITE_NAME.': '._AT('enrol_message_approved', $_SESSION['course_title'], $login_link)."\n\n";
 
 		$mail = new ATutorMailer;
-		$mail->From     = EMAIL;
-		$mail->FromName = SITE_NAME;
+		$mail->From     = $_config['contact_email'];
+		$mail->FromName = $_config['site_name'];
 		$mail->AddAddress($row_to['email']);
 		$mail->Subject  = $subject;
 		$mail->Body     = $body;

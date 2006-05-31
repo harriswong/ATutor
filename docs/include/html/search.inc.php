@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor														        */
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg & Boon-Hau Teh */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg & Boon-Hau Teh */
 /* Adaptive Technology Resource Centre / University of Toronto          */
 /* http://atutor.ca												        */
 /*                                                                      */
@@ -15,10 +15,10 @@
 // NOTE! please see include/lib/search.inc.php NOTE!
 
 /* some error checking can go here: */
-if (isset($_GET['search']) && !$_GET['words']) {
-	$msg->printErrors('SEARCH_TERM_REQUIRED');
-} 
+
 if (isset($_GET['search'])) {
+	$_GET['words'] = stripslashes($addslashes($_GET['words']));
+	$_GET['words'] = str_replace(array('"', '\''), '', $_GET['words']);
 	if ($_GET['include'] == 'all') {
 		$checked_include_all = ' checked="checked"';
 	} else {
@@ -61,6 +61,10 @@ if (isset($_GET['search'])) {
 		$checked_find_in_all_courses  = ' checked="checked"';
 		$checked_display_as_summaries = ' checked="checked"';
 	}
+}
+if (isset($_GET['search']) && !$_GET['words']) {
+	$msg->printErrors('SEARCH_TERM_REQUIRED');
+	$_GET = array();
 }
 
 ?>

@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -41,7 +41,7 @@ $_pages['forum/view.php']['parent'] = 'forum/index.php?fid='.$fid;
 
 
 function print_entry($row) {
-	global $page;
+	global $page,$system_courses;
 
 	echo '<tr>';
 	echo '<td class="row1"><a name="'.$row['post_id'].'"></a><p><strong>'.AT_Print($row['subject'], 'forums_threads.subject').'</strong>';
@@ -52,19 +52,27 @@ function print_entry($row) {
 
 		print_editor($editors , $large = false);
 	}
-	echo ' <a href="forum/view.php?fid='.$row['forum_id'].SEP.'pid=';
 
-	if ($row['parent_id'] == 0) {
-		echo $row['post_id'];
-	} else {
-		echo $row['parent_id'];
+	if ($_SESSION['valid_user']) {
+		echo ' <a href="forum/view.php?fid='.$row['forum_id'].SEP.'pid=';
+
+		if ($row['parent_id'] == 0) {
+			echo $row['post_id'];
+		} else {
+			echo $row['parent_id'];
+		}
+		echo SEP.'reply='.$row['post_id'].SEP.'page='.$page.'#post" >'._AT('reply').'</a>';
 	}
-	echo SEP.'reply='.$row['post_id'].SEP.'page='.$page.'#post" >'._AT('reply').'</a>';
 	echo '<br />';
 
 	$date = AT_date(_AT('forum_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME);
 
-	echo '<span class="bigspacer">'._AT('posted_by').' <a href="inbox/send_message.php?l='.$row['member_id'].'">'.AT_print($row['login'], 'members.login').'</a> '._AT('posted_on').' '.$date.'</span><br />';
+	$type = 'class="user"';
+	if ($system_courses[$_SESSION['course_id']]['member_id'] == $row['member_id']) {
+		$type = 'class="user instructor" title="'._AT('instructor').'"';
+	}
+
+	echo '<span class="bigspacer">'._AT('posted_by').' <a href="inbox/send_message.php?l='.$row['member_id'].'" '.$type.'>'.AT_print($row['login'], 'members.login').'</a> '._AT('posted_on').' '.$date.'</span><br />';
 	echo AT_print($row['body'], 'forums_threads.body');
 	echo '</p>';
 	echo '</td>';

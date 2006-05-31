@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -16,11 +16,7 @@ $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (!authenticate(AT_PRIV_TEST_CREATE, true)) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
+authenticate(AT_PRIV_TESTS);
 
 $tid = intval($_POST['tid']);
 
@@ -39,10 +35,17 @@ if (isset($_POST['cancel'])) {
 	header('Location: questions.php?tid='.$tid);
 	exit;
 } else if (isset($_POST['submit_yes'])) {
+	//get order
+	$sql = "SELECT MAX(ordering) AS max_ordering FROM ".TABLE_PREFIX."tests_questions_assoc WHERE test_id=".$tid;
+	$result = mysql_query($sql, $db);
+	$order	= mysql_fetch_assoc($result);
+	$order = $order['max_ordering'];
+
 	$sql = "REPLACE INTO ".TABLE_PREFIX."tests_questions_assoc VALUES ";
 	foreach ($_POST['questions'] as $question) {
+		$order++;
 		$question = intval($question);
-		$sql .= '('.$tid.', '.$question.', 0, 0, 0),';
+		$sql .= '('.$tid.', '.$question.', 0, '.$order.', 0),';
 	}
 	$sql = substr($sql, 0, -1);
 	$result = mysql_query($sql, $db);

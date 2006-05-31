@@ -15,15 +15,16 @@ define('AT_INCLUDE_PATH', '../include/');
 	require(AT_INCLUDE_PATH.'vitals.inc.php');
 	//authenticate(USER_CLIENT, USER_ADMIN);
 require(AT_INCLUDE_PATH.'lib/chat.inc.php');
-	$myPrefs = getPrefs($_SESSION['username']);
+	//not getting session username
+	$myPrefs = getPrefs($_SESSION['login']);
 
 	if ($_POST['submit'] || $_POST['submit_r'] || $_POST['submit_p']) {
 		getAndWriteFormPrefs($myPrefs);
 
 		if ($_POST['submit_p']) {
-			$location = './prefs.php?firstLoginFlag='.$_POST['firstLoginFlag'];
+			$location = './prefs.php?firstLoginFlag='.$addslashes($_POST['firstLoginFlag']);
 		} else if ($_POST['submit_r']) {
-			$location = './chat.php?firstLoginFlag='.$_POST['firstLoginFlag'];
+			$location = './chat.php?firstLoginFlag='.$addslashes($_POST['firstLoginFlag']);
 		}
 
 		Header('Location: '.$location);

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -16,11 +16,7 @@ $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (!authenticate(AT_PRIV_TEST_CREATE, true)) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
+authenticate(AT_PRIV_TESTS);
 
 $_pages['tools/tests/questions.php']['title_var']    = 'questions';
 $_pages['tools/tests/questions.php']['parent']   = 'tools/tests/index.php';
@@ -63,7 +59,7 @@ if (isset($_POST['submit'])) {
 		}
 		*/
 
-		//update the weights
+		//update the weights & order
 		$total_weight = 0;
 		foreach ($_POST['weight'] as $qid => $weight) {
 			$weight = $addslashes($weight);
@@ -73,7 +69,12 @@ if (isset($_POST['submit'])) {
 				$required = 0;
 			}
 			
-			$sql	= "UPDATE ".TABLE_PREFIX."tests_questions_assoc SET weight=$weight, required=$required WHERE question_id=$qid AND test_id=".$tid;
+			$orders = $_POST['ordering'];
+			asort($orders);
+			$orders = array_keys($orders);
+			$orders = array_flip($orders);
+
+			$sql	= "UPDATE ".TABLE_PREFIX."tests_questions_assoc SET weight=$weight, required=$required, ordering=".($orders[$qid]+1)." WHERE question_id=$qid AND test_id=".$tid;
 			$result	= mysql_query($sql, $db);
 			$total_weight += $weight;
 		}
@@ -104,7 +105,7 @@ if ($row['cnt']) {
 
 $msg->printAll();
 
-$sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions Q, ".TABLE_PREFIX."tests_questions_assoc TQ WHERE Q.course_id=$_SESSION[course_id] AND Q.question_id=TQ.question_id AND TQ.test_id=$tid";
+$sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions Q, ".TABLE_PREFIX."tests_questions_assoc TQ WHERE Q.course_id=$_SESSION[course_id] AND Q.question_id=TQ.question_id AND TQ.test_id=$tid ORDER BY TQ.ordering";
 $result	= mysql_query($sql, $db);
 
 ?>
@@ -115,6 +116,7 @@ $result	= mysql_query($sql, $db);
 <tr>
 	<th scope="col"><?php echo _AT('num');      ?></th>
 	<th scope="col"><?php echo _AT('weight');   ?></th>
+	<th scope="col"><?php echo _AT('order'); ?></th>
 	<th scope="col"><?php echo _AT('question'); ?></th>
 	<th scope="col"><?php echo _AT('type');     ?></th>
 	<th scope="col"><?php echo _AT('category'); ?></th>
@@ -138,7 +140,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		$total_weight += $row['weight'];
 		$count++;
 		echo '<tr>';
-		echo '<td class="row1" align="center"><b>'.$count.'</b></td>';
+		echo '<td class="row1" align="center"><strong>'.$count.'</strong></td>';
 		echo '<td class="row1" align="center">';
 		
 		if ($row['type'] == AT_TESTS_LIKERT) {
@@ -148,12 +150,16 @@ if ($row = mysql_fetch_assoc($result)) {
 			echo '<input type="text" value="'.$row['weight'].'" name="weight['.$row['question_id'].']" size="2" />';
 		}
 		echo '</td>';
+
+		echo '<td class="row1" align="center"><input type="text" name="ordering['.$row['question_id'].']" value="'.$row['ordering'].'" size="2" /></td>';
+
 		echo '<td class="row1">';
 		if (strlen($row['question']) > 45) {
-			echo AT_print(substr($row['question'], 0, 43), 'tests_questions.question') . '...';
+			echo htmlspecialchars(AT_print(substr($row['question'], 0, 43), 'tests_questions.question')) . '...';
 		} else {
 			echo AT_print(htmlspecialchars($row['question']), 'tests_questions.question');
 		}
+
 		echo '</td>';
 		echo '<td nowrap="nowrap">';
 		$link = '';

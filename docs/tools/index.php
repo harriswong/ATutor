@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -12,47 +12,30 @@
 /****************************************************************/
 // $Id$
 
-	define('AT_INCLUDE_PATH', '../include/');
-	require(AT_INCLUDE_PATH.'vitals.inc.php');
+define('AT_INCLUDE_PATH', '../include/');
+require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-	/* The array containig all tool page names and the associated privilege */
-	$tools_list = array('tools/news/index.php'       => AT_PRIV_ANNOUNCEMENTS,
-						'tools/backup/index.php'     => AT_PRIV_ADMIN,	
-						'tools/chat/index.php'		 => AT_PRIV_FORUMS,
-						'tools/content/index.php'    => AT_PRIV_CONTENT,
-						'tools/course_email.php'     => AT_PRIV_COURSE_EMAIL,
-						'tools/enrollment/index.php' => AT_PRIV_ENROLLMENT,
-						'tools/filemanager/index.php'=> AT_PRIV_FILES,
-						'tools/forums/index.php'     => AT_PRIV_FORUMS,
-						'tools/glossary/index.php'   => AT_PRIV_GLOSSARY,
-						'tools/links/index.php'      => AT_PRIV_LINKS,
-						'tools/packages/index.php'   => AT_PRIV_CONTENT,
-						'tools/polls/index.php'      => AT_PRIV_POLLS,
-						'tools/course_properties.php'=> AT_PRIV_ADMIN,
-						'tools/course_stats.php'     => AT_PRIV_ADMIN,
-						'tools/modules.php'          => AT_PRIV_STYLES,
-						'tools/tests/index.php'      => AT_PRIV_TEST_CREATE + AT_PRIV_TEST_MARK,
-						);
+require(AT_INCLUDE_PATH.'header.inc.php');
 
-	require(AT_INCLUDE_PATH.'header.inc.php');
-	echo '<ol>';
-	foreach ($tools_list as $location=>$priv) {
-		if (authenticate($priv, AT_PRIV_RETURN)) {
-			echo '<li>'; 
-			echo '<a href="' . $location . '">' . _AT($_pages[$location]['title_var']) . '</a>';
-			echo '</li>';
+$module_list = $moduleFactory->getModules(AT_MODULE_STATUS_ENABLED, 0, TRUE);
+$keys = array_keys($module_list);
+
+echo '<ol id="tools">';
+foreach ($keys as $module_name) {
+	$module =& $module_list[$module_name];
+	if ($module->getPrivilege() && authenticate($module->getPrivilege(), AT_PRIV_RETURN) && ($parent = $module->getChildPage('tools/index.php'))) {
+		echo '<li class="top-tool"><a href="' . $parent . '">' . $module->getName() . '</a>  ';
+		if ($_pages[$parent]['children']) {
+			echo '<ul class="child-top-tool">';
+			foreach ($_pages[$parent]['children'] as $child) {
+				echo '<li class="child-tool"><a href="'.$child.'">'._AT($_pages[$child]['title_var']).'</a></li>';
+			}
+			echo '</ul>';
 		}
-	}
-	/*
-	if (defined('AC_PATH') && AC_PATH) {
-		echo '<li>'; 
-		echo '<a href="acollab/bounce.php">' . _AT($_pages['acollab/bounce.php']['title_var']) . '</a>';
 		echo '</li>';
 	}
-	*/
+}
+echo '</ol>';
 
-	echo '</ol>';
-
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-	exit;
+require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

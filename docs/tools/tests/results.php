@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -13,13 +13,7 @@
 // $Id$
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-
-if (authenticate(AT_PRIV_TEST_MARK, true) == false) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
-
+authenticate(AT_PRIV_TESTS);
 
 $tid = intval($_REQUEST['tid']);
 
@@ -89,13 +83,14 @@ $num_sub = $row['cnt'];
 if ($anonymous == 1) {
 	$sql	= "SELECT R.*, '<em>"._AT('anonymous')."</em>' AS login FROM ".TABLE_PREFIX."tests_results R WHERE R.test_id=$tid $status ORDER BY $col $order";
 } else {	
-	$sql	= "SELECT R.*, login, CAST(R.final_score AS UNSIGNED)+0.0 AS fs FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."members M WHERE R.test_id=$tid AND R.member_id=M.member_id $status ORDER BY $col $order, R.final_score $order";
+	$sql	= "SELECT R.*, login, CONCAT(first_name, ' ', second_name, ' ', last_name) AS full_name, R.final_score+0.0 AS fs FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."members M WHERE R.test_id=$tid AND R.member_id=M.member_id $status ORDER BY $col $order, R.final_score $order";
 }
 
 $result = mysql_query($sql, $db);
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[$row['result_id']] = $row;
 }
+
 $num_results = mysql_num_rows($result);
 
 //count unmarked: no need to do this query if filtre is already getting unmarked
@@ -158,6 +153,7 @@ if (isset($_GET['status']) && ($_GET['status'] != '') && ($_GET['status'] == 0))
 <tr>
 	<th scope="col" width="1%">&nbsp;</th>
 	<th scope="col"><a href="tools/tests/results.php?tid=<?php echo $tid.$page_string.SEP.$orders[$order]; ?>=login"><?php echo _AT('login_name'); ?></a></th>
+	<th scope="col"><a href="tools/tests/results.php?tid=<?php echo $tid.$page_string.SEP.$orders[$order]; ?>=full_name"><?php echo _AT('full_name'); ?></a></th>
 	<th scope="col"><a href="tools/tests/results.php?tid=<?php echo $tid.$page_string.SEP.$orders[$order]; ?>=date_taken"><?php echo _AT('date_taken'); ?></a></th>
 	<th scope="col"><a href="tools/tests/results.php?tid=<?php echo $tid.$page_string.SEP.$orders[$order]; ?>=fs"><?php echo _AT('mark'); ?></a></th>
 </tr>
@@ -173,6 +169,7 @@ if (isset($_GET['status']) && ($_GET['status'] != '') && ($_GET['status'] == 0))
 		<tr onmousedown="document.form['r<?php echo $row['result_id']; ?>'].checked = true;">
 			<td><input type="radio" name="id" value="<?php echo $row['result_id']; ?>" id="r<?php echo $row['result_id']; ?>" /></td>
 			<td><label for="r<?php echo $row['result_id']; ?>"><?php echo $row['login']; ?></label></td>
+			<td><?php echo $row['full_name']; ?></td>
 			<td><?php echo AT_date('%j/%n/%y %G:%i', $row['date_taken'], AT_DATE_MYSQL_DATETIME); ?></td>
 			<td align="center">
 				<?php if ($out_of) {

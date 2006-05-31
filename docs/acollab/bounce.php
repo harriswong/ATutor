@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca                                             */
 /*                                                              */
@@ -15,22 +15,13 @@
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-//$_SESSION['member_id']	  = $_SESSION['member_id'];
-//$_SESSION['lang']		  = $_SESSION['lang'];
+$_SESSION['member_id']	  = $_SESSION['member_id'];
+$_SESSION['lang']		  = $_SESSION['lang'];
 $_SESSION['courtyard_id'] = $_SESSION['course_id'];
 $_SESSION['house_id']     = 0;
 
-if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) {
+if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN) || authenticate(AT_PRIV_ACOLLAB, AT_PRIV_RETURN)) {
 	$_SESSION['courtyard_priv'] = 5;
-	$_SESSION['status'] = 1;
-} else if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN) && authenticate(AT_PRIV_AC_ACCESS_ALL, AT_PRIV_RETURN)) {
-	$_SESSION['courtyard_priv'] = 5;
-	$_SESSION['status'] = 1;
-} else if (authenticate(AT_PRIV_AC_CREATE, AT_PRIV_RETURN)) {
-	$_SESSION['courtyard_priv'] = 2;
-	$_SESSION['status'] = 1;
-} else if (authenticate(AT_PRIV_AC_ACCESS_ALL, AT_PRIV_RETURN)) {
-	$_SESSION['courtyard_priv'] = 3;
 	$_SESSION['status'] = 1;
 } else {
 	$_SESSION['courtyard_priv'] = 1;
@@ -39,10 +30,6 @@ if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)) {
 
 session_write_close();
 
-//$page = 'index.php?p='.$_GET['p'];
-
-$page = AC_PATH;
-
-header('Location: '. $page);
+header('Location: '. AC_PATH . 'index.php');
 exit;
 ?>

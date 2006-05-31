@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -14,9 +14,27 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_DEVEL', 1);
-define('AT_DEVEL_TRANSLATE', 0);
+define('AT_DEVEL_TRANSLATE', 1);
 define('FHA_ATTEMPTS', 4);
 define('AT_USE_GUIDE', 1);
+
+// Emulate register_globals off. src: http://php.net/manual/en/faq.misc.php#faq.misc.registerglobals
+function unregister_GLOBALS() {
+   if (!ini_get('register_globals')) { return; }
+
+   // Might want to change this perhaps to a nicer error
+   if (isset($_REQUEST['GLOBALS'])) { die('GLOBALS overwrite attempt detected'); }
+
+   // Variables that shouldn't be unset
+   $noUnset = array('GLOBALS','_GET','_POST','_COOKIE','_REQUEST','_SERVER','_ENV', '_FILES');
+   $input = array_merge($_GET,$_POST,$_COOKIE,$_SERVER,$_ENV,$_FILES,isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
+  
+   foreach ($input as $k => $v) {
+       if (!in_array($k, $noUnset) && isset($GLOBALS[$k])) { unset($GLOBALS[$k]); }
+   }
+}
+
+unregister_GLOBALS();
 
 /*
  * structure of this document (in order):
@@ -57,7 +75,6 @@ define('AT_USE_GUIDE', 1);
 		trigger_error('VITAL#<br /><br /><code><strong>An error occurred. Output sent before it should have. Please correct the above error(s).' . '</strong></code><br /><hr /><br />', E_USER_ERROR);
 	}
 
-	@set_magic_quotes_runtime(0);
 	@set_time_limit(0);
 	@ini_set('session.gc_maxlifetime', '36000'); /* 10 hours */
 	@session_cache_limiter('private, must-revalidate');
@@ -132,7 +149,7 @@ if (AT_INCLUDE_PATH !== 'NULL') {
 }
 
 /* defaults: */
-if (empty($_SESSION['prefs']) || (count($_SESSION['prefs']) < 2)){
+/*if (empty($_SESSION['prefs']) || (count($_SESSION['prefs']) < 2)){
 	$temp_prefs = unserialize(AT_DEFAULT_PREFS);
 	$tmp_theme  = get_default_theme();
 	$temp_prefs['PREF_THEME'] = $tmp_theme['dir_name'];
@@ -142,7 +159,7 @@ if (empty($_SESSION['prefs']) || (count($_SESSION['prefs']) < 2)){
 	if ($_SESSION['valid_user'] && $_SESSION['member_id']) {
 		save_prefs();
 	}
-} 
+} */
 
 require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
 
@@ -317,6 +334,28 @@ function get_html_body($text) {
 	return $text;
 }
 
+function get_html_head ($text) {
+	/* make all text lower case */
+	$text = strtolower($text);
+
+	/* strip everything before <head> */
+	$start_pos	= strpos($text, '<head');
+	if ($start_pos !== false) {
+		$start_pos	+= strlen('<head');
+		$end_pos	= strpos($text, '>', $start_pos);
+		$end_pos	+= strlen('>');
+
+		$text = substr($text, $end_pos);
+	}
+
+	/* strip everything after </head> */
+	$end_pos	= strpos($text, '</head');
+	if ($end_pos !== false) {
+		$text = trim(substr($text, 0, $end_pos));
+	}
+	return $text;
+}
+
 if (version_compare(phpversion(), '4.3.0') < 0) {
 	function file_get_contents($filename) {
 		$fd = @fopen($filename, 'rb');
@@ -343,7 +382,7 @@ function add_user_online() {
 	global $db;
 
     $expiry = time() + 900; // 15min
-    $sql    = 'REPLACE INTO '.TABLE_PREFIX.'users_online VALUES ('.$_SESSION['member_id'].', '.$_SESSION['course_id'].', "'.$_SESSION['login'].'", '.$expiry.')';
+    $sql    = 'REPLACE INTO '.TABLE_PREFIX.'users_online VALUES ('.$_SESSION['member_id'].', '.$_SESSION['course_id'].', "'.get_login($_SESSION['member_id']).'", '.$expiry.')';
     $result = mysql_query($sql, $db);
 
 	/* garbage collect and optimize the table every so often */
@@ -351,9 +390,6 @@ function add_user_online() {
 	$rand = mt_rand(1, 20);
 	if ($rand == 1) {
 		$sql = 'DELETE FROM '.TABLE_PREFIX.'users_online WHERE expiry<'.time();
-		$result = @mysql_query($sql, $db);
-
-		$sql = 'OPTIMIZE TABLE '.TABLE_PREFIX.'users_online';
 		$result = @mysql_query($sql, $db);
 	}
 }
@@ -366,13 +402,17 @@ function add_user_online() {
  * @author  Joel Kronenberg
  */
 function get_login($id){
-	global $db;
+	global $db, $_config_defaults;
 
 	$id		= intval($id);
 
-	$sql	= 'SELECT login FROM '.TABLE_PREFIX.'members WHERE member_id='.$id;
+	$sql	= 'SELECT login, first_name, second_name, last_name FROM '.TABLE_PREFIX.'members WHERE member_id='.$id;
 	$result	= mysql_query($sql, $db);
 	$row	= mysql_fetch_assoc($result);
+
+	if ($_config_defaults['display_full_name'] && $row['first_name'] && $row['last_name']) {
+		return $row['first_name'] . ' ' . $row['second_name'] . ' ' . $row['last_name'];
+	}
 
 	return $row['login'];
 }
@@ -384,9 +424,17 @@ function get_forum_name($fid){
 
 	$sql	= 'SELECT title FROM '.TABLE_PREFIX.'forums WHERE forum_id='.$fid;
 	$result	= mysql_query($sql, $db);
-	$row	= mysql_fetch_assoc($result);
+	if (($row = mysql_fetch_assoc($result)) && $row['title']) {
+		return $row['title'];		
+	}
 
-	return $row['title'];
+	$sql = "SELECT group_id FROM ".TABLE_PREFIX."forums_groups WHERE forum_id=$fid";
+	$result	= mysql_query($sql, $db);
+	if ($row = mysql_fetch_assoc($result)) {
+		return get_group_title($row['group_id']);
+	}
+
+	return FALSE;
 }
 
 /* takes the array of valid prefs and assigns them to the current session */
@@ -582,15 +630,14 @@ function sql_quote($input) {
 }
 
 function query_bit( $bitfield, $bit ) {
+	if (!is_int($bitfield)) {
+		$bitfield = intval($bitfield);
+	}
+	if (!is_int($bit)) {
+		$bit = intval($bit);
+	}
 	return ( $bitfield & $bit ) ? true : false;
 } 
-
-foreach($_privs as $key => $val) {
-	define($val['name'], $key);
-	$_privs[$key]['name'] = substr(strtolower($val['name']), 3);
-}
-asort($_privs);
-reset($_privs);
 
 /**
 * Authenticates the current user against the specified privilege.
@@ -598,7 +645,6 @@ reset($_privs);
 * @param   int	$privilege		privilege to check against.
 * @param   bool	$check			whether or not to return the result or to abort/exit.
 * @return  bool	true if this user is authenticated, false otherwise.
-* @see     $_privs[]   in include/lib/constants.inc.php
 * @see	   query_bit() in include/vitals.inc.php
 * @author  Joel Kronenberg
 */
@@ -688,18 +734,58 @@ function write_to_log($operation_type, $table_name, $num_affected, $details) {
 	}
 }
 
-/* if register_globals is enabled then unset all the variables in the local scope: */
-/*
-if ((bool) ini_get('register_globals')) {
-	foreach($_GET as $key => $value) {
-		unset(${$key});
+function get_group_title($group_id) {
+	global $db;
+	$sql = "SELECT title FROM ".TABLE_PREFIX."groups WHERE group_id=$group_id";
+	$result = mysql_query($sql, $db);
+	if ($row = mysql_fetch_assoc($result)) {
+		return $row['title'];
 	}
-	foreach($_POST as $key => $value) {
-		unset(${$key});
-	}
-	unset($value);
+	return FALSE;
 }
-*/
 
+/* get config variables. if they're not in the db then it uses the installation default value in constants.inc.php */
+
+$sql    = "SELECT * FROM ".TABLE_PREFIX."config";
+$result = mysql_query($sql, $db);
+while ($row = mysql_fetch_assoc($result)) { 
+	$_config[$row['name']] = $row['value'];
+}
+
+/* following is added as a transition period and backwards compatability: */
+define('EMAIL',                     $_config['contact_email']);
+define('EMAIL_NOTIFY',              $_config['email_notification']);
+define('ALLOW_INSTRUCTOR_REQUESTS', $_config['allow_instructor_requests']);
+define('AUTO_APPROVE_INSTRUCTORS',  $_config['auto_approve_instructors']);
+define('SITE_NAME',                 $_config['site_name']);
+define('HOME_URL',                  $_config['home_url']);
+define('DEFAULT_LANGUAGE',          $_config['default_language']);
+define('CACHE_DIR',                 $_config['cache_dir']);
+define('AT_ENABLE_CATEGORY_THEMES', $_config['theme_categories']);
+define('AT_COURSE_BACKUPS',         $_config['course_backups']);
+define('AT_EMAIL_CONFIRMATION',     $_config['email_confirmation']);
+define('AT_MASTER_LIST',            $_config['master_list']);
+define('AT_ENABLE_HANDBOOK_NOTES',  $_config['enable_handbook_notes']);
+$MaxFileSize       = $_config['max_file_size']; 
+$MaxCourseSize     = $_config['max_course_size'];
+$MaxCourseFloat    = $_config['max_course_float'];
+$IllegalExtentions = explode('|',$_config['illegal_extentions']);
+define('AT_DEFAULT_PREFS',  $_config['prefs_default']);
+$_config['home_defaults'] .= (isset($_config['home_defaults_2']) ? $_config['home_defaults_2'] : '');
+$_config['main_defaults'] .= (isset($_config['main_defaults_2']) ? $_config['main_defaults_2'] : '');
+
+require(AT_INCLUDE_PATH . 'classes/Module/Module.class.php');
+
+$moduleFactory =& new ModuleFactory(TRUE); // TRUE is for auto_loading the module.php files
+
+if (isset($_GET['submit_language']) && $_SESSION['valid_user']) {
+	if ($_SESSION['course_id'] == -1) {
+		$sql = "UPDATE ".TABLE_PREFIX."admins SET language = '$_SESSION[lang]' WHERE login = '$_SESSION[login]'";
+		$result = mysql_query($sql, $db);
+	} else {
+		$sql = "UPDATE ".TABLE_PREFIX."members SET language = '$_SESSION[lang]' WHERE member_id = $_SESSION[member_id]";
+		$result = mysql_query($sql, $db);
+	}
+}
 
 ?>

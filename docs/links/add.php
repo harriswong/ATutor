@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -33,6 +33,9 @@ if (isset($_POST['cancel'])) {
 	exit;
 } else if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 
+	if ($_POST['cat'] == 0 || $_POST['cat'] == '') {		
+		$msg->addError('CAT_EMPTY');
+	}
 	if ($_POST['title'] == '') {		
 		$msg->addError('TITLE_EMPTY');
 	}
@@ -55,13 +58,17 @@ if (isset($_POST['cancel'])) {
 
 		$approved = 0; //not approved for student submissions
 
-		$sql	= "INSERT INTO ".TABLE_PREFIX."resource_links VALUES (0, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."links VALUES (0, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_ADDED');
 
 		header('Location: '.$_base_href.'links/index.php');
 		exit;
+	} else {
+		$_POST['title']  = stripslashes($_POST['title']);
+		$_POST['url'] == stripslashes($_POST['url']);
+		$_POST['description']  = stripslashes($_POST['description']);
 	}
 }
 $onload = 'document.form.title.focus();';

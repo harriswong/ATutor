@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -14,8 +14,31 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
+function get_file_extension($file_name) {
+	$ext = pathinfo($file_name);
+	return $ext['extension'];
+}
+
+function get_file_type_icon($file_name) {
+	static $mime;
+
+	$ext = get_file_extension($file_name);
+
+	if (!isset($mime)) {
+		require(AT_INCLUDE_PATH .'lib/mime.inc.php');
+	}
+
+	if (isset($mime[$ext]) && $mime[$ext][1]) {
+		return $mime[$ext][1];
+	}
+	return 'generic';
+}
+
 // get the course total in Bytes 
 $course_total = dirsize($current_path);
+
+$framed = intval($_GET['framed']);
+$popup = intval($_GET['popup']);
 
 if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 	$get_file = 'get.php/';
@@ -223,7 +246,7 @@ while (false !== ($file = readdir($dir)) ) {
 	} else {
 		$totalBytes += $filedata[7];
 		$filename = $file;
-		$fileicon = '&nbsp;<img src="images/file.gif" alt="'._AT('file').':'.$file.'" height="16" width="16" class="img-size-fm2" />&nbsp;';
+		$fileicon = '&nbsp;<img src="images/file_types/'.get_file_type_icon($filename).'.gif" height="16" width="16" alt="" title="" class="img-size-fm2" />&nbsp;';
 	} 
 	$file1 = strtolower($file);
 	// create listing for dirctor or file
@@ -233,7 +256,7 @@ while (false !== ($file = readdir($dir)) ) {
 		$dirs[$file1] .= '<input type="checkbox" id="'.$file.'" value="'.$file.'" name="check[]"/></td>';
 		$dirs[$file1] .= '<td  align="center"><label for="'.$file.'" >'.$fileicon.'</label></td>';
 		$dirs[$file1] .= '<td >&nbsp;';
-		$dirs[$file1] .= /*'<a href="tools/filemanager/index.fsdfsdfphp?pathext='.urlencode($pathext) . SEP . 'popup=' . $popup . SEP . 'framed='. $framed .'">'.*/$filename/*.'sdfsdfsdfsdfsdfsd</a>&nbsp;*/.'</td>';
+		$dirs[$file1] .= $filename.'</td>';
 
 		if ($popup == TRUE) {
 			$dirs[$file1] .= '<td  align="center">';
@@ -309,68 +332,34 @@ echo '</table></form>';
 ?>
 
 <script type="text/javascript">
-<!--
+//<!--
 function insertFile(fileName, pathTo, ext) { 
 
 	if (ext == "gif" || ext == "jpg" || ext == "jpeg" || ext == "png") {
 		var info = "<?php echo _AT('alternate_text'); ?>";
 		var imageString = '<img src="'+ pathTo+fileName + '" alt="'+ info +'" />';
 
-		if (window.parent.editor) {
-			if (window.parent.editor._editMode == "textmode") {
-				insertAtCursor2(window.parent.document.form.body_text, imageString);
-			}
-			else {
-				window.parent.editor.focusEditor();
-				window.parent.editor.insertHTML(imageString);
-				window.parent.editor.focusEditor();
-			}
-		}
-		else if (window.opener.editor) {
-			if (window.opener.editor._editMode != "textmode") {
-				window.opener.editor.focusEditor();
-				window.opener.editor.insertHTML(imageString);
-				window.opener.editor.focusEditor();
-			}
-			else {
-				insertAtCursor(window.opener.document.form.body_text, imageString);
-			}
-		}
-		else {
+		if (window.parent.tinyMCE) {
+			window.parent.tinyMCE.insertImage(pathTo+fileName, info, '', '', '', '', '', '', info, '', '');
+		} else if (window.opener.tinyMCE) {
+			window.opener.tinyMCE.insertImage(pathTo+fileName, info, '', '', '', '', '', '', info, '', '');
+		} else {
 			insertAtCursor(window.opener.document.form.body_text, imageString);
 		}
-	}
-	
-	else {
+
+	} else {
 		var info = "<?php echo _AT('put_link'); ?>";
 		var fileString  = '<a href="' + pathTo+fileName + '">' + info + '</a>';
 
-		if (window.parent.editor) {
-			if (window.parent.editor._editMode == "textmode") {
-				insertAtCursor2(window.parent.document.form.body_text, fileString);
-			}
-			else {
-				window.parent.editor.focusEditor();
-				window.parent.editor.insertHTML(fileString);
-				window.parent.editor.focusEditor();
-			}
-		}
-		else if (window.opener.editor) {
-			if (window.opener.editor._editMode != "textmode") {
-				window.opener.editor.focusEditor();
-				window.opener.editor.insertHTML(fileString);
-				window.opener.editor.focusEditor();
-			}
-			else {
-				insertAtCursor(window.opener.document.form.body_text, fileString);
-			}
-		}
-		else {
+		if (window.parent.tinyMCE) {
+			window.parent.tinyMCE.execCommand("mceInsertContent", false, '<a href="' + pathTo+fileName + '">' + info + '</a>');
+		} else if (window.opener.tinyMCE) {
+			window.opener.tinyMCE.execCommand("mceInsertContent", false, '<a href="' + pathTo+fileName + '">' + info + '</a>');
+		} else {
 			insertAtCursor(window.opener.document.form.body_text, fileString);
 		}
 	}
 }
-
 function insertAtCursor(myField, myValue) {
 	//IE support
 	if (window.opener.document.selection) {
@@ -391,26 +380,5 @@ function insertAtCursor(myField, myValue) {
 		myField.focus();
 	}
 }
-
-function insertAtCursor2(myField, myValue) {
-	//IE support
-	if (window.parent.document.selection) {
-		myField.focus();
-		sel = window.parent.document.selection.createRange();
-		sel.text = myValue;
-	}
-	//MOZILLA/NETSCAPE support
-	else if (myField.selectionStart || myField.selectionStart == '0') {
-		var startPos = myField.selectionStart;
-		var endPos = myField.selectionEnd;
-		myField.value = myField.value.substring(0, startPos)
-		+ myValue
-		+ myField.value.substring(endPos, myField.value.length);
-		myField.focus();
-	} else {
-		myField.value += myValue;
-		myField.focus();
-	}
-}
--->
+//-->
 </script>

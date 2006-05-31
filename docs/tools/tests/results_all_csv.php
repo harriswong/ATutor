@@ -10,15 +10,10 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-
+// $Id$
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-
-if (!authenticate(AT_PRIV_TEST_MARK, true)) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
+authenticate(AT_PRIV_TESTS);
 
 require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 
@@ -44,6 +39,7 @@ if (!($row = mysql_fetch_array($result))){
 	exit;
 }
 $test_title = str_replace(array('"', '<', '>'), '', $row['title']);
+$test_title = str_replace (' ', '_', $test_title);
 $random = $row['randomize_order'];
 
 //get test questions

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -16,8 +16,10 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $next_prev_links, $langEditor;
 global $_base_path, $_my_uri;
 global $_stacks, $db;
+global $system_courses;
 
 $side_menu = array();
+$stack_files = array();
 
 if ($_SESSION['course_id'] > 0) {
 	$savant->assign('my_uri', $_my_uri);
@@ -32,9 +34,13 @@ if ($_SESSION['course_id'] > 0) {
 
 	//copyright can be found in include/html/copyright.inc.php
 
-	//side menu array
 	$side_menu = explode('|', $system_courses[$_SESSION['course_id']]['side_menu']);
-	$side_menu = array_intersect($side_menu, $_stacks);
+
+	foreach ($side_menu as $side) {
+		if (isset($_stacks[$side])) {
+			$stack_files[] = $_stacks[$side]['file'];
+		}
+	}
 }
 
 $theme_img  = $_base_path . 'themes/'. $_SESSION['prefs']['PREF_THEME'] . '/images/';
@@ -46,9 +52,30 @@ if (isset($err)) {
 
 $file_info = pathinfo($_SERVER['PHP_SELF']);
 if ($file_info['basename'] != 'take_test.php') {
-	$savant->assign('side_menu', $side_menu);
+	$savant->assign('side_menu', $stack_files);
 }
 
+// this js is indep of the theme used:
+?>
+<script language="javascript" type="text/javascript">
+var selected;
+function rowselect(obj) {
+	obj.className = 'selected';
+	if (selected && selected != obj.id)
+		document.getElementById(selected).className = '';
+	selected = obj.id;
+}
+function rowselectbox(obj, checked, handler) {
+	var functionDemo = new Function(handler + ";");
+	functionDemo();
+
+	if (checked)
+		obj.className = 'selected';
+	else
+		obj.className = '';
+}
+</script>
+<?php
 
 if ($framed || $popup) {
 	$savant->display('include/fm_footer.tmpl.php');
@@ -57,5 +84,4 @@ if ($framed || $popup) {
 }
 
 debug($_SESSION);
-
 ?>

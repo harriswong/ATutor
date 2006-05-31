@@ -24,13 +24,6 @@
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (!defined('AT_ENABLE_SCO') || !AT_ENABLE_SCO) {
-	require(AT_INCLUDE_PATH.'header.inc.php');
-	$msg->printErrors('SCO_DISABLED');
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-	exit;
-}
-
 $ptypes = explode (',', AT_PACKAGE_TYPES);
 $plug = Array();
 foreach ($ptypes as $type) {
@@ -43,14 +36,7 @@ if (sizeOf ($_POST['goners']) > 0) {
 	}
 }
 
-$sql = "SELECT	package_id,
-		ptype
-	FROM    ".TABLE_PREFIX."packages
-	WHERE   course_id = $_SESSION[course_id]
-	ORDER	BY package_id
-	";
-
-
+$sql = "SELECT package_id, ptype FROM ".TABLE_PREFIX."packages WHERE course_id = $_SESSION[course_id] ORDER BY package_id";
 $result = mysql_query($sql, $db);
 
 $num = 0;
@@ -68,17 +54,14 @@ if ($num == 0) {
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 } 
+
+require(AT_INCLUDE_PATH.'header.inc.php');
 ?>
-
-
-<?php require(AT_INCLUDE_PATH.'header.inc.php');?>
 
 <div class="input-form">
 	<form method="post" action="tools/packages/delete.php">
 		<ol>
-
-<?php echo $p;?>
-
+		<?php echo $p; ?>
 		</ol>
 		<div class="row buttons">
 			<input type="submit" name="submit"  value="<?php echo _AT('delete_selected_package_s'); ?>" />

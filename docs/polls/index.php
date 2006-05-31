@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor								    */
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton    */
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton    */
 /* Adaptive Technology Resource Centre / University of Toronto		    */
 /* http://atutor.ca							    */
 /*									    */
@@ -33,7 +33,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		$include_one = ' checked="checked"';
 	}
 
-	$sql = "SELECT * FROM ".TABLE_PREFIX."polls WHERE course_id=$_SESSION[course_id]";
+	$sql = "SELECT * FROM ".TABLE_PREFIX."polls WHERE course_id=$_SESSION[course_id] ORDER BY question";
 	$result = mysql_query($sql, $db);
 	if (mysql_num_rows($result) == 0) {
 		$msg->addInfo('NO_POLLS');

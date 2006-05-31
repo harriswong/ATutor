@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -18,17 +18,62 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
  * constants
  ******/
 
+/* config variables. if they're not in the db then it uses the installation default values: */
+$_config_defaults = array();
+$_config_defaults['contact_email']             = '';
+$_config_defaults['email_notification']        = 1;
+$_config_defaults['allow_instructor_requests'] = 1;
+$_config_defaults['auto_approve_instructors']  = 0;
+$_config_defaults['max_file_size']             = 1048576;  // 1MB
+$_config_defaults['max_course_size']           = 10485760; // 10 MB
+$_config_defaults['max_course_float']          = 2097152;  // 2MB
+$_config_defaults['illegal_extentions']        = 'exe|asp|php|php3|bat|cgi|pl|com|vbs|reg|pcd|pif|scr|bas|inf|vb|vbe|wsc|wsf|wsh';
+$_config_defaults['site_name']                 = '';
+$_config_defaults['home_url']                  = '';
+$_config_defaults['default_language']          = 'en';
+$_config_defaults['cache_dir']                 = '';
+$_config_defaults['enable_category_themes']    = 0;
+$_config_defaults['course_backups']            = 5;
+$_config_defaults['email_confirmation']        = 0;
+$_config_defaults['master_list']               = 0;
+$_config_defaults['enable_handbook_notes']     = 0;
+$_config_defaults['theme_categories']          = 0;
+$_config_defaults['main_defaults']	           = 'forum/list.php|glossary/index.php|file_storage/index.php';
+$_config_defaults['home_defaults']             = 'forum/list.php|file_storage/index.php|glossary/index.php|chat/index.php|tile.php|faq/index.php|links/index.php|tools/my_tests.php|sitemap.php|export.php|my_stats.php|polls/index.php|directory.php';
+$_config_defaults['side_defaults']             = 'menu_menu|related_topics|users_online|glossary|search|poll|posts';
+$_config_defaults['pref_defaults']			   = 'a:4:{s:10:"PREF_THEME";s:7:"default";s:14:"PREF_NUMBERING";i:1;s:18:"PREF_JUMP_REDIRECT";i:1;s:15:"PREF_FORM_FOCUS";i:1;}';
+$_config_defaults['pref_inbox_notify']		   = 0;
+$_config_defaults['check_version']	           = 0;
+$_config_defaults['fs_versioning']             = 1;
+$_config_defaults['display_full_name']         = 1; // not currently a config option
+$_config_defaults['last_cron']                 = 0; // cron has to be enabled manually
+$_config_defaults['enable_mail_queue']         = 0; // mail queue can only be enabled if cron is running
 
-define('AT_DEFAULT_PREFS', 'a:4:{s:14:"PREF_NUMBERING";i:1;s:10:"PREF_THEME";s:7:"default";s:18:"PREF_JUMP_REDIRECT";i:1;s:15:"PREF_FORM_FOCUS";i:1;}');
+$_config = $_config_defaults;
 
- $_modules = array('sitemap.php', 'export.php', 'chat/index.php', 'links/index.php', 'tile.php', 'glossary/index.php', 'my_stats.php', 'tools/my_tests.php', 'forum/list.php' ,'polls/index.php','acollab/bounce.php', 'directory.php');
+/* links */
+define('LINK_CAT_COURSE',	1);
+define('LINK_CAT_GROUP',	2);
+define('LINK_CAT_SELF',		3);
 
-if (defined('AT_ENABLE_SCO') && AT_ENABLE_SCO) {
-	$_modules[] = 'packages/index.php';
-}
+define('LINK_CAT_AUTH_NONE',	0);
+define('LINK_CAT_AUTH_ALL',		1);
+define('LINK_CAT_AUTH_COURSE',  2);
+define('LINK_CAT_AUTH_GROUP',	3);
+
+/* drafting room constants */
+define('WORKSPACE_COURSE',     1);
+define('WORKSPACE_PERSONAL',   2);
+define('WORKSPACE_ASSIGNMENT', 3);
+define('WORKSPACE_GROUP',      4);
+define('WORKSPACE_PATH_DEPTH', 1); // how deep the directories should be
+define('WORKSPACE_FILE_PATH',  AT_CONTENT_DIR . 'file_storage/');
 
 /* how many related topics can be listed */
 define('NUM_RELATED_TOPICS', 5);
+
+/* how many days until the password reminder link expires */
+define('AT_PASSWORD_REMINDER_EXPIRY', 2);
 
 /* taking a test an unlimited # of times */
 define('AT_TESTS_TAKE_UNLIMITED', 0);
@@ -47,41 +92,24 @@ define('AT_STATUS_UNCONFIRMED', 1);
 define('AT_STATUS_STUDENT',     2);
 define('AT_STATUS_INSTRUCTOR',  3);
 
+/* $_pages sections */
+define('AT_NAV_PUBLIC', 'AT_NAV_PUBLIC');
+define('AT_NAV_START',  'AT_NAV_START');
+define('AT_NAV_COURSE', 'AT_NAV_COURSE');
+define('AT_NAV_HOME',   'AT_NAV_HOME');
+define('AT_NAV_ADMIN',  'AT_NAV_ADMIN');
+
 /* user permissions */
 
 /* $_privs[priv number] = array(String name, Boolean pen, Boolean tools) */
 define('AT_PRIV_RETURN',		true);
 define('AT_PRIV_NONE',			0);
+
 define('AT_PRIV_ADMIN',			1);
-
-$_privs[2]		= array('name' => 'AT_PRIV_CONTENT');
-$_privs[4]		= array('name' => 'AT_PRIV_GLOSSARY');
-$_privs[8]		= array('name' => 'AT_PRIV_TEST_CREATE');
-$_privs[16]		= array('name' => 'AT_PRIV_TEST_MARK');
-$_privs[32]		= array('name' => 'AT_PRIV_FILES');
-$_privs[64]		= array('name' => 'AT_PRIV_LINKS');
-$_privs[128]	= array('name' => 'AT_PRIV_FORUMS');
-$_privs[256]	= array('name' => 'AT_PRIV_STYLES');
-$_privs[512]	= array('name' => 'AT_PRIV_ENROLLMENT');
-$_privs[1024]	= array('name' => 'AT_PRIV_COURSE_EMAIL');
-$_privs[2048]	= array('name' => 'AT_PRIV_ANNOUNCEMENTS');
-$_privs[16384]	= array('name' => 'AT_PRIV_POLLS');
-
-if (defined('AC_PATH') && AC_PATH) {
-	$_privs[4096]= array('name' => 'AT_PRIV_AC_CREATE');
-	$_privs[8192]= array('name' => 'AT_PRIV_AC_ACCESS_ALL');
-}
 
 /* admin privs: */
 define('AT_ADMIN_PRIV_NONE',        0);
 define('AT_ADMIN_PRIV_ADMIN',       1);
-define('AT_ADMIN_PRIV_USERS',       2);
-define('AT_ADMIN_PRIV_COURSES',     4);
-define('AT_ADMIN_PRIV_BACKUPS',     8);
-define('AT_ADMIN_PRIV_FORUMS',     16);
-define('AT_ADMIN_PRIV_CATEGORIES', 32);
-define('AT_ADMIN_PRIV_LANGUAGES',  64);
-define('AT_ADMIN_PRIV_THEMES',    128);
 
 /* admin log (type of operations) */
 define('AT_ADMIN_LOG_UPDATE',  1);
@@ -98,17 +126,6 @@ if (strpos(@ini_get('arg_separator.input'), ';') !== false) {
 
 /* the URL to the AChecker server of choice. must include trailing slash. */
 define('AT_ACHECKER_URL', 'http://checker.atrc.utoronto.ca/servlet/');
-
-/* the URL to the WSDL of the TILE repository of choice. */
-define('AT_TILE_WSDL', 'http://tile.atutor.ca/tile/services/search?wsdl');
-
-/* the URL to the content package export servlet of the TILE repository of choice. */
-define('AT_TILE_EXPORT', 'http://tile.atutor.ca/tile/servlet/export');
-
-/* the URL to the content importing servlet of the TILE repository. */
-define('AT_TILE_IMPORT', 'http://tile.atutor.ca/tile/servlet/put');
-
-define('AT_TILE_PREVIEW', 'http://tile.atutor.ca/tile/servlet/view?view=item&');
 
 if (!isset($_SERVER['REQUEST_URI'])) {
 	$REQUEST_URI = $_SERVER['SCRIPT_NAME'];
@@ -134,20 +151,12 @@ $_base_path  = substr($_base_href, strlen($server_protocol . $_SERVER['HTTP_HOST
 /* relative uri */
 $_rel_url = '/'.implode('/', array_slice($url_parts, count($url_parts) - $dir_deep-1));
 
-
-/* for the SCORM 1.2 RTE: */
-define('AT_PACKAGE_TYPES', 'scorm-1.2');
-if (defined('AT_ENABLE_SCO') && AT_ENABLE_SCO) {
-	define('AT_PACKAGE_URL_BASE', $_base_href . 'sco/'); 
-}
-
 /* where the gudes are (could be a full URL if needed): */
 define('AT_GUIDES_PATH', $_base_path . 'documentation/');
 
 define('AT_BACKUP_DIR', AT_CONTENT_DIR . 'backups/'); // where the backups get stored
 
-define('HELP',			0);
-define('VERSION',		'1.5.1');
+define('VERSION',		'1.5.3');
 define('ONLINE_UPDATE', 3); /* update the user expiry every 3 min */
 
 /* valid date format_types:						*/
@@ -166,7 +175,7 @@ define('AT_COURSESIZE_UNLIMITED',	   -1);
 define('AT_COURSESIZE_DEFAULT',		   -2);  /* can be changed in config.inc.php */
 define('AT_FILESIZE_DEFAULT',		   -3);  /* this too */
 define('AT_FILESIZE_SYSTEM_MAX',	   -4);
-$editable_file_types = array('txt', 'html', 'htm', 'xml', 'css', 'asc', 'csv');
+$editable_file_types = array('txt', 'html', 'htm', 'xml', 'css', 'asc', 'csv', 'sql');
 
 /* how many poll choices are available: */
 define('AT_NUM_POLL_CHOICES',   7);
@@ -195,8 +204,19 @@ define('AT_ENROLL_NO',			0);
 define('AT_ENROLL_YES',			1);
 define('AT_ENROLL_ALUMNUS',		2);
 
-/* names of the include files for the side menu drop downs */
-$_stacks = array('menu_menu', 'related_topics', 'users_online', 'glossary', 'search', 'poll', 'posts');
+// constants for reading list module
+define ('RL_TYPE_BOOK', 1);
+define ('RL_TYPE_URL',  2);
+define ('RL_TYPE_HANDOUT', 3);
+define ('RL_TYPE_AV', 4);
+define ('RL_TYPE_FILE', 5);
+
+$_rl_types = array ();
+$_rl_types[RL_TYPE_BOOK]	= 'rl_book';
+$_rl_types[RL_TYPE_URL]		= 'rl_url';
+$_rl_types[RL_TYPE_HANDOUT]	= 'rl_handout';
+$_rl_types[RL_TYPE_AV]		= 'rl_av';
+$_rl_types[RL_TYPE_FILE]	= 'rl_file';
 
 /* control how user inputs get formatted on output: */
 /* note: v131 not all formatting options are available on each section. */
@@ -260,16 +280,22 @@ $_field_formatting['themes.title']				= AT_FORMAT_NONE;
 
 $_field_formatting['tests_answers.answer']		= AT_FORMAT_NONE;
 $_field_formatting['tests_answers.notes']		= AT_FORMAT_ALL;
-$_field_formatting['tests_questions.question']	= AT_FORMAT_ALL;
+$_field_formatting['tests_questions.*']			= AT_FORMAT_ALL;
+
 $_field_formatting['tests_questions_categories.title']	= AT_FORMAT_NONE;
 
 $_field_formatting['polls.*']            = AT_FORMAT_ALL;
 
+$_field_formatting['blog_posts.body']	     = AT_FORMAT_ALL & ~AT_FORMAT_HTML;
+$_field_formatting['blog_posts.title']	     = AT_FORMAT_NONE;
 
-	if (isset($_GET['cid'])) {
-		$cid = intval($_GET['cid']);
-	} else if (isset($_POST['cid'])) {
-		$cid = intval($_POST['cid']);
-	}
+$_field_formatting['blog_posts_comments.comment'] = AT_FORMAT_ALL & ~AT_FORMAT_HTML;
+
+if (isset($_GET['cid'])) {
+	$cid = intval($_GET['cid']);
+} else if (isset($_POST['cid'])) {
+	$cid = intval($_POST['cid']);
+}
+
 
 ?>

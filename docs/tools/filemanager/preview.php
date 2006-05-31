@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -32,8 +32,8 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 
 <frameset rows="50,*">
 
-<frame src="preview_top.php?file=<?php echo urlencode($_GET['file']).SEP; ?>pathext=<?php echo urlencode($_GET['pathext']) . SEP . 'popup=' . $_GET['popup']; ?>" scrolling=no marginwidth=0 marginheight=0 />
-<frame src="../../<?php echo $get_file; ?><?php echo urldecode($_GET['file']); ?>" />
+<frame src="preview_top.php?file=<?php echo urlencode($_GET['file']).SEP; ?>pathext=<?php echo urlencode($_GET['pathext']) . SEP . 'popup=' . $_GET['popup']; ?>" scrolling=no marginwidth="0" marginheight="0" />
+<frame src="../../<?php echo $get_file; ?><?php echo urlencode($_GET['file']); ?>" />
 
 <noframes>
   <p><?php echo _AT('frame_contains'); ?><br />

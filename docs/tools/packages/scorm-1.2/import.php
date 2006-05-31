@@ -78,6 +78,7 @@ if (!isset($_POST['submit'])) {
 
 $cid = intval($_POST['cid']);
 
+
 if (isset($_POST['url']) && ($_POST['url'] != 'http://') ) {
 	if ($content = @file_get_contents($_POST['url'])) {
 		$filename = substr(time(), -6). '.zip';

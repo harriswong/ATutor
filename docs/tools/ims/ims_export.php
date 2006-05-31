@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -217,6 +217,7 @@ if (count($used_glossary_terms)) {
 	$terms_xml = '';
 	foreach ($used_glossary_terms as $term) {
 		$term_key = urlencode($term);
+		$glossary[$term_key] = str_replace('&', '&amp;', $glossary[$term_key]);
 		$terms_xml .= str_replace(	array('{TERM}', '{DEFINITION}'),
 									array($term, $glossary[$term_key]),
 									$glossary_term_xml);

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -18,10 +18,10 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_ANNOUNCEMENTS);
 
 if (isset($_GET['edit'], $_GET['id'])) {
-	header('Location: '.$_base_href.'editor/edit_news.php?aid='.$_GET['id']);
+	header('Location: '.$_base_href.'editor/edit_news.php?aid='.intval($_GET['id']));
 	exit;
 } else if (isset($_GET['delete'], $_GET['id'])) {
-	header('Location: '.$_base_href.'editor/delete_news.php?aid='.$_GET['id']);
+	header('Location: '.$_base_href.'editor/delete_news.php?aid='.intval($_GET['id']));
 	exit;
 } else if ((isset($_GET['edit']) || isset($_GET['delete']))) {
 	$msg->addError('NO_ITEM_SELECTED');
@@ -74,7 +74,7 @@ $result = mysql_query($sql, $db);
 <tbody>
 	<?php if ($row = mysql_fetch_assoc($result)): ?>
 		<?php do { ?>
-			<tr onmousedown="document.form['n<?php echo $row['news_id']; ?>'].checked = true;">
+			<tr onmousedown="document.form['n<?php echo $row['news_id']; ?>'].checked = true; rowselect(this);" id="r_<?php echo $row['news_id']; ?>">
 				<td><input type="radio" name="id" value="<?php echo $row['news_id']; ?>" id="n<?php echo $row['news_id']; ?>" /></td>
 				<td><label for="n<?php echo $row['news_id']; ?>"><?php echo AT_print($row['title'], 'news.title'); ?></label></td>
 				<td><?php echo AT_date(_AT('announcement_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></td>

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -34,7 +34,7 @@ $imported_glossary = array();
 		global $items, $path, $package_base_path;
 		global $element_path;
 		static $current_identifier;		
-		
+
 		if ($name == 'file') {
 			// special case for webCT content packages that don't specify the `href` attribute 
 			// with the `<resource>` element.
@@ -57,6 +57,8 @@ $imported_glossary = array();
 			}
 		} else if (($name == 'item') && ($attrs['identifierref'] != '')) {
 			$path[] = $attrs['identifierref'];
+		} else if (($name == 'item') && ($attrs['identifier'])) {
+			$path[] = $attrs['identifier'];
 		} else if (($name == 'resource') && is_array($items[$attrs['identifier']]))  {
 			$current_identifier = $attrs['identifier'];
 
@@ -65,8 +67,7 @@ $imported_glossary = array();
 
 				$temp_path = pathinfo($attrs['href']);
 				$temp_path = explode('/', $temp_path['dirname']);
-
-				if ($package_base_path == '') {
+				if (!$package_base_path) {
 					$package_base_path = $temp_path;
 				} else {
 					$package_base_path = array_intersect($package_base_path, $temp_path);
@@ -182,9 +183,7 @@ if (!isset($_POST['submit']) && !isset($_POST['cancel'])) {
 	exit;
 }
 
-
 $cid = intval($_POST['cid']);
-
 
 if (isset($_POST['url']) && ($_POST['url'] != 'http://') ) {
 	if ($content = @file_get_contents($_POST['url'])) {
@@ -341,6 +340,25 @@ if ($ims_manifest_xml === false) {
 }
 
 
+
+// check if this is an eXe package
+// NOTE: THIS NEEDS WORK! WHAT IS THE BEST WAY TO DETERMINE IF PACKAGE IS eXe?
+// PERHAPS USE PARSER BELOW TO CHECK FOR ORGANIZATION?
+$isExeContent = false;
+$ims_organization_pos = strpos ($ims_manifest_xml, '<organization');
+if ($ims_organization_pos !== false){
+	$ims_organization_pos = strpos ($ims_manifest_xml, 'identifier', $ims_organization_pos);
+	if ($ims_organization_pos !== false){
+		$exe_pos = strpos ($ims_manifest_xml, 'eXenew', $ims_organization_pos);
+		if ($exe_pos < ($ims_organization_pos + '50')){
+			$isExeContent = true;
+		}
+	}
+}
+
+
+
+
 $xml_parser = xml_parser_create();
 
 xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, false); /* conform to W3C specs */
@@ -355,6 +373,7 @@ if (!xml_parse($xml_parser, $ims_manifest_xml, true)) {
 
 
 xml_parser_free($xml_parser);
+//debug($items);
 
 /* check if the glossary terms exist */
 if (file_exists($import_path . 'glossary.xml')){
@@ -370,6 +389,7 @@ if (file_exists($import_path . 'glossary.xml')){
 	xml_set_character_data_handler($xml_parser, 'glossaryCharacterData');
 
 	if (!xml_parse($xml_parser, $glossary_xml, true)) {
+		debug($glossary_xml);
 		die(sprintf("XML error: %s at line %d",
 					xml_error_string(xml_get_error_code($xml_parser)),
 					xml_get_current_line_number($xml_parser)));
@@ -416,15 +436,22 @@ $row	= mysql_fetch_assoc($result);
 $order_offset = intval($row['ordering']); /* it's nice to have a real number to deal with */
 	
 	foreach ($items as $item_id => $content_info) {
-		$file_info = @stat(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-		if ($file_info === false) {
-			continue;
-		}
+		if (!isset($content_info['href'])) {
+			// this item doesn't have an identifierref. so create an empty page.
+			$content = '';
+			$ext = '';
+			$last_modified = date('Y-m-d H:i:s');
+		} else {
+			$file_info = @stat(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			if ($file_info === false) {
+				continue;
+			}
 		
-		$path_parts = pathinfo(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-		$ext = strtolower($path_parts['extension']);
+			$path_parts = pathinfo(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			$ext = strtolower($path_parts['extension']);
 
-		$last_modified = date('Y-m-d H:i:s', $file_info['mtime']);
+			$last_modified = date('Y-m-d H:i:s', $file_info['mtime']);
+		}
 		if (in_array($ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg'))) {
 			/* this is an image */
 			$content = '<img src="'.$content_info['href'].'" alt="'.$content_info['title'].'" />';
@@ -453,18 +480,19 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 				/* so we'll never get here. */
 				continue;
 			}
-			$content = get_html_body($content);
 
+			// get the contents of the 'head' element
+			$head = get_html_head ($content);
+			$content = get_html_body($content);
 			if ($contains_glossary_terms) {
 				// replace glossary content package links to real glossary mark-up using [?] [/?]
-				$content = preg_replace('/<a href="(.)*" target="body" class="at-term">([\w ]*)<\/a>/i', '[?]\\2[/?]', $content);
-
+				$content = preg_replace('/<a href="([.\w\d\s]+[^"]+)" target="body" class="at-term">([.\w\d\s"]+)<\/a>/i', '[?]\\2[/?]', $content);
 			}
 			/* potential security risk? */
 			if ( strpos($content_info['href'], '..') === false) {
 				@unlink(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
 			}
-		} else {
+		} else if ($ext) {
 			/* non text file, and can't embed (example: PDF files) */
 			$content = '<a href="'.$content_info['href'].'">'.$content_info['title'].'</a>';
 		}
@@ -491,6 +519,11 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 		$content_info['title'] = addslashes($content_info['title']);
 		$content = addslashes($content);
 
+		// add a 'div' around eXe content
+		if ($isExeContent == true){
+			$content = '<div class=\"execontent\">\n'.$content.'\n</div>';
+		}
+
 		$sql= 'INSERT INTO '.TABLE_PREFIX.'content VALUES 
 				(0,	'
 				.$_SESSION['course_id'].','															
@@ -503,6 +536,18 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 
 		$result = mysql_query($sql, $db);
 
+		// store the contents of the 'head' section
+		if ($result){
+			// get content ID
+			$id = mysql_insert_id($db);
+			$head = addslashes($head);
+
+			$sql = 'INSERT INTO '.TABLE_PREFIX.'head VALUES (0, '.$_SESSION['course_id'].','
+				.$id.','
+				.'"'.$head.'")';
+			$resultHead = mysql_query($sql, $db);
+		}
+
 		/* get the content id and update $items */
 		$items[$item_id]['real_content_id'] = mysql_insert_id($db);
 	}
@@ -513,6 +558,7 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 	if (is_dir(AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name)) {
 
 	}
+
 	rename(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$package_base_path, AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name);
 	clr_dir(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id']);
 
@@ -523,14 +569,14 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 
 if ($_POST['s_cid']){
 	$msg->addFeedback('IMS_IMPORT_SUCCESS');
-	header('Location: ../../editor/edit_content.php?cid='.$_POST['cid']);
+	header('Location: ../../editor/edit_content.php?cid='.intval($_POST['cid']));
 	exit;
 } else {
 	$msg->addFeedback('IMS_IMPORT_SUCCESS');
 	if ($_GET['tile']) {
 		header('Location: '.$_base_href.'tools/tile/index.php');
 	} else {
-		header('Location: ./index.php?cid='.$_POST['cid']);
+		header('Location: ./index.php?cid='.intval($_POST['cid']));
 	}
 	exit;
 }

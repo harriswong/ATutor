@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -27,6 +27,7 @@ global $db;
 global $_pages;
 global $_stacks;
 global $framed, $popup;
+global $_custom_css;
 
 require(AT_INCLUDE_PATH . 'lib/menu_pages.php');
 
@@ -56,6 +57,12 @@ if ($myLang->isRTL()) {
 	$savant->assign('rtl_css', '');
 }
 
+if (isset($_custom_css)) {
+	$savant->assign('custom_css', '<link rel="stylesheet" href="'.$_custom_css.'" type="text/css" />');
+} else {
+	$savant->assign('custom_css', '');
+}
+
 if ($onload && ($_SESSION['prefs']['PREF_FORM_FOCUS'] || (substr($onload, -8) != 'focus();'))) {
 	$savant->assign('onload', $onload);
 }
@@ -68,10 +75,19 @@ if ($_SESSION['valid_user'] === true) {
 
 $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 
+if (!isset($_pages[$current_page])) {
+	global $msg;
+	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
+	header('location: '.$_base_href.'index.php');
+	exit;
+}
+
 $_top_level_pages        = get_main_navigation($current_page);
+
 $_current_top_level_page = get_current_main_page($current_page);
+
 if (empty($_top_level_pages)) {
-	if (!$_SESSION['valid_user']) {
+	if (!$_SESSION['member_id'] && !$_SESSION['course_id']) {
 		$_top_level_pages = get_main_navigation($_pages[AT_NAV_PUBLIC][0]);
 	} else if ($_SESSION['course_id'] < 0) {
 		$_top_level_pages = get_main_navigation($_pages[AT_NAV_ADMIN][0]);
@@ -116,7 +132,6 @@ if ($_SESSION['course_id'] > 0) {
 } else if (!$_SESSION['course_id']) {
 	$section_title = _AT('my_start_page');
 }
-
 $savant->assign('current_top_level_page', $_current_top_level_page);
 $savant->assign('sub_level_pages', $_sub_level_pages);
 $savant->assign('current_sub_level_page', $_current_sub_level_page);
@@ -126,7 +141,9 @@ $savant->assign('back_to_page', $back_to_page);
 $savant->assign('page_title', $_page_title);
 $savant->assign('top_level_pages', $_top_level_pages);
 $savant->assign('section_title', $section_title);
+
 if (defined('AT_USE_GUIDE') && AT_USE_GUIDE && isset($_pages[$current_page]['guide'])) {
+//if (isset($_pages[$current_page]['guide'])) {
 	$savant->assign('guide', AT_GUIDES_PATH . $_pages[$current_page]['guide']);
 }
 
@@ -186,9 +203,9 @@ if ($_SESSION['course_id'] > -1) {
 // if filemanager is a inside a popup or a frame
 // i don't like this code. i don't know were these two variables are coming from
 // anyone can add ?framed=1 to a URL to alter the behaviour.
-if ($framed || $popup) {
-	$savant->assign('framed', $framed);
-	$savant->assign('popup', $popup);
+if ($_REQUEST['framed'] || $_REQUEST['popup']) {
+	$savant->assign('framed', 1);
+	$savant->assign('popup', 1);
 	$savant->display('include/fm_header.tmpl.php');
 } else {
 	$savant->display('include/header.tmpl.php');

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -16,6 +16,8 @@ define('AT_INCLUDE_PATH', '../include/');
 
 $get_related_glossary = true;
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
+
 $cid = intval($_REQUEST['cid']);
 
 if ($_POST) {
@@ -25,7 +27,9 @@ if ($_POST) {
 }
 
 require(AT_INCLUDE_PATH.'lib/editor_tab_functions.inc.php');
+
 	
+
 if ($_POST['close'] || $_GET['close']) {
 	if ($_GET['close']) {
 		$msg->addFeedback('CONTENT_UPDATED');
@@ -38,10 +42,10 @@ if ($_POST['close'] || $_GET['close']) {
 	}
 	
 	if ($_REQUEST['cid'] == 0) {
-		header('Location: '.$_base_path.'content.php?cid='.$_REQUEST['new_pid']);
+		header('Location: '.$_base_path.'content.php?cid='.intval($_REQUEST['new_pid']));
 		exit;
 	}
-	header('Location: '.$_base_path.'content.php?cid='.$_REQUEST['cid']);
+	header('Location: '.$_base_path.'content.php?cid='.intval($_REQUEST['cid']));
 	exit;
 }
 	
@@ -77,15 +81,6 @@ if ($cid) {
 	$_section[0][0] = _AT('edit_content');
 } else {
 	$_section[0][0] = _AT('add_content');
-}
-
-if ($current_tab == 0) {
-	//used for visual editor
-	if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
-		$onload = 'initEditor();';
-	} else {
-		$onload = ' document.form.ctitle.focus();';
-	}
 }
 
 if ($cid) {
@@ -124,7 +119,20 @@ if ($current_tab == 4) {
 	$content_base_href = '';
 }
 
+if ($current_tab == 0) {
+	if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
+		$onload = ' document.form.ctitle.focus();';
+	}
+}
+
 require(AT_INCLUDE_PATH.'header.inc.php');
+
+if ($current_tab == 0) {
+	//used for visual editor
+	if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
+		load_editor();
+	}
+}
 
 $cid = intval($_REQUEST['cid']);
 $pid = intval($_REQUEST['pid']);

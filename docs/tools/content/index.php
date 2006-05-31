@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -16,16 +16,16 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_CONTENT);
 
 if (isset($_GET['edit'], $_GET['id'])) {
-	header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_GET['id']);
+	header('Location: '.$_base_href.'editor/edit_content.php?cid='.intval($_GET['id']));
 	exit;
 } else if (isset($_GET['delete'], $_GET['id'])) {
-	header('Location: '.$_base_href.'editor/delete_content.php?cid='.$_GET['id']);
+	header('Location: '.$_base_href.'editor/delete_content.php?cid='.intval($_GET['id']));
 	exit;
 } else if (isset($_GET['view'], $_GET['id'])) {
-	header('Location: '.$_base_href.'content.php?cid='.$_GET['id']);
+	header('Location: '.$_base_href.'content.php?cid='.intval($_GET['id']));
 	exit;
 } else if (isset($_GET['usage'], $_GET['id'])) {
-	header('Location: '.$_base_href.'tools/tracker/page_student_stats.php?content_id='.$_GET['id']);
+	header('Location: '.$_base_href.'tools/tracker/page_student_stats.php?content_id='.intval($_GET['id']));
 	exit;
 } else if (!isset($_GET['id']) && !isset($_GET['sub_content']) && (isset($_GET['usage']) || isset($_GET['view']) || isset($_GET['delete']) || isset($_GET['edit']))) {
 	$msg->addError('NO_ITEM_SELECTED');
@@ -128,7 +128,7 @@ function print_select($pid, $depth) {
 <tbody>
 	<?php if (!empty($content)): ?>
 		<?php foreach ($content as $row): ?>
-			<tr onmousedown="document.form['c<?php echo $row['content_id']; ?>'].checked = true;">
+			<tr onmousedown="document.form['c<?php echo $row['content_id']; ?>'].checked = true; rowselect(this);" id="r_<?php echo $row['content_id']; ?>">
 				<td><input type="radio" name="id" value="<?php echo $row['content_id']; ?>" id="c<?php echo $row['content_id']; ?>"></td>
 				<td><?php echo $row['ordering']; ?></td>
 				<td><label for="c<?php echo $row['content_id']; ?>"><?php echo AT_print($row['title'], 'content.title'); ?></label></td>

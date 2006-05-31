@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -77,6 +77,12 @@ function checkUserInfo($record) {
 		}
 	}	
 
+	$sql = "SELECT member_id FROM ".TABLE_PREFIX."members WHERE first_name='$record[fname]' AND last_name='$record[lname]' LIMIT 1";
+	$result = mysql_query($sql,$db);
+	if ((mysql_num_rows($result) != 0) && !$record['exists']) {
+		$record['err_uname'] = _AT('import_err_full_name_exists');
+	}
+
 	/* removed record? */
 	if ($record['remove']) {
 		//unset errors 
@@ -96,6 +102,7 @@ function checkUserInfo($record) {
 function add_users($user_list, $enroll, $course) {
 	global $db, $_base_href;
 	global $msg;
+	global $_config;
 
 	require_once(AT_INCLUDE_PATH.'classes/phpmailer/atutormailer.class.php');
 
@@ -113,7 +120,8 @@ function add_users($user_list, $enroll, $course) {
 				$student = sql_quote($student);
 				$now = date('Y-m-d H:i:s'); // we use this later for the email confirmation.
 
-				$sql = "INSERT INTO ".TABLE_PREFIX."members (member_id, login, password, email, first_name, last_name, creation_date, status) VALUES (0, '".$student['uname']."', '".$student['uname']."', '".$student['email']."', '".$student['fname']."', '".$student['lname']."', '$now', $status)";
+		
+				$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$student[uname]','$student[uname]','$student[email]','','$student[fname]','', '$student[lname]', '', '', '','','','','', '', $status, '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], 1)";
 
 				if ($result = mysql_query($sql, $db)) {
 					$student['exists'] = _AT('import_err_email_exists');
@@ -130,11 +138,11 @@ function add_users($user_list, $enroll, $course) {
 							$code = substr(md5($student['email'] . $now . $m_id), 0, 10);
 							$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 			
-							$subject = SITE_NAME.': '._AT('email_confirmation_subject');
-							$body .= _AT(array('new_account_enroll_confirm', $_SESSION['course_title'], $confirmation_link))."\n\n";
+							$subject = $_config['site_name'].': '._AT('email_confirmation_subject');
+							$body = _AT(array('new_account_enroll_confirm', $_SESSION['course_title'], $confirmation_link))."\n\n";
 						} else {
-							$subject = SITE_NAME.': '._AT('account_information');
-							$body .= _AT(array('new_account_enroll',$_base_href, $_SESSION['course_title']))."\n\n";
+							$subject = $_config['site_name'].': '._AT('account_information');
+							$body = _AT(array('new_account_enroll',$_base_href, $_SESSION['course_title']))."\n\n";
 						}
 						
 						//$body .= SITE_NAME.': '._AT('account_information')."\n";
@@ -143,7 +151,7 @@ function add_users($user_list, $enroll, $course) {
 						$body .= _AT('password') .' : '.$student['uname'] . "\n";
 
 						$mail = new ATutorMailer;
-						$mail->From     = EMAIL;
+						$mail->From     = $_config['contact_email'];
 						$mail->AddAddress($student['email']);
 						$mail->Subject = $subject;
 						$mail->Body    = $body;

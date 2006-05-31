@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -13,6 +13,7 @@
 
 define('AT_INCLUDE_PATH', '../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
 
 authenticate(AT_PRIV_ANNOUNCEMENTS);
 
@@ -57,36 +58,36 @@ if (isset($_POST['cancel'])) {
 	}
 }
 
-	//used for visual editor
-	if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']){
-		$onload = 'initEditor();';
-	}else {
-		$onload = 'document.form.title.focus();';
-	}
+if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
+	$onload = 'document.form.title.focus();';
+}
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-	if (isset($_GET['aid'])) {
-		$aid = intval($_GET['aid']);
-	} else {
-		$aid = intval($_POST['aid']);
-	}
+if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']) {
+	load_editor();
+}
 
-	if ($aid == 0) {
-		$msg->printErrors('ANN_ID_ZERO');
-		require (AT_INCLUDE_PATH.'footer.inc.php');
-		exit;
-	}
-	
-	$sql = "SELECT * FROM ".TABLE_PREFIX."news WHERE news_id=$aid AND course_id=$_SESSION[course_id]";
-	$result = mysql_query($sql,$db);
-	if (!($row = mysql_fetch_array($result))) {
-		$msg->printErrors('ANN_NOT_FOUND');
-		require (AT_INCLUDE_PATH.'footer.inc.php');
-		exit;
-	}
-	$_POST['formatting'] = intval($row['formatting']);
+if (isset($_GET['aid'])) {
+	$aid = intval($_GET['aid']);
+} else {
+	$aid = intval($_POST['aid']);
+}
 
-require(AT_INCLUDE_PATH.'html/editor_tabs/news.inc.php');
+if ($aid == 0) {
+	$msg->printErrors('ANN_ID_ZERO');
+	require (AT_INCLUDE_PATH.'footer.inc.php');
+	exit;
+}
+
+$sql = "SELECT * FROM ".TABLE_PREFIX."news WHERE news_id=$aid AND course_id=$_SESSION[course_id]";
+$result = mysql_query($sql,$db);
+if (!($row = mysql_fetch_array($result))) {
+	$msg->printErrors('ANN_NOT_FOUND');
+	require (AT_INCLUDE_PATH.'footer.inc.php');
+	exit;
+}
+$_POST['formatting'] = intval($row['formatting']);
 
 ?>
 

@@ -49,6 +49,12 @@ class Backup {
 	// the timestamp for the zip files
 	var $timestamp;
 
+	// private
+	// array of installed modules that support backups
+	var $modules;
+
+	var $backup_tables;
+
 	// constructor
 	function Backup(&$db, $course_id = 0) {
 
@@ -82,81 +88,32 @@ class Backup {
 		return $title;
 	}
 
-	// private
-	// quote $line so that it's safe to save as a CSV field
-	function quoteCSV($line) {
-		$line = str_replace('"', '""', $line);
-
-		$line = str_replace("\n", '\n', $line);
-		$line = str_replace("\r", '\r', $line);
-		$line = str_replace("\x00", '\0', $line);
-
-		return '"'.$line.'"';
-	}
-	
-	// private
-	// add this table to the backup
-	// returns the number of rows for that table
-	function saveCSV($name, $sql, $fields) {
-		$content = '';
-		$num_fields = count($fields);
-		$counter = 0;
-
-		$result = mysql_query($sql, $this->db);
-		while ($row = mysql_fetch_assoc($result)) {
-			for ($i=0; $i< $num_fields; $i++) {
-				if ($fields[$i][1] == NUMBER) {
-					$content .= $row[$fields[$i][0]] . ',';
-				} else {
-					$content .= $this->quoteCSV($row[$fields[$i][0]]) . ',';
-				}
-			}
-			$content = substr($content, 0, -1);
-			$content .= "\n";
-			$counter++;
-		}
-		
-		@mysql_free_result($result); 
-
-		$this->zipfile->add_file($content, $name, $this->timestamp);
-
-		return $counter;
-	}
-
 	// public
 	// NOTE: should the create() deal with saving it to disk as well? or should it be general to just create it, and not actually
 	// responsible for where to save it? (write a diff method to save it after)
 	function create($description) {
-		global $addslashes, $backup_tables;
-
-		$table_counters = array();
+		global $addslashes, $moduleFactory;
 
 		if ($this->getNumAvailable() >= AT_COURSE_BACKUPS) {
 			return FALSE;
 		}
 
-		$this->timestamp = time();
+		$timestamp = time();
 
-		$this->zipfile =& new zipfile();
-		if (is_dir(AT_CONTENT_DIR . $this->course_id)) {
-			$this->zipfile->add_dir(AT_CONTENT_DIR . $this->course_id . DIRECTORY_SEPARATOR, 'content/');
-
-			require_once(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
-			$table_counters['file_manager'] = dirsize(AT_CONTENT_DIR . $this->course_id . DIRECTORY_SEPARATOR, 'content/');
-		}
+		$zipfile =& new zipfile();
 
 		$package_identifier = VERSION."\n\n\n".'Do not change the first line of this file it contains the ATutor version this backup was created with.';
-		$this->zipfile->add_file($package_identifier, 'atutor_backup_version', $this->timestamp);
+		$zipfile->add_file($package_identifier, 'atutor_backup_version', $timestamp);
 
-		// loop through all the tables/fields to save to the zip file:
-		foreach ($backup_tables as $name => $info) {
-			$table_counters[$name] = $this->saveCSV($name . '.csv', $info['sql'], $info['fields']);
+		$modules = $moduleFactory->getModules(AT_MODULE_STATUS_ENABLED | AT_MODULE_STATUS_DISABLED);
+		$keys = array_keys($modules);
+		foreach($keys as $module_name) {
+			$module =& $modules[$module_name];
+			$module->backup($this->course_id, $zipfile);
 		}
-		// if no errors:
+		$zipfile->close();
 
-		$this->zipfile->close();
-
-		$system_file_name = md5(time());
+		$system_file_name = md5($timestamp);
 		
 		if (!is_dir(AT_BACKUP_DIR)) {
 			@mkdir(AT_BACKUP_DIR);
@@ -166,13 +123,12 @@ class Backup {
 			@mkdir(AT_BACKUP_DIR . $this->course_id);
 		}
 
-		$fp = fopen(AT_BACKUP_DIR . $this->course_id . DIRECTORY_SEPARATOR . $system_file_name . '.zip', 'wb+');
-		fwrite($fp, $this->zipfile->get_file($backup_course_title));
+		$zipfile->write_file(AT_BACKUP_DIR . $this->course_id . DIRECTORY_SEPARATOR . $system_file_name . '.zip');
 
 		$row['description']      = $addslashes($description);
 		$row['contents']         = addslashes(serialize($table_counters));
 		$row['system_file_name'] = $system_file_name;
-		$row['file_size']		 = $this->zipfile->get_size();
+		$row['file_size']		 = $zipfile->get_size();
 		$row['file_name']        = $this->generateFileName();
 
 		$this->add($row);
@@ -344,18 +300,20 @@ class Backup {
 		return $input;
 	}
 
+	// public
 	function getVersion() {
-		if ($version = file($this->import_dir.'atutor_backup_version')) {
+		if ((file_exists($this->import_dir.'atutor_backup_version')) && ($version = file($this->import_dir.'atutor_backup_version'))) {
 			return trim($version[0]);
 		} else {
 			return false;
 		}
 	}
 
+	// public
 	function restore($material, $action, $backup_id, $from_course_id = 0) {
+		global $moduleFactory;
 		require_once(AT_INCLUDE_PATH.'classes/pclzip.lib.php');
 		require_once(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
-		require_once(AT_INCLUDE_PATH.'classes/Backup/TableBackup.class.php');
 
 		if (!$from_course_id) {
 			$from_course_id = $this->course_id;
@@ -380,10 +338,13 @@ class Backup {
 
 		// 4. figure out version number
 		$this->version = $this->getVersion();
-		//debug('version: '.$this->version);
 		if (!$this->version) {
 			clr_dir($this->import_dir);
-			exit('version not found. backups < 1.3 are not supported.');
+			global $msg;
+			$msg->addError('BACKUP_RESTORE');
+			header('Location: '.$_SERVER['PHP_SELF']);
+			exit;
+			//exit('version not found. backups < 1.3 are not supported.');
 		}
 
 		if (version_compare($this->version, VERSION, '>') == 1) {
@@ -397,89 +358,25 @@ class Backup {
 
 		// 5. if override is set then delete the content
 		if ($action == 'overwrite') {
-			//debug('deleting content - overwrite');
-			require_once(AT_INCLUDE_PATH.'lib/delete_course.inc.php'); /* for delete_course() */
-			delete_course($this->course_id, $material, $rel_path = '../../');
+			require_once(AT_INCLUDE_PATH.'lib/delete_course.inc.php');
+			delete_course($this->course_id, $material);
 			$_SESSION['s_cid'] = 0;
-		} else {
-			//debug('appending content');
+		} // else: appending content
+
+		if ($material === TRUE) {
+			// restore the entire backup (used when creating a new course)
+			$module_list = $moduleFactory->getModules(AT_MODULE_ENABLED | AT_MODULE_CORE);
+			$_POST['material'] = $module_list;
 		}
-
-		if (($material === TRUE) || isset($material['files'])) {
-			$return = $this->restore_files();
-			if ($return === false) {
-				exit('no space for files');
-			}
-			unset($material['files']);
-
+		foreach ($_POST['material'] as $module_name => $garbage) {
+			$module =& $moduleFactory->getModule($module_name);
+			$module->restore($this->course_id, $this->version, $this->import_dir);
 		}
-
-		$TableFactory =& new TableFactory($this->version, $this->db, $this->course_id, $this->import_dir);
-
-		// 6. import csv data that we want
-
-		if (($material === TRUE) || isset($material['links'])) {
-			$table  = $TableFactory->createTable('resource_categories');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('resource_links');
-			$table->restore();
-		} 
-		if (($material === TRUE) || isset($material['content'])) {
-			$table  = $TableFactory->createTable('content');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('related_content');
-			$table->restore();
-		}
-		if (($material === TRUE) || isset($material['groups'])) {
-			$table  = $TableFactory->createTable('groups');
-			$table->restore();
-		}
-		if (($material === TRUE) || isset($material['tests'])) {
-			$table  = $TableFactory->createTable('tests');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('tests_questions_categories');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('tests_questions');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('tests_questions_assoc');
-			$table->restore();
-		}
-		if (($material === TRUE) || isset($material['stats'])) {
-			$table  = $TableFactory->createTable('stats');
-			$table->restore();
-		}
-		if (($material === TRUE) || isset($material['glossary'])) {
-			$table  = $TableFactory->createTable('glossary');
-			$table->restore();
-		}
-		if (($material === TRUE) || isset($material['news'])) {
-			$table  = $TableFactory->createTable('news');
-			$table->restore();
-		}
-		/* // forums disabled until we can backup/restore threads.
-		if (($material === TRUE) || isset($material['forums'])) {
-			$table  = $TableFactory->createTable('forums');
-			$table->restore();
-
-			$table  = $TableFactory->createTable('forums_courses');
-			$table->restore();
-		}
-		*/
-		if (($material === TRUE) || isset($material['polls'])) {
-			$table  = $TableFactory->createTable('polls');
-			$table->restore();
-		}
-
-		// 7. delete import files
 		clr_dir($this->import_dir);
 	}
 
 	// private
+	// no longer used
 	function restore_files() {
 		$sql	= "SELECT max_quota FROM ".TABLE_PREFIX."courses WHERE course_id=$this->course_id";
 		$result = mysql_query($sql, $this->db);
@@ -509,6 +406,5 @@ class Backup {
 		copys($this->import_dir.'content/', AT_CONTENT_DIR . $this->course_id);
 	}
 }
-
 
 ?>

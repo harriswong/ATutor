@@ -15,7 +15,7 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 
-/* content.csv */
+/* content.csv *
 	$fields    = array();
 	$fields[0] = array('content_id',		NUMBER);
 	$fields[1] = array('content_parent_id', NUMBER);
@@ -31,6 +31,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 	$backup_tables['content']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'content WHERE course_id='.$course.' ORDER BY content_parent_id, ordering';
 	$backup_tables['content']['fields'] = $fields;
+*/
 
 /* forums.csv */
 /* // forums disabled until we can backup the threads as well.
@@ -49,14 +50,15 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$backup_tables['forums']['fields'] = $fields;
 */
 
-/* groups.csv */
+/* groups.csv *
 	$fields    = array();
 	$fields[0] = array('title',			TEXT);
 
 	$backup_tables['groups']['sql'] = 'SELECT title FROM '.TABLE_PREFIX.'groups WHERE course_id='.$course.' ORDER BY title';
 	$backup_tables['groups']['fields'] = $fields;
+*/
 
-/* related_content.csv */
+/* related_content.csv *
 	$fields    = array();
 	$fields[0] = array('content_id',			NUMBER);
 	$fields[1] = array('related_content_id',	NUMBER);
@@ -65,9 +67,10 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 													FROM '.TABLE_PREFIX.'related_content R, '.TABLE_PREFIX.'content C 
 													WHERE C.course_id='.$course.' AND R.content_id=C.content_id ORDER BY R.content_id ASC';
 	$backup_tables['related_content']['fields'] = $fields;
+*/
 
 
-/* glossary.csv */
+/* glossary.csv *
 	$fields    = array();
 	$fields[0] = array('word_id',			NUMBER);
 	$fields[1] = array('word',				TEXT);
@@ -77,7 +80,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$backup_tables['glossary']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'glossary WHERE course_id='.$course.' ORDER BY word_id ASC';
 	$backup_tables['glossary']['fields'] = $fields;
 
-/* resource_categories.csv */
+/* resource_categories.csv *
 	$fields    = array();
 	$fields[0] = array('CatID',		NUMBER);
 	$fields[1] = array('CatName',	TEXT);
@@ -86,7 +89,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$backup_tables['resource_categories']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'resource_categories WHERE course_id='.$course.' ORDER BY CatID ASC';
 	$backup_tables['resource_categories']['fields'] = $fields;
 
-/* resource_links.csv */
+/* resource_links.csv *
 	$fields    = array();
 	$fields[0] = array('CatID',			NUMBER);
 	$fields[1] = array('Url',			TEXT);
@@ -103,8 +106,9 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 													ORDER BY LinkID ASC';
 
 	$backup_tables['resource_links']['fields'] = $fields;
+*/
 
-/* news.csv */
+/* news.csv *
 	$fields    = array();
 	$fields[0] = array('date',		TEXT);
 	$fields[1] = array('formatting',NUMBER);
@@ -113,8 +117,9 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 	$backup_tables['news']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'news WHERE course_id='.$course.' ORDER BY news_id ASC';
 	$backup_tables['news']['fields'] = $fields;
+	*/
 	
-/* tests.csv */
+/* tests.csv *
 	$fields   = array();
 	$fields[] = array('test_id',			NUMBER);
 	$fields[] = array('title',				TEXT);
@@ -125,23 +130,23 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$fields[] = array('num_questions',		NUMBER);
 	$fields[] = array('instructions',		TEXT);
 
-	/* four fields added for v1.4 */
+	/* four fields added for v1.4 *
 	$fields[] = array('content_id',		NUMBER);
 	$fields[] = array('result_release',	NUMBER);
 	$fields[] = array('random',			NUMBER);
 	$fields[] = array('difficulty',		NUMBER);
 
-	/* field added for v1.4.2 */
+	/* field added for v1.4.2 *
 	$fields[] = array('num_takes',		NUMBER);
 	$fields[] = array('anonymous',		NUMBER);
 
-	/* field added for v1.4.3 */
+	/* field added for v1.4.3 *
 	$fields[] = array('out_of',		    TEXT);
 
 	$backup_tables['tests']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'tests WHERE course_id='.$course.' ORDER BY test_id ASC';
 	$backup_tables['tests']['fields'] = $fields;
 
-/* tests_questions.csv */
+/* tests_questions.csv *
 	$fields   = array();
 	$fields[] = array('question_id',		NUMBER); // added for in 1.4.3
 	$fields[] = array('category_id',		NUMBER); // changed from `test_id` in 1.4.3
@@ -169,12 +174,12 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$fields[] = array('answer_8',			NUMBER);
 	$fields[] = array('answer_9',			NUMBER);
 	$fields[] = array('properties',		    NUMBER);
-	$fields[] = array('content_id',			NUMBER);	/* one field added for v1.4 */
+	$fields[] = array('content_id',			NUMBER);	/* one field added for v1.4 *
 
 	$backup_tables['tests_questions']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'tests_questions WHERE course_id='.$course;
 	$backup_tables['tests_questions']['fields'] = $fields;
 
-/* tests_questions_categories.csv */
+/* tests_questions_categories.csv *
 	// added in 1.4.3
 	$fields   = array();
 	$fields[] = array('category_id',		NUMBER);
@@ -183,7 +188,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$backup_tables['tests_questions_categories']['sql'] = 'SELECT category_id, title FROM '.TABLE_PREFIX.'tests_questions_categories WHERE course_id='.$course;
 	$backup_tables['tests_questions_categories']['fields'] = $fields;
 
-/* tests_questions_assoc.csv */
+/* tests_questions_assoc.csv *
 	// added in 1.4.3
 	$fields   = array();
 	$fields[] = array('test_id',			NUMBER);
@@ -194,8 +199,9 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 	$backup_tables['tests_questions_assoc']['sql'] = 'SELECT TQ.* FROM '.TABLE_PREFIX.'tests_questions_assoc TQ, '.TABLE_PREFIX.'tests T WHERE T.course_id='.$course.' AND T.test_id=TQ.test_id ORDER BY TQ.test_id';
 	$backup_tables['tests_questions_assoc']['fields'] = $fields;
-
+*/
 /* polls.csv */
+/*
 	$fields    = array();
 	$fields[0] = array('question',		TEXT);
 	$fields[1] = array('created_date',	TEXT);
@@ -209,8 +215,9 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 	$backup_tables['polls']['sql'] = 'SELECT * FROM '.TABLE_PREFIX.'polls WHERE course_id='.$course;
 	$backup_tables['polls']['fields'] = $fields;
+*/
 
-/* course_stats.csv */
+/* course_stats.csv *
 	$fields    = array();
 	$fields[0] = array('login_date',	TEXT);
 	$fields[1] = array('guests',		NUMBER);
@@ -220,5 +227,5 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 	$backup_tables['course_stats']['fields'] = $fields;
 
 	unset($fields);
-
+*/
 ?>

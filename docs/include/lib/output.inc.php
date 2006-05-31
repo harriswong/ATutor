@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -279,7 +279,6 @@ function print_editor( $links, $large ) {
 		$args = func_get_args();
 		
 		if (!is_array($args[0])) {
-			
 				/**
 				 * Added functionality for translating language code String (AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK|AT_HELP).*
 				 * to its text and returning the result. No caching needed.
@@ -326,8 +325,7 @@ function print_editor( $links, $large ) {
 
 				/* get $_template from the DB */
 			
-				$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L, '.TABLE_PREFIX_LANG.'language_pages'.TABLE_SUFFIX_LANG.' P WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable="_template" AND L.term=P.term AND P.page="'.$_rel_url.'"';
-
+				$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L, '.TABLE_PREFIX_LANG.'language_pages'.TABLE_SUFFIX_LANG.' P WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable<>"_msgs" AND L.term=P.term AND P.page="'.$_rel_url.'"';
 				$result	= mysql_query($sql, $lang_db);
 				while ($row = mysql_fetch_assoc($result)) {
 					// saves us from doing an ORDER BY
@@ -364,7 +362,7 @@ function print_editor( $links, $large ) {
 
 		if (empty($outString)) {
 			global $lang_db;
-			$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable="_template" AND L.term="'.$format.'"';
+			$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable<>"_msgs" AND L.term="'.$format.'"';
 			$result	= mysql_query($sql, $lang_db);
 			$row = mysql_fetch_assoc($result);
 
@@ -566,7 +564,7 @@ function smile_javascript () {
 	}
 }
 
-function myCodes($text) {
+function myCodes($text, $html = false) {
 	global $_base_path;
 	global $HTTP_USER_AGENT;
 
@@ -626,15 +624,23 @@ function myCodes($text) {
 
 	$text = str_replace('[cid]',$_base_path.'content.php?cid='.$_SESSION['s_cid'],$text);
 
+	global $sequence_links;
+	if (isset($sequence_links['previous']) && $sequence_links['previous']['url']) {
+		$text = str_replace('[pid]', $sequence_links['previous']['url'], $text);
+	}
+	if (isset($sequence_links['next']) && $sequence_links['next']['url']) {
+		$text = str_replace('[nid]', $sequence_links['next']['url'], $text);
+	}
+
 	/* contributed by Thomas M. Duffey <tduffey at homeboyz.com> */
-	$text = preg_replace("/\[code\]\s*(.*)\s*\[\\/code\]/Usei", "highlight_code(fix_quotes('\\1'))", $text);
+	$html = !$html ? 0 : 1;
+	$text = preg_replace("/\[code\]\s*(.*)\s*\[\\/code\]/Usei", "highlight_code(fix_quotes('\\1'), $html)", $text);
 
 	return $text;
 }
 
 /* contributed by Thomas M. Duffey <tduffey at homeboyz.com> */
-function highlight_code($code)
-{
+function highlight_code($code, $html) {
 	// XHTMLize PHP highlight_string output until it gets fixed in PHP
 	static $search = array(
 		'<br>',
@@ -647,6 +653,10 @@ function highlight_code($code)
 		'<span',
 		'</span>',
 		'style="color:');
+	if (!$html) {
+		$code = str_replace('&lt;', '<', $code);
+		$code = str_replace("\r", '', $code);
+	}
 
 	return str_replace($search, $replace, highlight_string($code, true));
 }
@@ -659,7 +669,7 @@ function fix_quotes($text)
 
 
 function make_clickable($text) {
-	$ret = eregi_replace("([[:space:]])http://([^[:space:]]*)([[:alnum:]#?/&=])", "\\1<a href=\"http://\\2\\3\">\\2\\3</a>", $text);
+	$ret = eregi_replace("([[:space:]])http://([^[:space:]<]*)([[:alnum:]#?/&=])", "\\1<a href=\"http://\\2\\3\">\\2\\3</a>", $text);
 
 	$ret = eregi_replace(	'([_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9\-]+)*'.
 							'\@'.'[_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9\-]+)*'.'(\.[a-zA-Z]{1,6})+)',
@@ -689,9 +699,9 @@ function format_final_output($text, $nl2br = true) {
 	$text = str_replace('CONTENT_DIR/', '', $text);
 
 	if ($nl2br) {
-		return nl2br(image_replace(make_clickable(myCodes(' '.$text))));
+		return nl2br(image_replace(make_clickable(myCodes(' '.$text, false))));
 	}
-	return image_replace(make_clickable(myCodes(' '.$text)));
+	return image_replace(make_clickable(myCodes(' '.$text, true)));
 }
 
 /****************************************************************************************/
@@ -728,6 +738,7 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 
 	if (!$html) {
 		$input = str_replace('<', '&lt;', $input);
+		$input = str_replace('&lt;?php', '<?php', $input); // for bug #2087
 	}
 
 	/* do the glossary search and replace: */
@@ -769,14 +780,14 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 	$input = str_replace('CONTENT_DIR', '', $input);
 
 	if ($html) {
-		return format_final_output($input, false);
+		$x = format_final_output($input, false);
+		return $x;
 	}
+
 
 	$output = format_final_output($input);
 
-	if (!$html) {
-		$output = '<p>'.$output.'</p>';
-	}
+	$output = '<p>'.$output.'</p>';
 
 	return $output;
 }

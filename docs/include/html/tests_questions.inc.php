@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor														        */
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg & Boon-Hau Teh */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg & Boon-Hau Teh */
 /* Adaptive Technology Resource Centre / University of Toronto          */
 /* http://atutor.ca												        */
 /*                                                                      */
@@ -86,14 +86,14 @@ foreach ($cats as $cat) {
 				echo '<td>';
 				echo '<input type="checkbox" value="'.$row['question_id'].'" name="add_questions['.$cat['category_id'].'][]" id="q'.$row['question_id'].'" onmouseup="this.checked=!this.checked" /></td>';
 			} else {
-				echo '<tr onmousedown="document.form[\'q'.$row['question_id'].'\'].checked = true;">';
+				echo '<tr onmousedown="document.form[\'q'.$row['question_id'].'\'].checked = true;rowselect(this);" id="r_'.$row['question_id'].'">';
 				echo '<td><input type="radio" name="id" value="'.$row['question_id'].'|'.$row['type'].'" id="q'.$row['question_id'].'" /></td>';
 			}
 			echo '<td>';
 			if (strlen($row['question']) > 45) {
-				echo AT_print(substr(htmlentities($row['question']), 0, 43), 'tests_questions.question') . '...';
+				echo substr(htmlspecialchars($row['question']), 0, 43) . '...';
 			} else {
-				echo AT_print(htmlentities($row['question']), 'tests_questions.question');
+				echo htmlspecialchars($row['question']);
 			}
 
 			echo '</td>';
@@ -130,8 +130,8 @@ if (!$question_flag) {
 </table>
 </form>
 
-<script language="javascript">
-	
+<script language="javascript" type="text/javascript">
+// <!--
 	function selectCat(catID, cat) {
 		for (var i=0;i<document.form.elements.length;i++) {
 			var e = document.form.elements[i];
@@ -139,4 +139,5 @@ if (!$question_flag) {
 				e.checked = cat.checked;
 		}
 	}
+// -->
 </script>

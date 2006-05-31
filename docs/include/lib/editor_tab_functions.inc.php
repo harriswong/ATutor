@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -128,7 +128,7 @@ function save_changes($redir) {
 		}
 	}
 
-
+	//debug($_POST['glossary_defs']);
 	/* insert glossary terms */
 	if (is_array($_POST['glossary_defs']) && ($num_terms = count($_POST['glossary_defs']))) {
 		global $glossary, $glossary_ids, $msg;
@@ -139,26 +139,29 @@ function save_changes($redir) {
 			$w = urldecode($w);
 
 			if (($key !== false) && (($glossary[$old_w] != $d) || isset($_POST['related_term'][$old_w])) ) {
-				$w = $addslashes($w);
+				$w = addslashes($w);
 				$related_id = intval($_POST['related_term'][$old_w]);
 				$sql = "UPDATE ".TABLE_PREFIX."glossary SET definition='$d', related_word_id=$related_id WHERE word_id=$key AND course_id=$_SESSION[course_id]";
 				$result = mysql_query($sql, $db);
 				$glossary[$old_w] = $d;
 			} else if ($key === false && ($d != '')) {
-				$w = $addslashes($w);
+				$w = addslashes($w);
 				$related_id = intval($_POST['related_term'][$old_w]);
 				$sql = "INSERT INTO ".TABLE_PREFIX."glossary VALUES (0, $_SESSION[course_id], '$w', '$d', $related_id)";
+
+				//debug($sql);
 				$result = mysql_query($sql, $db);
 				$glossary[$old_w] = $d;
 			}
 		}
 	}
 
+
 	if (!$msg->containsErrors() && $redir) {
 		$_SESSION['save_n_close'] = $_POST['save_n_close'];
 
 		$msg->addFeedback('CONTENT_UPDATED');
-		header('Location: '.$_SERVER['PHP_SELF'].'?cid='.$cid.SEP.'close='.$_POST['save_n_close'].SEP.'tab='.$_POST['current_tab'].SEP.'setvisual='.$_POST['setvisual']);
+		header('Location: '.$_SERVER['PHP_SELF'].'?cid='.$cid.SEP.'close='.$addslashes($_POST['save_n_close']).SEP.'tab='.$addslashes($_POST['current_tab']).SEP.'setvisual='.$addslashes($_POST['setvisual']));
 		exit;
 	} else {
 		return;

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -10,15 +10,12 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
+// $Id$
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
-if (authenticate(AT_PRIV_TEST_MARK, true) == false) {
-	$msg->addError('ACCESS_DENIED');
-	header('Location: index.php');
-	exit;
-}
+authenticate(AT_PRIV_TESTS);
 
 $tid = intval($_REQUEST['tid']);
 
@@ -156,7 +153,6 @@ if ($row = mysql_fetch_assoc($result)) {
 	}
 	echo '</tr>';
 
-
 	echo '<tr>';
 	echo '<td colspan="2">&nbsp;</td>';
 	echo '<td align="center"><strong>';
@@ -180,14 +176,12 @@ if ($row = mysql_fetch_assoc($result)) {
 	}
 	echo '</tr>';
 	echo '</tfoot>';
-
 } else {
 	echo '<em>'._AT('no_results_available').'</em>';
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
-
-echo '</table>';
 ?>
+</table>
 
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -15,7 +15,6 @@
 define('AT_INCLUDE_PATH', '../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_STYLES);
-
 
 if (isset($_POST['up'])) {
 	$up = key($_POST['up']);
@@ -93,6 +92,7 @@ if (isset($_POST['up'])) {
 
 // 'search.php',  removed
 if (isset($_POST['submit'])) {
+
 	if (isset($_POST['main'])) {
 		$_POST['main'] = array_intersect($_POST['main'], $_modules);
 		$_POST['main'] = array_unique($_POST['main']);
@@ -109,21 +109,25 @@ if (isset($_POST['submit'])) {
 		$home_links = '';
 	}
 
-	if ((strlen($main_sections) < 256) && (strlen($home_sections) < 256)) {
-		$sql    = "UPDATE ".TABLE_PREFIX."courses SET home_links='$home_links', main_links='$main_links' WHERE course_id=$_SESSION[course_id]";
-		$result = mysql_query($sql, $db);
-	}
+	$sql    = "UPDATE ".TABLE_PREFIX."courses SET home_links='$home_links', main_links='$main_links' WHERE course_id=$_SESSION[course_id]";
+	$result = mysql_query($sql, $db);
+
 	$msg->addFeedback('SECTIONS_SAVED');
 	header('Location: '.$_SERVER['PHP_SELF']);
 	exit;
 }
 
+
 require(AT_INCLUDE_PATH.'header.inc.php');
 
+
+//being displayed
 $_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); // removes index.php and tools/index.php
 $num_main    = count($_current_modules);
+//main and home merged
 $_current_modules = array_merge($_current_modules, array_diff($_pages[AT_NAV_HOME],$_pages[AT_NAV_COURSE]) );
 $num_modules = count($_current_modules);
+//all other mods
 $_current_modules = array_merge($_current_modules, array_diff($_modules, $_current_modules));
 
 $count = 0;
@@ -140,16 +144,19 @@ $count = 0;
 </thead>
 <tfoot>
 <tr>
-	<td colspan="3"><input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /></td>
+	<td colspan="3" style="text-align:right;"><input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /></td>
 </tr>
 </tfoot>
 <tbody>
 <?php foreach ($_current_modules as $module): ?>
 <?php $count++; ?>
-<?php if ((!AC_PATH) && ($_pages[$module]['title_var'] == 'acollab')): ?>
-<?php else: ?>
 <tr>
-	<td><?php echo _AT($_pages[$module]['title_var']); ?></td>
+	<td><?php 
+		if (isset($_pages[$module]['title'])) {
+			echo $_pages[$module]['title'];
+		} else {
+			echo _AT($_pages[$module]['title_var']);
+		} ?></td>
 	<td>
 		<?php if (in_array($module, $_pages[AT_NAV_COURSE])): ?>
 			<input type="checkbox" name="main[]" value="<?php echo $module; ?>" id="m<?php echo $count; ?>" checked="checked" /><label for="m<?php echo $count; ?>"><?php echo _AT('main_navigation'); ?></label>
@@ -180,7 +187,6 @@ $count = 0;
 		<?php endif; ?>
 	</td>
 </tr>
-<?php endif; ?>
 <?php endforeach; ?>
 </tbody>
 </table>
