@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -47,9 +47,8 @@ if (isset($_POST['cancel'])) {
 		$_POST['password']  = $addslashes($_POST['password']);
 		$_POST['real_name'] = $addslashes($_POST['real_name']);
 		$_POST['email']     = $addslashes($_POST['email']);
-		$_POST['lang']		= $addslashes($_POST['lang']);
 
-		$sql    = "UPDATE ".TABLE_PREFIX."admins SET password='$_POST[password]', real_name='$_POST[real_name]', email='$_POST[email]', language= '$_POST[lang]' WHERE login='$_SESSION[login]'";
+		$sql    = "UPDATE ".TABLE_PREFIX."admins SET password='$_POST[password]', real_name='$_POST[real_name]', email='$_POST[email]' WHERE login='$_SESSION[login]'";
 		$result = mysql_query($sql, $db);
 
 		$msg->addFeedback('ADMIN_EDITED');
@@ -94,14 +93,6 @@ if (!isset($_POST['submit'])) {
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email"><?php echo _AT('email'); ?></label><br />
 		<input type="text" name="email" id="email" size="30" value="<?php echo $_POST['email']; ?>" />
-	</div>
-
-	<div class="row">
-		<?php
-			global $languageManager;
-				echo '<label for="lang">'._AT('default_language').'</label><br />';
-				$languageManager->printDropdown($_SESSION['lang'], 'lang', 'lang');
-		?>
 	</div>
 
 	<div class="row buttons">

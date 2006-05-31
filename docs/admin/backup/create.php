@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -71,7 +71,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 				<textarea cols="35" rows="2" id="desc" name="description" scroll="no"></textarea>
 			</div>
 			<div class="row buttons">
-				<input type="submit" name="submit" value="<?php echo _AT('create'); ?>"  /> <input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
+				<input type="submit" name="submit" value="<?php echo _AT('save'); ?>"  /> <input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
 			</div>
 		<?php endif; ?>
 	<?php else: ?>

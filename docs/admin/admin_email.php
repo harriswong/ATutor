@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -60,9 +60,9 @@ if ($_POST['cancel']) {
 		}
 
 
-		$mail->From     = EMAIL;
-		$mail->FromName = SITE_NAME;
-		$mail->AddAddress(EMAIL);
+		$mail->From     = $_config['contact_email'];
+		$mail->FromName = $_config['site_name'];
+		$mail->AddAddress($_config['contact_email']);
 		$mail->Subject = stripslashes($addslashes($_POST['subject']));
 		$mail->Body    = stripslashes($addslashes($_POST['body']));
 

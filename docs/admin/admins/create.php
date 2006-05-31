@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -21,6 +21,7 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+
 	/* login validation */
 	if ($_POST['login'] == '') {
 		$msg->addError('LOGIN_NAME_MISSING');
@@ -70,44 +71,21 @@ if (isset($_POST['cancel'])) {
 		$_POST['email']     = $addslashes($_POST['email']);
 
 		$priv = 0;
-		if (isset($_POST['priv_users'])) {
-			$priv += AT_ADMIN_PRIV_USERS;
-		}
-
-		if (isset($_POST['priv_courses'])) {
-			$priv += AT_ADMIN_PRIV_COURSES;
-		}
-
-		if (isset($_POST['priv_backups'])) {
-			$priv += AT_ADMIN_PRIV_BACKUPS;
-		}
-
-		if (isset($_POST['priv_forums'])) {
-			$priv += AT_ADMIN_PRIV_FORUMS;
-		}
-
-		if (isset($_POST['priv_categories'])) {
-			$priv += AT_ADMIN_PRIV_CATEGORIES;
-		}
-
-		if (isset($_POST['priv_languages'])) {
-			$priv += AT_ADMIN_PRIV_LANGUAGES;
-		}
-
-		if (isset($_POST['priv_themes'])) {
-			$priv += AT_ADMIN_PRIV_THEMES;
-		}
-
 		if (isset($_POST['priv_admin'])) {
 			// overrides all above.
 			$priv = AT_ADMIN_PRIV_ADMIN;
+		} else if (isset($_POST['privs'])) {
+			foreach ($_POST['privs'] as $value) {
+				$priv += intval($value);
+			}
 		}
 
-		$admin_lang = 'en'; // this is not implemented yet!
+		$admin_lang = $_config['default_language']; 
 
 		$sql    = "INSERT INTO ".TABLE_PREFIX."admins VALUES ('$_POST[login]', '$_POST[password]', '$_POST[real_name]', '$_POST[email]', '$admin_lang', $priv, 0)";
 		$result = mysql_query($sql, $db);
 
+		$sql    = "INSERT INTO ".TABLE_PREFIX."admins VALUES ('$_POST[login]', '*****', '$_POST[real_name]', '$_POST[email]', '$admin_lang', $priv, 0)";
 		write_to_log(AT_ADMIN_LOG_INSERT, 'admins', mysql_affected_rows($db), $sql);
 
 		$msg->addFeedback('ADMIN_CREATED');
@@ -150,23 +128,20 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		<?php echo _AT('privileges'); ?><br />
 		<input type="checkbox" name="priv_admin" value="1" id="priv_admin" <?php if ($_POST['priv_admin']) { echo 'checked="checked"'; } ?> /><label for="priv_admin"><?php echo _AT('priv_admin_super'); ?></label><br /><br />
 
-		<input type="checkbox" name="priv_users" value="1" id="priv_users" <?php if ($_POST['priv_users']) { echo 'checked="checked"'; } ?> /><label for="priv_users"><?php echo _AT('priv_admin_users'); ?></label><br />
+		<?php
+			$module_list = $moduleFactory->getModules(AT_MODULE_STATUS_ENABLED, 0, TRUE);
+			$keys = array_keys($module_list);
+		?>
 
-		<input type="checkbox" name="priv_courses" value="1" id="priv_courses" <?php if ($_POST['priv_courses']) { echo 'checked="checked"'; } ?> /><label for="priv_courses"><?php echo _AT('priv_admin_courses'); ?></label><br />
-
-		<input type="checkbox" name="priv_backups" value="1" id="priv_backups" <?php if ($_POST['priv_backups']) { echo 'checked="checked"'; } ?> /><label for="priv_backups"><?php echo _AT('priv_admin_backups'); ?></label><br />
-
-		<input type="checkbox" name="priv_forums" value="1" id="priv_forums" <?php if ($_POST['priv_forums']) { echo 'checked="checked"'; } ?> /><label for="priv_forums"><?php echo _AT('priv_admin_forums'); ?></label><br />
-
-		<input type="checkbox" name="priv_categories" value="1" id="priv_categories" <?php if ($_POST['priv_categories']) { echo 'checked="checked"'; } ?> /><label for="priv_categories"><?php echo _AT('priv_admin_categories'); ?></label><br />
-
-		<input type="checkbox" name="priv_languages" value="1" id="priv_languages" <?php if ($_POST['priv_languages']) { echo 'checked="checked"'; } ?> /><label for="priv_languages"><?php echo _AT('priv_admin_languages'); ?></label><br />
-
-		<input type="checkbox" name="priv_themes" value="1" id="priv_themes" <?php if ($_POST['priv_themes']) { echo 'checked="checked"'; } ?> /><label for="priv_themes"><?php echo _AT('priv_admin_themes'); ?></label>
+		<?php foreach ($keys as $module_name): ?>
+			<?php $module =& $module_list[$module_name]; ?>
+			<?php if (!($module->getAdminPrivilege() > 1)) { continue; } ?>
+				<input type="checkbox" name="privs[]" value="<?php echo $module->getAdminPrivilege(); ?>" id="priv_<?php echo $module->getAdminPrivilege(); ?>" <?php if (query_bit($_POST['privs'], $module->getAdminPrivilege())) { echo 'checked="checked"'; }  ?> /><label for="priv_<?php echo $module->getAdminPrivilege(); ?>"><?php echo $module->getName() ?></label><br />
+		<?php endforeach; ?>
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('create'); ?>" accesskey="s" onClick="return checkAdmin();" />
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" onClick="return checkAdmin();" />
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 </div>

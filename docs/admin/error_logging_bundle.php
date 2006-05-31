@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -89,7 +89,7 @@ if (isset($_POST['step2'])) { // e-mail bundle
 		} else { }
 		fclose($file_handle);
 
-		$mail->From = EMAIL;
+		$mail->From = $_config['contact_email'];
 		$mail->addAddress($_POST['email_add']);
 		$mail->Subject = _AT('log_file_bundle');
 		$mail->Body    = _AT('see_attached');

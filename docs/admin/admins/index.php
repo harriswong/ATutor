@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -100,7 +100,7 @@ if (isset($_GET['asc'])) {
 	} else {
 
 		while ($row = mysql_fetch_assoc($result)) : ?>
-			<tr onmousedown="document.form['m<?php echo $row['login']; ?>'].checked = true;">
+			<tr onmousedown="document.form['m<?php echo $row['login']; ?>'].checked = true;rowselect(this);" id="r_<?php echo $row['login']; ?>">
 				<td><input type="radio" name="login" value="<?php echo $row['login']; ?>" id="m<?php echo $row['login']; ?>" /></td>
 				<td><label for="m<?php echo $row['login']; ?>"><?php echo $row['login'];      ?></label></td>
 				<td><?php echo $row['real_name'];  ?></td>

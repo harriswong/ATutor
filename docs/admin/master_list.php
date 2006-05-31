@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -158,16 +158,41 @@ if (isset($_GET['status']) && ($_GET['status'] != '')) {
 }
 
 if ($_GET['search']) {
+	$_GET['search'] = trim($_GET['search']);
 	$page_string .= SEP.'search='.urlencode($_GET['search']);
 	$search = $addslashes($_GET['search']);
-	$search = str_replace(array('%','_'), array('\%', '\_'), $search);
-	$search = '%'.$search.'%';
-	$search = "(public_field LIKE '$search')";
+
+	$search = explode(',', $search);
+
+	$sql = '';
+	foreach ($search as $term) {
+		$term = trim($term);
+		$term = str_replace(array('%','_'), array('\%', '\_'), $term);
+		if ($term) {
+			if (strpos($term, '-') === FALSE) {
+				$term = '%'.$term.'%';
+				$sql .= "(public_field LIKE '$term') OR ";
+			} else {
+				// range search
+				$range = explode('-', $term, 2);
+				$range[0] = trim($range[0]);
+				$range[1] = trim($range[1]);
+				if (is_numeric($range[0]) && is_numeric($range[1])) {
+					$sql .= "(public_field >= $range[0] AND public_field <= $range[1]) OR ";
+				} else {
+					$sql .= "(public_field >= '$range[0]' AND public_field <= '$range[1]') OR ";
+				}
+			}
+		}
+	}
+	$sql = '('.substr($sql, 0, -3).')';
+	$search = $sql;
 } else {
 	$search = '1';
 }
 
 $sql	= "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."master_list WHERE $status AND $search";
+
 $result = mysql_query($sql, $db);
 $row = mysql_fetch_assoc($result);
 
@@ -245,7 +270,7 @@ $result = mysql_query($sql, $db);
 </tfoot>
 <tbody>
 	<?php while($row = mysql_fetch_assoc($result)): ?>
-		<tr onmousedown="document.form['m<?php echo $row['public_field']; ?>'].checked = true;">
+		<tr onmousedown="document.form['m<?php echo $row['public_field']; ?>'].checked = true;rowselect(this);" id="r_<?php echo $row['public_field']; ?>">
 			<td><input type="radio" name="id" value="<?php echo $row['public_field']; ?>" id="m<?php echo $row['public_field']; ?>" /></td>
 			<td><label for="m<?php echo $row['public_field']; ?>"><?php echo $row['public_field']; ?></label></td>
 			<td><?php 

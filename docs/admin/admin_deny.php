@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -62,7 +62,7 @@ if (isset($_POST['submit'])) {
 
 			$mail = new ATutorMailer;
 
-			$mail->From     = EMAIL;
+			$mail->From     = $_config['contact_email'];
 			$mail->AddAddress($to_email);
 			$mail->Subject = _AT('instructor_request');
 			$mail->Body    = $message;

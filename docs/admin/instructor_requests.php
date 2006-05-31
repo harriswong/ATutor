@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -57,7 +57,7 @@ if (isset($_GET['deny']) && isset($_GET['id'])) {
 
 			$mail = new ATutorMailer;
 
-			$mail->From     = EMAIL;
+			$mail->From     = $_config['contact_email'];
 			$mail->AddAddress($to_email);
 			$mail->Subject = _AT('instructor_request');
 			$mail->Body    = $tmp_message;
@@ -107,7 +107,7 @@ $num_pending = mysql_num_rows($result);
 <?php
 	if ($row = mysql_fetch_assoc($result)) {
 		do {
-			echo '<tr onmousedown="document.form[\'i'.$row['member_id'].'\'].checked = true;">';
+			echo '<tr onmousedown="document.form[\'i'.$row['member_id'].'\'].checked = true;rowselect(this);" id="r_'.$row['member_id'].'">';
 			echo '<td><input type="radio" name="id" value="'.$row['member_id'].'" id="i'.$row['member_id'].'" /></td>';
 			echo '<td><label for="i'.$row['member_id'].'">'.AT_print($row['login'], 'members.login').'</label></td>';
 			echo '<td>'.AT_print($row['first_name'], 'members.first_name').'</td>';

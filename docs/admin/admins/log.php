@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-// $Id: log.php 3619 2005-03-01 15:42:40Z shozubq $
+// $Id$
 
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
@@ -34,7 +34,7 @@ if (isset($_GET['login']) && $_GET['login']) {
 $sql	= "SELECT COUNT(login) FROM ".TABLE_PREFIX."admin_log $login_where";
 $result = mysql_query($sql, $db);
 
-if (($row = mysql_fetch_array($result))==0) {
+if (($row = mysql_fetch_assoc($result))==0) {
 	echo '<tr><td colspan="7" class="row1">'._AT('no_log_found_').'</td></tr>';
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -73,7 +73,7 @@ $operations[AT_ADMIN_LOG_OTHER] = _AT('other');
 	<div class="row">
 		<?php echo _AT('details'); ?><br />
 		<kbd>
-			<?php echo htmlspecialchars($row['details']); ?>
+			<?php echo htmlspecialchars(wordwrap($row['details'], 80, "\n", TRUE)); ?>
 		</kbd>
 	</div>
 
