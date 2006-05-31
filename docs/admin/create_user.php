@@ -22,18 +22,6 @@ if (isset($_POST['cancel'])) {
 }
 
 if (isset($_POST['submit'])) {
-	/* email check */
-	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
-	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
-		$msg->addError('EMAIL_INVALID');
-	}
-
-	$result = mysql_query("SELECT member_id FROM ".TABLE_PREFIX."members WHERE email LIKE '$_POST[email]'",$db);
-	if (mysql_num_rows($result) != 0) {
-		$msg->addError('EMAIL_EXISTS');
-	}
-
 	/* login name check */
 	if ($_POST['login'] == '') {
 		$msg->addError('LOGIN_NAME_MISSING');
@@ -65,7 +53,42 @@ if (isset($_POST['submit'])) {
 			$msg->addError('PASSWORD_MISMATCH');
 		}
 	}
-		
+	
+	/* email check */
+	if ($_POST['email'] == '') {
+		$msg->addError('EMAIL_MISSING');
+	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
+		$msg->addError('EMAIL_INVALID');
+	}
+
+	$_POST['email'] = $addslashes($_POST['email']);
+	$result = mysql_query("SELECT member_id FROM ".TABLE_PREFIX."members WHERE email LIKE '$_POST[email]'",$db);
+	if (mysql_num_rows($result) != 0) {
+		$msg->addError('EMAIL_EXISTS');
+	}
+
+	if (!$_POST['first_name']) { 
+		$msg->addError('FIRST_NAME_MISSING');
+	}
+
+	if (!$_POST['last_name']) { 
+		$msg->addError('LAST_NAME_MISSING');
+	}
+
+	// check if first+last is unique
+	if ($_POST['first_name'] && $_POST['last_name']) {
+		$first_name_sql  = $addslashes($_POST['first_name']);
+		$last_name_sql   = $addslashes($_POST['last_name']);
+		$second_name_sql = $addslashes($_POST['second_name']);
+
+		$sql = "SELECT member_id FROM ".TABLE_PREFIX."members WHERE first_name='$first_name_sql' AND second_name='$second_name_sql' AND last_name='$last_name_sql' LIMIT 1";
+		$result = mysql_query($sql, $db);
+		if (mysql_fetch_assoc($result)) {
+			$msg->addError('FIRST_LAST_NAME_UNIQUE');
+		}
+	}
+
+
 	$_POST['login'] = strtolower($_POST['login']);
 
 	//check date of birth
@@ -98,9 +121,15 @@ if (isset($_POST['submit'])) {
 		}
 		$_POST['postal'] = strtoupper(trim($_POST['postal']));
 	
+		if (isset($_POST['private_email'])) {
+			$_POST['private_email'] = 1;
+		} else {
+			$_POST['private_email'] = 0;
+		}
 		$_POST['password']   = $addslashes($_POST['password']);
 		$_POST['website']    = ''; //$addslashes($_POST['website']);
 		$_POST['first_name'] = $addslashes($_POST['first_name']);
+		$_POST['second_name']  = $addslashes($_POST['second_name']);
 		$_POST['last_name']  = $addslashes($_POST['last_name']);
 		$_POST['address']    = ''; //$addslashes($_POST['address']);
 		$_POST['postal']     = ''; //$addslashes($_POST['postal']);
@@ -110,11 +139,13 @@ if (isset($_POST['submit'])) {
 		$_POST['phone']      = ''; //$addslashes($_POST['phone']);
 		$_POST['email3']      = $addslashes($_POST['email3']);
 		$_POST['status']     = intval($_POST['status']);
+		$_POST['gender']     = $addslashes($_POST['gender']);
 
 		$now = date('Y-m-d H:i:s'); // we use this later for the email confirmation.
 
 		/* insert into the db. (the last 0 for status) */
-		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]','$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]',$_POST[status],'', '$now','$_SESSION[lang]',0, '$_POST[email3]')";
+
+		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]', '$_POST[second_name]', '$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]',$_POST[status], '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], $_POST[private_email], '$_POST[email3]')";
 
 		$result = mysql_query($sql, $db);
 		$m_id	= mysql_insert_id($db);
@@ -127,19 +158,14 @@ if (isset($_POST['submit'])) {
 		}
 
 		if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-			
 			$student_id  = $addslashes($_POST['student_id']);
+			$student_pin = $addslashes($_POST['student_pin']);
 			if ($student_id) {
-				if ($_POST['student_id']) {
-					$sql = "SELECT public_field from ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]'";
-					$result = mysql_query($sql, $db);
-
-					if ($row=mysql_fetch_assoc($result)) {
-						$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=LAST_INSERT_ID() WHERE public_field='$student_id'";
-						$result=mysql_query($sql, $db);
-					} else {
-						$msg->addError(array('EMPLOYEE_NUMBER_NOT_FOUND',$_POST[student_id]));
-					}
+				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$m_id WHERE public_field='$student_id'";
+				mysql_query($sql, $db);
+				if (mysql_affected_rows($db) == 0) {
+					$sql = "REPLACE INTO ".TABLE_PREFIX."master_list VALUES ('$student_id', '$student_pin', $m_id)";
+					mysql_query($sql, $db);
 				}
 			}
 		}
@@ -155,23 +181,23 @@ if (isset($_POST['submit'])) {
 		require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
 		$mail = new ATutorMailer();
 		$mail->AddAddress($_POST['email']);
-		$mail->From    = EMAIL;
+		$mail->From    = $_config['contact_email'];
 		
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION && ($_POST['status'] == AT_STATUS_UNCONFIRMED)) {
 			$code = substr(md5($_POST['email'] . $now . $m_id), 0, 10);
 			$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 
 			/* send the email confirmation message: */
-			$mail->Subject = SITE_NAME . ': ' . _AT('email_confirmation_subject');
-			$body .= _AT('admin_new_account_confirm', SITE_NAME, $confirmation_link)."\n\n";
+			$mail->Subject = $_config['site_name'] . ': ' . _AT('email_confirmation_subject');
+			$body .= _AT('admin_new_account_confirm', $_config['site_name'], $confirmation_link)."\n\n";
 
 		} else {
-			$mail->Subject = SITE_NAME.": "._AT('account_information');
-			$body .= _AT('admin_new_account', SITE_NAME)."\n\n";
+			$mail->Subject = $_config['site_name'].": "._AT('account_information');
+			$body .= _AT('admin_new_account', $_config['site_name'])."\n\n";
 		}
 		$body .= _AT('web_site') .' : '.$_base_href."\n";
-		$body .= _AT('login_name') .' : '.$_POST[login] . "\n";
-		$body .= _AT('password') .' : '.$_POST[password] . "\n";
+		$body .= _AT('login_name') .' : '.$_POST['login'] . "\n";
+		$body .= _AT('password') .' : '.$_POST['password'] . "\n";
 		$mail->Body    = $body;
 		$mail->Send();
 

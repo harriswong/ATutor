@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2005 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -24,13 +24,16 @@ if (isset($_GET['delete'], $_GET['id'])) {
 } else if (isset($_GET['edit'], $_GET['id'])) {
 	header('Location: edit_user.php?id='.$_GET['id']);
 	exit;
+} else if (isset($_GET['password'], $_GET['id'])) {
+	header('Location: password_user.php?id='.$_GET['id']);
+	exit;
 } else if (isset($_GET['confirm'], $_GET['id'])) {
 	$id  = intval($_GET['id']);
 	$sql = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_STUDENT." WHERE status=".AT_STATUS_UNCONFIRMED." AND member_id=$id";
 	$result = mysql_query($sql, $db);
 
 	$msg->addFeedback('ACCOUNT_CONFIRMED');
-} else if (isset($_GET['confirm']) || isset($_GET['edit']) || isset($_GET['delete'])) {
+} else if (isset($_GET['confirm']) || isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['password'])) {
 	$msg->addError('NO_ITEM_SELECTED');
 }
 
@@ -67,20 +70,50 @@ if ($_GET['search']) {
 	$search = $addslashes($_GET['search']);
 	$search = str_replace(array('%','_'), array('\%', '\_'), $search);
 	$search = '%'.$search.'%';
-
-	if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-		$sql = "SELECT COUNT(M.member_id) AS cnt FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE status $status AND ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search'))";
-	} else {
-		$sql = "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status AND ((first_name LIKE '$search') OR (last_name LIKE '$search') OR (email LIKE '$search') OR (login LIKE '$search'))";
-	}
+	$search = "((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search'))";
 } else {
-	unset ($search);
-	$sql = "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status";
+	$search = '1';
 }
 
-$result = mysql_query($sql, $db);
+if ($_GET['searchid']) {
+	$_GET['searchid'] = trim($_GET['searchid']);
+	$page_string .= SEP.'searchid='.urlencode($_GET['searchid']);
+	$searchid = $addslashes($_GET['searchid']);
 
-//debug($sql);
+	$searchid = explode(',', $searchid);
+
+	$sql = '';
+	foreach ($searchid as $term) {
+		$term = trim($term);
+		$term = str_replace(array('%','_'), array('\%', '\_'), $term);
+		if ($term) {
+			if (strpos($term, '-') === FALSE) {
+				$term = '%'.$term.'%';
+				$sql .= "(L.public_field LIKE '$term') OR ";
+			} else {
+				// range search
+				$range = explode('-', $term, 2);
+				$range[0] = trim($range[0]);
+				$range[1] = trim($range[1]);
+				if (is_numeric($range[0]) && is_numeric($range[1])) {
+					$sql .= "(L.public_field >= $range[0] AND L.public_field <= $range[1]) OR ";
+				} else {
+					$sql .= "(L.public_field >= '$range[0]' AND L.public_field <= '$range[1]') OR ";
+				}
+			}
+		}
+	}
+	$sql = '('.substr($sql, 0, -3).')';
+	$searchid = $sql;
+} else {
+	$searchid = '1';
+}
+if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
+	$sql	= "SELECT COUNT(M.member_id) AS cnt FROM ".TABLE_PREFIX."members M LEFT JOIN ".TABLE_PREFIX."master_list L USING (member_id) WHERE M.status $status AND $search AND $searchid";
+} else {
+	$sql	= "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status AND $search";
+}
+$result = mysql_query($sql, $db);
 $row = mysql_fetch_assoc($result);
 $num_results = $row['cnt'];
 
@@ -93,14 +126,11 @@ if (!$page) {
 $count  = (($page-1) * $results_per_page) + 1;
 $offset = ($page-1)*$results_per_page;
 
-if (isset($search) && admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-	$sql = "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status  FROM ".TABLE_PREFIX."members AS M LEFT JOIN ".TABLE_PREFIX."master_list AS ML USING (member_id) WHERE M.status $status AND ((M.first_name LIKE '$search') OR (M.last_name LIKE '$search') OR (M.email LIKE '$search') OR (M.login LIKE '$search') OR (ML.public_field LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
-} else if(isset ($search)) {
-	$sql = "SELECT member_id, login, first_name, last_name, email, status FROM ".TABLE_PREFIX."members WHERE status $status AND ((first_name LIKE '$search') OR (last_name LIKE '$search') OR (email LIKE '$search') OR (login LIKE '$search')) ORDER BY $col $order LIMIT $offset, $results_per_page";
-}	else {
-	$sql	= "SELECT member_id, login, first_name, last_name, email, status FROM ".TABLE_PREFIX."members WHERE status $status ORDER BY $col $order LIMIT $offset, $results_per_page";
+if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
+	$sql	= "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status, L.public_field FROM ".TABLE_PREFIX."members M LEFT JOIN ".TABLE_PREFIX."master_list L USING (member_id) WHERE M.status $status AND $search AND $searchid ORDER BY $col $order LIMIT $offset, $results_per_page";
+} else {
+	$sql	= "SELECT M.member_id, M.login, M.first_name, M.last_name, M.email, M.status FROM ".TABLE_PREFIX."members M WHERE M.status $status AND $search ORDER BY $col $order LIMIT $offset, $results_per_page";
 }
-
 $result = mysql_query($sql, $db);
 
 
@@ -134,6 +164,13 @@ $result = mysql_query($sql, $db);
 			<input type="text" name="search" id="search" size="20" value="<?php echo htmlspecialchars($_GET['search']); ?>" />
 		</div>
 
+		<?php if (defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+			<div class="row">
+				<label for="searchid"><?php echo _AT('search'); ?> (<?php echo _AT('student_id'); ?>)</label><br />
+				<input type="text" name="searchid" id="searchid" size="20" value="<?php echo htmlspecialchars($_GET['searchid']); ?>" />
+			</div>
+		<?php endif; ?>
+
 		<div class="row buttons">
 			<input type="submit" name="filter" value="<?php echo _AT('filter'); ?>" />
 			<input type="submit" name="reset_filter" value="<?php echo _AT('reset_filter'); ?>" />
@@ -158,26 +195,27 @@ $result = mysql_query($sql, $db);
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <input type="hidden" name="status" value="<?php echo $_GET['status']; ?>" />
 
+<?php if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {  $col_counts = 1; } else { $col_counts = 0; } ?>
 <table summary="" class="data" rules="cols">
 <colgroup>
 	<?php if ($col == 'login'): ?>
 		<col />
 		<col class="sort" />
-		<col span="4" />
+		<col span="<?php echo 4 + $col_counts; ?>" />
 	<?php elseif($col == 'first_name'): ?>
-		<col span="2" />
+		<col span="<?php echo 2 + $col_counts; ?>" />
 		<col class="sort" />
 		<col span="3" />
 	<?php elseif($col == 'last_name'): ?>
-		<col span="3" />
+		<col span="<?php echo 3 + $col_counts; ?>" />
 		<col class="sort" />
 		<col span="2" />
 	<?php elseif($col == 'email'): ?>
-		<col span="4" />
+		<col span="<?php echo 4 + $col_counts; ?>" />
 		<col class="sort" />
 		<col />
 	<?php elseif($col == 'status'): ?>
-		<col span="5" />
+		<col span="<?php echo 5 + $col_counts; ?>" />
 		<col class="sort" />
 	<?php endif; ?>
 </colgroup>
@@ -185,6 +223,9 @@ $result = mysql_query($sql, $db);
 <tr>
 	<th scope="col">&nbsp;</th>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=login<?php echo $page_string; ?>"><?php echo _AT('login_name');      ?></a></th>
+	<?php if (defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+		<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=public_field<?php echo $page_string; ?>"><?php echo _AT('student_id'); ?></a></th>
+	<?php endif; ?>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=first_name<?php echo $page_string; ?>"><?php echo _AT('first_name'); ?></a></th>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=last_name<?php echo $page_string; ?>"><?php echo _AT('last_name');   ?></a></th>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=email<?php echo $page_string; ?>"><?php echo _AT('email');           ?></a></th>
@@ -194,14 +235,21 @@ $result = mysql_query($sql, $db);
 <?php if ($num_results > 0): ?>
 	<tfoot>
 	<tr>
-		<td colspan="6"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="confirm" value="<?php echo _AT('confirm'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
+		<td colspan="<?php echo 6 + $col_counts; ?>"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
+						<input type="submit" name="confirm" value="<?php echo _AT('confirm'); ?>" /> 
+						<input type="submit" name="password" value="<?php echo _AT('password'); ?>" />
+						<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
 	</tr>
 	</tfoot>
 	<tbody>
 		<?php while($row = mysql_fetch_assoc($result)): ?>
-			<tr onmousedown="document.form['m<?php echo $row['member_id']; ?>'].checked = true;">
+			<tr onmousedown="document.form['m<?php echo $row['member_id']; ?>'].checked = true; rowselect(this);" id="r_<?php echo $row['member_id']; ?>">
 				<td><input type="radio" name="id" value="<?php echo $row['member_id']; ?>" id="m<?php echo $row['member_id']; ?>" /></td>
 				<td><label for="m<?php echo $row['member_id']; ?>"><?php echo $row['login']; ?></label></td>
+				<?php if (defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+					<td><?php echo $row['public_field']; ?></td>
+				<?php endif; ?>
+
 				<td><?php echo AT_print($row['first_name'], 'members.first_name'); ?></td>
 				<td><?php echo AT_print($row['last_name'], 'members.last_name'); ?></td>
 				<td><?php echo AT_print($row['email'], 'members.email'); ?></td>
@@ -225,7 +273,7 @@ $result = mysql_query($sql, $db);
 	</tbody>
 <?php else: ?>
 	<tr>
-		<td colspan="6"><?php echo _AT('none_found'); ?></td>
+		<td colspan="<?php echo 6 + $col_counts; ?>"><?php echo _AT('none_found'); ?></td>
 	</tr>
 <?php endif; ?>
 </table>
