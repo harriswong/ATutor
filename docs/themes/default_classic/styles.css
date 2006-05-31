@@ -697,7 +697,7 @@ ul#home-links li {
 	text-align: center;
 	margin: 0.2em;
 	width: 7.9em;
-	height: 6.8em;
+	height: 7.4em;
 }
 ul#home-links li a {
 	text-decoration: none;
@@ -845,8 +845,7 @@ div.course {
 	float: left;
 	margin: 3px;
 	padding: 3px;
-	height:110px;
-	height: 10em;
+	height: 10.5em;
 }
 
 div.course.break {
@@ -1135,4 +1134,51 @@ div.insidecol {
 }
 div[class] .insidecol {
    height: auto;
+}
+ul.horizontal{
+	padding: 0px;
+	margin: 0px;
+}
+ul.horizontal li {
+	list-style: none;
+	display: inline;
+	margin: 0px;
+	padding-right: 10px;
+}
+
+ul.rss_feed {
+	padding-left:7px; 
+	margin-left:7px; 
+	padding-top: 0px; 
+	margin-top:0px; 
+	margin-bottom:0px;'
+}
+
+/* the tools page */
+ol#tools { width: 90%; }
+/* ol#tools>li */ li.top-tool { padding: 2px 2px 2px 15px; margin-bottom: 5px; line-height: 200%; background-color: #fdfdfd; border-bottom: 1px solid #efefef; -moz-border-radius: 4px; list-style-position: inside;  border: 1px solid #eeeeff;}
+
+ol#tools>li:hover {
+	border: 1px solid #e0e0e0;
+	background-color: #f5f5ff;
+}
+
+/* ol#tools>li>a */ li.top-tool a {  font-weight: bold; }
+
+li.child-tool a { font-size: x-small; font-weight: normal; }
+
+/* ol#tools>li>ul, */ ul.child-top-tool {
+	margin-top: -5px;
+	padding-left: 0px;
+	margin-left: 0px;
+	display: inline;
+}
+ul.child-top-tool:before {
+	content: " : ";
+}
+
+/* ol#tools>li>ul>li, */ li.child-tool {
+	display: inline;
+	margin-right: 5px;
+	font-size: x-small;
 }

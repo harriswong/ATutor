@@ -1,7 +1,7 @@
 <?php
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-global $system_courses;
+global $system_courses, $_custom_css;
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="<?php echo $this->lang_code; ?>">
@@ -20,6 +20,7 @@ global $system_courses;
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
 	<?php endif; ?>
+	<?php echo $this->custom_css; ?>
 </head>
 <body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
@@ -198,26 +199,30 @@ function toggleToc(objId) {
 
 	<div style="background-image: url('<?php echo AT_HEADER_IMAGE; ?>'); background-repeat: no-repeat; background-position:left;height:60px; width:250px; vertical-align:top; text-aling:right;">&nbsp;</div>
 
-<div id="topnavlistcontainer">
+	<div id="topnavlistcontainer">
 	<!-- the main navigation. in our case, tabs -->
-<ul id="topnavlist">
-	<?php foreach ($this->top_level_pages as $page): ?>
-		<?php if ($page['url'] == $this->current_top_level_page): ?>
-			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>" class="active"><?php echo $page['title']; ?></a></li>
-		<?php else: ?>
-			<li><a href="<?php echo $page['url']; ?>" accesskey="<?php echo ++$accesscounter; ?>" title="<?php echo $page['title']; ?> Alt+<?php echo $accesscounter; ?>"><?php echo $page['title']; ?></a></li>
-		<?php endif; ?>
-	<?php endforeach; ?>
-</ul>
-</div>
+		<ul id="topnavlist">
+			<?php foreach ($this->top_level_pages as $page): ?>
+				<?php ++$accesscounter; $accesscounter = ($accesscounter == 10 ? 0 : $accesscounter); ?>
+				<?php $accesskey_text = ($accesscounter < 10 ? 'accesskey="'.$accesscounter.'"' : ''); ?>
+				<?php $accesskey_title = ($accesscounter < 10 ? ' Alt+'.$accesscounter : ''); ?>
+				<?php if ($page['url'] == $this->current_top_level_page): ?>
+					<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>" class="active"><?php echo $page['title']; ?></a></li>
+				<?php else: ?>
+					<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>"><?php echo $page['title']; ?></a></li>
+				<?php endif; ?>
+				<?php $accesscounter = ($accesscounter == 0 ? 11 : $accesscounter); ?>
+			<?php endforeach; ?>
+		</ul>
+	</div>
 </div>
 
 <!-- the sub navigation -->
-<div style="float: right; padding-top: 5px; padding-right: 5px;"><small><?php echo $this->current_date; ?></small></div>
+<div style="text-align: right; padding-top: 5px; padding-right: 5px;"><small><?php echo $this->current_date; ?></small></div>
 <?php if ($this->sub_level_pages): ?>
 	<div id="sub-navigation">
 		<?php if (isset($this->back_to_page)): ?>
-			<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to">Back to <?php echo $this->back_to_page['title']; ?></a> | 
+			<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to'); ?> <?php echo $this->back_to_page['title']; ?></a> | 
 		<?php endif; ?>
 
 		<?php $num_pages = count($this->sub_level_pages); ?>

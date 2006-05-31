@@ -2,7 +2,7 @@
 
 	<?php if ($_SESSION['course_id'] > 0): ?>
 		
-		<div align="right" style="padding-right:3px;">		
+		<div align="right" style="clear: left;">		
 			<br />
 			<!-- previous/next/resume icons/links -->
 			<?php if ($this->sequence_links['resume']): ?>
@@ -22,19 +22,19 @@
 	<?php endif; ?> 
 	</td>
 	<?php if (($_SESSION['course_id'] > 0) && $this->side_menu): ?>
-		<td valign="top">
+		<td valign="top" style="width: 25%">
 		<script type="text/javascript">
 		//<![CDATA[
 		var state = getcookie("side-menu");
 		if (state && (state == 'none')) {
-			document.writeln('<div style="display:none;" id="side-menu">');
+			document.writeln('<a name="menu"></a><div style="display:none;" id="side-menu">');
 		} else {
-			document.writeln('<div style="" id="side-menu">');
+			document.writeln('<a name="menu"></a><div style="" id="side-menu">');
 		}
 		//]]>
 		</script>
 			<?php foreach ($this->side_menu as $dropdown_file): ?>
-				<?php require(AT_INCLUDE_PATH . 'html/dropdowns/' . $dropdown_file . '.inc.php'); ?>
+				<?php if (file_exists($dropdown_file)) { require($dropdown_file); } ?>
 			<?php endforeach; ?>
 		<script type="text/javascript">
 		//<![CDATA[

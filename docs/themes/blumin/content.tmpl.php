@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2005 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -21,7 +21,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; } ?>
 	</ul>
 </fieldset>
 <?php endif; ?>
-
 
 <div id="content-text">
 	<?php echo $this->body; ?>
