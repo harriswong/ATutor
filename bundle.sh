@@ -72,6 +72,15 @@ echo "\nRemoving $atutor_dir/ATutor/themes/open_book"
 rm -r $atutor_dir/ATutor/themes/open_book
 sleep 1
 
+echo "\nRemoving $atutor_dir/ATutor/install/db/atutor_upgrade sql < 1.4"
+rm -r $atutor_dir/ATutor/install/db/atutor_upgrade_1.0_to_1.1.sql
+rm -r $atutor_dir/ATutor/install/db/atutor_upgrade_1.1_to_1.2.sql
+rm -r $atutor_dir/ATutor/install/db/atutor_upgrade_1.2_to_1.3.sql
+rm -r $atutor_dir/ATutor/install/db/atutor_upgrade_1.3_to_1.3.2.sql
+rm -r $atutor_dir/ATutor/install/db/atutor_upgrade_1.3.2_to_1.4.sql
+sleep 1
+
+
 echo "\nDisabling AT_DEVEL if enabled."
 sed "s/define('AT_DEVEL', 1);/define('AT_DEVEL', 0);/" $atutor_dir/ATutor/include/vitals.inc.php > $atutor_dir/vitals.inc.php
 rm $atutor_dir/ATutor/include/vitals.inc.php
@@ -80,7 +89,7 @@ sed "s/define('AT_DEVEL_TRANSLATE', 1);/define('AT_DEVEL_TRANSLATE', 0);/" $atut
 sleep 1
 
 echo -n "<?php "'$svn_data = '"'" >> $atutor_dir/ATutor/svn.php
-svn log  -q -r HEAD http://atutorsvn.rcat.utoronto.ca/repos/atutor/trunk/  >> $atutor_dir/ATutor/svn.php
+svn log  -q -r HEAD http://atutorsvn.atrc.utoronto.ca/repos/atutor/trunk/  >> $atutor_dir/ATutor/svn.php
 echo -n "';?>" >> $atutor_dir/ATutor/svn.php
 
 echo "\nTargz'ing $bundle${extension}.tar.gz $atutor_dir/ATutor/"
