@@ -49,9 +49,9 @@
 					<?php echo _AT('category'); ?>: <?php echo get_category_name($row['cat_id']); ?><br />
 					
 					
-					<?php if ($row['tests']): ?>
-						Challenge Test: 
-						<?php foreach ($row['tests'] as $test): ?>
+					<?php if ($row['tests']): 						 
+						echo _AT('challenge_test').':';
+						foreach ($row['tests'] as $test): ?>
 							<a href="bounce.php?course=<?php echo $row['course_id'].SEP.'p='.urlencode('tools/take_test.php?tid='.$test['test_id']); ?>"><?php echo $test['title']; ?></a> 
 						<?php endforeach ;?>
 					<?php endif; ?>

@@ -32,6 +32,28 @@ REPLACE INTO AT_language_text VALUES
 
 ('en','_msgs','AT_ERROR_ALT_EMAIL_MISMATCH','Alternate Email addresses do not match.', NOW(),'If alternate email addresses do not match.'),
 
-('en' ,'_msgs', 'AT_ERROR_FHA_TEST', 'You need to be enrolled in this course to access this area. Please click on the Enroll Me link above.', NOW(), '')
+('en' ,'_msgs', 'AT_ERROR_FHA_TEST', 'You need to be enrolled in this course to access this area. Please click on the Enroll Me link above.', NOW(), ''),
+
+('en' ,'_template', 'employee_number', 'Employee Number', NOW(), ''),
+
+('en' ,'_template', 'image_validation', 'Image Validation', NOW(), ''),
+
+('en' ,'_template', 'image_validation_text', 'In this image (<img src="secret.php" alt="" />) there is a number displayed. <br />Please type this number into the following field.', NOW(), ''),
+
+('en' ,'_template', 'image_validation_text2', '&middot; This helps ensure a live person is registering on this system.', NOW(), ''),
+
+('en' ,'_template', 'choose_login_name', 'Choose a Login Name', NOW(), ''),
+
+('en' ,'_template', 'choose_password', 'Choose a Password', NOW(), ''),
+
+('en' ,'_template', 'password_again', 'Type the Password Again', NOW(), ''),
+
+('en' ,'_template', 'email_again', 'Email Address Again', NOW(), ''),
+
+('en' ,'_template', 'alt_email', 'Alternate Email Address', NOW(), ''),
+
+('en' ,'_template', 'alt_email_again', 'Alternate Email Address Again', NOW(), ''),
+
+('en' ,'_template', 'challenge_test', 'Challenge Test', NOW(), '')
 
 ;

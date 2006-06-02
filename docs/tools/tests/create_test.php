@@ -168,7 +168,7 @@ $msg->printErrors();
 	</div>
 
 	<div class="row">
-		Challenge Test<br />
+		<?php echo _AT('challenge_test'); ?><br />
 		<?php 
 			if ($_POST['format'] == 1) {
 				$y = 'checked="checked"';
