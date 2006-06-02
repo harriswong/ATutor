@@ -54,6 +54,8 @@ REPLACE INTO AT_language_text VALUES
 
 ('en' ,'_template', 'alt_email_again', 'Alternate Email Address Again', NOW(), ''),
 
-('en' ,'_template', 'challenge_test', 'Challenge Test', NOW(), '')
+('en' ,'_template', 'challenge_test', 'Challenge Test', NOW(), ''),
+
+('en' ,'_template', 'reports', 'Reports', NOW(), '')
 
 ;
