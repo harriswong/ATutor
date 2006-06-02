@@ -119,7 +119,7 @@ if (isset($_POST['cancel'])) {
 		$msg->addError('EMAIL_EXISTS');
 	}
 
-	if (!$_POST['first_name']) { 
+	/*if (!$_POST['first_name']) { 
 		$msg->addError('FIRST_NAME_MISSING');
 	}
 
@@ -138,7 +138,7 @@ if (isset($_POST['cancel'])) {
 		if (mysql_fetch_assoc($result)) {
 			$msg->addError('FIRST_LAST_NAME_UNIQUE');
 		}
-	}
+	}*/
 
 	$_POST['login'] = strtolower($_POST['login']);
 

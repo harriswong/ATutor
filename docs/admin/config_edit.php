@@ -73,6 +73,7 @@ if (isset($_POST['cancel'])) {
 		$_POST['default_language']      = $addslashes($_POST['default_language']);
 		$_POST['contact_email'] = $addslashes($_POST['contact_email']);
 
+
 		foreach ($_config as $name => $value) {
 			// the isset() is needed to avoid overridding settings that don't get set here (ie. modules)
 			if (isset($_POST[$name]) && (stripslashes($_POST[$name]) != $value) && (stripslashes($_POST[$name]) != $_config_defaults[$name])) {
