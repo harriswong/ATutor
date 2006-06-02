@@ -34,7 +34,7 @@ if (isset($_POST['cancel'])) {
 }
 
 if (isset($_POST['submit'])) {
-	if (!$_POST['first_name']) { 
+	/*if (!$_POST['first_name']) { 
 		$msg->addError('FIRST_NAME_MISSING');
 	}
 
@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
 		if (mysql_fetch_assoc($result)) {
 			$msg->addError('FIRST_LAST_NAME_UNIQUE');
 		}
-	}
+	}*/
 
 	//check date of birth
 	$mo = intval($_POST['month']);

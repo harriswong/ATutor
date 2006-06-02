@@ -18,7 +18,7 @@
 		<label for="email"><?php echo _AT('email_address'); ?></label><br /><?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>
 		<input type="checkbox" id="priv" name="private_email" value="1" <?php if ($_POST['private_email']) { echo 'checked="checked"'; } ?> /><label for="priv"><?php echo _AT('keep_email_private');?>
 	</div>
-	<div class="row">
+	<!-- div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="first_name"><?php echo _AT('first_name'); ?></label><br />
 		<input id="first_name" name="first_name" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['first_name'])); ?>" />
 	</div>
@@ -31,7 +31,7 @@
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="last_name"><?php echo _AT('last_name'); ?></label><br />
 		<input id="last_name" name="last_name" type="text" value="<?php echo stripslashes(htmlspecialchars($_POST['last_name'])); ?>" />
-	</div>
+	</div -->
 	
 	<?php if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE)): 
 			if ($_POST['status'] == AT_STATUS_INSTRUCTOR) {

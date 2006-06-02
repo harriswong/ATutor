@@ -14,7 +14,7 @@ if (admin_authenticate(AT_ADMIN_PRIV_COURSES, TRUE) || admin_authenticate(AT_ADM
 	$this->_pages['admin/courses.php']['title_var'] = 'courses';
 	$this->_pages['admin/courses.php']['parent']    = AT_NAV_ADMIN;
 	$this->_pages['admin/courses.php']['guide']     = 'admin/?p=courses.php';
-	$this->_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'admin/modules/default_mods.php', 'admin/modules/default_side.php');
+	$this->_pages['admin/courses.php']['children']  = array('admin/create_course.php', 'admin/modules/default_mods.php', 'admin/modules/default_side.php', 'admin/course_tests2.php');
 
 		$this->_pages['admin/instructor_login.php']['title_var'] = 'view';
 		$this->_pages['admin/instructor_login.php']['parent']    = 'admin/courses.php';
@@ -29,6 +29,9 @@ if (admin_authenticate(AT_ADMIN_PRIV_COURSES, TRUE) || admin_authenticate(AT_ADM
 		$_pages['admin/modules/default_side.php']['title_var'] = 'default_side_menu';
 		$_pages['admin/modules/default_side.php']['parent']    = 'admin/courses.php';
 		$_pages['admin/modules/default_side.php']['guide']     = 'admin/?p=default_side_menu.php';
+
+		$this->_pages['admin/course_tests2.php']['title_var']		   = 'reports';
+		$this->_pages['admin/course_tests2.php']['parent']    = 'admin/courses.php';
 
 }
 //what about delete course (in properties) ?
