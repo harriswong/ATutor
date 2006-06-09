@@ -47,22 +47,22 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('EMAIL_EXISTS');
 		} else if ($_POST['email'] != $_POST['email2']) {
 			$msg->addError('EMAIL_MISMATCH');
-		} else if ((strpos($_POST['email'], 'fraserhealth.ca') !== FALSE) && (substr_count($_POST['email'], '.') != 2)) {
+		} /*else if ((strpos($_POST['email'], 'fraserhealth.ca') !== FALSE) && (substr_count($_POST['email'], '.') != 2)) {
 			// if email uses FHA email then check for the dot.
 			$msg->addError('EMAIL_FHA_MISMATCH');
 		} else if ($_POST['email'] == 'firstname.lastname@fraserhealth.ca') {
 			$msg->addError('EMAIL_FHA_MISMATCH');
-		}
+		}*/
 	}
 
 	/* if alternate email not empty */
-	if ($_POST['email3'] != '') {
+	/*if ($_POST['email3'] != '') {
 		if ($_POST['email4'] == '') {
 			$msg->addError('ALT_EMAIL_CONFIRM');
 		} else if ($_POST['email3'] != $_POST['email4']) {
 			$msg->addError('ALT_EMAIL_MISMATCH');
 		}
-	}
+	}*/
 	$chk_email = $addslashes($_POST['email']);
 	$chk_login = $addslashes($_POST['login']);
 
