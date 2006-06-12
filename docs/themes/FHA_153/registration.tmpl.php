@@ -163,22 +163,62 @@ if ($_POST['email']) {
 			</div>
 	<?php endif; ?>
 
-	<!-- div class="row">
-		<h3><?php echo _AT('personal_information').' ('._AT('optional').')'; ?></h3>
-	</div>
-
 	<?php if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+
+		<div class="row">
+			<h3><?php echo _AT('personal_information').' ('._AT('optional').')'; ?></h3>
+		</div>
+
 		<div class="row">
 			<label for="student_id"><?php echo _AT('employee_number'); ?></label><br />
 				<input type="text" name="student_id" value="<?php echo $_POST['student_id']; ?>" size="20" /><br />
 		</div>
 		<div class="row">
+			<label for="dob"><?php echo _AT('date_of_birth'); ?></label><br />
+			<select name="year" id="dob">
+				<option value="0"><?php echo _AT('year'); ?></option>
+				<?php for ($i=1920; $i<2000; $i++): ?>
+					<option value="<?php echo $i;?>" <?php if ($i == $_POST['year']) { echo 'selected="selected"';} ?>><?php echo $i;?></option>
+				<?php endfor; ?>
+			</select>
+			
+			<select name="month">
+				<option value="0"><?php echo _AT('month'); ?></option>
+				<option value="1"  <?php if ($_POST['month'] == 1)  { echo 'selected="selected"';} ?>><?php echo _AT('date_january'); ?></option>
+				<option value="2"  <?php if ($_POST['month'] == 2)  { echo 'selected="selected"';} ?>><?php echo _AT('date_february'); ?></option>
+				<option value="3"  <?php if ($_POST['month'] == 3)  { echo 'selected="selected"';} ?>><?php echo _AT('date_march'); ?></option>
+				<option value="4"  <?php if ($_POST['month'] == 4)  { echo 'selected="selected"';} ?>><?php echo _AT('date_april'); ?></option>
+				<option value="5"  <?php if ($_POST['month'] == 5)  { echo 'selected="selected"';} ?>><?php echo _AT('date_may'); ?></option>
+				<option value="6"  <?php if ($_POST['month'] == 6)  { echo 'selected="selected"';} ?>><?php echo _AT('date_june'); ?></option>
+				<option value="7"  <?php if ($_POST['month'] == 7)  { echo 'selected="selected"';} ?>><?php echo _AT('date_july'); ?></option>
+				<option value="8"  <?php if ($_POST['month'] == 8)  { echo 'selected="selected"';} ?>><?php echo _AT('date_august'); ?></option>
+				<option value="9"  <?php if ($_POST['month'] == 9)  { echo 'selected="selected"';} ?>><?php echo _AT('date_september'); ?></option>
+				<option value="10" <?php if ($_POST['month'] == 10) { echo 'selected="selected"';} ?>><?php echo _AT('date_october'); ?></option>
+				<option value="11" <?php if ($_POST['month'] == 11) { echo 'selected="selected"';} ?>><?php echo _AT('date_november'); ?></option>
+				<option value="12" <?php if ($_POST['month'] == 12) { echo 'selected="selected"';} ?>><?php echo _AT('date_december'); ?></option>
+			</select>
+
+			<select name="day">
+				<option value="0"><?php echo _AT('day'); ?></option>
+				<?php for ($i=1; $i<32; $i++): ?>
+					<option value="<?php echo $i;?>" <?php if ($i == $_POST['day']) { echo 'selected="selected"';} ?>><?php echo $i;?></option>
+				<?php endfor; ?>
+			</select>
+		</div>
+
+		<div class="row">
+			<input type="checkbox" id="overwrite" name="overwrite" value="1" <?php if ($_POST['overwrite']) { echo 'checked="checked"'; } ?> /><label for="overwrite"><?php echo _AT('overwrite_master');?></label>
+		</div>
+
+
+		<!-- div class="row">
 			<label for="student_pin"><?php echo _AT('student_pin'); ?></label><br />
 			<input id="student_pin" name="student_pin" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['student_pin'])); ?>" /><br />
-		</div>
+		</div -->
+
 	<?php endif; ?>
 
-	<div class="row">
+	<!-- div class="row">
 		<label for="email3"><?php echo _AT('alt_email'); ?></label><br />
 		<input id="email3" name="email3" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email3'])); ?>" />
 	</div>
