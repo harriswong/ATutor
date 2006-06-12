@@ -90,9 +90,9 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 		$mail = new ATutorMailer();
 
 		$mail->From     = $_config['contact_email'];
-		$mail->AddAddress($_POST['email']);
-		$mail->Subject = SITE_NAME . ' - ' . _AT('email_confirmation_subject');
-		$mail->Body    = "Please confirm your Fraser Health Online Learning System account email address by clicking on the link immediately following. ".$confirmation_link;
+		$mail->AddAddress($row['email']);
+		$mail->Subject = SITE_NAME . ': ' . _AT('email_confirmation_subject');
+		$mail->Body    = _AT('email_confirmation_message', $_base_href, $confirmation_link)."\n\n";
 		$mail->Send();
 
 		$msg->addFeedback('CONFIRMATION_SENT');
