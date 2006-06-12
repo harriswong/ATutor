@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
 		//check if student id (public field) is already being used
 		$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]' && member_id<>0",$db);
 		if (mysql_num_rows($result) != 0) {
-			$msg->addError('ID_USED');
+			$msg->addError('CREATE_MASTER_USED');
 		}
 	}
 
