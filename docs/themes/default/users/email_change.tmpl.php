@@ -18,7 +18,7 @@
 
 		<div class="row">
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password"><?php echo _AT('password'); ?></label><br />
-			<input id="password" name="password" type="password" size="15" maxlength="15" value="" /><br />
+			<input id="password" name="password" type="password" size="30" maxlength="15" value="" /><br />
 		</div>
 
 		<div class="row">

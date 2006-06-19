@@ -44,7 +44,7 @@ if (isset($_POST['cancel'])) {
 		$mail = new ATutorMailer;
 		$mail->From     = $_config['contact_email'];
 		$mail->AddAddress($row['email']);
-		$mail->Subject = 'FHA Online Learning System: ' . _AT('password_forgot');
+		$mail->Subject = $_config['site_name'] .': ' . _AT('password_forgot');
 		$mail->Body    = $tmp_message;
 
 		if(!$mail->Send()) {

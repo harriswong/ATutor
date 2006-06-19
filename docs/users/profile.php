@@ -147,7 +147,7 @@ if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 /* template starts here */
 
 $savant->assign('row', $row);
-$onload = 'document.form.first_name.focus();';
+//$onload = 'document.form.first_name.focus();';
 
 //$savant->display('registration.tmpl.php');
 $savant->display('users/profile.tmpl.php');
