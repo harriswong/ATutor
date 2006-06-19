@@ -62,8 +62,10 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en' ,'_msgs', 'AT_FEEDBACK_REG_THANKS', '<p>Thank you for registering.</p> <p>You may now log into your account. If you need help, please contact us via the <a href="./help/contact_support.php">Help link</a>.</p>', NOW(), ''),
 
-('en' ,'_template', 'overwrite_master', 'If an existing account is using this employee number, overwrite association with new account.', NOW(), '')
+('en' ,'_template', 'overwrite_master', 'If an existing account is using this employee number, overwrite association with new account.', NOW(), ''),
 
-('en' ,'_template', 'AT_ERROR_CREATE_MASTER_USED', 'The Employee Number you have entered already belongs to another user. If you wish to over-write this association with the new account, use the over-write checkbox.', NOW(), '')
+('en' ,'_msgs', 'AT_ERROR_CREATE_MASTER_USED', 'The Employee Number you have entered already belongs to another user. If you wish to over-write this association with the new account, use the over-write checkbox.', NOW(), ''),
+
+('en' ,'_msgs', 'AT_ERROR_NOT_CONFIRMED', 'Your account's email address has not yet been confirmed. Please check your email account for a confirmation message. Please contact us if you do not receive it.', NOW(), '')
 
 ;
