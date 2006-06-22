@@ -62,7 +62,7 @@ if ($_POST['email']) {
 			<p><?php echo _AT('image_validation_text'); ?><br />
 			<input id="secret" name="secret" type="text" size="6" maxlength="6" value="" />
 			<br />
-			<small><?php echo _AT('image_validation_text2'); ?><br /></small>
+			<strong><?php echo _AT('image_validation_text2'); ?><br /></strong>
 		</div>
 	<?php endif; ?>
 
@@ -91,8 +91,8 @@ if ($_POST['email']) {
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>
 			<label for="login"><?php echo _AT('choose_login_name'); ?></label><br />
 			<input id="login" name="login" type="text" maxlength="20" size="15" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" /><br />
-			<small>&middot; <?php echo _AT('contain_only'); ?><br />
-				   &middot; <?php echo _AT('20_max_chars'); ?></small>			
+			<strong>&middot; <?php echo _AT('contain_only'); ?><br />
+				   &middot; <?php echo _AT('20_max_chars'); ?></strong>			
 		<?php endif; ?>
 	</div>
 
@@ -100,8 +100,8 @@ if ($_POST['email']) {
 		<div class="row">
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password"><?php echo _AT('choose_password'); ?></label><br />
 			<input id="password" name="password" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['password'])); ?>" /><br />
-			<small>&middot; <?php echo _AT('combination'); ?><br />
-				   &middot; <?php echo _AT('15_max_chars'); ?></small>
+			<strong>&middot; <?php echo _AT('combination'); ?><br />
+				   &middot; <?php echo _AT('15_max_chars'); ?></strong>
 		</div>
 		<div class="row">
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password2"> <?php echo _AT('password_again'); ?></label><br />
