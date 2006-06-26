@@ -3,11 +3,11 @@
 ###############################################################
 
 CREATE TABLE `groups_types` (
-	`type_id` MEDIUMINT UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT ,
+	`type_id` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT ,
 	`course_id` MEDIUMINT UNSIGNED NOT NULL default '0',
 	`title` VARCHAR( 80 ) NOT NULL default '',
 	PRIMARY KEY ( `type_id` ) ,
-	INDEX ( `course_id` )
+	KEY ( `course_id` )
 );
 
 ALTER TABLE `groups` CHANGE `course_id` `type_id` MEDIUMINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL;
@@ -56,8 +56,8 @@ ALTER TABLE `courses` ADD `banner` TEXT NOT NULL default '';
 
 CREATE TABLE `reading_list` (
 	`reading_id` MEDIUMINT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`course_id` MEDIUMINT UNSIGNED NOT NULL default '0',
-	`resource_id` MEDIUMINT UNSIGNED NOT NULL default '0',
+	`course_id` MEDIUMINT UNSIGNED NOT NULL default 0,
+	`resource_id` MEDIUMINT UNSIGNED NOT NULL default 0,
 	`required` enum('required','optional') NOT NULL DEFAULT 'required',
 	`date_start` DATE NOT NULL DEFAULT '0000-00-00',
 	`date_end` DATE NOT NULL DEFAULT '0000-00-00',
@@ -70,7 +70,7 @@ CREATE TABLE `reading_list` (
 
 CREATE TABLE `external_resources` (
 	`resource_id` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`course_id` MEDIUMINT UNSIGNED NOT NULL default '',
+	`course_id` MEDIUMINT UNSIGNED NOT NULL default 0,
 	`type` TINYINT UNSIGNED NOT NULL DEFAULT 0,
 	`title` varchar(255) NOT NULL DEFAULT '',
 	`author` varchar(150) NOT NULL DEFAULT '',
@@ -224,3 +224,5 @@ ALTER TABLE `links`
 
 
 ALTER TABLE `members` CHANGE `gender` `gender` ENUM( 'm', 'f', 'n' ) DEFAULT 'n' NOT NULL;
+
+ALTER TABLE `handbook_notes` ADD `approved` TINYINT DEFAULT '0' NOT NULL AFTER `page` ;

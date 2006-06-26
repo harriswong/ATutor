@@ -10,21 +10,20 @@
 	$config_location = dirname(__FILE__) . '/../../include/config.inc.php';
 	if (is_file($config_location) && is_readable($config_location)) {
 		require($config_location);
-		if (defined('AT_ENABLE_HANDBOOK_NOTES') && AT_ENABLE_HANDBOOK_NOTES) {
-			define('AT_HANDBOOK_DB_USER', DB_USER);
+		
+		$db = @mysql_connect(DB_HOST . ':' . DB_PORT, DB_USER, DB_PASSWORD);
+		@mysql_select_db(DB_NAME, $db);
 
-			define('AT_HANDBOOK_DB_PASSWORD', DB_PASSWORD);
-
-			define('AT_HANDBOOK_DB_DATABASE', DB_NAME);
-
-			define('AT_HANDBOOK_DB_PORT', DB_PORT);
-
-			define('AT_HANDBOOK_DB_HOST', DB_HOST);
-
-			define('AT_HANDBOOK_DB_TABLE_PREFIX', TABLE_PREFIX);
-
+		// check atutor config table to see if handbook notes is enabled.
+		$sql    = "SELECT value FROM ".TABLE_PREFIX."config WHERE name='user_notes'";
+		$result = @mysql_query($sql, $db);
+		if (($row = mysql_fetch_assoc($result)) && $row['value']) {
 			define('AT_HANDBOOK_ENABLE', true);
+			$enable_user_notes = true;
+		} else {
+			define('AT_HANDBOOK_ENABLE', false);
 		}
+		define('AT_HANDBOOK_DB_TABLE_PREFIX', TABLE_PREFIX);
 	} 
 	if (!defined('AT_HANDBOOK_ENABLE')) {
 		// use local config file
@@ -32,19 +31,20 @@
 	}
 
 	if (defined('AT_HANDBOOK_ENABLE') && AT_HANDBOOK_ENABLE) {
-		$db = @mysql_connect(AT_HANDBOOK_DB_HOST . ':' . AT_HANDBOOK_DB_PORT, AT_HANDBOOK_DB_USER, AT_HANDBOOK_DB_PASSWORD);
-		if (@mysql_select_db(AT_HANDBOOK_DB_DATABASE, $db)) {
-			$enable_user_notes = true;
-			$sql = "SELECT note_id, date, email, note FROM ".AT_HANDBOOK_DB_TABLE_PREFIX."handbook_notes WHERE section='$section' AND page='$this_page' AND approved=1 ORDER BY date DESC";
-			$result = mysql_query($sql, $db);
+		if (!$db) {
+			$db = @mysql_connect(AT_HANDBOOK_DB_HOST . ':' . AT_HANDBOOK_DB_PORT, AT_HANDBOOK_DB_USER, AT_HANDBOOK_DB_PASSWORD);
+			@mysql_select_db(AT_HANDBOOK_DB_DATABASE, $db);
 		}
+		$enable_user_notes = true;
+		$sql = "SELECT note_id, date, email, note FROM ".AT_HANDBOOK_DB_TABLE_PREFIX."handbook_notes WHERE section='$section' AND page='$this_page' AND approved=1 ORDER BY date DESC";
+		$result = mysql_query($sql, $db);
 	}
 ?>
 
 <?php if ($enable_user_notes): ?>
 	<div class="add-note">
-		<a href="../add_note.php?<?php echo $section . SEP . 'p='.$this_page; ?>" style="float: right;">+ Add a Note +</a>
-		<h3>User Contributed Notes</h3>
+		<a href="../add_note.php?<?php echo $section . SEP . 'p='.$this_page; ?>" style="float: right;">+ <?php get_text('add_note'); ?> +</a>
+		<h3><?php get_text('user_contributed_notes'); ?></h3>
 	</div>
 
 	<?php if ($result && mysql_num_rows($result) > 0): ?>
@@ -52,7 +52,7 @@
 			<div class="note">
 				<h5><?php echo $row['date']; ?>
 					<?php if (isset($_SESSION['handbook_admin']) && $_SESSION['handbook_admin']): ?>
-						<a href="../delete_note.php?<?php echo $section.SEP.'p='.$this_page.SEP.'id='.$row['note_id']; ?>" onclick="return confirm('Are you sure you want to delete this note?');">Delete</a>
+						<a href="../delete_note.php?<?php echo $section.SEP.'p='.$this_page.SEP.'id='.$row['note_id']; ?>" onclick="return confirm('<?php get_text('are_you_sure_delete_note'); ?>');"><?php get_text('delete'); ?></a>
 					<?php endif; ?>
 				</h5>
 				<h4><?php echo $row['email'];?></h4>
@@ -60,7 +60,7 @@
 			</div>
 		<?php endwhile; ?>
 	<?php else: ?>
-		<div class="note">There are no user contributed notes for this page.</div>
+		<div class="note"><?php get_text('no_notes_on_page'); ?></div>
 	<?php endif; ?>
 <?php endif; ?>
 

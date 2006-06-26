@@ -12,11 +12,9 @@
 /****************************************************************/
 // $Id$
 
-$page	 = 'login';
 $_user_location	= 'public';
 define('AT_INCLUDE_PATH', 'include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
-
 
 if (isset($_GET['course'])) {
 	$_GET['course'] = intval($_GET['course']);
@@ -50,7 +48,7 @@ if (isset($_COOKIE['FHA'])) {
 
 //if (isset($cookie_login, $cookie_pass) && !isset($_POST['login'])) {
 if (!isset($_SESSION['token']) || !$_SESSION['token']) {
-	$_SESSION['token'] = md5(mt_rand());
+	$_SESSION['token'] = sha1(mt_rand());
 }
 
 if (isset($cookie_login, $cookie_pass) && !isset($_POST['submit'])) {
@@ -82,7 +80,7 @@ if (isset($cookie_login, $cookie_pass) && !isset($_POST['submit'])) {
 	exit;
 }
 
-if (isset($this_login, $this_password) && !isset($_SESSION['token'])) {
+if (isset($this_login, $this_password) && !isset($_SESSION['session_test'])) {
 	$msg->addError('SESSION_COOKIES');
 } else if (isset($this_login, $this_password)) {
 	if (version_compare(PHP_VERSION, '5.1.0', '>=')) {
@@ -176,6 +174,8 @@ if (isset($this_login, $this_password) && !isset($_SESSION['token'])) {
 		}
 	}
 }
+
+$_SESSION['session_test'] = TRUE;
 
 if (isset($_SESSION['member_id'])) {
 	$sql = "DELETE FROM ".TABLE_PREFIX."users_online WHERE member_id=$_SESSION[member_id]";

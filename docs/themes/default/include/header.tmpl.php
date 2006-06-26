@@ -57,13 +57,13 @@ global $system_courses, $_custom_css;
 	<?php endif; ?>
 	<?php echo $this->custom_css; ?>
 </head>
-<body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000; <?php if ($this->rtl_css): ?>direction:rtl;<?php endif; ?>"></div>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
 //<!--
 
 var newwindow;
 function poptastic(url) {
-	newwindow=window.open(url,'popup','height=600,width=600,scrollbars=yes,resizable=yes');
+	newwindow=window.open(url,'popup','height=700,width=700,scrollbars=yes,resizable=yes');
 	if (window.focus) {newwindow.focus()}
 }
 
@@ -211,13 +211,16 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
-	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;"><?php echo $this->section_title; ?>:
+	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;">
+	<?php if($_SESSION['course_id'] && $_SESSION['valid_user'] ){ ?>
+ 		<a href="<?php echo $this->base_path; ?>users/index.php"><?php echo _AT('my_start_page'); ?>: </a> '
+	<?php }?>
+	<?php echo $this->section_title; ?>:
 	
 	<?php foreach ($this->path as $page): ?>
 		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> &raquo; 
 	<?php endforeach; ?> <?php echo $this->page_title; ?></span>
 </div>
-
 
 <div class="header">
 	<!-- section title -->	
@@ -229,7 +232,7 @@ function toggleToc(objId) {
 	<h1><?php echo $this->section_title; ?>
 
 	<?php if (($_SESSION['course_id'] > 0) && ($_SESSION['enroll'] == AT_ENROLL_NO)) : ?>
-		- <a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
+		- <small><a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
 	<?php endif; ?></h1>
 	<br />
 

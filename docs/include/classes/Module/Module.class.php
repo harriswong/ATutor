@@ -218,7 +218,7 @@ class Module {
 			require(AT_MODULE_PATH . $this->_directoryName.'/module.php');
 
 			if (isset($this->_pages)) {
-				$_pages = array_merge_recursive((array)$_pages, $this->_pages);
+				$_pages = array_merge_recursive((array) $_pages, $this->_pages);
 			}
 
 			//side menu items
@@ -295,9 +295,11 @@ class Module {
 		return $this->_cron_interval;
 
 	}
+
 	function getName() {
 		if ($this->isUninstalled()) {
-			return current($this->getProperty('name'));
+			$name = $this->getProperty('name');
+			return current($name);
 		}
 		return _AT(basename($this->_directoryName));
 	}
@@ -309,7 +311,11 @@ class Module {
 			return;
 		}
 
-		return (isset($this->_properties['description'][$lang]) ? $this->_properties['description'][$lang] : current($this->_properties['description']));
+		if (isset($this->_properties['description'][$lang])) {
+			return $this->_properties['description'][$lang];
+		}
+		$description = current($this->_properties['description']);
+		return $description;
 	}
 
 	function getChildPage($page) {
@@ -342,9 +348,12 @@ class Module {
 	}
 
 	function deleteGroup($group_id) {
-		if (is_file(AT_MODULE_PATH . $this->_directoryName.'/module_groups.php')) {
+		$fn_name = basename($this->_directoryName) .'_delete_group';
+
+		if (!function_exists($fn_name) && is_file(AT_MODULE_PATH . $this->_directoryName.'/module_groups.php')) {
 			require_once(AT_MODULE_PATH . $this->_directoryName.'/module_groups.php');
-			$fn_name = basename($this->_directoryName) .'_delete_group';
+		} 
+		if (function_exists($fn_name)) {
 			$fn_name($group_id);
 		}
 	}
@@ -418,6 +427,7 @@ class Module {
 		}
 
 		require(AT_MODULE_PATH . $this->_directoryName.'/module_backup.php');
+
 		if (isset($sql)) {
 			foreach ($sql as $table_name => $table_sql) {
 				$CSVImport->import($table_name, $import_dir, $course_id, $version);
@@ -432,17 +442,24 @@ class Module {
 	}
 
 	/**
-	* Delete this module's course content
+	* Delete this module's course content. If $groups is specified then it will
+	* delete all content for the groups specified.
 	* @access  public
-	* @param   int $course_id	ID of the course to delete
+	* @param   int   $course_id	ID of the course to delete
+	* @param   array $groups    Array of groups to delete
 	* @author  Joel Kronenberg
 	*/
-	function delete($course_id) {
+	function delete($course_id, $groups) {
 		if (is_file(AT_MODULE_PATH . $this->_directoryName.'/module_delete.php')) {
 			require(AT_MODULE_PATH . $this->_directoryName.'/module_delete.php');
 			if (function_exists(basename($this->_directoryName).'_delete')) {
 				$fnctn = basename($this->_directoryName).'_delete';
 				$fnctn($course_id);
+			}
+		}
+		if ($groups) {
+			foreach ($groups as $group_id) {
+				$this->deleteGroup($group_id);
 			}
 		}
 	}

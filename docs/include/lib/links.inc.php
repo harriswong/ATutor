@@ -25,7 +25,8 @@ function links_authenticate($owner_type, $owner_id) {
 	}
 
 	//if admin or TA w/ right privs, can manage all links
-	if ($_SESSION['is_admin'] || $_SESSION['privileges'] > 0) {
+	//if ($_SESSION['is_admin'] || $_SESSION['privileges'] > 0) {
+	if (authenticate(AT_PRIV_GROUPS, true)) {
 		return true;
 	}
 
@@ -45,11 +46,25 @@ function links_authenticate($owner_type, $owner_id) {
 
 /* return true if user is able to manage group or course links */
 function manage_links() {
+	global $db;
 
-	if ($_SESSION['is_admin'] || $_SESSION['privileges'] > 0 ) {
+	if (authenticate(AT_PRIV_GROUPS, true)) {
 		return LINK_CAT_AUTH_ALL;
 	} else if (!empty($_SESSION['groups'])) {
-		return LINK_CAT_AUTH_GROUP;
+		//find a group that uses links
+		foreach ($_SESSION['groups'] as $group_id) {
+			$sql = "SELECT modules FROM ".TABLE_PREFIX."groups WHERE group_id=$group_id";
+			$result = mysql_query($sql, $db);
+
+			$row = mysql_fetch_assoc($result);
+			$mods = explode('|', $row['modules']);
+
+			if (in_array("_standard/links", $mods)) {
+				return LINK_CAT_AUTH_GROUP;
+			}
+		}
+
+		return FALSE;
 	}
 
 	return LINK_CAT_AUTH_NONE;
@@ -71,7 +86,7 @@ function get_link_categories($manage=false, $list=false) {
 	if ($_SERVER['PHP_SELF'] == $_base_path.'links/add.php') {
 		$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE (owner_id=$_SESSION[course_id] AND owner_type=".LINK_CAT_COURSE.") ORDER BY parent_id, name";
 	} else if ($manage) {
-		if ( $_SESSION['is_admin'] || $_SESSION['privileges']>0 ) { //everything but group-named cats
+		if ( authenticate(AT_PRIV_GROUPS, true) ) { //everything but group-named cats
 			if ($list) {
 				$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE (owner_id=$_SESSION[course_id] AND owner_type=".LINK_CAT_COURSE.") OR (owner_id IN ($groups) AND owner_type=".LINK_CAT_GROUP." AND name<>'') ORDER BY parent_id, name";
 			} else {
@@ -81,9 +96,9 @@ function get_link_categories($manage=false, $list=false) {
 		} else if (!empty($groups)) { 
 
 			if ($list) { //only group subcats
-				$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE (owner_id IN ($groups) AND owner_type=".LINK_CAT_GROUP." AND name<>'') ORDER BY parent_id, name";
+				$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE owner_id IN ($groups) AND owner_type=".LINK_CAT_GROUP." AND name<>'' ORDER BY parent_id, name";
 			} else { //only group cats and subcats 
-				$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE (owner_id IN ($groups) AND owner_type=".LINK_CAT_GROUP.") ORDER BY parent_id, name";
+				$sql = "SELECT * FROM ".TABLE_PREFIX."links_categories WHERE owner_id IN ($groups) AND owner_type=".LINK_CAT_GROUP." ORDER BY parent_id, name";
 			}
 		}	
 
@@ -113,31 +128,36 @@ function get_link_categories($manage=false, $list=false) {
 			$categories[0][] = $row['cat_id'];
 		}
 	}
+	
+	//sort($categories, SORT_STRING);
+
+	//debug($categories);
 
 	return $categories;
 }
 
 function select_link_categories($categories, $cat_id, $current_cat_id, $exclude, $depth=0, $owner=FALSE) {
+	global $db; 
+
 	if ($cat_id == 0 && is_array($categories[0])) {
 		foreach($categories[0] as $child_cat_id) {
 			select_link_categories($categories, $child_cat_id, $current_cat_id, $depth, 0, $owner);
 		}
 	} else {
+		$sql = "SELECT name, owner_type, owner_id FROM ".TABLE_PREFIX."links_categories WHERE cat_id=$cat_id";
+		$result = mysql_query($sql, $db);
+		$row = mysql_fetch_assoc($result);
+
 		if ($exclude && ($cat_id == $current_cat_id)) {
 			return;
 		}
+
 		if ($owner) {
-			global $db; 
-			$sql = "SELECT owner_type, owner_id FROM ".TABLE_PREFIX."links_categories WHERE cat_id=$cat_id";
-			$result = mysql_query($sql, $db);
-
-			$row = mysql_fetch_assoc($result);
-
 			echo '<option value="'.$cat_id.'-'.$row['owner_type'].'-'.$row['owner_id'].'"';
 		} else  {
 			echo '<option value="'.$cat_id.'"';
 		}
-
+	
 		if ($exclude && is_array($categories[$cat_id]['children']) && in_array($current_cat_id, $categories[$cat_id]['children'])) {
 			echo ' selected="selected"';
 		} else if (!$exclude && ($cat_id == $current_cat_id)) {
@@ -176,6 +196,10 @@ function get_child_categories ($cat_id, $categories) {
 
 function get_group_name($owner_id) {
 	global $db;
+
+	if (!$owner_id) {
+		return false;
+	}
 
 	$sql = "SELECT title FROM ".TABLE_PREFIX."groups WHERE group_id=".$owner_id;
 	$result = mysql_query($sql, $db);

@@ -151,7 +151,9 @@ function toggleToc(objId) {
 				</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" id="jump-button" /></form>
 			<!-- /end the jump menu -->
 		<?php endif; ?>
-
+			<?php if ($_SESSION['is_super_admin']): ?>
+				<a href="<?php echo $this->base_path; ?>bounce.php?admin"><?php echo _AT('return_to_admin_area'); ?></a> | 
+			<?php endif; ?>
 		<?php if ($_SESSION['valid_user']): ?>
 			<img src="<?php echo $this->img;?>user-star.gif" style="vertical-align: middle;" class="img-size-star" alt="" /><strong style="color: white;"><?php echo $_SESSION['login']; ?></strong>  | 
 			<?php if ($_SESSION['course_id'] > -1): ?>
@@ -171,7 +173,11 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
-	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;"><?php echo $this->section_title; ?>:
+	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;">
+	<?php if($_SESSION['course_id'] && $_SESSION['valid_user'] ){ ?>
+ 		<a href="<?php echo $this->base_path; ?>users/index.php"><?php echo _AT('my_start_page'); ?>: </a> '
+	<?php }?>
+	<?php echo $this->section_title; ?>:
 	<?php if ($this->sequence_links['resume']): ?>
 			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
 	<?php endif; ?>
@@ -218,7 +224,7 @@ function toggleToc(objId) {
 </div>
 
 <!-- the sub navigation -->
-<div style="text-align: right; padding-top: 5px; padding-right: 5px;"><small><?php echo $this->current_date; ?></small></div>
+<div style="text-align: right; padding-top: 5px; padding-right: 5px; float:right"><small><?php echo $this->current_date; ?></small></div>
 <?php if ($this->sub_level_pages): ?>
 	<div id="sub-navigation">
 		<?php if (isset($this->back_to_page)): ?>

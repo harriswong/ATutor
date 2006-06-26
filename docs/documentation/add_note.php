@@ -1,4 +1,6 @@
 <?php
+require(dirname(__FILE__) .'/common/vitals.inc.php');
+
 function my_add_null_slashes( $string ) {
     return ( $string );
 }
@@ -29,28 +31,24 @@ if (isset($_POST['submit'])) {
 	$config_location = '../include/config.inc.php';
 	if (is_file($config_location) && is_readable($config_location)) {
 		require($config_location);
-		if (defined('AT_ENABLE_HANDBOOK_NOTES') && AT_ENABLE_HANDBOOK_NOTES) {
-			define('AT_HANDBOOK_DB_USER', DB_USER);
+		$db = mysql_connect(DB_HOST . ':' . DB_PORT, DB_USER, DB_PASSWORD);
+		mysql_select_db(DB_NAME, $db);
 
-			define('AT_HANDBOOK_DB_PASSWORD', DB_PASSWORD);
-
-			define('AT_HANDBOOK_DB_DATABASE', DB_NAME);
-
-			define('AT_HANDBOOK_DB_PORT', DB_PORT);
-
-			define('AT_HANDBOOK_DB_HOST', DB_HOST);
-
-			define('AT_HANDBOOK_DB_TABLE_PREFIX', TABLE_PREFIX);
-
+		// check atutor config table to see if handbook notes is enabled.
+		$sql    = "SELECT value FROM ".TABLE_PREFIX."config WHERE name='user_notes'";
+		$result = @mysql_query($sql, $db);
+		if (($row = mysql_fetch_assoc($result)) && $row['value']) {
 			define('AT_HANDBOOK_ENABLE', true);
+			$enable_user_notes = true;
 		}
+		define('AT_HANDBOOK_DB_TABLE_PREFIX', TABLE_PREFIX);
 	}
 	if (!defined('AT_HANDBOOK_ENABLE')) {
 		// use local config file
 		require('./config.inc.php');
 	}
 
-	if (defined('AT_HANDBOOK_ENABLE') && AT_HANDBOOK_ENABLE) {
+	if (!$db && defined('AT_HANDBOOK_ENABLE') && AT_HANDBOOK_ENABLE) {
 		$db = @mysql_connect(AT_HANDBOOK_DB_HOST . ':' . AT_HANDBOOK_DB_PORT, AT_HANDBOOK_DB_USER, AT_HANDBOOK_DB_PASSWORD);
 		if (@mysql_select_db(AT_HANDBOOK_DB_DATABASE, $db)) {
 			$enable_user_notes = true;
@@ -66,7 +64,7 @@ if (isset($_POST['submit'])) {
 	}
 }
 
-if (!isset($_GET['p']) {
+if (!isset($_GET['p'])) {
 	$_GET['p'] = '';
 }
 
@@ -74,38 +72,36 @@ if (!isset($_GET['p']) {
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title>ATutor 1.5 Documentation - Add Note</title>
+	<title><?php get_text('add_note'); ?></title>
 	<link rel="stylesheet" href="common/styles.css" type="text/css" />
-</head>
-<body>
-
 <style type="text/css">
 div.input-form div.row {
 	margin-bottom: 10px;
 }
 </style>
-
+</head>
+<body>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <input type="hidden" name="section" value="<?php echo key($_GET); ?>" />
 <input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['p']); ?>" />
 
 <div class="input-form">
 	<div class="row">
-		<p>If you ask a question, report a bug, or request a feature, your note will not be posted. Notes must be approved by an administrator before they are posted.</p>
+		<p><?php get_text('add_note_blurb'); ?></p>
 	</div>
 
 	<div class="row">
-		<label for="email">Your email address (or name):</label><br />
+		<label for="email"><?php get_text('email_name'); ?>:</label><br />
 		<input type="text" name="email" value="" id="email" size="40" />
 	</div>
 
 	<div class="row">
-		<label for="note">Your note:</label><br />
+		<label for="note"><?php get_text('your_note');?>:</label><br />
 		<textarea name="note" id="note" cols="50" rows="20"></textarea>
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="Add Note" />
+		<input type="submit" name="submit" value="<?php get_text('add_note'); ?>" />
 	</div>
 
 </form>

@@ -16,7 +16,7 @@ $page = 'my_courses';
 $_user_location	= 'users';
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-
+require(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
 require(AT_INCLUDE_PATH.'classes/Backup/Backup.class.php');
 require(AT_INCLUDE_PATH.'lib/course.inc.php');
 
@@ -71,11 +71,11 @@ if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 	header('Location: index.php');
 	exit;
-} else if (isset($_POST['form_course'])) {
+}else if (isset($_POST['form_course']) && $_POST['submit'] != '') {
 	$_POST['instructor'] = $_SESSION['member_id'];
 
-	$errors = add_update_course($_POST);
-	
+		$errors = add_update_course($_POST);
+
 	if ($errors !== FALSE) {
 		$msg->addFeedback('COURSE_CREATED');
 		header('Location: '.$_base_href.'bounce.php?course='.$addslashes($errors).SEP.'p='.urlencode('index.php'));
@@ -89,7 +89,7 @@ $onload = 'document.course_form.title.focus();';
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 require(AT_INCLUDE_PATH.'html/course_properties.inc.php');
-
+debug($_POST);
 require(AT_INCLUDE_PATH.'footer.inc.php');
 
 ?>

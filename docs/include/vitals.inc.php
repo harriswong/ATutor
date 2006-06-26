@@ -14,7 +14,7 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_DEVEL', 1);
-define('AT_DEVEL_TRANSLATE', 1);
+define('AT_DEVEL_TRANSLATE', 0);
 define('FHA_ATTEMPTS', 4);
 define('AT_USE_GUIDE', 1);
 
@@ -590,13 +590,13 @@ function get_instructor_status() {
 	$_my_uri = $_SERVER['PHP_SELF'].$_my_uri;
 
 function my_add_null_slashes( $string ) {
-    return ( $string );
+    return mysql_real_escape_string(stripslashes($string));
 }
 
 if ( get_magic_quotes_gpc() == 1 ) {
 	$addslashes = 'my_add_null_slashes';
 } else {
-	$addslashes = 'addslashes';
+	$addslashes = 'mysql_real_escape_string';
 }
 
 /**
@@ -765,7 +765,6 @@ define('AT_ENABLE_CATEGORY_THEMES', $_config['theme_categories']);
 define('AT_COURSE_BACKUPS',         $_config['course_backups']);
 define('AT_EMAIL_CONFIRMATION',     $_config['email_confirmation']);
 define('AT_MASTER_LIST',            $_config['master_list']);
-define('AT_ENABLE_HANDBOOK_NOTES',  $_config['enable_handbook_notes']);
 $MaxFileSize       = $_config['max_file_size']; 
 $MaxCourseSize     = $_config['max_course_size'];
 $MaxCourseFloat    = $_config['max_course_float'];

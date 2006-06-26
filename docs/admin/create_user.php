@@ -23,8 +23,8 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['submit'])) {
 
+	//check if student id (public field) is already being used
 	if (!$_POST['overwrite'] && !empty($_POST['student_id'])) {
-		//check if student id (public field) is already being used
 		$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]' && member_id<>0",$db);
 		if (mysql_num_rows($result) != 0) {
 			$msg->addError('CREATE_MASTER_USED');
@@ -168,8 +168,8 @@ if (isset($_POST['submit'])) {
 
 		if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 			$student_id  = sha1($addslashes($_POST['student_id']));
-			//$student_pin = md5($addslashes($_POST['student_pin']));
 			$student_pin = 	intval($_POST['year']).'-'.intval($_POST['month']).'-'.intval($_POST['day']);
+
 			if ($student_id) {
 				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$m_id WHERE public_field='$student_id'";
 				mysql_query($sql, $db);
