@@ -4,8 +4,7 @@
 		
 		<div align="right" style="clear: left;">		
 			<br />
-			<!-- previous/next/resume icons/links -->
-			<?php if ($this->sequence_links['resume']): ?>
+			<!-- ?php if ($this->sequence_links['resume']): ?>
 					<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->img; ?>resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?> Alt+." alt="<?php echo $this->sequence_links['resume']['title']; ?> Alt+." class="img-size-ascdesc" /></a>
 			<?php else:
 				if ($this->sequence_links['previous']): ?>
@@ -17,7 +16,10 @@
 			<?php endif; ?>
 			&nbsp;	
 
-			<span style="font-size:smaller;padding-right:3px;"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content" title="<?php echo _AT('goto_content'); ?> Alt-c" ><?php echo _AT('goto_top'); ?></a>	</span>
+			<span style="font-size:smaller;padding-right:3px;"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content" title="<?php echo _AT('goto_content'); ?> Alt-c" ><?php echo _AT('goto_top'); ?></a>	</span -->
+
+			<span style="font-size:smaller;padding-right:3px;"><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#content" title="<?php echo _AT('goto_content'); ?> Alt-c" ><?php echo _AT('goto_top'); ?></a>	</span>
+
 		</div>  
 	<?php endif; ?> 
 	</td>
