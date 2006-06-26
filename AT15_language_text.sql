@@ -10,7 +10,7 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING2','One more registration attempt remains before registration is temporarily disabled. Please <a href="./help/contact_support.php">contact FHA</a> if you require assistance.',NOW(),'second/final warning before registration lock.'),
 
-('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. ',NOW(),'first warning before registration lock.'),
+('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance. ',NOW(),'first warning before registration lock.'),
 
 ('en','_msgs','AT_ERROR_EMAIL_MISMATCH','Email addresses do not match. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance.',NOW(),'If email addresses do not match.'),
 
@@ -66,6 +66,8 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en' ,'_msgs', 'AT_ERROR_CREATE_MASTER_USED', 'The Employee Number you have entered already belongs to another user. If you wish to over-write this association with the new account, use the over-write checkbox.', NOW(), ''),
 
-('en' ,'_msgs', 'AT_ERROR_NOT_CONFIRMED', 'Your account's email address has not yet been confirmed. Please check your email account for a confirmation message. Please contact us if you do not receive it.', NOW(), '')
+('en' ,'_msgs', 'AT_ERROR_NOT_CONFIRMED', 'Your account's email address has not yet been confirmed. Please check your email account for a confirmation message. Please contact us if you do not receive it.', NOW(), ''),
+
+('en' ,'_msgs', 'AT_ERROR_LOGIN_CHARS', 'Your Login Name must only contain letters, numbers, underscores (_'s), or 'at' symbols (@'s).', NOW(), '')
 
 ;
