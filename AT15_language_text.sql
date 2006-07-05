@@ -10,7 +10,7 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING2','One more registration attempt remains before registration is temporarily disabled. Please <a href="./help/contact_support.php">contact FHA</a> if you require assistance.',NOW(),'second/final warning before registration lock.'),
 
-('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance. ',NOW(),'first warning before registration lock.'),
+('en','_msgs','AT_ERROR_REGISTRATION_LOCK_WARNING1','Registration information contains errors. Contact FHA if you require assistance. ',NOW(),'first warning before registration lock.'),
 
 ('en','_msgs','AT_ERROR_EMAIL_MISMATCH','Email addresses do not match. <a href="./help/contact_support.php">Contact FHA</a> if you require assistance.',NOW(),'If email addresses do not match.'),
 
@@ -68,6 +68,8 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en' ,'_msgs', 'AT_ERROR_NOT_CONFIRMED', 'Your account\'s email address has not yet been confirmed. Please check your email account for a confirmation message. Please contact us if you do not receive it.', NOW(), ''),
 
-('en' ,'_msgs', 'AT_ERROR_LOGIN_CHARS', 'Your Login Name must only contain letters, numbers, underscores (_\'s), or \'at\' symbols (@\'s).', NOW(), '')
+('en' ,'_msgs', 'AT_ERROR_LOGIN_CHARS', 'Your Login Name must only contain letters, numbers, underscores (_\'s).', NOW(), ''),
+
+('en' ,'_template', 'email_confirmation_message', 'Greetings!\n\nRegistration Confirmation:\n\nThis is an automatic e-mail reminder from the FHA Online Learning System.  Please do not reply to this message.\n\nYou have registered for an account on %1s. Please finish the registration process by confirming your email address by using the following link: %2s .\n\nIf the link does not open your browser automatically, please copy and paste the link into your Internet browser\'s address bar.\n\nThanks.\n\nOnline Learning Initiatives\nFraser Health Authority', NOW(), '')
 
 ;
