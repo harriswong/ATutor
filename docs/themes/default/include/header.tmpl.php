@@ -213,7 +213,7 @@ function toggleToc(objId) {
 
 	<span style="white-space:nowrap;font-size:smaller;padding-top:150px;">
 	<?php if($_SESSION['course_id'] && $_SESSION['valid_user'] ){ ?>
- 		<a href="<?php echo $this->base_path; ?>users/index.php"><?php echo _AT('my_start_page'); ?>: </a> '
+ 		<a href="<?php echo $this->base_path; ?>users/index.php"><?php echo _AT('my_start_page'); ?>: </a>
 	<?php }?>
 	<?php echo $this->section_title; ?>:
 	

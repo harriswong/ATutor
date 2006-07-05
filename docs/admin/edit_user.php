@@ -141,8 +141,12 @@ if (isset($_POST['submit'])) {
 			$_POST['student_id'] = $addslashes($_POST['student_id']);
 			$student_pin = sha1($addslashes($_POST['student_pin']));
 
+			//if old and new different and old isn't empty, delete the old
+
+			
 			$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=0 WHERE member_id=$id";
 			$result = mysql_query($sql, $db);
+
 
 			if ($_POST['student_id']) {
 				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$id WHERE public_field='$_POST[student_id]'";
