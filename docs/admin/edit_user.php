@@ -17,12 +17,24 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_USERS);
 
 if (isset($_POST['cancel'])) {
-	header('Location: ./users.php');
+	if (isset($_POST['ml']) && $_REQUEST['ml']) {
+		header('Location: '.$_base_href.'admin/master_list.php');
+	} else {
+		header('Location: '.$_base_href.'admin/users.php');
+	}
 	exit;
 }
 
 if (isset($_POST['submit'])) {
 	$id = intval($_POST['id']);
+
+	//check if student id (public field) is already being used
+	if (!$_POST['overwrite'] && !empty($_POST['student_id'])) {
+		$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."master_list WHERE public_field='$_POST[student_id]' && member_id<>0",$db);
+		if (mysql_num_rows($result) != 0) {
+			$msg->addError('CREATE_MASTER_USED');
+		}
+	}
 
 	/* email check */
 	if ($_POST['email'] == '') {
@@ -137,20 +149,41 @@ if (isset($_POST['submit'])) {
 			exit;
 		}
 
+
 		if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 			$_POST['student_id'] = $addslashes($_POST['student_id']);
 			$student_pin = sha1($addslashes($_POST['student_pin']));
 
-			//if old and new different and old isn't empty, delete the old
+			//if changed, delete old stud id
+			if (!empty($_POST['old_student_id']) && $_POST['old_student_id'] != $_POST['student_id']) {
+				$sql = "DELETE FROM ".TABLE_PREFIX."master_list WHERE public_field=".$_POST['old_student_id']." AND member_id=$id";
+				$result = mysql_query($sql, $db);
+			}
+			//if new is set
+			if (!empty($_POST['student_id']) && $_POST['old_student_id'] != $_POST['student_id']) {
+				$sql = "REPLACE INTO ".TABLE_PREFIX."master_list VALUES ('$_POST[student_id]', '', $id)";
+				$result = mysql_query($sql, $db);
+			}
+		}
 
-			
+/*		if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
+			$_POST['student_id'] = $addslashes($_POST['student_id']);
+			$student_pin = sha1($addslashes($_POST['student_pin']));
+
+<<<<<<< .working
+			//if old and new different and old isn't empty, delete the old
 			$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=0 WHERE member_id=$id";
 			$result = mysql_query($sql, $db);
 
-
 			if ($_POST['student_id']) {
 				$sql = "UPDATE ".TABLE_PREFIX."master_list SET member_id=$id WHERE public_field='$_POST[student_id]'";
+=======
+			//if changed, delete old stud id
+			if (!empty($_POST['old_student_id']) && $_POST['old_student_id'] != $_POST['student_id']) {
+				$sql = "DELETE FROM ".TABLE_PREFIX."master_list WHERE public_field=".$_POST['old_student_id']." AND member_id=$id";
+>>>>>>> .merge-right.r6478
 				$result = mysql_query($sql, $db);
+<<<<<<< .working
 				if (mysql_affected_rows($db) == 0) {
 					$sql = "SELECT member_id FROM ".TABLE_PREFIX."master_list WHERE member_id=$id AND public_field='$_POST[student_id]'";
 					$result = mysql_query($sql, $db);
@@ -159,9 +192,16 @@ if (isset($_POST['submit'])) {
 						mysql_query($sql, $db);
 					}
 				} 
+=======
+>>>>>>> .merge-right.r6478
+			}
+			//if new is set
+			if (!empty($_POST['student_id']) && $_POST['old_student_id'] != $_POST['student_id']) {
+				$sql = "REPLACE INTO ".TABLE_PREFIX."master_list VALUES ('$_POST[student_id]', '', $id)";
+				$result = mysql_query($sql, $db);
 			}
 		}
-
+*/
 
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION && ($_POST['status'] == AT_STATUS_UNCONFIRMED) && ($_POST['old_status'] != AT_STATUS_UNCONFIRMED)) {
 
@@ -185,7 +225,11 @@ if (isset($_POST['submit'])) {
 		}
 
 		$msg->addFeedback('PROFILE_UPDATED_ADMIN');
-		header('Location: '.$_base_href.'admin/users.php');
+		if (isset($_POST['ml']) && $_REQUEST['ml']) {
+			header('Location: '.$_base_href.'admin/master_list.php');
+		} else {
+			header('Location: '.$_base_href.'admin/users.php');
+		}
 		exit;
 	}
 }
@@ -212,12 +256,21 @@ if (empty($_POST)) {
 		$sql    = "SELECT public_field FROM ".TABLE_PREFIX."master_list WHERE member_id=$id";
 		$result = mysql_query($sql, $db);
 		if ($row = mysql_fetch_assoc($result)) {
+			$_POST['old_student_id'] = $row['public_field'];
 			$_POST['student_id'] = $row['public_field'];
 		}
 	}
 }
 
 $savant->assign('languageManager', $languageManager);
+
+if (isset($_REQUEST['ml']) && $_REQUEST['ml']) {
+	// redirect back to the master list
+	$savant->assign('ml', 1);
+} else {
+	$savant->assign('ml', 0);
+}
+
 
 /* HAVE TO SEND MEMBER_ID THROUGH FORM AS A HIDDEN POST VARIABLE!!! */
 /* PUT IN IF LOOP THAT LETS YOU SEE STATUS RADIO BUTTONS */

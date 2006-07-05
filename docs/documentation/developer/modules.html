@@ -54,6 +54,7 @@ pre.code {
 	padding-right: 5px;
 }
 pre {
+	background-color: #EEEEFF;
 	font-family: Courier, monospace;
 	border-left: 1px solid #761596;
 	padding: 0px 0px 0px 10px;
@@ -517,6 +518,10 @@ INSERT INTO `language_text` VALUES ('en',
 <pre>
 
 &lt;?php
+// make sure user is allowed to see this page (admins only)
+
+admin_authenticate(AT_ADMIN_PRIV_EXAMPLE_MAKER);
+	
 if (isset($_POST['submit'])) {
 	// trim whitespace from the value submitted
 	$_POST['uri'] = trim($_POST['uri']);

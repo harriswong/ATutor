@@ -57,7 +57,13 @@ if (!isset($_GET['cat_parent_id'])) {
 	$parent_id = intval($_GET['cat_parent_id']);
 }
 
-$groups = implode(',', $_SESSION['groups']);
+if ($_SESSION['groups']) {
+	$groups = implode(',', $_SESSION['groups']);
+} else {
+	// not in any groups
+	$groups = 0;
+}
+
 $auth = manage_links();
 
 if ($auth == LINK_CAT_AUTH_ALL) {
@@ -72,10 +78,8 @@ if ($parent_id) {
 $sql .= " ORDER BY $col $order";
 
 $result = mysql_query($sql, $db);
-$num_results = mysql_num_rows($result);
 
-if ($num_results > 0):
-
+if (!empty($categories)) {
 ?>
 
 <form method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -106,7 +110,7 @@ if ($num_results > 0):
 	</div>
 </div>
 </form>
-<?php endif; ?>
+<?php } ?>
 
 <form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
@@ -119,7 +123,6 @@ if ($num_results > 0):
 	<th scope="col"><?php echo _AT('submitted_by'); ?></th>
 	<th scope="col"><?php echo _AT('approved'); ?></th>
 	<th scope="col"><?php echo _AT('hit_count'); ?></th>
-
 </tr>
 </thead>
 

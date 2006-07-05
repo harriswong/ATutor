@@ -10,6 +10,7 @@ if (!$_POST['email']) {
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
 <?php global $languageManager, $_config; ?>
+<input name="ml" type="hidden" value="<?php echo $this->ml; ?>" />
 <div class="input-form">
 
 	<?php if (!$_POST['member_id'] && defined('AT_MASTER_LIST') && AT_MASTER_LIST && !admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE)): ?>
@@ -165,14 +166,15 @@ if (!$_POST['email']) {
 	</div>
 
 	<?php if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
+		<input type="hidden" name="old_student_id" value="<?php echo $_POST['old_student_id']; ?>" />
 		<div class="row">
 			<label for="student_id"><?php echo _AT('employee_number'); ?></label><br />
 				<input type="text" name="student_id" value="<?php echo $_POST['student_id']; ?>" size="20" /><br />
 		</div>
-		<div class="row">
+		<!-- div class="row">
 			<label for="student_pin"><?php echo _AT('student_pin'); ?></label><br />
 			<input id="student_pin" name="student_pin" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['student_pin'])); ?>" /><br />
-		</div>
+		</div -->
 		<div class="row">
 			<input type="checkbox" id="overwrite" name="overwrite" value="1" <?php if ($_POST['overwrite']) { echo 'checked="checked"'; } ?> /><label for="overwrite"><?php echo _AT('overwrite_master');?></label>
 		</div>

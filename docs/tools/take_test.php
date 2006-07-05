@@ -253,10 +253,15 @@ if ($result && $questions) {
 			case AT_TESTS_MC:
 
 				if ($row['weight']) {
-					echo '('.$row['weight'].' '._AT('marks').')';
+					if ($row['weight'] == 1) {
+						echo '('.$row['weight'].' '.strtolower(_AT('mark')).')';
+					} else {
+						echo '('.$row['weight'].' '._AT('marks').')';
+					}
 				}
 				echo '<p>'.AT_print($row['question'], 'tests_questions.question').'</p><p>';
 				if (array_sum(array_slice($row, 16, -6)) > 1) {
+					echo '<input type="hidden" name="answers['.$row['question_id'].'][]" value="-1" />';
 					for ($i=0; $i < 10; $i++) {
 						if ($row['choice_'.$i] != '') {
 							if ($i > 0) {
@@ -285,8 +290,12 @@ if ($result && $questions) {
 			case AT_TESTS_TF:
 				/* true or false question */
 				if ($row['weight']) {
-					echo '('.$row['weight'].' '._AT('marks').')';
-				}	
+					if ($row['weight'] == 1) {
+						echo '('.$row['weight'].' '.strtolower(_AT('mark')).')';
+					} else {
+						echo '('.$row['weight'].' '._AT('marks').')';
+					}
+				}
 
 				echo '<p>'.AT_print($row['question'], 'tests_questions').'</p><p>';
 				echo '<input type="radio" name="answers['.$row['question_id'].']" value="1" id="choice_'.$row['question_id'].'_0" /><label for="choice_'.$row['question_id'].'_0">'._AT('true').'</label>';
@@ -300,7 +309,11 @@ if ($result && $questions) {
 
 			case AT_TESTS_LONG:
 				if ($row['weight']) {
-					echo '('.$row['weight'].' '._AT('marks').')';
+					if ($row['weight'] == 1) {
+						echo '('.$row['weight'].' '.strtolower(_AT('mark')).')';
+					} else {
+						echo '('.$row['weight'].' '._AT('marks').')';
+					}
 				}
 				echo '<p>'.AT_print($row['question'], 'tests_questions').'</p><p>';
 				switch ($row['properties']) {
@@ -327,7 +340,11 @@ if ($result && $questions) {
 				break;
 			case AT_TESTS_LIKERT:
 				if ($row['weight']) {
-					echo '('.$row['weight'].' '._AT('marks').')';
+					if ($row['weight'] == 1) {
+						echo '('.$row['weight'].' '.strtolower(_AT('mark')).')';
+					} else {
+						echo '('.$row['weight'].' '._AT('marks').')';
+					}
 				}
 				echo '<p>'.AT_print($row['question'], 'tests_questions.question').'</p><p>';
 

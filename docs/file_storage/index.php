@@ -359,7 +359,7 @@ else if (query_bit($owner_status, WORKSPACE_AUTH_WRITE) && isset($_POST['upload'
 }
 
 if (query_bit($owner_status, WORKSPACE_AUTH_WRITE)) {
-	$onload = 'hideform(\'upload\'); hideform(\'folder\');';
+	$onload = 'hideform(\'upload\'); hideform(\'c_folder\');';
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
@@ -398,9 +398,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	<div style="margin: 0px auto; width: 70%">
 		<div class="input-form" style="width: 48%; float: right">
 			<div class="row">
-				<h3><a onclick="javascript:document.getElementById('folder').style.display='';document.form0.new_folder_name.focus();" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('create_folder'); ?></a></h3>
+				<h3><a href="file_storage/index.php" onclick="javascript:toggleform('c_folder'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('create_folder'); ?></a></h3>
 			</div>
-			<div  id="folder">
+			<div  id="c_folder">
 				<div class="row">
 					<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="fname"><?php echo _AT('name'); ?></label><br />
 					<input type="text" id="fname" name="new_folder_name" size="20" />
@@ -412,7 +412,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		</div>
 		<div class="input-form" style="float: left; width: 48%">
 			<div class="row">
-				<h3><a onclick="javascript:document.getElementById('upload').style.display='';document.form0.file.focus();" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('new_file'); ?></a></h3>
+				<h3><a href="file_storage/index.php" onclick="javascript:toggleform('upload'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('new_file'); ?></a></h3>
 			</div>
 			<div id="upload">
 				<div class="row">
@@ -568,16 +568,31 @@ if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 				<?php endif; ?>
 			</td>
 			<td valign="top"><?php echo get_login($file_info['member_id']); ?></td>
-			<td align="right" valign="top">
+			<td valign="top">
 				<?php if ($_config['fs_versioning']): ?>
-					<?php if ($file_info['num_revisions']): ?>
-						<a href="<?php echo 'file_storage/revisions.php'.$owner_arg_prefix.'id='.$file_info['file_id']; ?>"><?php echo $file_info['num_revisions']; ?></a>
+					<?php if ($file_info['num_revisions']): 
+						if ($file_info['num_revisions'] == 1) {
+							$lang_var = 'fs_revision';
+						} else {
+							$lang_var = 'fs_revisions';
+						}
+						?>
+						
+						<a href="<?php echo 'file_storage/revisions.php'.$owner_arg_prefix.'id='.$file_info['file_id']; ?>"><?php echo _AT($lang_var, $file_info['num_revisions']); ?></a>
 					<?php else: ?>
 						-
 					<?php endif; ?>
 				<?php endif; ?>
 			</td>
-			<td align="right" valign="top"><a href="<?php echo 'file_storage/comments.php'.$owner_arg_prefix.'id='.$file_info['file_id']; ?>"><?php echo $file_info['num_comments']; ?></a></td>
+			<td valign="top">
+			<?php 
+			if ($file_info['num_comments'] == 1) {
+				$lang_var = 'fs_comment';
+			} else {
+				$lang_var = 'fs_comments';
+			}
+			?>
+			<a href="<?php echo 'file_storage/comments.php'.$owner_arg_prefix.'id='.$file_info['file_id']; ?>"><?php echo _AT($lang_var, $file_info['num_comments']); ?></a></td>
 			<td align="right" valign="top"><?php echo get_human_size($file_info['file_size']); ?></td>
 			<td align="right" valign="top"><?php echo AT_date(_AT('filemanager_date_format'), $file_info['date'], AT_DATE_MYSQL_DATETIME); ?></td>
 		</tr>
@@ -631,6 +646,24 @@ function CheckAll() {
 function hideform(id) {
 	document.getElementById(id).style.display='none';
 }
+
+function toggleform(id) {
+	if (document.getElementById(id).style.display == "none") {
+		//show
+		document.getElementById(id).style.display='';	
+
+		if (id == "c_folder") {
+			document.form0.new_folder_name.focus();
+		} else if (id == "upload") {
+			document.form0.file.focus();
+		}
+
+	} else {
+		//hide
+		document.getElementById(id).style.display='none';
+	}
+}
+
 // -->
 </script>
 

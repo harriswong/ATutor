@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License			*/
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
-// $Id$
+// $Id: pages.inc.php 6248 2006-05-31 14:01:26Z heidi $
 
     $_pages['introduction.php']                  = 'Introduction';
     $_pages['creating_courses.php']				 = 'Creating Courses';
