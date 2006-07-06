@@ -67,7 +67,7 @@ if (isset($_POST['cancel'])) {
 	$chk_login = $addslashes($_POST['login']);
 
 	if (intval($_POST['secret']) != $_SESSION['secret']) {
-		//$msg->addError('SECRET_ERROR');
+		$msg->addError('SECRET_ERROR');
 	}
 
 	$_POST['password'] = trim($_POST['password']);
