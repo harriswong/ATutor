@@ -78,7 +78,7 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 } else if (isset($_POST['submit'])) {
 	$_POST['email'] = $addslashes($_POST['email']);
 
-	$sql    = "SELECT member_id, email, creation_date, status FROM ".TABLE_PREFIX."members WHERE email='$_POST[email]'";
+	$sql    = "SELECT login, member_id, email, creation_date, status FROM ".TABLE_PREFIX."members WHERE email='$_POST[email]'";
 	$result = mysql_query($sql, $db);
 
 	if ($row = mysql_fetch_assoc($result)) {
@@ -94,7 +94,7 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 			$mail->From     = $_config['contact_email'];
 			$mail->AddAddress($row['email']);
 			$mail->Subject = SITE_NAME . ': ' . _AT('email_confirmation_subject');
-			$mail->Body    = _AT('email_confirmation_message', $_base_href, $confirmation_link)."\n\n";
+			$mail->Body    = _AT('email_confirmation_message', $_base_href, $confirmation_link, $row['login'])."\n\n";
 			$mail->Send();
 
 			$msg->addFeedback('CONFIRMATION_SENT');

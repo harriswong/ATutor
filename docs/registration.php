@@ -249,7 +249,7 @@ if (isset($_POST['cancel'])) {
 			$mail->From     = $_config['contact_email'];
 			$mail->AddAddress($_POST['email']);
 			$mail->Subject = SITE_NAME . ' - ' . _AT('email_confirmation_subject');
-			$mail->Body    = _AT('email_confirmation_message', SITE_NAME, $confirmation_link);
+			$mail->Body    = _AT('email_confirmation_message', SITE_NAME, $confirmation_link, $_POST['login']);
 
 			$mail->Send();
 
