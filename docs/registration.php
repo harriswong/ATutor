@@ -79,7 +79,7 @@ if (isset($_POST['cancel'])) {
 		$msg->addError('LOGIN_NAME_MISSING');
 	} else {
 		/* check for special characters */
-		if (!(eregi("^[a-zA-Z0-9_@]([a-zA-Z0-9_@])*$", $_POST['login']))) {
+		if (!(eregi("^[a-zA-Z0-9_.-]([a-zA-Z0-9_.-])*$", $_POST['login']))) {
 			$msg->addError('LOGIN_CHARS');
 		} else {
 			$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."members WHERE login='$chk_login'",$db);
@@ -145,9 +145,9 @@ if (isset($_POST['cancel'])) {
 	$_POST['login'] = strtolower($_POST['login']);
 
 	//check date of birth
-	$mo = intval($_POST['month']);
-	$day = intval($_POST['day']);
-	$yr = intval($_POST['year']);
+	$mo = $_POST['month'] = intval($_POST['month']);
+	$day = $_POST['day'] = intval($_POST['day']);
+	$yr = $_POST['year'] = intval($_POST['year']);
 
 	/* let's us take (one or) two digit years (ex. 78 = 1978, 3 = 2003) */
 	if ($yr <= date('y')) { 
@@ -281,6 +281,8 @@ if (isset($_POST['cancel'])) {
 		}
 
 	}
+} else {
+	$_POST = array();
 }
 
 unset($_SESSION['member_id']);

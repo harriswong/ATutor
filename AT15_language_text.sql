@@ -72,6 +72,12 @@ REPLACE INTO AT153_language_text VALUES
 
 ('en' ,'_template', 'email_confirmation_message', 'Greetings!\n\nRegistration Confirmation:\n\nThis is an automatic e-mail reminder from the FHA Online Learning System.  Please do not reply to this message.\n\nYou have registered for an account on %1$s.\n\nYour login name is %3$s.\n\n Please finish the registration process by confirming your email address by using the following link: %2$s .\n\nIf the link does not open your browser automatically, please copy and paste the link into your Internet browser\'s address bar.\n\nThanks.\n\nOnline Learning Initiatives\nFraser Health Authority', NOW(), ''),
 
-('en' ,'_template', 'password_request2', 'Greetings!\n\nForgotten Password:\n\nThis is an automatic e-mail reminder from the FHA Online Learning System.  Please do not reply to this message.\n\nIf you have forgotten your password, please visit the address below to change it:\n\n%4$s\n\nIf the link does not open your browser automatically, please copy and paste the link into your Internet browser\'s address bar.\n\nYour login name is %1$s.\n\nPlease note that this link will only be active for %3$s days. If it has expired, please visit http://upgradefhaol.primesignal.com/docs/ and click on "E-mail Reminder" again.\n\nThanks.\n\nOnline Learning Initiatives\nFraser Health Authority', NOW(), '')
+('en' ,'_template', 'password_request2', 'Greetings!\n\nForgotten Password:\n\nThis is an automatic e-mail reminder from the FHA Online Learning System.  Please do not reply to this message.\n\nIf you have forgotten your password, please visit the address below to change it:\n\n%4$s\n\nIf the link does not open your browser automatically, please copy and paste the link into your Internet browser\'s address bar.\n\nYour login name is %1$s.\n\nPlease note that this link will only be active for %3$s days. If it has expired, please visit http://upgradefhaol.primesignal.com/docs/ and click on "E-mail Reminder" again.\n\nThanks.\n\nOnline Learning Initiatives\nFraser Health Authority', NOW(), ''),
+
+
+('en' ,'_template', '15_max_chars', '8 characters minimum, 15 characters maximum', NOW(), ''),
+
+('en' ,'_template', 'contain_only', 'May contain only letters, numbers, underscores, hyphens or periods.', NOW(), '')
+
 
 ;

@@ -89,7 +89,7 @@ if (!$_POST['email']) {
 		<?php else: ?>		
 			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>
 			<label for="login"><?php echo _AT('choose_login_name'); ?></label><br />
-			<input id="login" name="login" type="text" maxlength="20" size="15" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" /><br />
+			<input id="login" name="login" type="text" maxlength="20" size="30" value="<?php echo stripslashes(htmlspecialchars($_POST['login'])); ?>" /><br />
 			<small>&middot; <?php echo _AT('contain_only'); ?><br />
 				   &middot; <?php echo _AT('20_max_chars'); ?></small>			
 		<?php endif; ?>
