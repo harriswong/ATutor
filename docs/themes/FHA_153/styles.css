@@ -1251,3 +1251,129 @@ a.user.instructor {
 p.fm-desc {
 	font-size: small;
 }
+
+/* FHA custom */
+
+table.mine {
+	width: 770px;
+	float:left;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #000000;
+}
+div.pad {
+	background-color:#C7E9FF;
+	height: 32px;
+	width:768px
+}
+div.head {
+    font-family: Arial, Helvetica, sans-serif;
+	font-size: 21pt;
+	font-weight: bold;
+	color: #A4954D;
+	letter-spacing: -1pt;
+	background-color:#C7E9FF;
+	text-align: left;
+	padding-bottom: 5px;
+	padding-top: 50px;
+	padding-left:20px;
+	margin-bottom: 30px;
+    width:748px;
+}
+h2.mine {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 36pt;
+	font-style: normal;
+	line-height: normal;
+	font-weight: bold;
+	font-variant: normal;
+	text-transform: none;
+	color: #FF6600;
+	text-decoration: underline;
+	letter-spacing: -2px;
+	position: relative;
+	left: 25px;
+	padding-top: 20px;
+}
+h3.mine {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-style: italic;
+	line-height: 80%;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #333333;
+	text-decoration: none;
+	position: relative;
+	left: 25px;
+	padding-top: 2px;
+}
+ul.mine {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #333333;
+	word-spacing: normal;
+	list-style-position: outside;
+	list-style-type: disc;
+}
+li.mine {
+	margin-right: 10px;
+	padding-right: 5px;
+	margin-bottom: 5px;
+}
+img.mine {
+	border: thick solid #3891FF;
+}
+.bold {
+	font-weight: bold;
+	color: #2F628A;
+}
+.obj {
+	font-size: 16pt;
+	margin-top: 80px;
+}
+
+.tab50 {
+	margin-left:50px;
+}
+.tab30 {
+	margin-left:30px;
+}
+.tab15 {
+	margin-left:15px;
+}
+.tab10 {
+	margin-left:10px;
+}
+.tab5 {
+	margin-left:5px;
+}
+
+.w300 {
+	width:300px;
+}
+.w350 {
+	width:350px;
+}
+.w400 {
+	width:400px;
+}
+.w450 {
+	width:450px;
+}
+.w500 {
+	width:500px;
+}
+.w550 {
+	width:550px;
+}
+.w600 {
+	width:600px;
+}
+
+p.mine {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #333333;
+}
