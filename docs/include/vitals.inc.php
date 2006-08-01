@@ -175,6 +175,9 @@ require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
 		exit;
 	}
 	$myLang->saveToSession();
+	if (isset($_GET['lang'])) {
+		$myLang->saveToPreferences($_SESSION['member_id']);
+	}
 	$myLang->sendContentTypeHeader();
 
 	/* set right-to-left language */
@@ -599,11 +602,16 @@ function get_instructor_status() {
 function my_add_null_slashes( $string ) {
     return mysql_real_escape_string(stripslashes($string));
 }
+function my_null_slashes($string) {
+	return $string;
+}
 
 if ( get_magic_quotes_gpc() == 1 ) {
-	$addslashes = 'my_add_null_slashes';
+	$addslashes   = 'my_add_null_slashes';
+	$stripslashes = 'stripslashes';
 } else {
-	$addslashes = 'mysql_real_escape_string';
+	$addslashes   = 'mysql_real_escape_string';
+	$stripslashes = 'my_null_slashes';
 }
 
 /**

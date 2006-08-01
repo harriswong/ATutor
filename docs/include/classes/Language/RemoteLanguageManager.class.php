@@ -20,6 +20,10 @@
 * @see		Language.class.php
 * @package	Language
 */
+
+require_once(AT_INCLUDE_PATH.'classes/Language/LanguageParser.class.php');
+require_once(AT_INCLUDE_PATH.'classes/Language/LanguagesParser.class.php');
+
 class RemoteLanguageManager extends LanguageManager {
 
 	function RemoteLanguageManager() {
@@ -50,9 +54,20 @@ class RemoteLanguageManager extends LanguageManager {
 
 		$language_pack = @file_get_contents('http://update.atutor.ca/languages/' . $version . '/atutor_' . $version . '_' . $language_code . '.zip');
 
-		$fp = fopen($filename, 'wb+');
-		fwrite($fp, $language_pack, strlen($language_pack));
+		if ($language_pack) {
+			$fp = fopen($filename, 'wb+');
+			fwrite($fp, $language_pack, strlen($language_pack));
 
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	function import($language_code) {
+		$filename = tempnam(AT_CONTENT_DIR . 'import', $language_code);
+		if ($this->fetchLanguage($language_code, $filename)) {
+			parent::import($filename);
+		}
 	}
 }
 

@@ -29,11 +29,7 @@ $page_return = $_GET['page_return'];
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 
-	if (trim($_POST['page_return']) != ''){
-		header('Location: '. $_POST['page_return']);
-	} else {
-		header('Location: index_instructor.php');
-	}
+	header('Location: index_instructor.php');
 	exit;
 } else if (isset($_POST['submit'])) {
 	if (trim($_POST['title']) == '') {
@@ -87,12 +83,12 @@ if (isset($_POST['cancel'])) {
 		}
 		exit;
 	} else { // submission contained an error, update form values for redisplay
-		$title       = stripslashes($addslashes($_POST['title']));
-		$author      = stripslashes($addslashes($_POST['author']));
-		$publisher   = stripslashes($addslashes($_POST['publisher']));
-		$date        = stripslashes($addslashes($_POST['date']));
-		$comments    = stripslashes($addslashes($_POST['comments']));
-		$page_return = stripslashes($addslashes($_POST['page_return']));
+		$title       = $stripslashes($_POST['title']);
+		$author      = $stripslashes($_POST['author']);
+		$publisher   = $stripslashes($_POST['publisher']);
+		$date        = $stripslashes($_POST['date']);
+		$comments    = $stripslashes($_POST['comments']);
+		$page_return = $stripslashes($_POST['page_return']);
 	}
 }
 

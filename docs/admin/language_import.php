@@ -23,84 +23,81 @@ require_once(AT_INCLUDE_PATH.'classes/Language/LanguagesParser.class.php');
 /* to avoid timing out on large files */
 @set_time_limit(0);
 
+$_SESSION['done'] = 1;
 
 if (isset($_POST['submit_import'])) {
 	require_once(AT_INCLUDE_PATH.'classes/Language/RemoteLanguageManager.class.php');
 	$remoteLanguageManager =& new RemoteLanguageManager();
-	$filename = AT_CONTENT_DIR . 'import/ATutor_language_file.zip';
-	$remoteLanguageManager->fetchLanguage($_POST['language'], $filename);
+	$remoteLanguageManager->import($_POST['language']);
 
-	$_FILES['file']['name']     = 'ATutor_language_file.zip';
-	$_FILES['file']['tmp_name'] = $filename;
-
-} else if (!is_uploaded_file($_FILES['file']['tmp_name']) || !$_FILES['file']['size']) {
-	$_SESSION['done'] = 1;
+	header('Location: language_import.php');
+	exit;
+} else if (isset($_POST['submit']) && (!is_uploaded_file($_FILES['file']['tmp_name']) || !$_FILES['file']['size'])) {
 	$msg->addError('LANG_IMPORT_FAILED');
-	header('Location: language.php');
-	exit;
-}
-
-$_SESSION['done'] = 1;
-
-if (!$_FILES['file']['name']) {
+} else if (isset($_POST['submit']) && !$_FILES['file']['name']) {
 	$msg->addError('IMPORTFILE_EMPTY');
-	header('Location: language.php');
+} else if (isset($_POST['submit']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+	$languageManager->import($_FILES['file']['tmp_name']);
+
+	header('Location: language_import.php');
 	exit;
 }
-
-/* check if ../content/import/ exists */
-$import_path = AT_CONTENT_DIR . 'import/';
-
-if (!is_dir($import_path)) {
-	if (!@mkdir($import_path, 0700)) {
-		$msg->addError('IMPORTDIR_FAILED');
-		header('Location: language.php');
-		exit;
-	}
-}
-
-$import_path = AT_CONTENT_DIR . 'import/';
-$archive = new PclZip($_FILES['file']['tmp_name']);
-if ($archive->extract(	PCLZIP_OPT_PATH,	$import_path) == 0) {
-	exit('Error : ' . $archive->errorInfo(true));
-}
-
-$language_xml = @file_get_contents($import_path.'language.xml');
-
-$languageParser =& new LanguageParser();
-$languageParser->parse($language_xml);
-$languageEditor =& $languageParser->getLanguageEditor(0);
-
-if (($languageEditor->getAtutorVersion() != VERSION) 
-	&& (!defined('AT_DEVEL_TRANSLATE') || !AT_DEVEL_TRANSLATE)) 
-	{
-		$msg->addError('LANG_WRONG_VERSION');
-}
-
-if (($languageEditor->getStatus() != AT_LANG_STATUS_PUBLISHED) 
-	&& ($languageEditor->getStatus() != AT_LANG_STATUS_COMPLETE) 
-	&& (!defined('AT_DEVEL_TRANSLATE') || !AT_DEVEL_TRANSLATE)) 
-	{
-		$msg->addError('LANG_NOT_COMPLETE');
-}
-
-if ($languageManager->exists($languageEditor->getCode(), $languageEditor->getLocale())) {
-	$msg->addError('LANG_EXISTS');
-}
-
-if (!$msg->containsErrors()) {
-	$languageEditor->import($import_path . 'language_text.sql');
-	$msg->addFeedback('IMPORT_LANG_SUCCESS');
-}
-
-
-// remove the files:
-@unlink($import_path . 'language.xml');
-@unlink($import_path . 'language_text.sql');
-@unlink($import_path . 'readme.txt');
-@unlink($_FILES['file']['tmp_name']);
-
-header('Location: language.php');
-exit;
 
 ?>
+<?php require(AT_INCLUDE_PATH.'header.inc.php'); ?>
+
+<form name="form1" method="post" action="admin/language_import.php" enctype="multipart/form-data" onsubmit="openWindow('<?php echo $_base_href; ?>tools/prog.php');">
+<div class="input-form">
+	<div class="row">
+		<p><?php echo _AT('import_lang_howto'); ?></p>
+	</div>
+	
+	<div class="row">
+		<label for="file"><?php echo _AT('import_a_new_lang'); ?></label><br />
+		<input type="file" name="file" id="file" />
+	</div>
+	
+	<div class="row buttons">
+		<input type="submit" name="submit" value="<?php echo _AT('import'); ?>" />
+	</div>
+</div>
+</form>
+
+
+<form name="form1" method="post" action="admin/language_import.php">
+<div class="input-form">
+	<div class="row">
+		<?php echo _AT('import_remote_language'); ?>
+	</div>
+
+	<div class="row">
+		<?php
+			require_once(AT_INCLUDE_PATH.'classes/Language/RemoteLanguageManager.class.php');
+			$remoteLanguageManager =& new RemoteLanguageManager();
+			if ($remoteLanguageManager->getNumLanguages()) {
+				$found = false;
+				foreach ($remoteLanguageManager->getAvailableLanguages() as $codes){
+					$language = current($codes);
+					if (!$languageManager->exists($language->getCode()) && ($language->getStatus() == AT_LANG_STATUS_PUBLISHED)) {
+						if (!$found) {
+							echo '<select name="language">';
+							$found = true;
+						}
+						echo '<option value="'.$language->getCode().'">'.$language->getEnglishName().' - '.$language->getNativeName().'</option>';
+					}
+				}
+				if ($found) {
+					echo '</select></div>';
+					echo '<div class="row buttons"><input type="submit" name="submit_import" value="' . _AT('import') . '" class="button" /></div>';
+				} else {
+					echo _AT('none_found');
+					echo '</div>';
+				}
+			} else {
+				echo _AT('cannot_find_remote_languages');
+				echo '</div>';
+			}
+		?>
+</div>
+</form>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

@@ -45,13 +45,14 @@ if ($_GET['reset_filter']) {
 
 $page_string = '';
 $orders = array('asc' => 'desc', 'desc' => 'asc');
+$cols   = array('login' => 1, 'public_field' => 1, 'first_name' => 1, 'second_name' => 1, 'last_name' => 1, 'email' => 1, 'status' => 1);
 
 if (isset($_GET['asc'])) {
 	$order = 'asc';
-	$col   = $addslashes($_GET['asc']);
+	$col   = isset($cols[$_GET['asc']]) ? $_GET['asc'] : 'login';
 } else if (isset($_GET['desc'])) {
 	$order = 'desc';
-	$col   = $addslashes($_GET['desc']);
+	$col   = isset($cols[$_GET['desc']]) ? $_GET['desc'] : 'login';
 } else {
 	// no order set
 	$order = 'asc';
@@ -60,7 +61,7 @@ if (isset($_GET['asc'])) {
 
 if (isset($_GET['status']) && ($_GET['status'] != '')) {
 	$status = '=' . intval($_GET['status']);
-	$page_string .= SEP.'status='.$_GET['status'];
+	$page_string .= SEP.'status='.$status;
 } else {
 	$status = '<>-1';
 }
@@ -111,7 +112,7 @@ if ($_GET['searchid']) {
 if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
 	$sql	= "SELECT COUNT(M.member_id) AS cnt FROM ".TABLE_PREFIX."members M LEFT JOIN ".TABLE_PREFIX."master_list L USING (member_id) WHERE M.status $status AND $search AND $searchid";
 } else {
-	$sql	= "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members WHERE status $status AND $search";
+	$sql	= "SELECT COUNT(member_id) AS cnt FROM ".TABLE_PREFIX."members M WHERE status $status AND $search";
 }
 $result = mysql_query($sql, $db);
 $row = mysql_fetch_assoc($result);
@@ -194,7 +195,7 @@ $result = mysql_query($sql, $db);
 </div>
 
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<input type="hidden" name="status" value="<?php echo $_GET['status']; ?>" />
+<input type="hidden" name="status" value="<?php echo $status; ?>" />
 
 <?php if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {  $col_counts = 1; } else { $col_counts = 0; } ?>
 <table summary="" class="data" rules="cols">
