@@ -535,7 +535,7 @@ function display_unused_terms ($variable, $term1, $lang_code, $new, $updated) {
 
 
 function display_search_terms ($variable, $term1, $lang_code, $new, $updated) {
-	global $db, $_TABLE_PREFIX, $_TABLE_SUFFIX, $addslashes;
+	global $db, $_TABLE_PREFIX, $_TABLE_SUFFIX, $addslashes, $stripslashes;
 
 	$_REQUEST['search_term'] = $addslashes($_REQUEST['search_term']);
 
