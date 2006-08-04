@@ -134,6 +134,7 @@ function trans_form($page) {
 	global $_TABLE_PREFIX;
 	global $_USER_ADMIN;
 	global $addslashes;
+	global $stripslashes;
 ?>
 <br />
 <a name="anchor"></a>
