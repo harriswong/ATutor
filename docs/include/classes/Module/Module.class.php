@@ -26,6 +26,42 @@ define('AT_MODULE_DIR_STANDARD', '_standard');
 
 define('AT_MODULE_PATH', realpath(AT_INCLUDE_PATH.'../mods') . DIRECTORY_SEPARATOR);
 
+
+
+class ModuleCommander {
+	var $_commands = array();
+
+	// public
+	function addCommandHandler($cmd, &$obj) {
+		if (!isset($this->_commands[$cmd])) {
+			$this->_commands[$cmd] = array();
+		}
+		$this->_commands[$cmd][] =& $obj;
+	}
+
+	// public
+	function &getCommandees($cmd) {
+		if (isset($this->_commands[$cmd])) {
+			return $this->_commands[$cmd];
+		}
+		return array();
+	}
+
+	// public
+	function runCommand($cmd) {
+		if (!isset($this->_commands[$cmd])) {
+			return false;
+		}
+		unset($args[0]);
+
+		// no foreach, since php4 doesn't support foreach over refs
+		$num_commands = count($this->_commands[$cmd]);
+		for ($i = 0; $i < $num_commands; $i++) {
+			$this->_commands[$cmd][$i]->runCommand($cmd, $args);
+		}
+	}
+}
+
 /**
 * ModuleFactory
 * 
@@ -143,6 +179,7 @@ class ModuleFactory {
 	function compare($a, $b) {
 		return strnatcmp($a->getName(), $b->getName());
 	}
+
 }
 
 /**
@@ -165,6 +202,7 @@ class Module {
 	var $_properties; // array from xml
 	var $_cron_interval; // cron interval
 	var $_cron_last_run; // cron last run date stamp
+	var $_commands; // hooks/dyn-commands
 
 	// constructor
 	function Module($row) {
@@ -192,6 +230,8 @@ class Module {
 			$this->_display_defaults= 0;
 			$this->_type            = AT_MODULE_TYPE_EXTRA; // standard/core are installed by default
 		}
+
+		$this->_commands = array();
 	}
 
 	// statuses
@@ -567,6 +607,30 @@ class Module {
 		return $this->_student_tool;
 	}
 
+	function runCommand( ) {
+		$args = func_get_args();
+		$fn = basename($this->_directoryName) . '_' . $args[0] . '_' . $args[1];
+
+		if (function_exists($fn)) {
+			return $fn($args);
+		} else if (is_file(AT_MODULE_PATH . $this->_directoryName.'/module_'.$args[0].'.php')) {
+			require(AT_MODULE_PATH . $this->_directoryName.'/module_'.$args[0].'.php');
+			if (function_exists($fn)) {
+				return $fn($args);
+			}
+		}
+	}
+
+	// hooks/dyn-commands
+	function addCommand ($cmd) {
+		static $moduleCommander;
+
+		if (!$moduleCommander) {
+			global $moduleCommander;
+		}
+
+		$moduleCommander->addCommandHandler($cmd, $this);
+	}
 
 	function runCron() {
 		if ( ($this->_cron_last_run + ($this->_cron_interval * 60)) < time()) {

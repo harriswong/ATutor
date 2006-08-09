@@ -530,7 +530,6 @@ CREATE TABLE `members` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `language` varchar(5) NOT NULL default '',
   `inbox_notify` tinyint(3) unsigned NOT NULL default '0',
-  `alternate_email` varchar(50) NOT NULL default '',
   `private_email` TINYINT DEFAULT '1' NOT NULL,
   PRIMARY KEY  (`member_id`),
   UNIQUE KEY `login` (`login`)
@@ -614,6 +613,7 @@ INSERT INTO `modules` VALUES ('_standard/tracker',       2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_core/content_packaging', 2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_standard/google_search', 2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_standard/blogs',         2, 0, 0, 0, 0);
+INSERT INTO `modules` VALUES ('_standard/calendar',      2, 0, 0, 0, 0);
 
 
 # --------------------------------------------------------

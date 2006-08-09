@@ -14,30 +14,8 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
  */
 define('AT_PRIV_ASSIGNMENTS', $this->getPrivilege());
 
-/*******
- * create a side menu box/stack.
- */
-//$this->_stacks['hello_world'] = array('title_var'=>'hello_world', 'file'=>'hello_world/side_menu.inc.php');
-// ** possible alternative: **
-// $this->addStack('hello_world', array('title_var' => 'hello_world', 'file' => './side_menu.inc.php');
+$this->addCommand('calendar_source');
 
-/*******
- * if this module is to be made available to students on the Home or Main Navigation.
- */
-//$_student_tool = 'assignments/index.php';
-// ** possible alternative: **
-// $this->addTool('./index.php');
-
-/*******
- * add the admin pages when needed.
- */
-/*
-if (admin_authenticate(AT_ADMIN_PRIV_HELLO_WORLD, TRUE) || admin_authenticate(AT_ADMIN_PRIV_ADMIN, TRUE)) {
-	$this->_pages[AT_NAV_ADMIN] = array('hello_world/index_admin.php');
-	$this->_pages['hello_world/index_admin.php']['parent']    = AT_NAV_ADMIN;
-	$this->_pages['hello_world/index_admin.php']['title_var'] = 'hello_world';
-}
-*/
 /*******
  * instructor Manage section:
  */
@@ -55,16 +33,13 @@ $this->_pages['assignments/index_instructor.php']['guide']     = 'instructor/?p=
 	$this->_pages['assignments/delete_assignment.php']['title_var'] = 'delete';
 	$this->_pages['assignments/delete_assignment.php']['parent']    = 'assignments/index_instructor.php';
 
-/*******
- * student page.
- */
- /*
-$this->_pages['assignments/index.php']['title_var'] = 'assignments';
-$this->_pages['assignments/index.php']['img']       = 'assignments/assignments.gif';
 
-$this->_pages['assignments/index.php']['children'] = array('assignments/assignment_details.php');
+function assignments_calendar_source_get_sql($args) {
+	// $args[2] = course id
+	// $args[3] = start day
+	// $args[4] = end day
+	$sql = "SELECT title, YEAR(date_due) AS start_year, MONTH(date_due) AS start_month, DAYOFMONTH(date_due) AS start_day FROM ".TABLE_PREFIX."assignments WHERE course_id=$args[2] AND TO_DAYS(date_due) >= TO_DAYS('$args[3]') AND TO_DAYS(date_due) <= TO_DAYS('$args[4]')";
 
-	$this->_pages['assignments/assignment_details.php']['title_var'] = 'am_display_assignments';
-	$this->_pages['assignments/assignment_details.php']['parent']    = 'assignments/index.php';
-*/
+	return $sql;
+}
 ?>

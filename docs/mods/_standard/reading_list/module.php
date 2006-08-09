@@ -14,6 +14,7 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
  */
 define('AT_PRIV_READING_LIST',       $this->getPrivilege());
 
+$this->addCommand('calendar_source');
 
 /*******
  * if this module is to be made available to students on the Home or Main Navigation.
@@ -98,4 +99,14 @@ $this->_pages['reading_list/index.php']['children'] = array('reading_list/readin
 
 	$this->_pages['reading_list/reading_details.php']['title_var'] = 'rl_display_resources';
 	$this->_pages['reading_list/reading_details.php']['parent']    = 'reading_list/index.php';
+
+function reading_list_calendar_source_get_sql($args) {
+	// $args[2] = course id
+	// $args[3] = start day
+	// $args[4] = end day
+
+	$sql = "SELECT R.title, TO_DAYS(L.date_start) AS start_days, TO_DAYS(L.date_end) AS end_days, YEAR(L.date_start) AS start_year, MONTH(L.date_start) AS start_month, DAYOFMONTH(L.date_start) AS start_day, YEAR(L.date_end) AS end_year, MONTH(L.date_end) AS end_month, DAYOFMONTH(L.date_end) AS end_day FROM ".TABLE_PREFIX."reading_list L INNER JOIN ".TABLE_PREFIX."external_resources R USING (resource_id) WHERE L.course_id=$args[2] AND ((TO_DAYS(L.date_start) >= TO_DAYS('$args[3]') AND TO_DAYS(L.date_end) <= TO_DAYS('$args[4]')) OR (TO_DAYS(L.date_start) < TO_DAYS('$args[3]') AND TO_DAYS(L.date_end) >= TO_DAYS('$args[3]')) OR (TO_DAYS(L.date_start) >= TO_DAYS('$args[3]') AND TO_DAYS(L.date_end) > TO_DAYS('$args[4]'))) ORDER BY L.date_start, R.title";
+
+	return $sql;
+}
 ?>

@@ -7,6 +7,8 @@ define('AT_PRIV_TESTS', $this->getPrivilege());
 // if this module is to be made available to students on the Home or Main Navigation
 $_student_tool = 'tools/my_tests.php';
 
+$this->addCommand('calendar_source');
+
 $this->_pages['tools/tests/index.php']['title_var'] = 'tests';
 $this->_pages['tools/tests/index.php']['parent']    = 'tools/index.php';
 $this->_pages['tools/tests/index.php']['guide']     = 'instructor/?p=tests_surveys.php';
@@ -95,4 +97,14 @@ $this->_pages['tools/take_test.php']['parent']    = 'tools/my_tests.php';
 //student page
 $this->_pages['tools/my_tests.php']['title_var'] = 'my_tests';
 $this->_pages['tools/my_tests.php']['img']       = 'images/home-tests.gif';
+
+function tests_calendar_source_get_sql($args) {
+	// $args[2] = course id
+	// $args[3] = start day
+	// $args[4] = end day
+
+	$sql = "SELECT title, TO_DAYS(start_date) AS start_days, TO_DAYS(end_date) AS end_days, YEAR(start_date) AS start_year, MONTH(start_date) AS start_month, DAYOFMONTH(start_date) AS start_day, YEAR(end_date) AS end_year, MONTH(end_date) AS end_month, DAYOFMONTH(end_date) AS end_day FROM ".TABLE_PREFIX."tests WHERE course_id=$args[2] AND ((TO_DAYS(start_date) >= TO_DAYS('$args[3]') AND TO_DAYS(end_date) <= TO_DAYS('$args[4]')) OR (TO_DAYS(start_date) < TO_DAYS('$args[3]') AND TO_DAYS(end_date) >= TO_DAYS('$args[3]')) OR (TO_DAYS(start_date) >= TO_DAYS('$args[3]') AND TO_DAYS(end_date) > TO_DAYS('$args[4]'))) ORDER BY start_date, title";
+	return $sql;
+}
+
 ?>

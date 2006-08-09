@@ -2,10 +2,21 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module'))) { exit(__FILE__ . ' is not a Module'); }
 
-define('AT_PRIV_CALENDAR', $this->getPrivilege());
+//define('AT_PRIV_CALENDAR', $this->getPrivilege());
 
 // if this module is to be made available to students on the Home or Main Navigation
 $_student_tool = 'calendar/index.php';
+
+$_pages['calendar/index.php']['title_var'] = 'calendar';
+$_pages['calendar/index.php']['img']       = 'images/home-calendar.gif';
+
+
+// module_register_hook('calendar_source', $this);
+
+/*
+could also create a module_register_hook('calendar_source', 'module_name') that would force that module to hook with the calendar, but only if enabled.
+that way the modules dont have to be re-released to make use of the calendar. the entries function would also have to be defined elsewhere.
+*/
 
 // register this module as a calendar source, must implement calendar_get_entries()
 // register_hook('calendar_source', this);

@@ -15,8 +15,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_DEVEL', 1);
 define('AT_DEVEL_TRANSLATE', 0);
-define('FHA_ATTEMPTS', 4);
-define('AT_USE_GUIDE', 1);
 
 // Emulate register_globals off. src: http://php.net/manual/en/faq.misc.php#faq.misc.registerglobals
 function unregister_GLOBALS() {
@@ -790,6 +788,7 @@ $_config['main_defaults'] .= (isset($_config['main_defaults_2']) ? $_config['mai
 
 require(AT_INCLUDE_PATH . 'classes/Module/Module.class.php');
 
+$moduleCommander =& new ModuleCommander();
 $moduleFactory =& new ModuleFactory(TRUE); // TRUE is for auto_loading the module.php files
 
 if (isset($_GET['submit_language']) && $_SESSION['valid_user']) {
