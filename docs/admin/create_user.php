@@ -167,7 +167,7 @@ if (isset($_POST['submit'])) {
 		}
 
 		if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-			$student_id  = sha1($addslashes($_POST['student_id']));
+			$student_id  = $addslashes($_POST['student_id']);
 			$student_pin = 	intval($_POST['year']).'-'.intval($_POST['month']).'-'.intval($_POST['day']);
 
 			if ($student_id) {
