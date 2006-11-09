@@ -99,19 +99,25 @@ foreach ($cats as $cat) {
 			echo '</td>';
 			echo '<td>';
 			switch ($row['type']) {
-				case 1:
+				case AT_TESTS_MC:
 					echo _AT('test_mc');
 					break;
 					
-				case 2:
+				case AT_TESTS_TF:
 					echo _AT('test_tf');
 					break;
 			
-				case 3:
+				case AT_TESTS_LONG:
 					echo _AT('test_open');
 					break;
-				case 4:
+				case AT_TESTS_LIKERT:
 					echo _AT('test_lk');
+					break;
+				case AT_TESTS_MATCHING:
+					echo _AT('test_matching');
+					break;
+				case AT_TESTS_ORDERING:
+					echo _AT('test_ordering');
 					break;
 			}
 						

@@ -15,7 +15,6 @@ define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 
-
 /* check to make sure we can access this test: */
 if ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUMNUS) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
@@ -138,6 +137,43 @@ if (isset($_POST['submit'])) {
 				case AT_TESTS_LIKERT:
 					$_POST['answers'][$row['question_id']] = intval($_POST['answers'][$row['question_id']]);
 					break;
+
+				case AT_TESTS_MATCHING:
+					break;
+
+				case AT_TESTS_ORDERING:
+					srand(2);
+					$num_choices = count($_POST['answers'][$row['question_id']]);
+					$answers = range(0, $num_choices-1);
+					$answers = array_rand($answers, $num_choices);
+
+					$num_answer_correct = 0;
+
+					$ordered_answers = array();
+
+					for ($i = 0; $i < $num_choices ; $i++) {
+						$_POST['answers'][$row['question_id']][$i] = intval($_POST['answers'][$row['question_id']][$i]);
+
+						if ($_POST['answers'][$row['question_id']][$i] == -1) {
+							// nothing to do. it was left blank
+						} else if ($_POST['answers'][$row['question_id']][$i] == $answers[$i]) {
+							$num_answer_correct++;
+						}
+						$ordered_answers[$answers[$i]] = $_POST['answers'][$row['question_id']][$i];
+					}
+					ksort($ordered_answers);
+
+					$score = 0;
+					// to avoid roundoff errors:
+					if ($num_answer_correct == $num_choices) {
+						$score = $row['weight'];
+					} else if ($num_answer_correct > 0) {
+						$score = number_format($row['weight'] / $num_choices * $num_answer_correct, 2);
+					}
+
+					$_POST['answers'][$row['question_id']] = implode('|', $ordered_answers);
+					break;
+			
 			} // end switch
 
 			$sql	= "INSERT INTO ".TABLE_PREFIX."tests_answers VALUES ($result_id, $row[question_id], $_SESSION[member_id], '{$_POST[answers][$row[question_id]]}', '$score', '')";
@@ -352,7 +388,40 @@ if ($result && $questions) {
 
 				echo $spacer;
 				echo '<input type="radio" name="answers['.$row['question_id'].']" value="-1" id="choice_'.$row['question_id'].'_x" checked="checked" /><label for="choice_'.$row['question_id'].'_x"><em>'._AT('leave_blank').'</em></label>';
-				break;					
+				break;
+
+			case AT_TESTS_MATCHING:
+
+				break;
+
+			case AT_TESTS_ORDERING:
+				// ordering
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+
+				// count number of choices
+				$num_choices = 0;
+				$choices = array();
+				for ($i=0; $i < 10; $i++) {
+					if ($row['choice_'.$i] != '') {
+						$choices[] = $row['choice_'.$i];
+					}
+				}
+				$num_choices = count($choices);
+
+				srand(2);
+				$rand = array_rand($choices, $num_choices);
+
+				for ($i=0; $i < $num_choices; $i++) {
+					echo '<select name="answers['.$row['question_id'].']['.$i.']" id="choice_'.$row['question_id'].'_'.$i.'" />';
+					echo '<option value="-1">-</option>';
+					for ($j=0; $j < $num_choices; $j++) {
+						echo '<option value="'.$j.'">'.($j+1).'</option>';
+					}
+						
+					echo '</select> <label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$rand[$i]], 'tests_questions.choice_'.$i).'</label><br />';
+				}
+
+				break;			
 		}
 		echo '</p>';
 		echo '</div>';

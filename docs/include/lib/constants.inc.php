@@ -212,6 +212,8 @@ define('AT_TESTS_MC',				1); // multiple choice
 define('AT_TESTS_TF',				2); // true/false
 define('AT_TESTS_LONG',				3); // long answer
 define('AT_TESTS_LIKERT',			4); // likert
+define('AT_TESTS_MATCHING',			5); // matching
+define('AT_TESTS_ORDERING',			6); // ordering
 
 /* QPROP = question property: */
 define('AT_TESTS_QPROP_WORD',       1);

@@ -135,6 +135,21 @@ switch ($row['type']) {
 		
 		echo '</p>';
 		break;
+	
+	case AT_TESTS_MATCHING:
+
+		break;
+
+	case AT_TESTS_ORDERING:
+		// ordering
+		$options = '<option>-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>';
+		for ($i=0; $i < 10; $i++) {
+			if ($row['choice_'.$i] != '') {
+				echo '<select name="question_'.$row['question_id'].'" id="choice_'.$row['question_id'].'_'.$i.'" />'.$options.'</select> <label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'</label><br />';
+			}
+		}
+
+		break;
 }
 echo '</div>';
 echo '<div class="row buttons"><input type="submit" name="submit" value="'._AT('back').'" /></div>';

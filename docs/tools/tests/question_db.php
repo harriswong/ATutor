@@ -26,20 +26,28 @@ if ( (isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['preview']) 
 } else if (isset($_GET['edit'])) {
 	$ids = explode('|', $_GET['id'], 2);
 	switch ($ids[1]) {
-		case 1:
+		case AT_TESTS_MC:
 			$name = 'multi';
 			break;
 
-		case 2:
+		case AT_TESTS_TF:
 			$name = 'tf';
 			break;
 
-		case 3:
+		case AT_TESTS_LONG:
 			$name = 'long';
 			break;
 
-		case 4:
+		case AT_TESTS_LIKERT:
 			$name = 'likert';
+		break;
+
+		case AT_TESTS_MATCHING:
+			$name = 'matching';
+		break;
+
+		case AT_TESTS_ORDERING:
+			$name = 'ordering';
 		break;
 
 		default:
@@ -79,6 +87,8 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			<option value="tf"><?php echo _AT('test_tf'); ?></option>
 			<option value="long"><?php echo _AT('test_open'); ?></option>
 			<option value="likert"><?php echo _AT('test_lk'); ?></option>
+			<option value="matching"><?php echo _AT('test_matching'); ?></option>
+			<option value="ordering"><?php echo _AT('test_ordering'); ?></option>
 		</select>
 	</div>
 

@@ -214,6 +214,23 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 				echo '<input type="radio" name="question_'.$row['question_id'].'" value="-1" id="choice_'.$row['question_id'].'_x" checked="checked" /><label for="choice_'.$row['question_id'].'_x"><em>'._AT('leave_blank').'</em></label>';
 				echo '</p>';
 				break;
+
+			case AT_TESTS_MATCHING:
+
+				break;
+
+			case AT_TESTS_ORDERING:
+				// ordering
+				echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
+
+				$options = '<option>-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>';
+				for ($i=0; $i < 10; $i++) {
+					if ($row['choice_'.$i] != '') {
+						echo '<select name="question_'.$row['question_id'].'" id="choice_'.$row['question_id'].'_'.$i.'" />'.$options.'</select> <label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'</label><br />';
+					}
+				}
+
+				break;
 		}
 		echo '</div>';
 	} while ($row = mysql_fetch_assoc($result));

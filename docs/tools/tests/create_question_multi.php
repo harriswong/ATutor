@@ -99,8 +99,6 @@ if (isset($_POST['cancel']) || isset($_POST['submit_no'])) {
 			}
 		}
 			
-		//debug($has_answer);
-
 		if ($has_answer != TRUE) {
 	
 			$hidden_vars['required']    = htmlspecialchars($_POST['required']);
