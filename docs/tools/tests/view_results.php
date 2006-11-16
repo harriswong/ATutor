@@ -193,6 +193,44 @@ if ($row = mysql_fetch_assoc($result)){
 
 					echo '</p>';
 					break;
+			case AT_TESTS_MATCHING:
+				break;
+
+			case AT_TESTS_ORDERING:
+				// ordering
+				if ($row['weight']) {
+					print_score($row['answer_'.$answer_row['answer']], $row['weight'], $row['question_id'], $answer_row['score']);
+					echo '<br />';
+				}
+				$answers = explode('|', $answer_row['answer']);
+
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+				// count number of choices
+				$num_choices = 0;
+				$choices = array();
+				for ($i=0; $i < 10; $i++) {
+					if ($row['choice_'.$i] != '') {
+						$choices[] = $row['choice_'.$i];
+					}
+				}
+				$num_choices = count($choices);
+
+				for ($i=0; $i < $num_choices; $i++) {
+					if ($i == $answers[$i]) {
+						echo ' <img src="'.$_base_path.'images/checkmark.gif" alt="'._AT('correct_answer').'" title="'._AT('correct_answer').'" height="16" width="16" style="vertical-align: middle" />';
+					} else {
+						echo ' <img src="'.$_base_path.'images/x.gif" alt="'._AT('wrong_answer').'" title="'._AT('wrong_answer').'" height="16" width="16" style="vertical-align: middle" />';
+					}
+					if ($answers[$i] == -1) {
+						echo _AT('na');
+					} else {
+						echo ($answers[$i] + 1);
+					}
+						
+					echo ' - '.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'<br />';
+				}
+
+				break;
 			}
 		}			
 		echo '</div>';

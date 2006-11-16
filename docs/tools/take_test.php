@@ -15,6 +15,14 @@ define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 
+function ordering_seed($question_id) {
+	// by controlling the seed before calling array_rand() we insure that
+	// we can un-randomize the order for marking.
+	// used with ordering type questions only.
+	srand($question_id + ord(DB_PASSWORD) + $_SESSION['member_id']);
+}
+
+
 /* check to make sure we can access this test: */
 if ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUMNUS) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
@@ -142,7 +150,7 @@ if (isset($_POST['submit'])) {
 					break;
 
 				case AT_TESTS_ORDERING:
-					srand(2);
+					ordering_seed($row['question_id']);
 					$num_choices = count($_POST['answers'][$row['question_id']]);
 					$answers = range(0, $num_choices-1);
 					$answers = array_rand($answers, $num_choices);
@@ -169,6 +177,11 @@ if (isset($_POST['submit'])) {
 						$score = $row['weight'];
 					} else if ($num_answer_correct > 0) {
 						$score = number_format($row['weight'] / $num_choices * $num_answer_correct, 2);
+						if ( (float) (int) $score == $score) {
+							$score = (int) $score; // a whole number with decimals, eg. "2.00"
+						} else {
+							$score = trim($score, '0'); // remove trailing zeros, if any
+						}
 					}
 
 					$_POST['answers'][$row['question_id']] = implode('|', $ordered_answers);
@@ -248,7 +261,6 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 if ($test_row['random']) {
-	srand((float)microtime() * 1000000);
 	shuffle($questions);
 }
 
@@ -408,7 +420,7 @@ if ($result && $questions) {
 				}
 				$num_choices = count($choices);
 
-				srand(2);
+				ordering_seed($row['question_id']);
 				$rand = array_rand($choices, $num_choices);
 
 				for ($i=0; $i < $num_choices; $i++) {
