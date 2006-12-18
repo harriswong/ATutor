@@ -202,6 +202,50 @@ function print_long($q, $answers) {
 
 function print_matching($q, $answers, $num, $num_results) {
 
+	echo '<br />';
+	echo '<table class="data static" summary="" style="width: 95%" rules="cols">';
+	echo '<thead>';
+	echo '<tr>';
+	echo '<th scope="col" width="40%">'._AT('question').'</th>';
+	for ($i=1; $i<=$num+1; $i++) {
+		if(strlen($q['choice_'.($i-1)]) > 15) {
+			$q['choice_'.($i-1)] = substr($q['choice_'.($i-1)], 0, 15).'...';
+		}
+		echo '<th scope="col">'.htmlspecialchars($q['choice_'.($i-1)]).'</th>';
+	}
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tr>';
+	echo '<td valign="top">'.$q['question'].'</td>';
+
+	$sum = 0;
+	for ($j=0; $j<=$num; $j++) {
+		$sum += $answers[$j]['score'];
+	}
+
+	$final_answers = array(); // assoc array of # of times that key was used correctly 0, 1, ...  $num -1
+	foreach ($answers as $key => $value) {
+		$values = explode('|', $key);
+		// we assume $values is never empty and contains $num number of answers
+		for ($i=0; $i<=$num; $i++) {
+			if ($values[$i] == $q['answer_'.$i]) {
+				$final_answers[$i] += $answers[$key]['count'];
+			}
+		}
+
+	}
+	
+	for ($j=0; $j<=$num; $j++) {
+		$percentage = $num_results ? floor($final_answers[$j]/$num_results*100) : 0;
+		echo '<td align="center" valign="top">'.intval($final_answers[$j]).'/'.$num_results.'<br />'.$percentage.'%</td>';		
+	}
+	echo '</tr>';
+	echo '</table>';
+
+	
+		debug($q);
+	debug($answers);
+	exit;
 }
 
 function print_ordering($q, $answers, $num, $num_results) {
@@ -367,7 +411,21 @@ foreach ($questions as $q_id => $q) {
 				break;
 			
 			case AT_TESTS_MATCHING:
+				if ($random) {		
+					$num_results = 0;		
+					foreach ($ans[$q_id] as $answer) {
+						$num_results += $answer['count'];
+					}
+				}
+				// count the number of items (by stopping when an empty is reached)
+				for ($i=0; $i<=10; $i++) {
+					if ($q['choice_'.$i] == '') {
+						$i--;
+						break;
+					}
+				}
 
+				print_matching($q, $ans[$q_id], $i, $num_results);
 				break;
 
 			case AT_TESTS_ORDERING:

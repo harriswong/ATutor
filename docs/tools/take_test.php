@@ -147,6 +147,29 @@ if (isset($_POST['submit'])) {
 					break;
 
 				case AT_TESTS_MATCHING:
+					$num_choices = count($_POST['answers'][$row['question_id']]);
+					$num_answer_correct = 0;
+					foreach ($_POST['answers'][$row['question_id']] as $item_id => $response) {
+						if ($row['answer_' . $item_id] == $response) {
+							$num_answer_correct++;
+						}
+					}
+
+					$score = 0;
+					// to avoid roundoff errors:
+					if ($num_answer_correct == $num_choices) {
+						$score = $row['weight'];
+					} else if ($num_answer_correct > 0) {
+						$score = number_format($row['weight'] / $num_choices * $num_answer_correct, 2);
+						if ( (float) (int) $score == $score) {
+							$score = (int) $score; // a whole number with decimals, eg. "2.00"
+						} else {
+							$score = trim($score, '0'); // remove trailing zeros, if any
+						}
+					}
+
+					$_POST['answers'][$row['question_id']] = implode('|', $_POST['answers'][$row['question_id']]);
+
 					break;
 
 				case AT_TESTS_ORDERING:
@@ -403,7 +426,45 @@ if ($result && $questions) {
 				break;
 
 			case AT_TESTS_MATCHING:
+				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
 
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+
+				$num_options = 0;
+				for ($i=0; $i < 10; $i++) {
+					if ($row['option_'. $i] != '') {
+						$num_options++;
+					}
+				}
+				?>
+				<table border="0">
+				<tr>
+					<td valign="top">
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<?php if ($row['choice_'. $i] != ''): ?>
+							<select name="answers[<?php echo $row['question_id']; ?>][<?php echo $i; ?>]">
+								<option>-</option>
+								<?php for ($j=0; $j < $num_options; $j++): ?>
+									<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
+								<?php endfor; ?>
+							</select>
+
+							<?php echo $row['choice_'. $i]; ?>
+							<br />
+						<?php endif; ?>
+					<?php endfor; ?>
+					</td>
+					<td valign="top">
+						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<?php for ($i=0; $i < $num_options; $i++): ?>
+							<li><?php echo $row['option_'. $i]; ?></li>
+						<?php endfor; ?>
+						</ol>
+					</td>
+				</tr>
+				</table>
+
+				<?php
 				break;
 
 			case AT_TESTS_ORDERING:

@@ -186,6 +186,50 @@ if ($row = mysql_fetch_assoc($result)){
 				break;
 
 			case AT_TESTS_MATCHING:
+				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
+
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+
+				$num_options = 0;
+				for ($i=0; $i < 10; $i++) {
+					if ($row['option_'. $i] != '') {
+						$num_options++;
+					}
+				}
+				$answers = explode('|', $answer_row['answer']);
+				if ($row['weight']) {
+					print_score($row['answer_'.$answer_row['answer']], $row['weight'], $row['question_id'], $answer_row['score'], false, true);
+					echo '<br />';
+				}
+				?>
+				<table border="0">
+				<tr>
+					<td valign="top">
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<?php if ($row['choice_'. $i] != ''): ?>
+							<?php if ($answers[$i] == $row['answer_'.$i]){
+								echo ' <img src="'.$_base_path.'images/checkmark.gif" alt="'._AT('correct_answer').'" title="'._AT('correct_answer').'" height="16" width="16" style="vertical-align: middle" />';
+						} else {
+							echo ' <img src="'.$_base_path.'images/x.gif" alt="'._AT('wrong_answer').'" title="'._AT('wrong_answer').'" height="16" width="16" style="vertical-align: middle" />';
+						} ?>
+							<?php if ($answers[$i] != -1): ?>
+								<?php echo $_letters[$answers[$i]]; ?>.
+							<?php endif; ?>
+							<?php echo $row['choice_'. $i]; ?>
+							<br />
+						<?php endif; ?>
+					<?php endfor; ?>
+					</td>
+					<td valign="top">
+						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<?php for ($i=0; $i < $num_options; $i++): ?>
+							<li><?php echo $row['option_'. $i]; ?></li>
+						<?php endfor; ?>
+						</ol>
+					</td>
+				</tr>
+				</table>
+				<?php
 				break;
 
 			case AT_TESTS_ORDERING:

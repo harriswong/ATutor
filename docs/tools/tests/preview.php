@@ -216,7 +216,45 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 				break;
 
 			case AT_TESTS_MATCHING:
+				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
 
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+
+				$num_options = 0;
+				for ($i=0; $i < 10; $i++) {
+					if ($row['option_'. $i] != '') {
+						$num_options++;
+					}
+				}
+				?>
+				<table border="0">
+				<tr>
+					<td valign="top">
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<?php if ($row['choice_'. $i] != ''): ?>
+							<select name="">
+								<option>-</option>
+								<?php for ($j=0; $j < $num_options; $j++): ?>
+									<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
+								<?php endfor; ?>
+							</select>
+
+							<?php echo $row['choice_'. $i]; ?>
+							<br />
+						<?php endif; ?>
+					<?php endfor; ?>
+					</td>
+					<td valign="top">
+						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<?php for ($i=0; $i < $num_options; $i++): ?>
+							<li><?php echo $row['option_'. $i]; ?></li>
+						<?php endfor; ?>
+						</ol>
+					</td>
+				</tr>
+				</table>
+
+				<?php
 				break;
 
 			case AT_TESTS_ORDERING:

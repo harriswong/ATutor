@@ -90,6 +90,16 @@ if (isset($_POST['cancel'])) {
 			$answer_new[7],
 			$answer_new[8],
 			$answer_new[9],
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
 			0,
 			0)";
 

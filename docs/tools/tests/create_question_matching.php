@@ -24,46 +24,68 @@ if (isset($_POST['cancel'])) {
 	exit;
 } else if ($_POST['submit']) {
 	$_POST['feedback']    = trim($_POST['feedback']);
-	$_POST['question']    = trim($_POST['question']);
+	$_POST['instructions'] = trim($_POST['instructions']);
 	$_POST['category_id'] = intval($_POST['category_id']);
 	$_POST['properties']  = intval($_POST['properties']);
 
-	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+	for ($i = 0 ; $i < 10; $i++) {
+		$_POST['question'][$i]        = trim($_POST['question'][$i]);
+		$_POST['question_answer'][$i] = (int) $_POST['question_answer'][$i];
+		$_POST['answer'][$i]          = trim($_POST['answer'][$i]);
 	}
 
+	if (!$_POST['question'][0] 
+		|| !$_POST['question'][1] 
+		|| !$_POST['answer'][0] 
+		|| !$_POST['answer'][1]) {
+
+		$msg->addError('QUESTION_EMPTY');
+	}
+	
+
 	if (!$msg->containsErrors()) {
-		$_POST['feedback'] = $addslashes($_POST['feedback']);
-		$_POST['question'] = $addslashes($_POST['question']);
+		$_POST['feedback']     = $addslashes($_POST['feedback']);
+		$_POST['instructions'] = $addslashes($_POST['instructions']);
 	
 		$sql	= "INSERT INTO ".TABLE_PREFIX."tests_questions VALUES (	NULL,
 			$_POST[category_id],
 			$_SESSION[course_id],
-			3,
+			".AT_TESTS_MATCHING.",
 			'$_POST[feedback]',
-			'$_POST[question]',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
+			'$_POST[instructions]',
+			'{$_POST[question][0]}',
+			'{$_POST[question][1]}',
+			'{$_POST[question][2]}',
+			'{$_POST[question][3]}',
+			'{$_POST[question][4]}',
+			'{$_POST[question][5]}',
+			'{$_POST[question][6]}',
+			'{$_POST[question][7]}',
+			'{$_POST[question][8]}',
+			'{$_POST[question][9]}',
+			{$_POST[question_answer][0]},
+			{$_POST[question_answer][1]},
+			{$_POST[question_answer][2]},
+			{$_POST[question_answer][3]},
+			{$_POST[question_answer][4]},
+			{$_POST[question_answer][5]},
+			{$_POST[question_answer][6]},
+			{$_POST[question_answer][7]},
+			{$_POST[question_answer][8]},
+			{$_POST[question_answer][9]},
+			'{$_POST[answer][0]}',
+			'{$_POST[answer][1]}',
+			'{$_POST[answer][2]}',
+			'{$_POST[answer][3]}',
+			'{$_POST[answer][4]}',
+			'{$_POST[answer][5]}',
+			'{$_POST[answer][6]}',
+			'{$_POST[answer][7]}',
+			'{$_POST[answer][8]}',
+			'{$_POST[answer][9]}',
 			$_POST[properties],
 			0)";
+
 		$result	= mysql_query($sql, $db);
 
 		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
@@ -76,9 +98,8 @@ $onload = 'document.form.category_id.focus();';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
-if (!isset($_POST['properties'])) {
-	$_POST['properties'] = 1;
-}
+// for matching test questions
+$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
 
 ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
@@ -92,6 +113,12 @@ if (!isset($_POST['properties'])) {
 	</div>
 
 	<div class="row">
+		<?php echo _AT('display_options'); ?><br />
+		<input type="radio" name="properties" value="0" id="display-s" <?php if (!$_POST['properties']) { echo 'checked="checked"'; } ?> /><label for="display-s"><?php echo _AT('simple'); ?></label>
+		<input type="radio" name="properties" value="1" id="display-g" <?php if ($_POST['properties']) { echo 'checked="checked"'; } ?>  /><label for="display-g"><?php echo _AT('graphical'); ?></label>
+	</div>
+
+	<div class="row">
 		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label> 
 		<?php print_VE('feedback'); ?>
 
@@ -100,23 +127,54 @@ if (!isset($_POST['properties'])) {
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="question"><?php echo _AT('question'); ?></label> 
-		<?php print_VE('question'); ?>
-		<textarea id="question" cols="50" rows="6" name="question" style="width:90%;"><?php 
-		echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
+		<label for="instructions"><?php echo _AT('instructions'); ?></label> 
+		<?php print_VE('instructions'); ?>
+		<textarea id="instructions" cols="50" rows="3" name="instructions"><?php 
+		echo htmlspecialchars(stripslashes($_POST['instructions'])); ?></textarea>
 	</div>
+
+	<div class="row">
+		<h2><?php echo _AT('questions');?></h2>
+	</div>
+<?php for ($i=0; $i<10; $i++): ?>
+	<div class="row">
+		<?php if ($i < 2) :?>
+			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>
+		<?php endif; ?>
+		<?php echo _AT('question'); ?> <?php echo ($i+1); ?>
+		
+		<?php print_VE('question_' . $i); ?>
+		
+		<br />
+
+		<select name="question_answer[<?php echo $i; ?>]">
+			<option value="-1">-</option>
+			<?php foreach ($_letters as $key => $value): ?>
+				<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+			<?php endforeach; ?>
+		</select>
+		
+		<textarea id="question_<?php echo $i; ?>" cols="50" rows="2" name="question[<?php echo $i; ?>]"><?php 
+		echo htmlspecialchars(stripslashes($_POST['question'][$i])); ?></textarea> 
+	</div>
+<?php endfor; ?>
 	
 	<div class="row">
-		<?php echo _AT('answer_size'); ?><br />
-		<input type="radio" name="properties" value="1" id="az1" <?php if ($_POST['properties'] == 1) { echo 'checked="checked"'; } ?> /><label for="az1"><?php echo _AT('one_word'); ?></label><br />
-		
-		<input type="radio" name="properties" value="2" id="az2" <?php if ($_POST['properties'] == 2) { echo 'checked="checked"'; } ?> /><label for="az2"><?php echo _AT('one_sentence'); ?></label><br />
-		
-		<input type="radio" name="properties" value="3" id="az3" <?php if ($_POST['properties'] == 3) { echo 'checked="checked"'; } ?> /><label for="az3"><?php echo _AT('short_paragraph'); ?></label><br />
-		
-		<input type="radio" name="properties" value="4" id="az4" <?php if ($_POST['properties'] == 4) { echo 'checked="checked"'; } ?> /><label for="az4"><?php echo _AT('one_page'); ?></label>
+		<h2><?php echo _AT('answers');?></h2>
 	</div>
-	
+	<?php for ($i=0; $i<10; $i++): ?>
+		<div class="row">
+			<?php if ($i < 2) :?>
+				<div class="required" title="<?php echo _AT('required_field'); ?>">*</div>
+			<?php endif; ?>
+			<?php echo _AT('answer'); ?> <?php echo $_letters[$i]; ?>
+			<?php print_VE('answer_' . $i); ?>
+			<br />
+			<textarea id="answer_<?php echo $i; ?>" cols="50" rows="2" name="answer[<?php echo $i; ?>]"><?php 
+			echo htmlspecialchars(stripslashes($_POST['answer'][$i])); ?></textarea>
+		</div>
+	<?php endfor; ?>
+
 	<div class="row buttons">
 		<input type="submit" value="<?php echo _AT('save'); ?>"   name="submit" accesskey="s" />
 		<input type="submit" value="<?php echo _AT('cancel'); ?>" name="cancel" />
