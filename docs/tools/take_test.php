@@ -429,7 +429,9 @@ if ($result && $questions) {
 				echo AT_print($row['question'], 'tests_questions.question').'<br />';
 				if ($row['properties'] == 1): ?>
 					<?php for ($i=0; $i < 10; $i++): ?>
-						<input type="hidden" name="answers[<?php echo $row['question_id']; ?>][<?php echo $i; ?>]" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
+						<?php if ($row['choice_'. $i] != ''): ?>
+							<input type="hidden" name="answers[<?php echo $row['question_id']; ?>][<?php echo $i; ?>]" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value=""/>
+						<?php endif; ?>
 					<?php endfor; ?>
 				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
 				<?php else:

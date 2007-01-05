@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-// $Id: preview.php 6695 2006-12-18 20:00:27Z joel $
+// $Id$
 
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
@@ -75,7 +75,7 @@ li.answer {
 			<?php if ($row['choice_'. $i] != ''): ?>
 				<li class="question" id="q<?php echo $i; ?>">
 					<select name="sq<?php echo $i; ?>" onchange="selectLine(this.value, 'q<?php echo $i; ?>');" id="sq<?php echo $i; ?>">
-						<option value="-1">-</option>
+						<option value="">-</option>
 						<?php for ($j=0; $j < $num_options; $j++): ?>
 							<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
 						<?php endfor; ?>
@@ -173,12 +173,12 @@ $(document).ready(
 )
 
 function selectLine(value, id) {
-	if (value == -1) {
+	if (value == "") {
 		document.getElementById('img' + id).style.width = "0px";
 		document.getElementById('img' + id).style.height = "0px";
 		document.getElementById('img' + id).src = "<?php echo $_base_href; ?>images/jslines/1up.gif";
 
-		window.top.document.getElementById("<?php echo $_GET['qid']; ?>" + id).value = -1;
+		window.top.document.getElementById("<?php echo $_GET['qid']; ?>" + id).value = "";
 
 		return true;
 	}
