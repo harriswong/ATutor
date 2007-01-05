@@ -426,9 +426,15 @@ if ($result && $questions) {
 				break;
 
 			case AT_TESTS_MATCHING:
-				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
-
 				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+				if ($row['properties'] == 1): ?>
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<input type="hidden" name="answers[<?php echo $row['question_id']; ?>][<?php echo $i; ?>]" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
+					<?php endfor; ?>
+				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<?php else:
+
+				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
 
 				$num_options = 0;
 				for ($i=0; $i < 10; $i++) {
@@ -465,6 +471,7 @@ if ($result && $questions) {
 				</table>
 
 				<?php
+					endif;
 				break;
 
 			case AT_TESTS_ORDERING:

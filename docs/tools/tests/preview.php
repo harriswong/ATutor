@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -99,7 +99,7 @@ if ($row['random']) {
 }
 $result	= mysql_query($sql, $db);
 $count = 1;
-echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'">';
+echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="preview">';
 
 if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 	echo '<div class="input-form">';
@@ -220,12 +220,18 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 
 				echo AT_print($row['question'], 'tests_questions.question').'<br />';
 
+				if ($row['properties'] == 1): ?>
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<input type="hidden" name="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
+					<?php endfor; ?>
+				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<?php else:
 				$num_options = 0;
 				for ($i=0; $i < 10; $i++) {
 					if ($row['option_'. $i] != '') {
 						$num_options++;
 					}
-				}
+				}	
 				?>
 				<table border="0">
 				<tr>
@@ -254,7 +260,7 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 				</tr>
 				</table>
 
-				<?php
+				<?php endif;
 				break;
 
 			case AT_TESTS_ORDERING:

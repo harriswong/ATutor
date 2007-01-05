@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -139,43 +139,53 @@ switch ($row['type']) {
 		echo '</p>';
 		break;
 	
-	case AT_TESTS_MATCHING:
-		$num_options = 0;
-		for ($i=0; $i < 10; $i++) {
-			if ($row['option_'. $i] != '') {
-				$num_options++;
-			}
-		}
-		?>
-		<table border="0">
-		<tr>
-			<td valign="top">
-			<?php for ($i=0; $i < 10; $i++): ?>
-				<?php if ($row['choice_'. $i] != ''): ?>
-					<select name="">
-						<option>-</option>
-						<?php for ($j=0; $j < $num_options; $j++): ?>
-							<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
+			case AT_TESTS_MATCHING:
+				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
+
+				echo AT_print($row['question'], 'tests_questions.question').'<br />';
+
+				if ($row['properties'] == 1): ?>
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<input type="hidden" name="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
+					<?php endfor; ?>
+				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<?php else:
+				$num_options = 0;
+				for ($i=0; $i < 10; $i++) {
+					if ($row['option_'. $i] != '') {
+						$num_options++;
+					}
+				}	
+				?>
+				<table border="0">
+				<tr>
+					<td valign="top">
+					<?php for ($i=0; $i < 10; $i++): ?>
+						<?php if ($row['choice_'. $i] != ''): ?>
+							<select name="">
+								<option>-</option>
+								<?php for ($j=0; $j < $num_options; $j++): ?>
+									<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
+								<?php endfor; ?>
+							</select>
+
+							<?php echo $row['choice_'. $i]; ?>
+							<br />
+						<?php endif; ?>
+					<?php endfor; ?>
+					</td>
+					<td valign="top">
+						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<?php for ($i=0; $i < $num_options; $i++): ?>
+							<li><?php echo $row['option_'. $i]; ?></li>
 						<?php endfor; ?>
-					</select>
+						</ol>
+					</td>
+				</tr>
+				</table>
 
-					<?php echo $row['choice_'. $i]; ?>
-					<br />
-				<?php endif; ?>
-			<?php endfor; ?>
-			</td>
-			<td valign="top">
-				<ol style="list-style-type: upper-alpha; margin: 0px">
-				<?php for ($i=0; $i < $num_options; $i++): ?>
-					<li><?php echo $row['option_'. $i]; ?></li>
-				<?php endfor; ?>
-				</ol>
-			</td>
-		</tr>
-		</table>
-
-		<?php
-		break;
+				<?php endif;
+				break;
 
 	case AT_TESTS_ORDERING:
 		// ordering
