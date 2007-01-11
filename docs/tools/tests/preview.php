@@ -224,7 +224,7 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 					<?php for ($i=0; $i < 10; $i++): ?>
 						<input type="hidden" name="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
 					<?php endfor; ?>
-				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<iframe id="qframe<?php echo $row['question_id']; ?>" src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" width="100%" frameborder="0" ></iframe>
 				<?php else:
 				$num_options = 0;
 				for ($i=0; $i < 10; $i++) {
@@ -251,9 +251,9 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 					<?php endfor; ?>
 					</td>
 					<td valign="top">
-						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<ol style="list-style-type: none; margin: 0px">
 						<?php for ($i=0; $i < $num_options; $i++): ?>
-							<li><?php echo $row['option_'. $i]; ?></li>
+							<li><?php echo $_letters[$i]; ?>. <?php echo $row['option_'. $i]; ?></li>
 						<?php endfor; ?>
 						</ol>
 					</td>
@@ -278,13 +278,19 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 		}
 		echo '</div>';
 	} while ($row = mysql_fetch_assoc($result));
+?>
+	<div class="row buttons">
+		<input type="submit" value="<?php echo _AT('back'); ?>" name="back" />
+	</div>
 
-	echo '<div class="row buttons">';
-		echo '<input type="submit" value="'._AT('back').'" name="back" />';
-	echo '</div>';
-
-	echo '</div>';
-	echo '</form>';
+	</div>
+	</form>
+<script type="text/javascript">
+function iframeSetHeight(id, height) {
+	document.getElementById("qframe" + id).style.height = (height + 20) + "px";
+}
+</script>
+<?php
 } else {
 	$msg->printErrors('NO_QUESTIONS');
 }

@@ -222,6 +222,8 @@ if ($row = mysql_fetch_assoc($result)){
 						} ?>
 							<?php if ($answers[$i] != -1): ?>
 								<?php echo $_letters[$answers[$i]]; ?>.
+							<?php else: ?>
+								-.
 							<?php endif; ?>
 							<?php echo $row['choice_'. $i]; ?>
 							<br />
@@ -229,9 +231,9 @@ if ($row = mysql_fetch_assoc($result)){
 					<?php endfor; ?>
 					</td>
 					<td valign="top">
-						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<ol style="list-style-type: none; margin: 0px">
 						<?php for ($i=0; $i < $num_options; $i++): ?>
-							<li><?php echo $row['option_'. $i]; ?></li>
+							<li><?php echo $_letters[$i]; ?>. <?php echo $row['option_'. $i]; ?></li>
 						<?php endfor; ?>
 						</ol>
 					</td>

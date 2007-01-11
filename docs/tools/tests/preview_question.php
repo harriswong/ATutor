@@ -140,15 +140,13 @@ switch ($row['type']) {
 		break;
 	
 			case AT_TESTS_MATCHING:
-				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
-
 				echo AT_print($row['question'], 'tests_questions.question').'<br />';
 
 				if ($row['properties'] == 1): ?>
 					<?php for ($i=0; $i < 10; $i++): ?>
 						<input type="hidden" name="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
 					<?php endfor; ?>
-				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<iframe id="qframe<?php echo $row['question_id']; ?>" src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" width="100%" frameborder="0"></iframe>
 				<?php else:
 				$num_options = 0;
 				for ($i=0; $i < 10; $i++) {
@@ -175,9 +173,9 @@ switch ($row['type']) {
 					<?php endfor; ?>
 					</td>
 					<td valign="top">
-						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<ol style="list-style-type: none; margin: 0px">
 						<?php for ($i=0; $i < $num_options; $i++): ?>
-							<li><?php echo $row['option_'. $i]; ?></li>
+							<li><?php echo $_letters[$i]; ?>. <?php echo $row['option_'. $i]; ?></li>
 						<?php endfor; ?>
 						</ol>
 					</td>
@@ -202,6 +200,10 @@ echo '</div>';
 echo '<div class="row buttons"><input type="submit" name="submit" value="'._AT('back').'" /></div>';
 echo '</div>';
 echo '</form>';
-
-require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>
+<script type="text/javascript">
+function iframeSetHeight(id, height) {
+	document.getElementById("qframe" + id).style.height = (height + 20) + "px";
+}
+</script>
+<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

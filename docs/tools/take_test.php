@@ -245,6 +245,8 @@ $anonymous = $test_row['anonymous'];
 $instructions = $test_row['instructions'];
 $title = $test_row['title'];
 
+$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
+
 if ($test_row['random']) {
 	/* Retrieve 'num_questions' question_id randomly choosed from those who are related to this test_id*/
 
@@ -433,10 +435,8 @@ if ($result && $questions) {
 							<input type="hidden" name="answers[<?php echo $row['question_id']; ?>][<?php echo $i; ?>]" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value=""/>
 						<?php endif; ?>
 					<?php endfor; ?>
-				<iframe src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
+				<iframe id="qframe<?php echo $row['question_id']; ?>" src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" height="200" width="100%" frameborder="0"></iframe>
 				<?php else:
-
-				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
 
 				$num_options = 0;
 				for ($i=0; $i < 10; $i++) {
@@ -463,9 +463,9 @@ if ($result && $questions) {
 					<?php endfor; ?>
 					</td>
 					<td valign="top">
-						<ol style="list-style-type: upper-alpha; margin: 0px">
+						<ol style="list-style-type: none; margin: 0px">
 						<?php for ($i=0; $i < $num_options; $i++): ?>
-							<li><?php echo $row['option_'. $i]; ?></li>
+							<li><?php echo $_letters[$i]; ?>. <?php echo $row['option_'. $i]; ?></li>
 						<?php endfor; ?>
 						</ol>
 					</td>
@@ -514,7 +514,13 @@ if ($result && $questions) {
 	echo '</div>';
 	echo '</div>';
 	echo '</form><br />';
-
+?>
+<script type="text/javascript">
+function iframeSetHeight(id, height) {
+	document.getElementById("qframe" + id).style.height = (height + 20) + "px";
+}
+</script>
+<?php
 } else {
 	echo '<p>'._AT('no_questions').'</p>';
 }

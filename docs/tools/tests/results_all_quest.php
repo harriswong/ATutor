@@ -241,11 +241,6 @@ function print_matching($q, $answers, $num, $num_results) {
 	}
 	echo '</tr>';
 	echo '</table>';
-
-	
-		debug($q);
-	debug($answers);
-	exit;
 }
 
 function print_ordering($q, $answers, $num, $num_results) {

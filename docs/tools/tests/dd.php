@@ -21,7 +21,7 @@ $result = mysql_query($sql, $db);
 $row = mysql_fetch_assoc($result);
 
 $_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
-$_letters = array('A', 'B', 'C', 'D', 'E', 'F', 'G');
+$_colours = array('#FF0000', '#00FF00', '#0000FF', '#F23AA3', '#9999CC', '#990026', '#0099CC', '#22C921', '#007D48', '#00248F');
 
 $num_options = 0;
 for ($i=0; $i < 10; $i++) {
@@ -30,11 +30,17 @@ for ($i=0; $i < 10; $i++) {
 	}
 }
 ?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="<?php echo $_SESSION['lang']; ?>">
 <head>
-	<title></title>
+	<title><?php echo SITE_NAME; ?> : <?php echo AT_print($row['question'], 'tests_questions.question'); ?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $myLang->getCharacterSet(); ?>" />
+	<meta name="Generator" content="ATutor - Copyright 2007 by http://atutor.ca" />
+	<base href="<?php echo $_base_href; ?>" />
+
 	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/jquery.js"></script>
 	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/interface.js"></script>
+	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/wz_jsgraphics.js"></script>
 <style type="text/css">
 * {
 	margin: 0px;
@@ -58,6 +64,7 @@ li.question:hover {
 li.answer {
 	width: 200px;
 	overflow: auto;
+	margin: 15px 5px;
 }
 .dropactive {
 	background-color: #fc9;
@@ -69,12 +76,18 @@ li.answer {
 </head>
 <body>
 
+<?php for ($i=0; $i < 10; $i++): ?>
+	<?php if ($row['choice_'. $i] != ''): ?>
+		<div id="container<?php echo $i; ?>" style="position: absolute; top: 0px; left: 0px; width: 100%"></div>
+	<?php endif; ?>
+<?php endfor; ?>
+
 <form method="get">
 	<ul style="position: absolute; top: 10px; left: 5px" id="q">
 		<?php for ($i=0; $i < 10; $i++): ?>
 			<?php if ($row['choice_'. $i] != ''): ?>
-				<li class="question" id="q<?php echo $i; ?>">
-					<select name="sq<?php echo $i; ?>" onchange="selectLine(this.value, 'q<?php echo $i; ?>');" id="sq<?php echo $i; ?>">
+				<li class="question" id="q<?php echo $i; ?>" value="<?php echo $i; ?>">
+					<select name="s<?php echo $i; ?>" onchange="selectLine(this.value, '<?php echo $i; ?>');" id="s<?php echo $i; ?>">
 						<option value="">-</option>
 						<?php for ($j=0; $j < $num_options; $j++): ?>
 							<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
@@ -86,35 +99,37 @@ li.answer {
 		<?php endfor; ?>
 	</ul>
 
-	<ol style="position: absolute; list-style-type: upper-alpha; top: 10px; left: 300px" id="a">
+	<ol style="position: absolute; list-style-type: upper-alpha; top: 10px; left: 320px" id="a">
 		<?php for ($i=0; $i < 10; $i++): ?>
 			<?php if ($row['option_'. $i] != ''): ?>
-				<li class="answer" id="a<?php echo $i; ?>"><?php echo $_letters[$i]; ?>. <?php echo $row['option_'.$i]; ?></li>
+				<li class="answer" id="a<?php echo $i; ?>" value="<?php echo $i; ?>"><?php echo $_letters[$i]; ?>. <?php echo $row['option_'.$i]; ?></li>
 			<?php endif; ?>
 		<?php endfor; ?>
 	</ol>
 </form>
 
-<img alt="" id="imgq0" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq1" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq2" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq3" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq4" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq5" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq6" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq7" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq8" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-<img alt="" id="imgq9" src="<?php echo $_base_href; ?>images/jslines/1up.gif" style="position: absolute;"/>
-
 <script type="text/javascript">
-
+// <!--
 if($.browser.msie) {
 	var padding = 5;
 } else {
 	var padding = 15;
 }
+var jg = Array(10);
+<?php for ($i=0; $i < 10; $i++): ?>
+	<?php if ($row['choice_'. $i] != ''): ?>
+		jg[<?php echo $i; ?>] = new jsGraphics("container<?php echo $i; ?>");
+		jg[<?php echo $i; ?>].setStroke(3);
+		jg[<?php echo $i; ?>].setColor("<?php echo $_colours[$i]; ?>");
+	<?php endif; ?>
+<?php endfor; ?>
+
+var container_html = $("#container0").html();
+
 $(document).ready(
 	function() {
+        parent.iframeSetHeight(<?php echo $_GET['qid']; ?>, Math.max($("#q").height(), $("#a").height()));
+		
 		$('#q>li').Draggable(
 			{
 				containment: "document",
@@ -122,7 +137,7 @@ $(document).ready(
 				ghosting:	true,
 				opacity: 	1,
 				revert:     true,
-				fx: 0 // doesn't update in FF if > 0
+				fx: 0 // doesn't update select menu in FF if > 0
 			}
 		); // end draggable
 
@@ -135,34 +150,17 @@ $(document).ready(
 				ondrop:	function (drag)  {
 					var lx = drag.offsetLeft + $("#" + drag.id).width() + padding;
 					var ly = drag.offsetTop  + $("#" + drag.id).height()/2 + 10;
-					var rx = this.offsetLeft + 300;
+					var rx = this.offsetLeft + 320;
 					var ry = this.offsetTop  + $("#" + this.id).height()/2 + 10;
 
-					if (this.id == 'a0') {
-						document.getElementById('s' + drag.id).selectedIndex = 1;
-					} else if (this.id == 'a1') {
-						document.getElementById('s' + drag.id).selectedIndex = 2;
-					} else if (this.id == 'a2') {
-						document.getElementById('s' + drag.id).selectedIndex = 3;
-					} else if (this.id == 'a3') {
-						document.getElementById('s' + drag.id).selectedIndex = 4;
-					} else if (this.id == 'a4') {
-						document.getElementById('s' + drag.id).selectedIndex = 5;
-					} else if (this.id == 'a5') {
-						document.getElementById('s' + drag.id).selectedIndex = 6;
-					} else if (this.id == 'a6') {
-						document.getElementById('s' + drag.id).selectedIndex = 7;
-					} else if (this.id == 'a7') {
-						document.getElementById('s' + drag.id).selectedIndex = 8;
-					} else if (this.id == 'a8') {
-						document.getElementById('s' + drag.id).selectedIndex = 9;
-					} else {
-						document.getElementById('s' + drag.id).selectedIndex = 10;
-					}
+					document.getElementById('s' + drag.value).selectedIndex =  this.value + 1;
 
-					window.top.document.getElementById("<?php echo $_GET['qid']; ?>" + drag.id).value = document.getElementById('s' + drag.id).selectedIndex - 1;
+					window.top.document.getElementById("<?php echo $_GET['qid']; ?>q" + drag.value).value = this.value;
 
-					drawLine(document.getElementById('img' + drag.id), lx, ly, rx, ry, '<?php echo $_base_href; ?>images/jslines/');
+					$("#container" + drag.value).html(container_html);
+
+					jg[drag.value].drawLine(lx, ly , rx, ry );
+					jg[drag.value].paint();
 
 					return true;
 				}
@@ -174,60 +172,26 @@ $(document).ready(
 
 function selectLine(value, id) {
 	if (value == "") {
-		document.getElementById('img' + id).style.width = "0px";
-		document.getElementById('img' + id).style.height = "0px";
-		document.getElementById('img' + id).src = "<?php echo $_base_href; ?>images/jslines/1up.gif";
-
-		window.top.document.getElementById("<?php echo $_GET['qid']; ?>" + id).value = "";
+		window.top.document.getElementById("<?php echo $_GET['qid']; ?>q" + id).value = "";
+		$("#container" + id).html(container_html);
 
 		return true;
 	}
 
-	var lx = document.getElementById(id).offsetLeft + $("#" + id).width() + padding;
-	var ly = document.getElementById(id).offsetTop  + $("#" + id).height()/2 + 10;
-	var rx = document.getElementById('a' + value).offsetLeft + 300;
-	var ry = document.getElementById('a' + value).offsetTop + $("#a" + value).height()/2 + 10;
+	var lx = document.getElementById("q" + id).offsetLeft + $("#q" + id).width() + padding;
+	var ly = document.getElementById("q" + id).offsetTop  + $("#q" + id).height()/2 + 10;
+	var rx = document.getElementById("a" + value).offsetLeft + 320;
+	var ry = document.getElementById("a" + value).offsetTop + $("#a" + value).height()/2 + 10;
 
-	window.top.document.getElementById("<?php echo $_GET['qid']; ?>" + id).value = value;
+	window.top.document.getElementById("<?php echo $_GET['qid']; ?>q" + id).value = value;
 
-	drawLine(document.getElementById('img' + id), lx, ly, rx, ry, '<?php echo $_base_href; ?>images/jslines/');
+	$("#container" + id).html(container_html);
+	jg[id].drawLine(lx, ly , rx, ry );
+	jg[id].paint();
+
 	return true;
 }
-
-/*
-From: http://www.p01.org/articles/DHTML_techniques/Drawing_lines_in_JavaScript/
-*/
-function drawLine( lineObjectHandle, Ax, Ay, Bx, By, lineImgPath ) {
-	/*
-	*	lineObjectHandle = an IMG tag with position:absolute
-	*/
-	var
-		xMin		= Math.min( Ax, Bx ),
-		yMin		= Math.min( Ay, By ),
-		xMax		= Math.max( Ax, Bx ),
-		yMax		= Math.max( Ay, By ),
-		boxWidth	= Math.max( xMax-xMin, 1 ),
-		boxHeight	= Math.max( yMax-yMin, 1 ),
-		tmp		= Math.min( boxWidth, boxHeight ),
-		smallEdge	= 1,
-		newSrc;
-
-
-	while( tmp>>=1 )
-		smallEdge<<=1
-
-	newSrc = lineImgPath+ smallEdge +( (Bx-Ax)*(By-Ay)<0?"up.gif":"down.gif" )
-	if( lineObjectHandle.src.indexOf( newSrc )==-1 )
-		lineObjectHandle.src = newSrc
-
-	with( lineObjectHandle.style )
-	{
-		width	= boxWidth	+"px"
-		height	= boxHeight	+"px"
-		left	= xMin		+"px"
-		top	= yMin		+"px"
-	}
-}
+// -->
 </script>
 
 </body>

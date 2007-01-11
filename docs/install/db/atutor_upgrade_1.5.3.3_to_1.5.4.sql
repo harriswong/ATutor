@@ -3,7 +3,6 @@
 ###############################################################
 
 ## alter the test questions table to support matching type questions
-## sql goes here ...
 
 ALTER TABLE `tests_questions` ADD `option_0` VARCHAR( 255 ) NOT NULL AFTER `answer_9` ,
 ADD `option_1` VARCHAR( 255 ) NOT NULL AFTER `option_0` ,
