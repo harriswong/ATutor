@@ -14,6 +14,11 @@
 
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
+	$content_base_href = 'get.php/';
+} else {
+	$content_base_href = 'content/' . $_SESSION['course_id'] . '/';
+}
 session_write_close();
 $_GET['qid'] = intval($_GET['qid']);
 $sql = "SELECT * FROM ".TABLE_PREFIX."tests_questions WHERE question_id=$_GET[qid]";
@@ -36,8 +41,7 @@ for ($i=0; $i < 10; $i++) {
 	<title><?php echo SITE_NAME; ?> : <?php echo AT_print($row['question'], 'tests_questions.question'); ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $myLang->getCharacterSet(); ?>" />
 	<meta name="Generator" content="ATutor - Copyright 2007 by http://atutor.ca" />
-	<base href="<?php echo $_base_href; ?>" />
-
+	<base href="<?php echo $_base_href . $content_base_href; ?>" />
 	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/jquery.js"></script>
 	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/interface.js"></script>
 	<script type="text/javascript" src="<?php echo $_base_href; ?>jscripts/wz_jsgraphics.js"></script>
@@ -128,8 +132,7 @@ var container_html = $("#container0").html();
 
 $(document).ready(
 	function() {
-        parent.iframeSetHeight(<?php echo $_GET['qid']; ?>, Math.max($("#q").height(), $("#a").height()));
-		
+	
 		$('#q>li').Draggable(
 			{
 				containment: "document",
@@ -167,6 +170,7 @@ $(document).ready(
 			}
 		); // end droppable
 
+        parent.iframeSetHeight(<?php echo $_GET['qid']; ?>, Math.max($("#q").height(), $("#a").height()));
 	}
 )
 

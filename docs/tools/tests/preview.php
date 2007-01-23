@@ -11,10 +11,17 @@
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
 // $Id$
-
-$page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
+
+function ordering_seed($question_id) {
+	// by controlling the seed before calling array_rand() we insure that
+	// we can un-randomize the order for marking.
+	// used with ordering type questions only.
+	srand($question_id + ord(DB_PASSWORD) + $_SESSION['member_id']);
+}
+
 
 authenticate(AT_PRIV_TESTS);
 
@@ -90,8 +97,6 @@ if ($row['random']) {
 			$random_id_string = $random_id_string.','.$cr_questions[$random_idx];
 			$num_questions--;
 		}
-		//$sql = "SELECT * FROM ".TABLE_PREFIX."tests_questions WHERE question_id IN ($random_id_string)";
-
 		$sql = "SELECT TQ.*, TQA.* FROM ".TABLE_PREFIX."tests_questions TQ INNER JOIN ".TABLE_PREFIX."tests_questions_assoc TQA USING (question_id) WHERE TQ.course_id=$_SESSION[course_id] AND TQA.test_id=$tid AND TQA.question_id IN ($random_id_string) ORDER BY TQA.ordering, TQA.question_id";
 	}
 } else {
@@ -102,183 +107,24 @@ $count = 1;
 echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="preview">';
 
 if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
-	echo '<div class="input-form">';
-	echo '<div class="row">';
-	echo '<h2>'.$test_row['title'].'</h2>';
+	?>
+	<div class="input-form" style="width:80%">
+	<div class="row"><h2><?php echo $test_row['title']; ?></h2></div>
 
-	if ($test_row['instructions']!='') {
-		echo '<p><br /><strong>'._AT('instructions').'</strong>:  '. $test_row['instructions'] .'</p>';
-	}
-	echo '</div>';
 
+	<?php if ($test_row['instructions'] != ''): ?>
+		<div style="background-color: #f3f3f3; padding: 5px 10px; margin: 0px; border-top: 1px solid">
+			<strong><?php echo _AT('instructions'); ?></strong>
+		</div>
+		<div class="row" style="padding-bottom: 20px"><?php echo $test_row['instructions']; ?></div>
+	<?php endif; ?>
+	
+	<?php
 	do {
-		echo '<div class="row"><h3>'.$count.')</h3> ';
-		$count++;
-		
-		if ($row['properties'] == AT_TESTS_QPROP_ALIGN_VERT) {
-			$spacer = '<br />';
-		} else {
-			$spacer = ', ';
-		}
-
-		switch ($row['type']) {
-			case AT_TESTS_MC:
-				/* multiple choice question */
-				echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
-
-				if (array_sum(array_slice($row, 16, -6)) > 1) {
-					for ($i=0; $i < 10; $i++) {
-						if ($row['choice_'.$i] != '') {
-							if ($i > 0) {
-								echo $spacer;
-							}
-							 
-							echo '<input type="checkbox" name="question_'.$row['question_id'].'" value="'.$i.'" id="choice_'.$row['question_id'].'_'.$i.'" /><label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'</label>';
-						}
-					}
-				} else {
-					for ($i=0; $i < 10; $i++) {
-						if ($row['choice_'.$i] != '') {
-							if ($i > 0) {
-								echo $spacer;
-							}
-							 
-							echo '<input type="radio" name="question_'.$row['question_id'].'" value="'.$i.'" id="choice_'.$row['question_id'].'_'.$i.'" /><label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'</label>';
-						}
-					}
-
-					echo $spacer;
-					echo '<input type="radio" name="question_'.$row['question_id'].'" value="-1" id="choice_'.$row['question_id'].'_x" checked="checked" /><label for="choice_'.$row['question_id'].'_x"><em>'._AT('leave_blank').'</em></label>';
-				}
-				echo '</p>';
-				break;
-				
-			case AT_TESTS_TF:
-				/* true or false question */
-				echo AT_print($row['question'], 'tests_questions.question').'<br />';
-
-				echo '<input type="radio" name="question_'.$row['question_id'].'" value="1" id="choice_'.$row['question_id'].'_1" /><label for="choice_'.$row['question_id'].'_1">'._AT('true').'</label>';
-
-				echo $spacer;
-				echo '<input type="radio" name="question_'.$row['question_id'].'" value="0" id="choice_'.$row['question_id'].'_0" /><label for="choice_'.$row['question_id'].'_0">'._AT('false').'</label>';
-
-				echo $spacer;
-				echo '<input type="radio" name="question_'.$row['question_id'].'" value="-1" id="choice_'.$row['question_id'].'_x" checked="checked" /><label for="choice_'.$row['question_id'].'_x"><em>'._AT('leave_blank').'</em></label>';
-
-				echo $spacer;
-				break;
-
-			case AT_TESTS_LONG:
-				/* long answer question */
-				echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
-				switch ($row['properties']) {
-					case 1:
-							/* one word */
-							echo '<input type="text" name="question_'.$row['question_id'].'" class="formfield" size="15" />';
-						break;
-
-					case 2:
-							/* sentence */
-							echo '<input type="text" name="question_'.$row['question_id'].'" class="formfield" size="45" />';
-						break;
-					
-					case 3:
-							/* paragraph */
-							echo '<textarea cols="55" rows="5" name="question_'.$row['question_id'].'" class="formfield"></textarea>';
-						break;
-
-					case 4:
-							/* page */
-							echo '<textarea cols="55" rows="25" name="question_'.$row['question_id'].'" class="formfield"></textarea>';
-						break;
-				}
-
-				echo '</p><br />';
-				break;
-
-			case AT_TESTS_LIKERT:
-				/* Likert question */
-				echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
- 
-				for ($i=0; $i < 10; $i++) {
-					if ($row['choice_'.$i] != '') {
-						if ($i > 0) {
-							echo $spacer;
-						}
-						 
-						echo '<input type="radio" name="question_'.$row['question_id'].'" value="'.$i.'" id="choice_'.$row['question_id'].'_'.$i.'" /><label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_answers.answer').'</label>';
-					}
-				}
-
-				echo $spacer;
-				echo '<input type="radio" name="question_'.$row['question_id'].'" value="-1" id="choice_'.$row['question_id'].'_x" checked="checked" /><label for="choice_'.$row['question_id'].'_x"><em>'._AT('leave_blank').'</em></label>';
-				echo '</p>';
-				break;
-
-			case AT_TESTS_MATCHING:
-				$_letters = array(_AT('A'), _AT('B'), _AT('C'), _AT('D'), _AT('E'), _AT('F'), _AT('G'), _AT('H'), _AT('I'), _AT('J'));
-
-				echo AT_print($row['question'], 'tests_questions.question').'<br />';
-
-				if ($row['properties'] == 1): ?>
-					<?php for ($i=0; $i < 10; $i++): ?>
-						<input type="hidden" name="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" id="<?php echo $row['question_id']; ?>q<?php echo $i; ?>" value="-1"/>
-					<?php endfor; ?>
-				<iframe id="qframe<?php echo $row['question_id']; ?>" src="<?php echo $_base_href; ?>tools/tests/dd.php?qid=<?php echo $row['question_id'];?>" width="100%" frameborder="0" ></iframe>
-				<?php else:
-				$num_options = 0;
-				for ($i=0; $i < 10; $i++) {
-					if ($row['option_'. $i] != '') {
-						$num_options++;
-					}
-				}	
-				?>
-				<table border="0">
-				<tr>
-					<td valign="top">
-					<?php for ($i=0; $i < 10; $i++): ?>
-						<?php if ($row['choice_'. $i] != ''): ?>
-							<select name="">
-								<option>-</option>
-								<?php for ($j=0; $j < $num_options; $j++): ?>
-									<option value="<?php echo $j; ?>"><?php echo $_letters[$j]; ?></option>
-								<?php endfor; ?>
-							</select>
-
-							<?php echo $row['choice_'. $i]; ?>
-							<br />
-						<?php endif; ?>
-					<?php endfor; ?>
-					</td>
-					<td valign="top">
-						<ol style="list-style-type: none; margin: 0px">
-						<?php for ($i=0; $i < $num_options; $i++): ?>
-							<li><?php echo $_letters[$i]; ?>. <?php echo $row['option_'. $i]; ?></li>
-						<?php endfor; ?>
-						</ol>
-					</td>
-				</tr>
-				</table>
-
-				<?php endif;
-				break;
-
-			case AT_TESTS_ORDERING:
-				// ordering
-				echo AT_print($row['question'], 'tests_questions.question').'<br /><p>';
-
-				$options = '<option>-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>';
-				for ($i=0; $i < 10; $i++) {
-					if ($row['choice_'.$i] != '') {
-						echo '<select name="question_'.$row['question_id'].'" id="choice_'.$row['question_id'].'_'.$i.'" />'.$options.'</select> <label for="choice_'.$row['question_id'].'_'.$i.'">'.AT_print($row['choice_'.$i], 'tests_questions.choice_'.$i).'</label><br />';
-					}
-				}
-
-				break;
-		}
-		echo '</div>';
+		$o = test_question_factory($row['type']);
+		$o->display($row);
 	} while ($row = mysql_fetch_assoc($result));
-?>
+	?>
 	<div class="row buttons">
 		<input type="submit" value="<?php echo _AT('back'); ?>" name="back" />
 	</div>
@@ -286,9 +132,11 @@ if (($row = mysql_fetch_assoc($result)) && !$rand_err) {
 	</div>
 	</form>
 <script type="text/javascript">
+//<!--
 function iframeSetHeight(id, height) {
 	document.getElementById("qframe" + id).style.height = (height + 20) + "px";
 }
+//-->
 </script>
 <?php
 } else {
