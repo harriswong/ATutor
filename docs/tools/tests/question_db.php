@@ -15,16 +15,20 @@
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
 
 authenticate(AT_PRIV_TESTS);
 
-if ( (isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['preview']) || isset($_GET['add'])) && !isset($_GET['id'])){
+if ( (isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['export']) || isset($_GET['preview']) || isset($_GET['add'])) && !isset($_GET['questions'])){
 	$msg->addError('NO_ITEM_SELECTED');
+} else if ( (isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['preview']) || isset($_GET['add'])) && (count($_GET['questions']) > 1)){
+	$msg->addError('SELECT_ONE_ITEM');
 } else if (isset($_GET['submit_create'])) {
 	header('Location: '.$_base_href.'tools/tests/create_question_'.$addslashes($_GET['question_type']).'.php');
 	exit;
 } else if (isset($_GET['edit'])) {
-	$ids = explode('|', $_GET['id'], 2);
+	$id  = current($_GET['questions']);
+	$ids = explode('|', $id[0], 2);
 	switch ($ids[1]) {
 		case AT_TESTS_MC:
 			$name = 'multi';
@@ -59,17 +63,39 @@ if ( (isset($_GET['edit']) || isset($_GET['delete']) || isset($_GET['preview']) 
 	header('Location: '.$_base_href.'tools/tests/edit_question_'.$addslashes($name).'.php?qid='.intval($ids[0]));
 	exit;
 } else if (isset($_GET['delete'])) {
-	$ids = explode('|', $_GET['id'], 2);
-	header('Location: '.$_base_href.'tools/tests/delete_question.php?qid='.intval($ids[0]));
+	$id  = current($_GET['questions']);
+	$ids = array();
+	foreach ($_GET['questions'] as $category_questions) {
+		$ids = array_merge($ids, $category_questions);
+	}
+
+	function intval_rec ( & $value, $key) { $value = (int) $value; }
+	array_walk($ids, 'intval_rec');
+	$ids = implode(',',$ids);
+
+	header('Location: '.$_base_href.'tools/tests/delete_question.php?qid='.$ids);
 	exit;
 } else if (isset($_GET['preview'])) {
-	$ids = explode('|', $_GET['id'], 2);
+	$id  = current($_GET['questions']);
+	$ids = explode('|', $id[0], 2);
 	header('Location: '.$_base_href.'tools/tests/preview_question.php?qid='.intval($ids[0]));
 	exit;
 } else if (isset($_GET['add'])) {
-	$ids = explode('|', $_GET['id'], 2);
+	$id  = current($_GET['questions']);
+	$ids = explode('|', $id[0], 2);
+} else if (isset($_GET['export'])) {
 
-	//tools/tests/add_test_questions_confirm.php
+	$ids = array();
+	foreach ($_GET['questions'] as $category_questions) {
+		$ids = array_merge($ids, $category_questions);
+	}
+
+	function intval_rec ( & $value, $key) { $value = (int) $value; }
+	array_walk($ids, 'intval_rec');
+
+	test_question_qti_export($ids);
+
+	exit;
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
