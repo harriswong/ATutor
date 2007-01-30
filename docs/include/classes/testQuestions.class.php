@@ -409,6 +409,10 @@ class LikertQuestion extends AbstracttestQuestion {
 	/*protected */ var $sType = 'test_lk';
 
 	/*protected */function assignQTIVariables($row) {
+		$choices = $this->getChoices($row);
+		$num_choices = count($choices);
+
+		$this->savant->assign('num_choices', $num_choices);
 		$this->savant->assign('row', $row);
 	}
 
@@ -418,6 +422,10 @@ class LikertQuestion extends AbstracttestQuestion {
 	}
 
 	/*protected */function assignDisplayVariables($row) {
+		$choices = $this->getChoices($row);
+		$num_choices = count($choices);
+
+		$this->savant->assign('num_choices', $num_choices);
 		$this->savant->assign('row', $row);
 	}
 
@@ -509,17 +517,17 @@ class MatchingQuestion extends AbstracttestQuestion {
 	/*protected */ var $sType = 'test_matching';
 
 	/*protected */function assignQTIVariables($row) {
+		$choices = $this->getChoices($row);
+		$num_choices = count($choices);
+
 		$num_options = 0;
 		for ($i=0; $i < 10; $i++) {
 			if ($row['option_'. $i] != '') {
 				$num_options++;
 			}
 		}
-		
-		global $_letters, $_base_href;
 
-		$this->savant->assign('base_href', $_base_href);
-		$this->savant->assign('letters', $_letters);
+		$this->savant->assign('num_choices', $num_choices);
 		$this->savant->assign('num_options', $num_options);
 		$this->savant->assign('row', $row);
 	}
@@ -544,6 +552,9 @@ class MatchingQuestion extends AbstracttestQuestion {
 	}
 
 	/*protected */function assignDisplayVariables($row) {
+		$choices = $this->getChoices($row);
+		$num_choices = count($choices);
+
 		$num_options = 0;
 		for ($i=0; $i < 10; $i++) {
 			if ($row['option_'. $i] != '') {
@@ -553,6 +564,7 @@ class MatchingQuestion extends AbstracttestQuestion {
 		
 		global $_letters, $_base_href;
 
+		$this->savant->assign('num_choices', $num_choices);
 		$this->savant->assign('base_href', $_base_href);
 		$this->savant->assign('letters', $_letters);
 		$this->savant->assign('num_options', $num_options);
