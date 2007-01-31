@@ -16,14 +16,6 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
 
-function ordering_seed($question_id) {
-	// by controlling the seed before calling array_rand() we insure that
-	// we can un-randomize the order for marking.
-	// used with ordering type questions only.
-	srand($question_id + ord(DB_PASSWORD) + $_SESSION['member_id']);
-}
-
-
 /* check to make sure we can access this test: */
 if ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUMNUS) {
 	require(AT_INCLUDE_PATH.'header.inc.php');

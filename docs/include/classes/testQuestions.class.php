@@ -138,6 +138,18 @@ function test_question_qti_export(/* array */ $question_ids) {
 	}
 
 	/**
+	* Public
+	*/
+	/*final public */function seed($salt) {
+		/**
+		* by controlling the seed before calling array_rand() we insure that
+		* we can un-randomize the order for marking.
+		* used with ordering type questions only.
+		*/
+		srand($salt + ord(DB_PASSWORD) + $_SESSION['member_id']);
+	}
+
+	/**
 	* Display the current question (for taking or previewing a test/question)
 	*/
 	/*final public */function display($row) {
@@ -263,7 +275,7 @@ class OrderingQuestion extends AbstractTestQuestion {
 		$num_choices = count($choices);
 
 		// randomize the order of choices and re-assign to $row
-		ordering_seed($row['question_id']);
+		$this->seed($row['question_id']);
 		$rand = array_rand($choices, $num_choices);
 		for ($i=0; $i < 10; $i++) {
 			$row['choice_'.$i] = $choices[$rand[$i]];
@@ -307,7 +319,7 @@ class OrderingQuestion extends AbstractTestQuestion {
 
 	/*public */function mark($row) { 
 
-		ordering_seed($row['question_id']);
+		$this->seed($row['question_id']);
 		$num_choices = count($_POST['answers'][$row['question_id']]);
 		$answers = range(0, $num_choices-1);
 		$answers = array_rand($answers, $num_choices);
