@@ -45,7 +45,7 @@ if ($_GET['reset_filter']) {
 
 $page_string = '';
 $orders = array('asc' => 'desc', 'desc' => 'asc');
-$cols   = array('login' => 1, 'public_field' => 1, 'first_name' => 1, 'second_name' => 1, 'last_name' => 1, 'email' => 1, 'status' => 1);
+$cols   = array('login' => 1, 'public_field' => 1, 'first_name' => 1, 'second_name' => 1, 'last_name' => 1, 'email' => 1, 'status' => 1, 'creation_date' => 1);
 
 if (isset($_GET['asc'])) {
 	$order = 'asc';
@@ -128,9 +128,9 @@ $count  = (($page-1) * $results_per_page) + 1;
 $offset = ($page-1)*$results_per_page;
 
 if (defined('AT_MASTER_LIST') && AT_MASTER_LIST) {
-	$sql	= "SELECT M.member_id, M.login, M.first_name, M.second_name, M.last_name, M.email, M.status, L.public_field FROM ".TABLE_PREFIX."members M LEFT JOIN ".TABLE_PREFIX."master_list L USING (member_id) WHERE M.status $status AND $search AND $searchid ORDER BY $col $order LIMIT $offset, $results_per_page";
+	$sql	= "SELECT M.member_id, M.login, M.first_name, M.second_name, M.last_name, M.email, M.status, M.creation_date+0 AS creation_date, L.public_field FROM ".TABLE_PREFIX."members M LEFT JOIN ".TABLE_PREFIX."master_list L USING (member_id) WHERE M.status $status AND $search AND $searchid ORDER BY $col $order LIMIT $offset, $results_per_page";
 } else {
-	$sql	= "SELECT M.member_id, M.login, M.first_name, M.second_name, M.last_name, M.email, M.status FROM ".TABLE_PREFIX."members M WHERE M.status $status AND $search ORDER BY $col $order LIMIT $offset, $results_per_page";
+	$sql	= "SELECT M.member_id, M.login, M.first_name, M.second_name, M.last_name, M.email, M.status, M.creation_date+0 AS creation_date FROM ".TABLE_PREFIX."members M WHERE M.status $status AND $search ORDER BY $col $order LIMIT $offset, $results_per_page";
 }
 $result = mysql_query($sql, $db);
 
@@ -203,29 +203,33 @@ $result = mysql_query($sql, $db);
 	<?php if ($col == 'login'): ?>
 		<col />
 		<col class="sort" />
-		<col span="<?php echo 4 + $col_counts; ?>" />
+		<col span="<?php echo 5 + $col_counts; ?>" />
 	<?php elseif($col == 'public_field'): ?>
 		<col span="<?php echo 1 + $col_counts; ?>" />
 		<col class="sort" />
-		<col span="3" />
+		<col span="6" />
 	<?php elseif($col == 'first_name'): ?>
 		<col span="<?php echo 2 + $col_counts; ?>" />
 		<col class="sort" />
-		<col span="3" />
+		<col span="5" />
 	<?php elseif($col == 'second_name'): ?>
 		<col span="<?php echo 3 + $col_counts; ?>" />
 		<col class="sort" />
-		<col span="3" />
+		<col span="4" />
 	<?php elseif($col == 'last_name'): ?>
 		<col span="<?php echo 4 + $col_counts; ?>" />
 		<col class="sort" />
-		<col span="2" />
+		<col span="3" />
 	<?php elseif($col == 'email'): ?>
 		<col span="<?php echo 5 + $col_counts; ?>" />
 		<col class="sort" />
-		<col />
+		<col span="2" />
 	<?php elseif($col == 'status'): ?>
 		<col span="<?php echo 6 + $col_counts; ?>" />
+		<col class="sort" />
+		<col />
+	<?php elseif($col == 'creation_date'): ?>
+		<col span="<?php echo 7 + $col_counts; ?>" />
 		<col class="sort" />
 	<?php endif; ?>
 </colgroup>
@@ -241,12 +245,13 @@ $result = mysql_query($sql, $db);
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=last_name<?php echo $page_string; ?>"><?php echo _AT('last_name');   ?></a></th>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=email<?php echo $page_string; ?>"><?php echo _AT('email');           ?></a></th>
 	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=status<?php echo $page_string; ?>"><?php echo _AT('account_status'); ?></a></th>
+	<th scope="col"><a href="admin/users.php?<?php echo $orders[$order]; ?>=creation_date<?php echo $page_string; ?>">Date</a></th>
 </tr>
 </thead>
 <?php if ($num_results > 0): ?>
 	<tfoot>
 	<tr>
-		<td colspan="<?php echo 7 + $col_counts; ?>"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
+		<td colspan="<?php echo 8 + $col_counts; ?>"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
 						<input type="submit" name="confirm" value="<?php echo _AT('confirm'); ?>" /> 
 						<input type="submit" name="password" value="<?php echo _AT('password'); ?>" />
 						<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
@@ -280,12 +285,13 @@ $result = mysql_query($sql, $db);
 									echo _AT('instructor');
 								break;
 					} ?></td>
+				<td><?php echo AT_Date('%d/%m/%y - %H:%i', $row['creation_date'], AT_DATE_MYSQL_TIMESTAMP_14); ?></td>
 			</tr>
 		<?php endwhile; ?>
 	</tbody>
 <?php else: ?>
 	<tr>
-		<td colspan="<?php echo 6 + $col_counts; ?>"><?php echo _AT('none_found'); ?></td>
+		<td colspan="<?php echo 8 + $col_counts; ?>"><?php echo _AT('none_found'); ?></td>
 	</tr>
 <?php endif; ?>
 </table>
