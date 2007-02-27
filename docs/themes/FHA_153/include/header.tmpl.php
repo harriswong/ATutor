@@ -58,6 +58,7 @@ global $system_courses, $_custom_css;
 	<?php echo $this->custom_css; ?>
 </head>
 <body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<script language="JScript" type="text/jscript" src="<?php echo $this->base_path; ?>activateActiveX_onload.js"></script>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
 //<!--
 
