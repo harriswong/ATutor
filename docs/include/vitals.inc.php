@@ -11,6 +11,7 @@
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
 // $Id$
+//yo
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_DEVEL',1);
