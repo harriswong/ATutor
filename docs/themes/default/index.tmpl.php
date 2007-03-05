@@ -14,15 +14,14 @@ if (!defined('AT_INCLUDE_PATH')) { exit; } ?>
 
 <?php if ($this->banner): ?><?php echo $this->banner; ?><?php endif; ?>
 
-<div style="width: 100%; margin-top: -5px;">
-	<ul id="home-links">
+<ul id="home-links">
 	<?php foreach ($this->home_links as $link): ?>
-		<li><a href="<?php echo $link['url']; ?>"><img src="<?php echo $link['img']; ?>" alt="" class="img-size-home" border="0" /><?php echo $link['title']; ?></a></li>
+	<li><a href="<?php echo $link['url']; ?>"><img src="<?php echo $link['img']; ?>" alt="" class="img-size-home" border="0" /><?php echo $link['title']; ?></a></li>
 	<?php endforeach; ?>
-	</ul>
-</div>
+</ul>
 
 <?php if ($this->announcements): ?>
+<div class="clearfix"></div>
 <h2 class="page-title"><?php echo _AT('announcements'); ?></h2>
 	<?php foreach ($this->announcements as $item): ?>
 		<div class="news">

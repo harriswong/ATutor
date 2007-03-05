@@ -12,7 +12,7 @@
  //-->
 </script>
 
-<div id="container">
+<div id="login-area">
 	<div class="column">
 		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" name="form">
 		<input type="hidden" name="form_login_action" value="true" />

@@ -220,7 +220,7 @@ function toggleToc(objId) {
 <div class="header">
 	<!-- section title -->	
 	<?php if ($_SESSION['valid_user']): 
-		echo '<span style="font-size:small;font-weight:bold;padding-left:5px;">'.stripslashes(SITE_NAME).'</span>'; 
+		echo '<span id="site-name">'.stripslashes(SITE_NAME).'</span>'; 
 	else:
 		echo '<br />';	
 	endif; ?>
@@ -248,43 +248,37 @@ function toggleToc(objId) {
 </div>
 
 <!-- the sub navigation -->
-<div style="text-align: right; padding-top: 5px; padding-right: 5px;"><small><?php echo $this->current_date; ?></small></div>
-<?php if ($this->sub_level_pages): ?>
-	<div id="sub-navigation">
-		<?php if (isset($this->back_to_page)): ?>
-			<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to'); ?> <?php echo $this->back_to_page['title']; ?></a> | 
-		<?php endif; ?>
-
-		<?php $num_pages = count($this->sub_level_pages); ?>
-		<?php for($i=0; $i<$num_pages; $i++): ?>
-			<?php if ($this->sub_level_pages[$i]['url'] == $this->current_sub_level_page): ?>
-				<strong><?php echo $this->sub_level_pages[$i]['title']; ?></strong>
-			<?php else: ?>
-				<a href="<?php echo $this->sub_level_pages[$i]['url']; ?>"><?php echo $this->sub_level_pages[$i]['title']; ?></a>
+<div id="main-date"><?php echo $this->current_date; ?></div>
+<div id="sub-navigation">
+	<?php if ($this->sub_level_pages): ?>
+			<?php if (isset($this->back_to_page)): ?>
+				<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to'); ?> <?php echo $this->back_to_page['title']; ?></a> | 
 			<?php endif; ?>
-			<?php if ($i < $num_pages-1): ?>
-				| 
-			<?php endif; ?>
-		<?php endfor; ?>
-	</div>
-<?php else: ?>
-	<div id="sub-navigation">
-		&nbsp;
-	</div>
-<?php endif; ?>
 
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="99%">
-	<tr>
-		<?php if ($_SESSION['course_id'] > 0): ?>
-			<td valign="top" width="100%">
-		<?php else: ?>
-			<td valign="top" width="100%" colspan="2">
-		<?php endif; ?>
+			<?php $num_pages = count($this->sub_level_pages); ?>
+			<?php for($i=0; $i<$num_pages; $i++): ?>
+				<?php if ($this->sub_level_pages[$i]['url'] == $this->current_sub_level_page): ?>
+					<strong><?php echo $this->sub_level_pages[$i]['title']; ?></strong>
+				<?php else: ?>
+					<a href="<?php echo $this->sub_level_pages[$i]['url']; ?>"><?php echo $this->sub_level_pages[$i]['title']; ?></a>
+				<?php endif; ?>
+				<?php if ($i < $num_pages-1): ?>
+					| 
+				<?php endif; ?>
+			<?php endfor; ?>
+	<?php else: ?>
+			&nbsp;
+	<?php endif; ?>
+</div>
+<div id="main">
+	<?php require(AT_INCLUDE_PATH.'side_menu.inc.php');	?>
 
-<!-- the page title -->
-	<div style="text-align: right; padding-bottom: 10px; padding-right: 10px; float: right; margin-top: 10px; padding-right: 5px;">
+	<div id="main-content">
+
+	<!-- the page title -->
+	<div id="guide">
 		<?php if ($this->guide): ?>
-			<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
+			<a href="<?php echo $this->guide; ?>" id="guide-link" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
 		<?php endif; ?>
 		<?php if ($_SESSION['course_id'] > 0 && $system_courses[$_SESSION['course_id']]['side_menu']): ?>
 			<script type="text/javascript" language="javascript">
@@ -295,14 +289,13 @@ function toggleToc(objId) {
 			} else {
 				showTocToggle("side-menu", "<?php echo _AT('show'); ?>","<?php echo _AT('hide'); ?>", "", "hide");
 			}
-
 			//]]>
 			</script>
 
 		<?php endif; ?>
 	</div>
 
-	<div style="float:right;padding-top:7px;">
+	<div id="sequence-links">
 		<?php if ($this->sequence_links['resume']): ?>
 				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->img; ?>resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?> Alt+." alt="<?php echo $this->sequence_links['resume']['title']; ?> Alt+." class="img-size-ascdesc" /></a>
 		<?php else:

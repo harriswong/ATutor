@@ -15,6 +15,65 @@ html,body {
 	height: 100%;
 }
 
+/* main areas */
+
+#main {
+	width: 99%;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#main-content {
+}
+
+#main-side {
+	float: right; /*menu side*/
+	width:13em;
+	margin:15px;
+}
+
+.clearfix {
+	clear: left;
+}
+
+
+/*.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+
+.clearfix {display: inline-block;}
+
+* html .clearfix {height: 1%;}
+*/
+
+#footer {
+	clear: both;
+	width: 100%;
+	text-align: center;
+}
+
+span#site-name {
+	font-size:small;
+	font-weight:bold;
+	padding-left:5px;
+}
+
+div#sequence-links {
+	float: right;
+	padding-top: 7px;
+}
+
+div#main-date {
+	text-align: right; 
+	padding-top: 5px; 
+	padding-right: 5px;
+	font-size: smaller;
+}
+
 /* heading attributes */
 h1, h2, h3, h4, h5, h6 {
 	font-family: trebuchet ms, Arial, sans-serif;
@@ -34,16 +93,6 @@ p {
 	margin-right: 0px;
 } 
 
-
-/* for filemanager */
-li.folders {
-	list-style: disc url(../../images/folder.gif) outside;
-	font-family: Helevetica, Arial, sans-serif;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-right: 0px;
-}
-
 /* link attributes */
 a:link {
 	font-family: Helevetica, Arial, sans-serif;
@@ -59,22 +108,6 @@ a:hover {
 	font-family: Helevetica, Arial, sans-serif;
 	color: black;
 	text-decoration: underline;
-}
-
-/*  Table of content attributes*/
-div#toc{
-	font-family: Helevetica, Arial, sans-serif;
-	background-color: #eeeeee;
-	padding-right: 3px;
-	margin: 0px 5px 5px 5px;
-	border: 1px #98AAB1 solid;
-	float: left;
-	font-size: smaller;
-}
-
-/* table border */
-.tableborder {
-	border: 1px #606060 solid;
 }
 
 /* button */
@@ -114,25 +147,16 @@ hr {
 	background-color: white;
 	height: 1px;
 }
+                                                      
 
-/* Editor boxes */
-.editorsmallbox {
+/* for filemanager */
+li.folders {
+	list-style: disc url(../../images/folder.gif) outside;
 	font-family: Helevetica, Arial, sans-serif;
-	background-color: #EEEEEE;
-	padding: 2px;
-	padding-right: 3px;
-	border: 1px #99CCCC solid;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
 }
-.editorlargebox {
-	font-family: Helevetica, Arial, sans-serif;
-	background-color: #EEEEEE;
-	margin-left:1em;
-	padding-left: .2em;
-	padding-right: .5em;
-	padding-top: .5em;
-	padding-bottom: .4em;
-	border: 1px #99CCCC solid;
-}                                                          
 
 /* feedback for translators and install */
 .feedback2  {
@@ -427,8 +451,7 @@ h2.page-title {
 	margin-bottom: 10px;
 	margin-top: 4px;
 	margin-left: 5px;
-	border-bottom: 1px solid #f0f0f0;
-	clear: left;
+	/*border-bottom: 1px solid #f0f0f0;*/
 }
 
 h1 {
@@ -480,13 +503,6 @@ div#toctoggle {
 	float: left;
 	font-size: smaller;
 	padding-left: 10px;
-}
-
-div#top-links {
-	position: relative;
-	padding-right: 5px;
-	line-height: 170%;
-	margin-top: 3px;
 }
 
 a#editor-link {
@@ -687,6 +703,7 @@ div.news span.date {
 	color: #ACACAC;
 }
 
+
 /* home page links */
 ul#home-links {
 	list-style: none;
@@ -762,6 +779,7 @@ div#content-info {
 	font-size: smaller;
 	color: #cacaca;
 	clear: both;
+	padding-top:15px;
 }
 
 form {
@@ -946,7 +964,18 @@ div.box a:hover {
 	text-decoration: underline;
 }
 
-a#guide {
+/* guide link */
+
+div#guide {
+	float: right;
+	text-align: right; 
+	padding-bottom: 10px; 
+	padding-right: 10px; 
+	margin-top: 10px; 
+	padding-right: 5px;
+}
+
+a#guide-link {
 	background-image: url('images/guide.gif'); background-repeat: no-repeat; background-position: 7px 5px;
 	background-color: #eee;
 	padding: 2px 10px 2px 28px;
