@@ -29,6 +29,7 @@ if (!valid_forum_user($fid)) {
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
+$forum_info = get_forum($fid);
 $_pages['forum/index.php?fid='.$fid]['title']    = get_forum_name($fid);
 $_pages['forum/index.php?fid='.$fid]['parent']   = 'forum/list.php';
 $_pages['forum/index.php?fid='.$fid]['children'] = array('forum/new_thread.php?fid='.$fid);
