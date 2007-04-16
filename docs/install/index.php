@@ -37,7 +37,7 @@ $no_good = FALSE;
 ?>
 <h3>Welcome to the ATutor Installation</h3>
 <p>This process will step you through your ATutor installation or upgrade.</p>
-<p>During this process be sure not to use your browser's <em>Refresh</em> or <em>Reload</em> option as it may complicate the installation process.</p>
+<p>During this process be sure not to use your browser's <em>Refresh</em> or <em>Reload</em> feature as it may complicate the installation process.</p>
 
 <p>Before you continue you may want to review the <a href="../documentation/admin/" target="_new"><em>ATutor Handbook</em></a> for more detailed instructions.</p>
 
@@ -46,20 +46,30 @@ $no_good = FALSE;
 		<table class="data" style="width: 75%; max-width: 600px;">
 		<tbody>
 		<tr>
-			<th scope="cols">Web Server Options</th>
-			<th scope="cols">Detected</th>
-			<th scope="cols">Status</th>
+			<th scope="col">File Integrity</th>
+			<th scope="col">Detected</th>
+			<th scope="col">Status</th>
 		</tr>
 		<tr>
-			<td>Webserver</td>
-			<td><?php echo $_SERVER['SERVER_SOFTWARE']; ?></td>
-			<td align="center"><?php echo $good; ?></td>
+			<td>Case Sensitivity</td>
+			<td><?php if (file_exists('../include/classes/CSVExport.class.php') && file_exists('../include/classes/csvexport.class.php')) {
+						echo 'Ignored</td><td align="center">';
+						echo $good;
+					} else if (file_exists('../include/classes/CSVExport.class.php')) {
+						echo 'Enforced</td><td align="center">';
+						echo $good;
+					} else {
+						echo 'Enforced</td><td align="center">';
+						echo $bad;
+						$no_good = TRUE;
+					} ?></td>
 		</tr>
+		</tbody>
 		<tbody>
 		<tr>
-			<th scope="cols">PHP Options</th>
-			<th scope="cols">Detected</th>
-			<th scope="cols">Status</th>
+			<th scope="col">PHP Options</th>
+			<th scope="col">Detected</th>
+			<th scope="col">Status</th>
 		</tr>
 		<tr>
 			<td>PHP 4.3.0+</td>
@@ -195,6 +205,17 @@ $no_good = FALSE;
 					} ?></td>
 		</tr>
 		<tr>
+			<td><kbd>session.auto_start = 0</kbd></td>
+			<td><?php if (ini_get('session.auto_start')) {
+							echo '1</td><td align="center">';
+							echo $bad;
+							$no_good = TRUE;
+						} else {
+							echo '0</td><td align="center">';
+							echo $good;
+						} ?></td>
+		</tr>
+		<tr>
 			<td><kbd>session.save_path</kbd></td>
 			<td><?php
 				if ($session_error == '') {
@@ -224,9 +245,9 @@ $no_good = FALSE;
 		</tbody>
 		<tbody>
 		<tr>
-			<th scope="cols">MySQL Options</th>
-			<th scope="cols">Detected</th>
-			<th scope="cols">Status</th>
+			<th scope="col">MySQL Options</th>
+			<th scope="col">Detected</th>
+			<th scope="col">Status</th>
 		</tr>
 		<tr>
 			<td>MySQL 4.0.2+</td>

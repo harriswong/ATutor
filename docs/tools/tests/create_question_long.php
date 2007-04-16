@@ -29,14 +29,14 @@ if (isset($_POST['cancel'])) {
 	$_POST['properties']  = intval($_POST['properties']);
 
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('question')));
 	}
 
 	if (!$msg->containsErrors()) {
 		$_POST['feedback'] = $addslashes($_POST['feedback']);
 		$_POST['question'] = $addslashes($_POST['question']);
 	
-		$sql	= "INSERT INTO ".TABLE_PREFIX."tests_questions VALUES (	0,
+		$sql	= "INSERT INTO ".TABLE_PREFIX."tests_questions VALUES (	NULL,
 			$_POST[category_id],
 			$_SESSION[course_id],
 			3,
@@ -62,11 +62,21 @@ if (isset($_POST['cancel'])) {
 			0,
 			0,
 			0,
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
 			$_POST[properties],
 			0)";
 		$result	= mysql_query($sql, $db);
 
-		$msg->addFeedback('QUESTION_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: question_db.php');
 		exit;
 	}
@@ -92,10 +102,10 @@ if (!isset($_POST['properties'])) {
 	</div>
 
 	<div class="row">
-		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label> 
-		<?php print_VE('feedback'); ?>
+		<label for="optional_feedback"><?php echo _AT('optional_feedback'); ?></label> 
+		<?php print_VE('optional_feedback'); ?>
 
-		<textarea id="feedback" cols="50" rows="3" name="feedback"><?php 
+		<textarea id="optional_feedback" cols="50" rows="3" name="feedback"><?php 
 		echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
 	</div>
 

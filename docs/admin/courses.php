@@ -138,19 +138,7 @@ $num_rows = mysql_num_rows($result);
 	</div>
 </form>
 
-<div class="paging">
-	<ul>
-	<?php for ($i=1; $i<=$num_pages; $i++): ?>
-		<li>
-			<?php if ($i == $page) : ?>
-				<a class="current" href="<?php echo $_SERVER['PHP_SELF']; ?>?p=<?php echo $i.$page_string.SEP.$order.'='.$col; ?>"><em><?php echo $i; ?></em></a>
-			<?php else: ?>
-				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?p=<?php echo $i.$page_string.SEP.$order.'='.$col; ?>"><?php echo $i; ?></a>
-			<?php endif; ?>
-		</li>
-	<?php endfor; ?>
-	</ul>
-</div>
+<?php print_paginator($page, $num_results, $page_string . SEP . $order .'='. $col, $results_per_page); ?>
 
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
@@ -172,6 +160,10 @@ $num_rows = mysql_num_rows($result);
 		<col span="4" />
 		<col class="sort" />
 		<col span="3" />
+	<?php elseif($col == 'cat_name'): ?>
+		<col span="5" />
+		<col class="sort" />
+		<col span="2" />
 	<?php endif; ?>
 </colgroup>
 <thead>

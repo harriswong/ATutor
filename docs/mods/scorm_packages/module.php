@@ -4,10 +4,8 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
 
 define('AT_PRIV_CONTENT', $this->getPrivilege());
 
-global $_base_href;
-
 define('AT_PACKAGE_TYPES', 'scorm-1.2');
-define('AT_PACKAGE_URL_BASE', $_base_href . 'sco/'); 
+define('AT_PACKAGE_URL_BASE', AT_BASE_HREF . 'sco/'); 
 
 
 // if this module is to be made available to students on the Home or Main Navigation
@@ -34,7 +32,7 @@ $this->_pages['packages/index.php']['img']       = 'images/content_pkg.gif';
 $this->_pages['packages/index.php']['children']  = array ('packages/preferences.php');
 $this->_pages['packages/index.php']['guide']     = 'general/?p=6.2.packages.php';
 
-	$this->_pages['packages/preferences.php']['title_var'] = 'package_preferences';
+	$this->_pages['packages/preferences.php']['title_var'] = 'preferences';
 	$this->_pages['packages/preferences.php']['parent']    = 'packages/index.php';
 
 	$this->_pages['packages/cmidata.php']['title_var'] = 'cmi_data';

@@ -13,7 +13,7 @@
 // $Id$
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-global $next_prev_links, $langEditor;
+global $next_prev_links;
 global $_base_path, $_my_uri;
 global $_stacks, $db;
 global $system_courses;
@@ -24,13 +24,11 @@ $stack_files = array();
 if ($_SESSION['course_id'] > 0) {
 	$savant->assign('my_uri', $_my_uri);
 
-	if (($_SESSION['prefs'][PREF_MAIN_MENU] == 1) && $_SESSION['prefs'][PREF_MAIN_MENU_SIDE] != MENU_LEFT) {
-		$savant->assign('right_menu_open', TRUE);
-		$savant->assign('popup_help', 'MAIN_MENU');
-		$savant->assign('menu_url', '<a name="menu"></a>');
-		$savant->assign('close_menu_url', htmlspecialchars($_my_uri).'disable='.PREF_MAIN_MENU);
-		$savant->assign('close_menus', _AT('close_menus'));
-	}	
+	$savant->assign('right_menu_open', TRUE);
+	$savant->assign('popup_help', 'MAIN_MENU');
+	$savant->assign('menu_url', '<a name="menu"></a>');
+	$savant->assign('close_menu_url', htmlspecialchars($_my_uri).'disable='.PREF_MAIN_MENU);
+	$savant->assign('close_menus', _AT('close_menus'));
 
 	//copyright can be found in include/html/copyright.inc.php
 
@@ -58,6 +56,7 @@ if ($file_info['basename'] != 'take_test.php') {
 // this js is indep of the theme used:
 ?>
 <script language="javascript" type="text/javascript">
+//<!--
 var selected;
 function rowselect(obj) {
 	obj.className = 'selected';
@@ -74,6 +73,7 @@ function rowselectbox(obj, checked, handler) {
 	else
 		obj.className = '';
 }
+//-->
 </script>
 <?php
 
@@ -83,5 +83,11 @@ if ($framed || $popup) {
 	$savant->display('include/footer.tmpl.php');
 }
 
-debug($_SESSION);
+if (defined('AT_DEVEL') && AT_DEVEL) {
+	debug(TABLE_PREFIX, 'TABLE_PREFIX');
+	debug(DB_NAME, 'DB_NAME');
+	debug(VERSION, 'VERSION');
+	debug($_SESSION);
+}
+
 ?>

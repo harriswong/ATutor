@@ -28,20 +28,20 @@ if (isset($_POST['cancel'])) {
 
 	if (!empty($_POST['title']) && !isset($_POST['catid'])) {
 		$_POST['title'] = $addslashes($_POST['title']);
-		$sql	= "INSERT INTO ".TABLE_PREFIX."tests_questions_categories VALUES (0, $_SESSION[course_id], '$_POST[title]')";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."tests_questions_categories VALUES (NULL, $_SESSION[course_id], '$_POST[title]')";
 		$result = mysql_query($sql, $db);
-		$msg->addFeedback('CAT_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: question_cats.php');
 		exit;
 	} else if (!empty($_POST['title']) && isset($_POST['catid']))  {
 		$_POST['title'] = $addslashes($_POST['title']);
 		$sql	= "REPLACE INTO ".TABLE_PREFIX."tests_questions_categories VALUES ($_POST[catid], $_SESSION[course_id], '$_POST[title]')";
 		$result = mysql_query($sql, $db);
-		$msg->addFeedback('CAT_UPDATE_SUCCESSFUL');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: question_cats.php');
 		exit;
 	} else {
-		$msg->addError('CAT_NO_NAME');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 }
 

@@ -40,12 +40,14 @@ if (isset($_POST['cancel'])) {
 		$sql = "SELECT folder_id FROM ".TABLE_PREFIX."folders WHERE folder_id=$parent_folder_id AND owner_type=$owner_type AND owner_id=$owner_id";
 		$result = mysql_query($sql, $db);
 		if (!$row = mysql_fetch_assoc($result)) {
-			exit('not authenticated');
+			$msg->addError('ACCESS_DENIED');
+			header('Location: index.php');
+			exit;
 		}
 	}
 
 	if (!$_POST['name']) {
-		$msg->addError('NEED_FILENAME');
+		$msg->addError(array('EMPTY_FIELDS', _AT('file_name')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -61,7 +63,7 @@ if (isset($_POST['cancel'])) {
 		}
 
 		$size = strlen($_POST['body']);
-		$sql = "INSERT INTO ".TABLE_PREFIX."files VALUES (0, $owner_type, $owner_id, $_SESSION[member_id], $parent_folder_id, 0, NOW(), $num_comments, 0, '$_POST[name]',$size, '$_POST[description]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."files VALUES (NULL, $owner_type, $owner_id, $_SESSION[member_id], $parent_folder_id, 0, NOW(), $num_comments, 0, '$_POST[name]',$size, '$_POST[description]')";
 		$result = mysql_query($sql, $db);
 
 		if ($result && ($file_id = mysql_insert_id($db))) {
@@ -75,10 +77,10 @@ if (isset($_POST['cancel'])) {
 			$result = mysql_query($sql, $db);
 			if ($row = mysql_fetch_assoc($result)) {
 				if ($_config['fs_versioning']) {
-					$sql = "UPDATE ".TABLE_PREFIX."files SET parent_file_id=$file_id WHERE file_id=$row[file_id]";
+					$sql = "UPDATE ".TABLE_PREFIX."files SET parent_file_id=$file_id, date=date WHERE file_id=$row[file_id]";
 					$result = mysql_query($sql, $db);
 
-					$sql = "UPDATE ".TABLE_PREFIX."files SET num_revisions=$row[num_revisions]+1 WHERE file_id=$file_id";
+					$sql = "UPDATE ".TABLE_PREFIX."files SET num_revisions=$row[num_revisions]+1, date=date WHERE file_id=$file_id";
 					$result = mysql_query($sql, $db);
 				} else {
 					fs_delete_file($row['file_id'], $owner_type, $owner_id);
@@ -86,7 +88,7 @@ if (isset($_POST['cancel'])) {
 			}
 
 			if ($_POST['comment']){
-				$sql = "INSERT INTO ".TABLE_PREFIX."files_comments VALUES (0, $file_id, $_SESSION[member_id], NOW(), '{$_POST['comment']}')";
+				$sql = "INSERT INTO ".TABLE_PREFIX."files_comments VALUES (NULL, $file_id, $_SESSION[member_id], NOW(), '{$_POST['comment']}')";
 				mysql_query($sql, $db);
 			}
 

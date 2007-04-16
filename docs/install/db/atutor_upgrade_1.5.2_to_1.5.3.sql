@@ -8,12 +8,12 @@ CREATE TABLE `groups_types` (
 	`title` VARCHAR( 80 ) NOT NULL default '',
 	PRIMARY KEY ( `type_id` ) ,
 	KEY ( `course_id` )
-);
+) TYPE = MYISAM;
 
 ALTER TABLE `groups` CHANGE `course_id` `type_id` MEDIUMINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL;
 ALTER TABLE `groups` ADD `description` TEXT NOT NULL default '' , ADD `modules` VARCHAR(100) NOT NULL default '';
 
-UPDATE `modules` SET `privilege`=65536 WHERE `dir_name`='_core/groups';
+UPDATE `modules` SET `privilege`=1048576 WHERE `dir_name`='_core/groups';
 INSERT INTO `modules` VALUES ('_standard/reading_list',  2, 131072,    0);
 INSERT INTO `modules` VALUES ('_standard/file_storage',  2, 262144,    0);
 INSERT INTO `modules` VALUES ('_standard/assignments',   2, 524288,    0);
@@ -21,23 +21,6 @@ INSERT INTO `modules` VALUES ('_standard/assignments',   2, 524288,    0);
 # cron support for modules
 ALTER TABLE `modules` ADD `cron_interval` SMALLINT UNSIGNED DEFAULT '0' NOT NULL , ADD `cron_last_run` INT UNSIGNED DEFAULT '0' NOT NULL ;
 
-
-# --------------------------------------------------------
-
-# assignments table
-CREATE TABLE `assignments` (
-	`assignment_id` MEDIUMINT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`course_id` MEDIUMINT UNSIGNED NOT NULL default '',
-	`title` VARCHAR(60) NOT NULL default '',
-	`assign_to` MEDIUMINT UNSIGNED DEFAULT 0,
-	`date_due` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-	`date_cutoff` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-	`multi_submit` TINYINT DEFAULT '0',
-	PRIMARY KEY  (`assignment_id`),
-	INDEX (`course_id`)
-) TYPE = MYISAM;
-
-# --------------------------------------------------------
 
 # forum groups table
 CREATE TABLE `forums_groups` (
@@ -89,7 +72,7 @@ CREATE TABLE `external_resources` (
 CREATE TABLE `file_storage_groups` (
   `group_id` MEDIUMINT UNSIGNED NOT NULL default '0',
   PRIMARY KEY ( `group_id` )
-);
+) TYPE = MYISAM;
 
 
 CREATE TABLE `files` (
@@ -129,7 +112,7 @@ CREATE TABLE `folders` (
 ## assignment manager
 CREATE TABLE `assignments` (
   `assignment_id` MEDIUMINT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `course_id` MEDIUMINT UNSIGNED NOT NULL default '',
+  `course_id` MEDIUMINT UNSIGNED NOT NULL default 0,
   `title` VARCHAR(60) NOT NULL default '',
   `assign_to` MEDIUMINT UNSIGNED DEFAULT 0,
   `date_due` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -162,7 +145,7 @@ CREATE TABLE `mail_queue` (
   `subject` VARCHAR( 200 ) NOT NULL default '',
   `body` TEXT NOT NULL default '',
   PRIMARY KEY ( `mail_id` )
-);
+) TYPE = MYISAM;
 
 #install new themes
 
@@ -195,7 +178,7 @@ CREATE TABLE `blog_posts_comments` (
    `comment` TEXT NOT NULL default '',
    PRIMARY KEY ( `comment_id` ) ,
    INDEX ( `post_id` )
-);
+) TYPE = MYISAM;
 
 ## add blog to the modules (added to 1.5.3.1)
 ##INSERT INTO `modules` VALUES ('_standard/blogs',         2, 0, 0, 0, 0);

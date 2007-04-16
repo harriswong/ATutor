@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -49,16 +49,23 @@ if ($row) {
 }
 
 if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	$to_email = $_POST['email'];
 	$_POST['subject'] = trim($_POST['subject']);
 	$_POST['body']	  = trim($_POST['body']);
 
 	if ($_POST['subject'] == '') {
-		$msg->addError('MSG_SUBJECT_EMPTY');
+		$missing_fields[] = _AT('subject');
 	}
 		
 	if ($_POST['body'] == '') {
-		$msg->addError('MSG_BODY_EMPTY');
+		$missing_fields[] = _AT('body');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -87,7 +94,7 @@ if (isset($_POST['submit'])) {
 		}
 		unset($mail);
 		
-		$msg->addFeedback('MSG_SENT');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: ' . $to);
 		exit;
 	}

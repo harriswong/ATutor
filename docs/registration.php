@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor                                                       */
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca                                             */
 /*                                                              */
@@ -11,7 +11,6 @@
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
 // $Id$
-
 $_user_location	= 'public';
 
 define('AT_INCLUDE_PATH', 'include/');
@@ -36,6 +35,8 @@ if (isset($_POST['cancel'])) {
 	header('Location: ./login.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	/* email check */
 	if ($_POST['email'] == '') {
 		$msg->addError('EMAIL_MISSING');
@@ -72,11 +73,16 @@ if (isset($_POST['cancel'])) {
 
 	$_POST['password'] = trim($_POST['password']);
 	$_POST['first_name'] = trim($_POST['first_name']);
+	$_POST['second_name'] = trim($_POST['second_name']);
 	$_POST['last_name'] = trim($_POST['last_name']);
+
+	$_POST['first_name'] = str_replace('<', '', $_POST['first_name']);
+	$_POST['second_name'] = str_replace('<', '', $_POST['second_name']);
+	$_POST['last_name'] = str_replace('<', '', $_POST['last_name']);
 
 	/* login name check */
 	if ($_POST['login'] == '') {
-		$msg->addError('LOGIN_NAME_MISSING');
+		$missing_fields[] = _AT('login_name');
 	} else {
 		/* check for special characters */
 		if (!(eregi("^[a-zA-Z0-9_.-]([a-zA-Z0-9_.-])*$", $_POST['login']))) {
@@ -96,13 +102,13 @@ if (isset($_POST['cancel'])) {
 
 	/* password check:	*/
 	if ($_POST['password'] == '') { 
-		$msg->addError('PASSWORD_MISSING');
+		$missing_fields[] = _AT('password');
 	} else {
 		// check for valid passwords
 		if ($_POST['password'] != $_POST['password2']){
 			$msg->addError('PASSWORD_MISMATCH');
-		} 
-		if (strlen($_POST['password']) < 8) {
+		}
+		if (!preg_match('/^\w{8,}$/u', $_POST['password'])) { // strlen($_POST['password']) < 8
 			$msg->addError('PASSWORD_LENGTH');
 		} 
 		if ((preg_match('/[a-z]+/i', $_POST['password']) + preg_match('/[0-9]+/i', $_POST['password']) + preg_match('/[_\-\/+!@#%^$*&)(|.]+/i', $_POST['password'])) < 2) {
@@ -112,7 +118,7 @@ if (isset($_POST['cancel'])) {
 	}
 
 	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
+		$missing_fields[] = _AT('email');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 		$msg->addError('EMAIL_INVALID');
 	}
@@ -122,11 +128,11 @@ if (isset($_POST['cancel'])) {
 	}
 
 	/*if (!$_POST['first_name']) { 
-		$msg->addError('FIRST_NAME_MISSING');
+		$missing_fields[] = _AT('first_name');
 	}
 
 	if (!$_POST['last_name']) { 
-		$msg->addError('LAST_NAME_MISSING');
+		$missing_fields[] = _AT('last_name');
 	}
 
 	// check if first+last is unique
@@ -178,6 +184,15 @@ if (isset($_POST['cancel'])) {
 		}
 	}
 
+	if (($_POST['gender'] != 'm') && ($_POST['gender'] != 'f')) {
+		$_POST['gender'] = 'n'; // not specified
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
 		if (($_POST['website']) && (!ereg("://",$_POST['website']))) { 
 			$_POST['website'] = "http://".$_POST['website']; 
@@ -197,7 +212,7 @@ if (isset($_POST['cancel'])) {
 		$_POST['password']   = $addslashes($_POST['password']);
 		$_POST['website']    = ''; //$addslashes($_POST['website']);
 		$_POST['first_name'] = $addslashes($_POST['first_name']);
-		$_POST['second_name'] = $addslashes($_POST['second_name']);
+		$_POST['second_name']= $addslashes($_POST['second_name']);
 		$_POST['last_name']  = $addslashes($_POST['last_name']);
 		$_POST['address']    = ''; //$addslashes($_POST['address']);
 		$_POST['postal']     = ''; //$addslashes($_POST['postal']);
@@ -216,11 +231,7 @@ if (isset($_POST['cancel'])) {
 		}
 		$now = date('Y-m-d H:i:s'); // we use this later for the email confirmation.
 
-		/* insert into the db. (the last 0 for status) */
-		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]','$_POST[second_name]','$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]', $status, '$_config[pref_defaults]', '$now','$_SESSION[lang]', $_config[pref_inbox_notify], $_POST[private_email], '$_POST[email3]')";
-
-		/* insert into the db */
-		//$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]','$_POST[second_name]','$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]', $status, '$_config[pref_defaults]', '$now','$_SESSION[lang]', $_config[pref_inbox_notify], $_POST[private_email])";
+		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (NULL,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]','$_POST[second_name]','$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]', $status, '$_config[pref_defaults]', '$now','$_SESSION[lang]', $_config[pref_inbox_notify], '$_POST[email3]', $_POST[private_email], '0000-00-00 00:00:00')";
 
 		$result = mysql_query($sql, $db);
 		$m_id	= mysql_insert_id($db);

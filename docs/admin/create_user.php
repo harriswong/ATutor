@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -17,11 +17,12 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_USERS);
 
 if (isset($_POST['cancel'])) {
-	header('Location: '.$_base_href.'admin/users.php');
+	header('Location: '.AT_BASE_HREF.'admin/users.php');
 	exit;
 }
 
 if (isset($_POST['submit'])) {
+	$missing_fields = array();
 
 	//check if student id (public field) is already being used
 	if (!$_POST['overwrite'] && !empty($_POST['student_id'])) {
@@ -33,7 +34,7 @@ if (isset($_POST['submit'])) {
 
 	/* login name check */
 	if ($_POST['login'] == '') {
-		$msg->addError('LOGIN_NAME_MISSING');
+		$missing_fields[] = _AT('login_name');
 	} else {
 		/* check for special characters */
 		if (!(eregi("^[a-zA-Z0-9_.-]([a-zA-Z0-9_.-])*$", $_POST['login']))) {
@@ -54,7 +55,7 @@ if (isset($_POST['submit'])) {
 
 	/* password check:	*/
 	if ($_POST['password'] == '') { 
-		$msg->addError('PASSWORD_MISSING');
+		$missing_fields[] = _AT('password');
 	} else {
 		// check for valid passwords
 		if ($_POST['password'] != $_POST['password2']){
@@ -65,7 +66,7 @@ if (isset($_POST['submit'])) {
 	
 	/* email check */
 	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
+		$missing_fields[] = _AT('email');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 		$msg->addError('EMAIL_INVALID');
 	}
@@ -80,9 +81,13 @@ if (isset($_POST['submit'])) {
 		$msg->addError('FIRST_NAME_MISSING');
 	}
 
-	if (!$_POST['last_name']) { 
-		$msg->addError('LAST_NAME_MISSING');
+	if (!$_POST['last_name']) {
+		$missing_fields[] = _AT('last_name');
 	}
+
+	$_POST['first_name'] = str_replace('<', '', $_POST['first_name']);
+	$_POST['second_name'] = str_replace('<', '', $_POST['second_name']);
+	$_POST['last_name'] = str_replace('<', '', $_POST['last_name']);
 
 	// check if first+last is unique
 	if ($_POST['first_name'] && $_POST['last_name']) {
@@ -121,6 +126,11 @@ if (isset($_POST['submit'])) {
 		$yr = $mo = $day = 0;
 	}
 
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
 		if (($_POST['website']) && (!ereg('://',$_POST['website']))) { 
 			$_POST['website'] = 'http://' . $_POST['website']; 
@@ -153,8 +163,7 @@ if (isset($_POST['submit'])) {
 		$now = date('Y-m-d H:i:s'); // we use this later for the email confirmation.
 
 		/* insert into the db. (the last 0 for status) */
-
-		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]', '$_POST[second_name]', '$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]',$_POST[status], '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], $_POST[private_email], '$_POST[email3]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$_POST[login]','$_POST[password]','$_POST[email]','$_POST[website]','$_POST[first_name]', '$_POST[second_name]', '$_POST[last_name]', '$dob', '$_POST[gender]', '$_POST[address]','$_POST[postal]','$_POST[city]','$_POST[province]','$_POST[country]', '$_POST[phone]',$_POST[status], '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], '$_POST[email3]', $_POST[private_email], '0000-00-00 00:00:00')";
 
 		$result = mysql_query($sql, $db);
 		$m_id	= mysql_insert_id($db);
@@ -195,7 +204,7 @@ if (isset($_POST['submit'])) {
 		
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION && ($_POST['status'] == AT_STATUS_UNCONFIRMED)) {
 			$code = substr(md5($_POST['email'] . $now . $m_id), 0, 10);
-			$confirmation_link = $_base_href . 'confirm.php?id='.$m_id.SEP.'m='.$code;
+			$confirmation_link = AT_BASE_HREF . 'confirm.php?id='.$m_id.SEP.'m='.$code;
 
 			/* send the email confirmation message: */
 			$mail->Subject = $_config['site_name'] . ': ' . _AT('email_confirmation_subject');
@@ -205,14 +214,14 @@ if (isset($_POST['submit'])) {
 			$mail->Subject = $_config['site_name'].": "._AT('account_information');
 			$body .= _AT('admin_new_account', $_config['site_name'])."\n\n";
 		}
-		$body .= _AT('web_site') .' : '.$_base_href."\n";
+		$body .= _AT('web_site') .' : '.AT_BASE_HREF."\n";
 		$body .= _AT('login_name') .' : '.$_POST['login'] . "\n";
 		$body .= _AT('password') .' : '.$_POST['password'] . "\n";
 		$mail->Body    = $body;
 		$mail->Send();
 
 		$msg->addFeedback('PROFILE_CREATED_ADMIN');
-		header('Location: '.$_base_href.'admin/users.php');
+		header('Location: '.AT_BASE_HREF.'admin/users.php');
 		exit;
 	}
 }

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -78,7 +78,7 @@ if (!authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) && ($_SESSION['packaging'] ==
 	<?php if (authenticate(AT_PRIV_ADMIN, AT_PRIV_RETURN)): ?>
 			<div class="row">
 				<input type="checkbox" name="to_tile" id="to_tile" value="1" />
-				<label for="to_tile"><?php echo _AC('tile_export'); ?></label>
+				<label for="to_tile"><?php echo _AT('tile_export'); ?></label>
 			</div>
 	<?php endif; ?>
 	
@@ -103,7 +103,7 @@ if (!authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) && ($_SESSION['packaging'] ==
 <br /><br />
 
 
-<form name="form1" method="post" action="tools/ims/ims_import.php" enctype="multipart/form-data" onsubmit="openWindow('<?php echo $_base_href; ?>tools/prog.php');">
+<form name="form1" method="post" action="tools/ims/ims_import.php" enctype="multipart/form-data" onsubmit="openWindow('<?php echo AT_BASE_HREF; ?>tools/prog.php');">
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo _AT('import_content'); ?></h3>

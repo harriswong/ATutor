@@ -38,9 +38,9 @@ class Language {
 
 	// constructor
 	function Language($language_row) {
-		global $lang_db;
+		global $db;
 
-		$this->db = $lang_db;
+		$this->db = $db;
 
 		if (is_array($language_row)) {
 			$this->code              = $language_row['language_code'];
@@ -132,7 +132,7 @@ class Language {
 	function saveToPreferences($id) {
 		global $db;
 		if ($id) {
-			$sql = "UPDATE ".TABLE_PREFIX."members SET language='".$this->code."' WHERE member_id=$id";
+			$sql = "UPDATE ".TABLE_PREFIX."members SET language='".$this->code."', creation_date=creation_date, last_login=last_login WHERE member_id=$id";
 			mysql_query($sql,$db);
 		}
 	}
@@ -171,7 +171,7 @@ class Language {
 	
 	// public
 	function getTerm($term) {
-		$sql = "SELECT *, UNIX_TIMESTAMP(L.revised_date) AS revised_date_unix FROM ".TABLE_PREFIX_LANG."language_text".TABLE_SUFFIX_LANG." L WHERE L.language_code='".$this->getCode()."' AND L.variable='_template' AND L.term='$term'";
+		$sql = "SELECT *, UNIX_TIMESTAMP(L.revised_date) AS revised_date_unix FROM ".TABLE_PREFIX."language_text L WHERE L.language_code='".$this->getCode()."' AND L.variable='_template' AND L.term='$term'";
 
 		$result = mysql_query($sql, $this->db);
 		$row = mysql_fetch_assoc($result);

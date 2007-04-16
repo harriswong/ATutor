@@ -22,12 +22,17 @@ if (isset($_POST['cancel'])) {
 	header("Location: index_admin.php");
 	exit;
 } else if (isset($_POST['submit'])) {
-	//check both fields are not empty
+	$missing_fields = array();
+
 	if (trim($_POST['title']) == '') {
-		$msg->addError('TITLE_EMPTY');
+		$missing_fields[] = _AT('title');
 	}
 	if (trim($_POST['url']) == '') {
-		$msg->addError('URL_EMPTY');
+		$missing_fields[] = _AT('url');
+	}
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -47,7 +52,7 @@ if (isset($_POST['cancel'])) {
 } else if (isset($_POST['submit_yes'])) {
 	$_POST['url'] = $addslashes($_POST['url']);
 
-	$sql	= "INSERT INTO ".TABLE_PREFIX."feeds VALUES(0, '".$_POST['url']."')";
+	$sql	= "INSERT INTO ".TABLE_PREFIX."feeds VALUES (NULL, '".$_POST['url']."')";
 	$result = mysql_query($sql, $db);
 
 	$feed_id = mysql_insert_id($db);
@@ -62,7 +67,7 @@ if (isset($_POST['cancel'])) {
 		fclose($f);
 	}
 
-	$msg->addFeedback('FEED_SAVED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: index.php');
 	exit;
 } 

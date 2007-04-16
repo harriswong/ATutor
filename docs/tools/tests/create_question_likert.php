@@ -21,27 +21,36 @@ require(AT_INCLUDE_PATH.'lib/test_result_functions.inc.php');
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: questions.php?tid='.$tid);
+	header('Location: question_db.php');
 	exit;
 } else if (isset($_POST['submit'])) {
 	$_POST['required']    = intval($_POST['required']);
 	$_POST['question']    = trim($_POST['question']);
 	$_POST['category_id'] = intval($_POST['category_id']);
 
+	$empty_fields = array();
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$empty_fields[] = _AT('question');
 	}
-	if (($_POST['choice'][0] == '') || ($_POST['choice'][1] == '')){
-		$msg->addError('CHOICES_EMPTY');
+	if ($_POST['choice'][0] == '') {
+		$empty_fields[] = _AT('choice').' 1';
 	}
+
+	if ($_POST['choice'][1] == '') {
+		$empty_fields[] = _AT('choice').' 2';
+	}
+
+	if (!empty($empty_fields)) {
+		$msg->addError(array('EMPTY_FIELDS', implode(', ', $empty_fields)));
+	}
+
 	if (!$msg->containsErrors()) {
 		$_POST['feedback']   = '';
 		$_POST['question']   = $addslashes($_POST['question']);
-		$_POST['properties'] = intval($_POST['properties']);
 
 		for ($i=0; $i<10; $i++) {
 			$_POST['choice'][$i] = $addslashes(trim($_POST['choice'][$i]));
-			$_POST['answer'][$i] = $addslashes(intval($_POST['answer'][$i]));
+			$_POST['answer'][$i] = intval($_POST['answer'][$i]);
 
 			if ($_POST['choice'][$i] == '') {
 				/* an empty option can't be correct */
@@ -75,11 +84,21 @@ if (isset($_POST['cancel'])) {
 			{$_POST[answer][7]},
 			{$_POST[answer][8]},
 			{$_POST[answer][9]},
-			$_POST[properties],
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			0,
 			0)";
 		$result	= mysql_query($sql, $db);
 		
-		$msg->addFeedback('QUESTION_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: question_db.php');
 		exit;
 	}
@@ -173,11 +192,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
 	</div>
 
-	<div class="row">
-		<label for="properties"><?php echo _AT('option_alignment'); ?></label><br />
-		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" checked="checked" /><?php echo _AT('vertical'); ?></label>
-		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" /><?php echo _AT('horizontal'); ?></label>
-	</div>
 
 <?php for ($i=0; $i<10; $i++) { ?>
 		<div class="row">

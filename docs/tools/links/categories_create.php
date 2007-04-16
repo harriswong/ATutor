@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,7 +18,7 @@ require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
 if (!manage_links()) {
 	$msg->addError('ACCESS_DENIED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 }
 
@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
 	$cat_name		= $addslashes($cat_name);
 
 	if ($cat_name == '') {
-		$msg->addError('LINK_CAT_TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
 
 			if (!links_authenticate($owner_type, $owner_id)) {
 				$msg->addError('ACCESS_DENIED');
-				header('Location: '.$_base_href.'index.php');
+				header('Location: '.AT_BASE_HREF.'index.php');
 				exit;
 			}
 		} else {
@@ -50,10 +50,10 @@ if (isset($_POST['submit'])) {
 			$parent_id = 0;
 		}
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."links_categories VALUES (0, $owner_type, $owner_id, '$cat_name', $parent_id)";
+		$sql = "INSERT INTO ".TABLE_PREFIX."links_categories VALUES (NULL, $owner_type, $owner_id, '$cat_name', $parent_id)";
 		$result = mysql_query($sql, $db);
 
-		$msg->addFeedback('CAT_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		
 		header('Location: categories.php');
 		exit;
@@ -79,7 +79,7 @@ $msg->printAll();
 
 <div class="input-form">
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="category_name"><?php echo _AT('title'); ?></label><br />
 		<input type="text" id="category_name" name="cat_name" value="<?php echo stripslashes(htmlspecialchars($categories[$cat_id]['cat_name'])); ?>" />
 	</div>
 

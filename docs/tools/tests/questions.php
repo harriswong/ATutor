@@ -15,6 +15,7 @@
 $page = 'tests';
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
 
 authenticate(AT_PRIV_TESTS);
 
@@ -89,7 +90,7 @@ if (isset($_POST['submit'])) {
 		$result	= mysql_query($sql, $db);
 	}
 	$total_weight = 0;
-	$msg->addFeedback('QUESTION_WEIGHT_UPDATED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: '.$_SERVER['PHP_SELF'] .'?tid='.$tid);
 	exit;
 }
@@ -102,7 +103,7 @@ $row	= mysql_fetch_assoc($result);
 echo '<h3>'._AT('questions_for').' '.AT_print($row['title'], 'tests.title').'</h3>';
 $random = $row['random'];
 
-$sql	= "SELECT count(*) as cnt FROM ".TABLE_PREFIX."tests_questions_assoc QA, ".TABLE_PREFIX."tests_questions Q WHERE QA.test_id=$tid AND QA.weight=0 AND QA.question_id=Q.question_id AND Q.type<>".AT_TESTS_LIKERT;
+$sql	= "SELECT count(*) as cnt FROM ".TABLE_PREFIX."tests_questions_assoc QA, ".TABLE_PREFIX."tests_questions Q WHERE QA.test_id=$tid AND QA.weight=0 AND QA.question_id=Q.question_id AND Q.type<>4";
 $result	= mysql_query($sql, $db);
 $row = mysql_fetch_array($result);
 if ($row['cnt']) {
@@ -121,7 +122,7 @@ $result	= mysql_query($sql, $db);
 <thead>
 <tr>
 	<th scope="col"><?php echo _AT('num');      ?></th>
-	<th scope="col"><?php echo _AT('weight');   ?></th>
+	<th scope="col"><?php echo _AT('points');   ?></th>
 	<th scope="col"><?php echo _AT('order'); ?></th>
 	<th scope="col"><?php echo _AT('question'); ?></th>
 	<th scope="col"><?php echo _AT('type');     ?></th>
@@ -149,7 +150,7 @@ if ($row = mysql_fetch_assoc($result)) {
 		echo '<td class="row1" align="center"><strong>'.$count.'</strong></td>';
 		echo '<td class="row1" align="center">';
 		
-		if ($row['type'] == AT_TESTS_LIKERT) {
+		if ($row['type'] == 4) {
 			echo ''._AT('na').'';
 			echo '<input type="hidden" value="0" name="weight['.$row['question_id'].']" />';
 		} else {
@@ -172,27 +173,12 @@ if ($row = mysql_fetch_assoc($result)) {
 
 		echo '</td>';
 		echo '<td nowrap="nowrap">';
-		$link = '';
-		switch ($row['type']) {
-			case AT_TESTS_MC:
-				echo _AT('test_mc');
-				$link = 'tools/tests/edit_question_multi.php?tid='.$tid.SEP.'qid='.$row['question_id'];
-				break;
-			case AT_TESTS_TF:
-				echo _AT('test_tf');
-				$link = 'tools/tests/edit_question_tf.php?tid='.$tid.SEP.'qid='.$row['question_id'];
-				break;
-			case AT_TESTS_LONG:
-				echo _AT('test_open');
-				$link = 'tools/tests/edit_question_long.php?tid='.$tid.SEP.'qid='.$row['question_id'];
-				break;
-			case AT_TESTS_LIKERT:
-				echo _AT('test_lk');
-				$link = 'tools/tests/edit_question_likert.php?tid='.$tid.SEP.'qid='.$row['question_id'];
-				break;
-		}
+		$o = TestQuestions::getQuestion($row['type']);
+		echo $o->printName();
 		echo '</td>';
-		
+
+		$link = 'tools/tests/edit_question_'.$o->getPrefix().'.php?tid='.$tid.SEP.'qid='.$row['question_id'];
+
 		echo '<td align="center">'.$cats[$row['category_id']].'</td>';
 
 		if ($random) {

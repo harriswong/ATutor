@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -21,24 +21,32 @@ require(AT_INCLUDE_PATH.'lib/forums.inc.php');
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'admin/forums.php');
+	header('Location: '.AT_BASE_HREF.'admin/forums.php');
 	exit;
 } else if (isset($_POST['edit_forum'])) {
+	$missing_fields = array();
 	if (empty($_POST['title'])) {
-		$msg->addError('TITLE_EMPTY');
+		$missing_fields[] = _AT('title');
 	}
 
 	if (empty($_POST['courses'])) {
-		$msg->addError('NO_COURSE_SELECTED');
+		$missing_fields[] = _AT('courses');
 	} 
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
 
 	if (!($msg->containsErrors())) {
 
 		//update forum
 		$forum_id = intval($_POST['forum']);
 		$_POST['title']  = $addslashes($_POST['title']);
+		$_POST['edit'] = intval($_POST['edit']);
 		$_POST['description']  = $addslashes($_POST['description']);
-		$sql	= "UPDATE ".TABLE_PREFIX."forums SET title='" . $_POST['title'] . "', description='" . $_POST['description'] . "' WHERE forum_id=".$forum_id;
+
+		$sql	= "UPDATE ".TABLE_PREFIX."forums SET title='" . $_POST['title'] . "', description='" . $_POST['description'] . "', last_post=last_post, mins_to_edit=$_POST[edit] WHERE forum_id=".$forum_id;
 		$result	= mysql_query($sql, $db);
 		write_to_log(AT_ADMIN_LOG_UPDATE, 'forums', mysql_affected_rows($db), $sql);
 
@@ -85,8 +93,8 @@ if (isset($_POST['cancel'])) {
 				write_to_log(AT_ADMIN_LOG_REPLACE, 'forums_courses', mysql_affected_rows($db), $sql);
 			}
 		}
-		$msg->addFeedback('FORUM_UPDATED');
-		header('Location: '.$_base_href.'admin/forums.php');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+		header('Location: '.AT_BASE_HREF.'admin/forums.php');
 		exit;
 	}
 }
@@ -119,6 +127,11 @@ if (!($forum = @get_forum($_GET['forum']))) {
 	<div class="row">
 		<label for="body"><?php echo _AT('description'); ?></label><br />
 		<textarea name="description" cols="45" rows="5" id="body" wrap="wrap"><?php echo $forum['description']?></textarea>
+	</div>
+
+	<div class="row">
+		<label for="edit"><?php echo _AT('allow_editing'); ?></label><br />
+		<input type="text" name="edit" size="3" id="edit" value="<?php echo intval($forum['mins_to_edit']); ?>" /> <?php echo _AT('in_minutes'); ?>
 	</div>
 
 	<div class="row">

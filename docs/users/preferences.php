@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -30,10 +30,11 @@ if (!$_SESSION['valid_user']) {
 if (isset($_GET['submit'])) {
 	/* custom prefs */
 
-	$temp_prefs['PREF_NUMBERING']	  = intval($_GET['numbering']);
-	$temp_prefs['PREF_THEME']	      = $addslashes ($_GET['theme']);
-	$temp_prefs['PREF_JUMP_REDIRECT'] = intval($_GET['use_jump_redirect']);
-	$temp_prefs['PREF_FORM_FOCUS']    = intval($_GET['form_focus']);
+	$temp_prefs['PREF_NUMBERING']	   = intval($_GET['numbering']);
+	$temp_prefs['PREF_THEME']	       = $addslashes($_GET['theme']);
+	$temp_prefs['PREF_JUMP_REDIRECT']  = intval($_GET['use_jump_redirect']);
+	$temp_prefs['PREF_FORM_FOCUS']     = intval($_GET['form_focus']);
+	$temp_prefs['PREF_CONTENT_EDITOR'] = intval($_GET['content_editor']);
 
 	/* we do this instead of assigning to the $_SESSION directly, b/c	*/
 	/* assign_session_prefs functionality might change slightly.		*/
@@ -44,11 +45,11 @@ if (isset($_GET['submit'])) {
 
 	//update auto-login settings
 	if (isset($_GET['auto']) && ($_GET['auto'] == 'disable')) {
-		$parts = parse_url($_base_href);
+		$parts = parse_url(AT_BASE_HREF);
 		setcookie('ATLogin', '', time()-172800, $parts['path'], $parts['host'], 0);
 		setcookie('ATPass',  '', time()-172800, $parts['path'], $parts['host'], 0);		
 	} else if (isset($_GET['auto']) && ($_GET['auto'] == 'enable')) {
-		$parts = parse_url($_base_href);
+		$parts = parse_url(AT_BASE_HREF);
 		$sql	= "SELECT password FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[member_id]";
 		$result = mysql_query($sql, $db);
 		$row	= mysql_fetch_assoc($result);
@@ -59,11 +60,11 @@ if (isset($_GET['submit'])) {
 
 	/* also update message notification pref */
 	$_GET['mnot'] = intval($_GET['mnot']);
-	$sql = "UPDATE ".TABLE_PREFIX."members SET inbox_notify = $_GET[mnot] WHERE member_id = $_SESSION[member_id]";
+	$sql = "UPDATE ".TABLE_PREFIX."members SET inbox_notify = $_GET[mnot], creation_date=creation_date, last_login=last_login WHERE member_id = $_SESSION[member_id]";
 	$result = mysql_query($sql, $db);
 
-	$msg->addFeedback('PREFS_SAVED2');
-	header('Location: '.$_base_href.'users/preferences.php');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	header('Location: '.AT_BASE_HREF.'users/preferences.php');
 	exit;
 }
 

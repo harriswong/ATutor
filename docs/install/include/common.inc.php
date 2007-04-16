@@ -2,7 +2,6 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 error_reporting(E_ALL ^ E_NOTICE);
 
-
 /* atutor default configuration options */
 /* used on: ustep1.php, step3.php, step5.php */
 $_defaults['admin_username'] = ($_POST['old_path'] ? 'admin' : '');
@@ -34,7 +33,7 @@ require('include/classes/sqlutility.php');
 
 
 function my_add_null_slashes( $string ) {
-    return mysql_real_escape_string(stripslashes($string));
+    return @mysql_real_escape_string(stripslashes($string));
 }
 function my_null_slashes($string) {
 	return $string;
@@ -183,13 +182,13 @@ function print_progress($step) {
 	$num_steps = count($install_steps);
 	for ($i=0; $i<$num_steps; $i++) {
 		if ($i == $step) {
-			echo '<b style="margin-left: 12px; color: #006699;">Step '.$i.': '.$install_steps[$i]['name'].' (current step)</b>';
+			echo '<strong style="margin-left: 12px; color: #006699;">Step '.$i.': '.$install_steps[$i]['name'].'</strong>';
 		} else {
 			echo '<small style="margin-left: 10px; color: gray;">';
 			if ($step > $i) {
 				echo '<img src="../images/check.gif" height="9" width="9" alt="Step Done!" /> ';
 			} else {
-				echo '<img src="../images/clr.gif" height="9" width="9"> ';
+				echo '<img src="../images/clr.gif" height="9" width="9" alt=""> ';
 			}
 			echo 'Step '.$i.': '.$install_steps[$i]['name'].'</small>';
 		}

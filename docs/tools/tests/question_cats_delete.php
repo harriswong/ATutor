@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -28,17 +28,17 @@ if (isset($_POST['submit_yes'])) {
 	$sql = "UPDATE ".TABLE_PREFIX."tests_questions SET category_id=0 WHERE course_id=$_SESSION[course_id] AND category_id=".$_POST['catid'];
 	$result = mysql_query($sql, $db);
 
-	$msg->addFeedback('CAT_DELETED');
-	header('Location: '.$_base_href.'tools/tests/question_cats.php');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	header('Location: '.AT_BASE_HREF.'tools/tests/question_cats.php');
 	exit;
 
 } else if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/tests/question_cats.php');
+	header('Location: '.AT_BASE_HREF.'tools/tests/question_cats.php');
 	exit;
 } else if (!isset($_GET['catid'])) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
-	$msg->addError('CAT_NOT_FOUND');
+	$msg->addError('ITEM_NOT_FOUND');
 	$msg->printErrors();
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;

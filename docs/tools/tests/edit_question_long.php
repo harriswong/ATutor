@@ -38,7 +38,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['properties']  = intval($_POST['properties']);
 
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('question')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -78,7 +78,7 @@ if (!isset($_POST['submit'])) {
 	$sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions WHERE question_id=$qid AND course_id=$_SESSION[course_id] AND type=3";
 	$result	= mysql_query($sql, $db);
 	if (!($row = mysql_fetch_assoc($result))){
-		$msg->printErrors('QUESTION_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
@@ -102,10 +102,10 @@ $msg->printErrors();
 	</div>
 
 	<div class="row">
-		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label> 
-		<?php print_VE('feedback'); ?>
+		<label for="optional_feedback"><?php echo _AT('optional_feedback'); ?></label> 
+		<?php print_VE('optional_feedback'); ?>
 
-		<textarea id="feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
+		<textarea id="optional_feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
 	</div>
 
 	<div class="row">

@@ -111,7 +111,7 @@ if($_GET['csv']=='1'){
 		if($row['from_cid']=='' || $row['from_cid'] == '0'){
 			$this_row .= '"0",';
 		}else if ($title_refs[$row['from_cid']] == ''){
-			$this_row .= quote_csv(_AC('deleted')).',';
+			$this_row .= quote_csv(_AT('deleted')).',';
 		}else if ($title_refs[$row['from_cid']] != ''){
 			$this_row .= quote_csv($title_refs[$row['from_cid']]).",";
 		}else{
@@ -120,7 +120,7 @@ if($_GET['csv']=='1'){
 		if($row['to_cid']=='' || $row['to_cid'] == '0'){
 			$this_row .= '"0",';
 		}else if($title_refs[$row['to_cid']] == ''){
-			$this_row .= quote_csv(_AC('deleted')).',';
+			$this_row .= quote_csv(_AT('deleted')).',';
 		}else if($title_refs[$row['to_cid']] != ''){
 			$this_row .= quote_csv($title_refs[$row['to_cid']]).",";
 		}else{
@@ -164,7 +164,7 @@ if ($_GET['reset']==1){
 	 * ensure that addFeeback('CANCELLED') is properly cleaned up, see below
 	 */
 	$msg->addFeedback('CANCELLED');
-	echo '<center><a href="'.$_SERVER['PHP_SELF'].'?reset=2">'._AT('yes_delete').'</a> | <a href="'.$_SERVER['PHP_SELF'].'">'._AT('no_cancel').'</a></center>';
+	echo '<center><a href="'.$_SERVER['PHP_SELF'].'?reset=2">'._AT('yes_delete').'</a> | <a href="'.$_SERVER['PHP_SELF'].'">'._AT('no').'</a></center>';
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 } else if($_GET['reset']==2) {
@@ -176,7 +176,7 @@ if ($_GET['reset']==1){
 		
 	$sql_delete= "delete from ".TABLE_PREFIX."g_click_data where course_id='$_SESSION[course_id]'";
 	if ($result_delete_track=mysql_query($sql_delete, $db)){
-		$msg->addFeedback('TRACKING_DELETED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	} else {
 		$msg->addError('TRACKING_NOT_DELETED');
 		require(AT_INCLUDE_PATH.'footer.inc.php');

@@ -65,6 +65,12 @@ function fs_authenticate($owner_type, $owner_id) {
 			return WORKSPACE_AUTH_READ;
 		}
 	}
+	/* else if ($owner_type == WORKSPACE_SYSTEM) {
+		if (admin_authenticate(AT_ADMIN_PRIV_FILE_STORAGE, TRUE)) {
+			return WORKSPACE_AUTH_RW;
+		} // else
+		return WORKSPACE_AUTH_READ; // everyone can read the System File Space
+	} */
 
 	return WORKSPACE_AUTH_NONE;
 }
@@ -89,7 +95,11 @@ function fs_get_workspace($owner_type, $owner_id) {
 	} else if ($owner_type == WORKSPACE_ASSIGNMENT) {
 		$row    = fs_get_assignment($owner_id);
 		return ($row ? $row['title'] : false);
-	}
+	} /*
+		else if ($owner_type == WORKSPACE_SYSTEM) {
+		return _AT('system_files');
+     }
+	*/
 }
 
 /**
@@ -133,7 +143,7 @@ function fs_get_folder_by_id($folder_id, $owner_type, $owner_id) {
 
 			$rows = array('title' => $row['title'], 'folder_id' => $folder_id);
 		} else {
-			$rows = array('title' => get_login($folder_id), 'folder_id' => $folder_id);
+			$rows = array('title' => get_display_name($folder_id), 'folder_id' => $folder_id);
 		}
 	} else {
 		if (is_array($folder_id)) {
@@ -221,7 +231,7 @@ function fs_print_folders($current_folder_id, $parent_folder_id, &$folders, $dis
 		if ($disable) {
 			echo ' disabled="disabled"';
 		}
-		echo '/><label for="f'.$folder_id.'">'.$folder_info['title'];
+		echo '/><label for="f'.$folder_id.'">'.htmlspecialchars($folder_info['title']);
 		if ($folder_id == $current_folder_id) {
 			echo ' '._AT('current_location');
 		}
@@ -497,7 +507,7 @@ function fs_copy_file($file_id, $src_owner_type, $src_owner_id, $dest_owner_type
 	if (!$row = mysql_fetch_assoc($result)) {
 		return false;
 	}
-	$sql = "INSERT INTO ".TABLE_PREFIX."files VALUES (0, $dest_owner_type, $dest_owner_id, $_SESSION[member_id], $dest_folder_id, 0, NOW(), 0, 0, '$row[file_name]', '$row[file_size]', '$row[description]')";
+	$sql = "INSERT INTO ".TABLE_PREFIX."files VALUES (NULL, $dest_owner_type, $dest_owner_id, $_SESSION[member_id], $dest_folder_id, 0, NOW(), 0, 0, '$row[file_name]', '$row[file_size]', '$row[description]')";
 	$result = mysql_query($sql, $db);
 
 	$id = mysql_insert_id($db);

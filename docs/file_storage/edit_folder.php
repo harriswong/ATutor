@@ -33,7 +33,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['id'] = abs($_POST['id']);
 
 	if (!$_POST['name']) {
-		$msg->addError('MISSING_FOLDER_NAME');
+		$msg->addError(array('EMPTY_FIELDS', _AT('name')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -73,7 +73,7 @@ if (!$row = mysql_fetch_assoc($result)) {
 <div class="input-form">
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="name"><?php echo _AT('name'); ?></label><br />
-		<input type="text" name="name" id="name" value="<?php echo $row['title']; ?>" size="40" maxlength="70" />
+		<input type="text" name="name" id="name" value="<?php echo htmlspecialchars($row['title']); ?>" size="40" maxlength="70" />
 	</div>
 
 	<div class="row buttons">

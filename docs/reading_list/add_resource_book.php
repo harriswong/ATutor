@@ -17,7 +17,7 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_READING_LIST);
 
 // initial values for form
-$id = "";
+$id = intval($_REQUEST['id']);
 $title = "";
 $author = "";
 $publisher = ""; 
@@ -33,12 +33,20 @@ if (isset($_POST['cancel'])) {
 	header('Location: index_instructor.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	if (trim($_POST['title']) == '') {
-		$msg->addError('TITLE_EMPTY');
+		$missing_fields[] = _AT('title');
 	}
 	if (trim($_POST['author']) == '') {
-		$msg->addError('RL_AUTHOR_EMPTY');
+		$missing_fields[] = _AT('author');
 	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 
 	if (!$msg->containsErrors()) {
 		$_POST['title']     = $addslashes($_POST['title']);
@@ -48,10 +56,8 @@ if (isset($_POST['cancel'])) {
 		$_POST['comments']  = $addslashes($_POST['comments']);
 		$_POST['isbn']      = $addslashes($_POST['isbn']);
 		
-		$id = intval ($_POST['id']);
-
-		if ($id == '0'){ // creating a new book resource
-			$sql = "INSERT INTO ".TABLE_PREFIX."external_resources VALUES ($id, $_SESSION[course_id],
+		if ($id == 0){ // creating a new book resource
+			$sql = "INSERT INTO ".TABLE_PREFIX."external_resources VALUES (NULL, $_SESSION[course_id],
 				".RL_TYPE_BOOK.", 
 				'$_POST[title]', 
 				'$_POST[author]', 
@@ -65,7 +71,7 @@ if (isset($_POST['cancel'])) {
 			// index to new book resource
 			$id_new = mysql_insert_id($db);
 
-			$msg->addFeedback('RL_BOOK_ADDED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		} else { // modifying an existing book resource
 
 			$sql = "UPDATE ".TABLE_PREFIX."external_resources SET title='$_POST[title]', author='$_POST[author]', publisher='$_POST[publisher]', date='$_POST[date]', comments='$_POST[comments]', id='$_POST[isbn]' WHERE resource_id='$id' AND course_id=$_SESSION[course_id]";
@@ -75,7 +81,7 @@ if (isset($_POST['cancel'])) {
 			// index to book resource
 			$id_new = $id;
 
-			$msg->addFeedback('RL_RESOURCE_UPDATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		}
 
 		if (trim($_POST['page_return']) != ''){
@@ -97,9 +103,8 @@ if (isset($_POST['cancel'])) {
 }
 
 // is user modifying an existing book resource?
-if (isset($_GET['id'])){
+if ($id && !isset($_POST['submit'])){
 	// yes, get resource from database
-	$id = intval ($_GET['id']);
 
 	$sql = "SELECT * FROM ".TABLE_PREFIX."external_resources WHERE course_id=$_SESSION[course_id] AND resource_id=$id";
 	$result = mysql_query($sql, $db);
@@ -112,6 +117,8 @@ if (isset($_GET['id'])){
 		$isbn      = $row['id'];
 	}
 	// change title of page to 'edit book resource' (default is 'add book resource')
+	$_pages['reading_list/add_resource_book.php']['title_var'] = 'rl_edit_resource_book';
+} else if ($id) {
 	$_pages['reading_list/add_resource_book.php']['title_var'] = 'rl_edit_resource_book';
 }
 
@@ -131,7 +138,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="author"><?php  echo _AT('rl_author'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="author"><?php  echo _AT('author'); ?></label><br />
 		<input type="text" name="author" size="25" id="author" value="<?php echo htmlspecialchars($author); ?>" />
 	</div>
 
@@ -151,7 +158,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 
 	<div class="row">
-		<label for="comments"><?php  echo _AT('rl_comment'); ?></label><br />
+		<label for="comments"><?php  echo _AT('comment'); ?></label><br />
 		<textarea name="comments" cols="30" rows="2" id="comments"><?php echo htmlspecialchars($comments); ?></textarea>
 	</div>
 

@@ -30,7 +30,7 @@ if (isset($_POST['rename'])) {
 		$msg->addError('NO_FILE_SELECT');
 	} else if (count($_POST['check']) != 1) {
 		// error: you must select one file/dir to rename
-		$msg->addError('SELECT_ONE_FILE');
+		$msg->addError('NO_ITEM_SELECTED');
 	} else {
 		header('Location: rename.php?pathext='.urlencode($_POST['pathext']).SEP.'framed='.$framed.SEP.'popup='.$popup.SEP.'oldname='.urlencode($_POST['check'][0]));
 		exit;
@@ -41,7 +41,7 @@ if (isset($_POST['rename'])) {
 		$msg->addError('NO_FILE_SELECT');
 	} else if (count($_POST['check']) != 1) {
 		// error: you must select one file/dir to rename
-		$msg->addError('SELECT_ONE_FILE');
+		$msg->addError('NO_ITEM_SELECTED');
 	} else {
 		$file = $_POST['check'][0];
 		header('Location: edit.php?pathext='.urlencode($_POST['pathext']).SEP.'framed='.$framed.SEP.'popup='.$popup.SEP.'file=' . $file);
@@ -158,7 +158,7 @@ if ($_POST['mkdir_value'] && ($depth < $MaxDirDepth) ) {
 			$msg->addError(array('FOLDER_NOT_CREATED', $_POST['dirname'] ));
 		}
 		else {
-			$msg->addFeedback('FOLDER_CREATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		}
 	}
 }

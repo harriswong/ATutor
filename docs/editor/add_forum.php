@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,21 +18,21 @@ authenticate(AT_PRIV_FORUMS);
 
 if ($_POST['cancel']) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/forums/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 	exit;
 }
 
 if ($_POST['add_forum'] && (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN))) {
 	if ($_POST['title'] == '') {
-		$msg->addError('FORUM_TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	if (!$msg->containsErrors()) {
 		require (AT_INCLUDE_PATH.'lib/forums.inc.php');
 		add_forum($_POST);
 		
-		$msg->addFeedback('FORUM_ADDED');
-		header('Location: '.$_base_href.'tools/forums/index.php');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+		header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 		exit;
 	}
 }
@@ -40,8 +40,6 @@ if ($_POST['add_forum'] && (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN))) {
 $onload = 'document.form.title.focus();';
 
 require(AT_INCLUDE_PATH.'header.inc.php');
-
-$msg->printErrors();
 
 ?>
 
@@ -56,6 +54,10 @@ $msg->printErrors();
 	<div class="row">
 		<label for="body"><?php echo _AT('description'); ?></label><br />
 		<textarea name="body" cols="45" rows="2" id="body" wrap="wrap"></textarea>
+	</div>
+	<div class="row">
+		<label for="edit"><?php echo _AT('allow_editing'); ?></label><br />
+		<input type="text" name="edit" size="3" id="edit" value="<?php echo intval($row['mins_to_edit']); ?>" /> <?php echo _AT('in_minutes'); ?>
 	</div>
 	<div class="row buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" /> 

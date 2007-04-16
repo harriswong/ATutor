@@ -1,7 +1,9 @@
 <?php require(AT_INCLUDE_PATH.'header.inc.php'); ?>
 
-<?php if (!$this->courses): ?>
-		<p><?php echo _AT('none_found'); ?> <a href="users/browse.php"><?php echo _AT('browse_courses'); ?></a>.</p>
+<?php if (!$this->courses && get_instructor_status()): ?>
+	<?php global $msg; $msg->printInfos('NO_COURSES_INST'); ?>
+<?php elseif (!$this->courses): ?>
+	<?php global $msg; $msg->printInfos('NO_COURSES'); ?>
 <?php endif; ?>
 
 <?php foreach ($this->courses as $row):?>	
@@ -43,7 +45,7 @@
 				<br />
  
 				<p>
-					<small><?php echo _AT('instructor');?>: <?php echo get_login($row['member_id']); ?>
+					<small><?php echo _AT('instructor');?>: <?php echo get_display_name($row['member_id']); ?>
 					<?php echo ' - <a href="'. $_base_href.'inbox/send_message.php?id='.$row['member_id'].'">'._AT('send_message').'</a>'; ?>
 					<br />
 					<?php echo _AT('category'); ?>: <?php echo get_category_name($row['cat_id']); ?><br />

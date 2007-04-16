@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -109,7 +109,7 @@ if (isset($_POST['cancel'])) {
 		
 		/* password check */
 		if ($_POST['password'] == '') { 
-			$msg->addError('PASSWORD_MISSING');
+			$msg->addError(array('EMPTY_FIELDS', _AT('password')));
 		} else {
 			// check for valid passwords
 			if ($_POST['password'] != $_POST['password2']){
@@ -125,7 +125,7 @@ if (isset($_POST['cancel'])) {
 			//save data
 			$_POST['password']   = $addslashes($_POST['password']);
 
-			$sql	= "UPDATE ".TABLE_PREFIX."members SET password='".$_POST['password']."' WHERE member_id=".intval($_REQUEST['id']);
+			$sql	= "UPDATE ".TABLE_PREFIX."members SET password='".$_POST['password']."', last_login=last_login WHERE member_id=".intval($_REQUEST['id']);
 			$result = mysql_query($sql,$db);
 
 			//send confirmation email

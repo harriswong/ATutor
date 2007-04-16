@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -59,14 +59,14 @@ if (isset($_POST['submit'])) {
 			}
 		}
 	} else {
-		$msg->addError('PASSWORD_MISSING');
-		Header('Location: email_change.php');
+		$msg->addError(array('EMPTY_FIELDS', _AT('password')));
+		header('Location: email_change.php');
 		exit;
 	}
 		
 	// email check
 	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
+		$msg->addError(array('EMPTY_FIELDS', _AT('email')));
 	} else {
 		if(!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 			$msg->addError('EMAIL_INVALID');
@@ -86,7 +86,7 @@ if (isset($_POST['submit'])) {
 
 			if ($row['email'] != $_POST['email']) {
 				$code = substr(md5($_POST['email'] . $row['creation_date'] . $_SESSION['member_id']), 0, 10);
-				$confirmation_link = $_base_href . 'confirm.php?id='.$_SESSION['member_id'].SEP .'e='.urlencode($_POST['email']).SEP.'m='.$code;
+				$confirmation_link = AT_BASE_HREF . 'confirm.php?id='.$_SESSION['member_id'].SEP .'e='.urlencode($_POST['email']).SEP.'m='.$code;
 
 				/* send the email confirmation message: */
 				require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
@@ -106,14 +106,14 @@ if (isset($_POST['submit'])) {
 		} else {
 
 			//insert into database
-			$sql = "UPDATE ".TABLE_PREFIX."members SET email='$_POST[email]' WHERE member_id=$_SESSION[member_id]";
+			$sql = "UPDATE ".TABLE_PREFIX."members SET email='$_POST[email]', creation_date=creation_date, last_login=last_login WHERE member_id=$_SESSION[member_id]";
 			$result = mysql_query($sql,$db);
 			if (!$result) {
 				$msg->printErrors('DB_NOT_UPDATED');
 				exit;
 			}
 
-			$msg->addFeedback('EMAIL_UPDATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		}
 		header('Location: ./profile.php');
 		exit;

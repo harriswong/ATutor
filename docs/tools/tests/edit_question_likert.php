@@ -37,17 +37,27 @@ if (isset($_POST['cancel'])) {
 	$_POST['category_id'] = intval($_POST['category_id']);
 	$_POST['alignment']   = intval($_POST['alignment']);
 
+	$empty_fields = array();
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$empty_fields[] = _AT('question');
 	}
-	if (($_POST['choice'][0] == '') || ($_POST['choice'][1] == '')){
-		$msg->addError('CHOICES_EMPTY');
+	if ($_POST['choice'][0] == '') {
+		$empty_fields[] = _AT('choice').' 1';
 	}
+
+	if ($_POST['choice'][1] == '') {
+		$empty_fields[] = _AT('choice').' 2';
+	}
+
+	if (!empty($empty_fields)) {
+		$msg->addError(array('EMPTY_FIELDS', implode(', ', $empty_fields)));
+	}
+
 	if (!$msg->containsErrors()) {
 		$_POST['question'] = $addslashes($_POST['question']);
 
 		for ($i=0; $i<10; $i++) {
-			$_POST['choice'][$i] = trim($_POST['choice'][$i]);
+			$_POST['choice'][$i] = $addslashes(trim($_POST['choice'][$i]));
 			$_POST['answer'][$i] = intval($_POST['answer'][$i]);
 
 			if ($_POST['choice'][$i] == '') {
@@ -59,7 +69,6 @@ if (isset($_POST['cancel'])) {
 			category_id=$_POST[category_id],
 			feedback='',
 			question='$_POST[question]',
-			properties='$_POST[properties]',
 			choice_0='{$_POST[choice][0]}',
 			choice_1='{$_POST[choice][1]}',
 			choice_2='{$_POST[choice][2]}',
@@ -84,7 +93,7 @@ if (isset($_POST['cancel'])) {
 			WHERE question_id=$_POST[qid] AND course_id=$_SESSION[course_id]";
 		$result	= mysql_query($sql, $db);
 
-		$msg->addFeedback('QUESTION_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		if ($_POST['tid']) {
 			header('Location: questions.php?tid='.$_POST['tid']);			
 		} else {
@@ -114,7 +123,7 @@ if (isset($_POST['cancel'])) {
 
 	if (!($row = mysql_fetch_array($result))){
 		require(AT_INCLUDE_PATH.'header.inc.php');
-		$msg->printErrors('QUESTION_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
@@ -124,14 +133,6 @@ if (isset($_POST['cancel'])) {
 
 	for ($i=0; $i<10; $i++) {
 		$_POST['choice'][$i] = $row['choice_'.$i];
-	}
-	
-	$_POST['properties'] = $row['properties'];
-	
-	if ($_POST['properties'] == AT_TESTS_QPROP_ALIGN_VERT) {
-		$align_vert = ' checked="checked"';
-	} else {
-		$align_hor  = ' checked="checked"';
 	}
 }
 
@@ -203,14 +204,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		
 		<?php print_VE('question'); ?>
 		
-		<textarea id="question" cols="50" rows="6" name="question"><?php 
-		echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
-	</div>
-
-	<div class="row">
-		<label for="properties"><?php echo _AT('option_alignment'); ?></label><br />
-		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" <?php echo $align_vert; ?> /><?php echo _AT('vertical'); ?></label>
-		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" <?php echo $align_hor;  ?> /><?php echo _AT('horizontal'); ?></label>
+		<textarea id="question" cols="50" rows="6" name="question"><?php echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
 	</div>
 
 <?php

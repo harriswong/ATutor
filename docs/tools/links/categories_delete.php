@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,7 +18,7 @@ require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
 if (!manage_links()) {
 	$msg->addError('ACCESS_DENIED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 }
 
@@ -36,7 +36,7 @@ if (isset($_POST['submit_no'])) {
 
 	if (!links_authenticate($owner_type, $owner_id)) {
 		$msg->addError('ACCESS_DENIED');
-		header('Location: '.$_base_href.'tools/links/categories.php');
+		header('Location: '.AT_BASE_HREF.'tools/links/categories.php');
 		exit;
 	}
 
@@ -46,7 +46,7 @@ if (isset($_POST['submit_no'])) {
 	if (mysql_num_rows($result) == 0) {
 		$sql = "DELETE FROM ".TABLE_PREFIX."links_categories WHERE owner_id=$owner_id AND owner_type=$owner_type AND cat_id=$cat_id";
 		$result = mysql_query($sql, $db);
-		$msg->addFeedback('CAT_DELETED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	} else {
 		$msg->addError('LINK_CAT_NOT_EMPTY');
 	}
@@ -60,7 +60,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	$row = get_cat_info($cat_id);
 
 	if (empty($row)) {
-		$msg->printErrors('CAT_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 	} else {
 		$hidden_vars['cat_name']= $row['name'];
 		$hidden_vars['cat_id']	= $row['cat_id'];

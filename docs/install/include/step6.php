@@ -54,7 +54,7 @@ if (isset($errors)) {
 	unset($errors);
 	print_hidden($step);
 
-	echo '<p><strong>Note:</strong> To change permissions on Unix use <kbd>chmod a+rwx</kbd> then the file or directory name.</p>';
+	echo '<p><strong>Note:</strong> To change permissions on Unix use <kbd>chmod a+rw</kbd> then the file name.</p>';
 
 	echo '<p align="center"><input type="submit" class="button" value=" Try Again " name="retry" />';
 
@@ -69,10 +69,10 @@ if (isset($errors)) {
 
 		print_feedback($progress);
 
-		$errors[] = 'include/config.inc.php cannot be written! Please verify that the file exists and is writeable. On Unix issue the command <kbd>chmod a+rwx include/config.inc.php</kbd> to make the file writeable. On Windows edit the file\'s properties ensuring that the <kbd>Read-only</kbd> attribute is <em>not</em> checked and that <kbd>Everyone</kbd> access permissions are given to that file.';
+		$errors[] = 'include/config.inc.php cannot be written! Please verify that the file exists and is writeable. On Unix issue the command <kbd>chmod a+rw include/config.inc.php</kbd> to make the file writeable. On Windows edit the file\'s properties ensuring that the <kbd>Read-only</kbd> attribute is <em>not</em> checked and that <kbd>Everyone</kbd> access permissions are given to that file.';
 		print_errors($errors);
 
-		echo '<p><strong>Note:</strong> To change permissions on Unix use <kbd>chmod a+rwx</kbd> then the file or directory name.</p>';
+		echo '<p><strong>Note:</strong> To change permissions on Unix use <kbd>chmod a+rw</kbd> then the file name.</p>';
 
 		echo '<p align="center"><input type="submit" class="button" value=" Try Again " name="retry" />';
 
@@ -99,20 +99,6 @@ if (isset($errors)) {
 		$cdir = urldecode(trim($_POST['step4']['content_dir']));
 
 		@chmod('../include/config.inc.php', 0444);
-		if ($_POST['step3']['welcome_course']) {
-			@mkdir($cdir.'/1');
-			@mkdir($cdir.'/chat/1');
-			@mkdir($cdir.'/chat/1/msgs');
-			@mkdir($cdir.'/chat/1/tran');
-			@mkdir($cdir.'/chat/1/users');
-			@mkdir($cdir.'/backups/1');
-			@mkdir($cdir.'/feeds/1');
-			@copy('../images/index.html', $cdir . '/index.html');
-			@copy('../images/index.html', $cdir . '/backups/1/index.html');
-			@copy('../images/index.html', $cdir . '/feeds/1/index.html');
-			@copy('../images/index.html', $cdir . '/chat/1/index.html');
-			@copy('../images/index.html', $cdir . '/1/index.html');
-		}
 
 		print_feedback($progress);
 

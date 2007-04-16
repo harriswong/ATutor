@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,7 +18,7 @@ require(AT_INCLUDE_PATH.'lib/links.inc.php');
 
 if (!manage_links()) {
 	$msg->addError('ACCESS_DENIED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 }
 
@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
 
 	//check if cat name is empty
 	if ($_POST['cat_name'] == '') {
-		$msg->addError('TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 
 		if (!links_authenticate($owner_type, $owner_id)) {
 			$msg->addError('ACCESS_DENIED');
-			header('Location: '.$_base_href.'tools/links/categories.php');
+			header('Location: '.AT_BASE_HREF.'tools/links/categories.php');
 			exit;
 		}
 
@@ -49,7 +49,7 @@ if (isset($_POST['submit'])) {
 		$sql = "UPDATE ".TABLE_PREFIX."links_categories SET parent_id=$parent_id, name='$cat_name', owner_type=$owner_type, owner_id=$owner_id WHERE cat_id=".$cat_id;
 
 		$result = mysql_query($sql, $db);
-		$msg->addFeedback('CAT_UPDATE_SUCCESSFUL');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		header('Location: categories.php');
 		exit;
@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
 	//authorized to edit this cat?
 	if (!links_authenticate($row['owner_type'], $row['owner_id'])) {
 		$msg->addError('ACCESS_DENIED');
-		header('Location: '.$_base_href.'tools/links/categories.php');
+		header('Location: '.AT_BASE_HREF.'tools/links/categories.php');
 		exit;
 	}
 }
@@ -83,7 +83,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 <div class="input-form">
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="category_name"><?php echo _AT('cats_category_name'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="category_name"><?php echo _AT('title'); ?></label><br />
 		<input type="text" id="category_name" name="cat_name" value="<?php echo stripslashes(htmlspecialchars($categories[$cat_id]['cat_name'])); ?>" />
 	</div>
 

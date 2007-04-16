@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg GayJoel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg GayJoel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -20,7 +20,7 @@ $course = intval($_REQUEST['course']);
 
 if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/course_properties.php');
+	header('Location: '.AT_BASE_HREF.'tools/course_properties.php');
 	exit;
 } else if (isset($_POST['step']) && ($_POST['step'] == 2) && isset($_POST['submit_yes'])) {
 	require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
@@ -29,8 +29,8 @@ if (isset($_POST['submit_no'])) {
 	delete_course($_SESSION['course_id'], $entire_course = true); // delete the course
 	cache_purge('system_courses','system_courses'); // purge the system_courses cache (if successful)
 	
-	$msg->addFeedback('COURSE_DELETED');
-	header('Location: '.$_base_href.'bounce.php?course=0');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	header('Location: '.AT_BASE_HREF.'bounce.php?course=0');
 	exit;
 }
 

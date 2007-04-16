@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -34,7 +34,7 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 		$code = substr(md5($_GET['e'] . $row['creation_date'] . $id), 0, 10);
 
 		if ($code == $m) {
-			$sql = "UPDATE ".TABLE_PREFIX."members SET email='$_GET[e]' WHERE member_id=$id";
+			$sql = "UPDATE ".TABLE_PREFIX."members SET email='$_GET[e]', last_login=last_login WHERE member_id=$id";
 			$result = mysql_query($sql, $db);
 
 			$msg->addFeedback('CONFIRM_GOOD');
@@ -59,9 +59,9 @@ if (isset($_GET['e'], $_GET['id'], $_GET['m'])) {
 
 		if ($code == $m) {
 			if (defined('AUTO_APPROVE_INSTRUCTORS') && AUTO_APPROVE_INSTRUCTORS) {
-				$sql = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_INSTRUCTOR." WHERE member_id=$id";
+				$sql = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_INSTRUCTOR.", creation_date=creation_date, last_login=last_login WHERE member_id=$id";
 			} else {
-				$sql = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_STUDENT." WHERE member_id=$id";
+				$sql = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_STUDENT.", creation_date=creation_date, last_login=last_login WHERE member_id=$id";
 			}
 			$result = mysql_query($sql, $db);
 

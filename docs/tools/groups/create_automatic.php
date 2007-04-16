@@ -31,12 +31,14 @@ if (isset($_POST['cancel'])) {
 	$_POST['num_groups']   = abs($_POST['num_groups']);
 	$_POST['num_g']        = intval($_POST['num_g']);
 
+	$missing_fields = array();
+
 	if (!$_POST['type_title']) {
-		$msg->addError('GROUP_TYPE_TITLE_MISSING');
+		$missing_fields[] = _AT('groups_type');
 	}
 
 	if (!$_POST['prefix']) {
-		$msg->addError('GROUP_PREFIX_MISSING');
+		$missing_fields[] = _AT('group_prefix');
 	}
 
 	$course_owner = $system_courses[$_SESSION['course_id']]['member_id'];
@@ -61,7 +63,7 @@ if (isset($_POST['cancel'])) {
 		$num_students_per_group = $_POST['num_students'];
 
 		if ($num_students_per_group == 0) {
-			$msg->addError('GROUP_NUM_STUDENTS_MISSING');
+			$missing_fields[] = _AT('number_of_students_per_group');
 		} else {
 			if ($total_students == 0) {
 				$msg->addError('GROUP_NO_STUDENTS');
@@ -73,7 +75,7 @@ if (isset($_POST['cancel'])) {
 		$num_groups = $_POST['num_groups'];
 
 		if ($num_groups == 0) {
-			$msg->addError('GROUP_NUM_GROUPS_MISSING');
+			$missing_fields[] = _AT('number_of_groups');
 		} else {
 			if ($total_students > 0) {
 				// to uniformly distribute all the groups we place the remaining students
@@ -90,12 +92,17 @@ if (isset($_POST['cancel'])) {
 		}
 	}
 
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
 		$_POST['type_title']  = $addslashes($_POST['type_title']);
 		$_POST['prefix']      = $addslashes($_POST['prefix']);
 		$_POST['description'] = $addslashes($_POST['description']);
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."groups_types VALUES (0, $_SESSION[course_id], '$_POST[type_title]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."groups_types VALUES (NULL, $_SESSION[course_id], '$_POST[type_title]')";
 		$result = mysql_query($sql, $db);
 		$group_type_id = mysql_insert_id($db);
 
@@ -103,7 +110,7 @@ if (isset($_POST['cancel'])) {
 
 		for($i=0; $i<$num_groups; $i++) {
 			$group_title = $_POST['prefix'] . ' ' . ($i + 1);
-			$sql = "INSERT INTO ".TABLE_PREFIX."groups VALUES (0, $group_type_id, '$group_title', '$_POST[description]', '$modules')";
+			$sql = "INSERT INTO ".TABLE_PREFIX."groups VALUES (NULL, $group_type_id, '$group_title', '$_POST[description]', '$modules')";
 			$result = mysql_query($sql, $db);
 
 			$group_id = mysql_insert_id($db);
@@ -134,7 +141,7 @@ if (isset($_POST['cancel'])) {
 			}
 		}
 
-		$msg->addFeedback('GROUPS_CREATED_SUCCESSFULLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		header('Location: index.php');
 		exit;

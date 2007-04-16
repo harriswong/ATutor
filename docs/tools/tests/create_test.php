@@ -25,14 +25,15 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields        = array();
 	$_POST['title']        = $addslashes(trim($_POST['title']));
-	$_POST['num']	       = intval($_POST['num']);
+	$_POST['num_questions']	= intval($_POST['num_questions']);
 	$_POST['num_takes']	   = intval($_POST['num_takes']);
 	$_POST['content_id']   = intval($_POST['content_id']);
 	$_POST['num_takes']    = intval($_POST['num_takes']);
 	$_POST['anonymous']    = intval($_POST['anonymous']);
+	$_POST['allow_guests'] = $_POST['allow_guests'] ? 1 : 0;
 	$_POST['instructions'] = $addslashes($_POST['instructions']);
-
 
 	// currently these options are ignored for tests:
 	$_POST['format']       = intval($_POST['format']);
@@ -40,7 +41,16 @@ if (isset($_POST['cancel'])) {
 	$_POST['difficulty']   = 0;  //intval($_POST['difficulty']); 	/* avman */
 	    
 	if ($_POST['title'] == '') {
-		$msg->addError('NO_TITLE');
+		$missing_fields[] = _AT('title');
+	}
+
+	if ($_POST['random'] && !$_POST['num_questions']) {
+		$missing_fields[] = _AT('num_questions_per_test');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	$day_start	= intval($_POST['day_start']);
@@ -107,7 +117,7 @@ if (isset($_POST['cancel'])) {
 		$start_date = "$year_start-$month_start-$day_start $hour_start:$min_start:00";
 		$end_date	= "$year_end-$month_end-$day_end $hour_end:$min_end:00";
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."tests VALUES (0, $_SESSION[course_id], '$_POST[title]', $_POST[format], '$start_date', '$end_date', $_POST[order], $_POST[num], '$_POST[instructions]', $_POST[content_id], $_POST[result_release], $_POST[random], $_POST[difficulty], $_POST[num_takes], $_POST[anonymous], '')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."tests VALUES (NULL, $_SESSION[course_id], '$_POST[title]', $_POST[format], '$start_date', '$end_date', $_POST[order], $_POST[num_questions], '$_POST[instructions]', $_POST[content_id], $_POST[result_release], $_POST[random], $_POST[difficulty], $_POST[num_takes], $_POST[anonymous], '', $_POST[allow_guests])";
 
 		$result = mysql_query($sql, $db);
 		$tid = mysql_insert_id($db);
@@ -122,14 +132,14 @@ if (isset($_POST['cancel'])) {
 			$result = mysql_query($sql, $db);
 		}
 
-		$msg->addFeedback('TEST_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: index.php');
 		exit;
 	}
 }
 
-if (isset($_POST['num']) && ($_POST['num'] === 0)) {
-	$_POST['num'] = '';
+if (isset($_POST['num_questions']) && ($_POST['num_questions'] === 0)) {
+	$_POST['num_questions'] = '';
 }
 
 $onload = 'document.form.title.focus();';
@@ -178,8 +188,8 @@ $msg->printErrors();
 				$n = 'checked="checked"';
 			}
 		?>
-		<input type="radio" name="format" id="formatN" value="0" <?php echo $n; ?> /><label for="formatN"><?php echo _AT('no1'); ?></label> 
-		<input type="radio" name="format" id="formatY" value="1" <?php echo $y; ?> /><label for="formatY"><?php echo _AT('yes1'); ?></label>
+		<input type="radio" name="format" id="formatN" value="0" <?php echo $n; ?> /><label for="formatN"><?php echo _AT('no'); ?></label> 
+		<input type="radio" name="format" id="formatY" value="1" <?php echo $y; ?> /><label for="formatY"><?php echo _AT('yes'); ?></label>
 	</div>
 
 	<div class="row">
@@ -194,8 +204,24 @@ $msg->printErrors();
 			}
 		?>
 
-		<input type="radio" name="anonymous" id="anonN" value="0" <?php echo $n; ?> /><label for="anonN"><?php echo _AT('no1'); ?></label> 
-		<input type="radio" name="anonymous" value="1" id="anonY" <?php echo $y; ?> /><label for="anonY"><?php echo _AT('yes1'); ?></label>
+		<input type="radio" name="anonymous" id="anonN" value="0" <?php echo $n; ?> /><label for="anonN"><?php echo _AT('no'); ?></label> 
+		<input type="radio" name="anonymous" value="1" id="anonY" <?php echo $y; ?> /><label for="anonY"><?php echo _AT('yes'); ?></label>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('allow_guests'); ?><br />
+		<?php 
+			if ($_POST['allow_guests'] == 1) {
+				$y = 'checked="checked"';
+				$n = '';
+			} else {
+				$y = '';
+				$n = 'checked="checked"';
+			}
+		?>
+
+		<input type="radio" name="allow_guests" id="allow_guestsN" value="0" <?php echo $n; ?> /><label for="allow_guestsN"><?php echo _AT('no'); ?></label> 
+		<input type="radio" name="allow_guests" value="1" id="allow_guestsY" <?php echo $y; ?> /><label for="allow_guestsY"><?php echo _AT('yes'); ?></label>
 	</div>
 
 	<div class="row">
@@ -218,18 +244,26 @@ $msg->printErrors();
 				$disabled = 'disabled="disabled" ';
 			}
 		?>
-		<input type="radio" name="random" id="random" value="0" checked="checked" onfocus="document.form.num.disabled=true;" /><label for="random"><?php echo _AT('no1'); ?></label>. <input type="radio" name="random" value="1" id="ry" onfocus="document.form.num.disabled=false;" <?php echo $y; ?> /><label for="ry"><?php echo _AT('yes1'); ?></label>, <input type="text" name="num" id="num" size="2" value="<?php echo $_POST['num']; ?>" <?php echo $disabled . $n; ?> /> <label for="num"><?php echo _AT('num_questions_per_test'); ?></label>
+		<input type="radio" name="random" id="random" value="0" checked="checked" onfocus="document.form.num_questions.disabled=true;" /><label for="random"><?php echo _AT('no'); ?></label>. <input type="radio" name="random" value="1" id="ry" onfocus="document.form.num_questions.disabled=false;" <?php echo $y; ?> /><label for="ry"><?php echo _AT('yes'); ?></label>, <input type="text" name="num_questions" id="num_questions" size="2" value="<?php echo $_POST['num_questions']; ?>" <?php echo $disabled . $n; ?> /> <label for="num_questions"><?php echo _AT('num_questions_per_test'); ?></label>
 	</div>
 
 
 	<div class="row">
 		<?php echo _AT('start_date');  ?><br />
 		<?php
-			$today_day  = date('d');
-			$today_mon  = date('m');
-			$today_year = date('Y');
-			$today_hour = date('H');
-			$today_min  = 0;
+			if (!isset($_POST['submit'])) {
+				$today_day  = date('d');
+				$today_mon  = date('m');
+				$today_year = date('Y');
+				$today_hour = date('H');
+				$today_min  = 0;
+			} else {
+				$today_day  = intval($day_start);
+				$today_mon  = intval($month_start);
+				$today_year = intval($year_start);
+				$today_hour = intval($hour_start);
+				$today_min  = intval($min_start);
+			}
 
 			$name = '_start';
 			require(AT_INCLUDE_PATH.'html/release_date.inc.php');
@@ -240,11 +274,19 @@ $msg->printErrors();
 	<div class="row">
 		<?php echo _AT('end_date');  ?><br />
 		<?php
-			$today_day  = date('d');
-			$today_mon  = date('m');
-			$today_year = date('Y');
-			$today_hour = date('H');
-			$today_min  = 0;
+			if (!isset($_POST['submit'])) {
+				$today_day  = date('d');
+				$today_mon  = date('m');
+				$today_year = date('Y');
+				$today_hour = date('H');
+				$today_min  = 0;
+			} else {
+				$today_day  = intval($day_end);
+				$today_mon  = intval($month_end);
+				$today_year = intval($year_end);
+				$today_hour = intval($hour_end);
+				$today_min  = intval($min_end);
+			}
 					
 			$name = '_end';
 			require(AT_INCLUDE_PATH.'html/release_date.inc.php');
@@ -257,18 +299,22 @@ $msg->printErrors();
 			//show groups
 			$sql	= "SELECT * FROM ".TABLE_PREFIX."groups_types WHERE course_id=$_SESSION[course_id] ORDER BY title";
 			$result = mysql_query($sql, $db);
-			while ($row = mysql_fetch_assoc($result)) {
-				echo '<em>'.$row['title'].'</em><br />';
+			if (mysql_num_rows($result)) {
+				while ($row = mysql_fetch_assoc($result)) {
+					echo '<em>'.$row['title'].'</em><br />';
 
-				$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE type_id=$row[type_id] ORDER BY title";
-				$g_result = mysql_query($sql, $db);
-				while ($grow = mysql_fetch_assoc($g_result)) {
-					echo '&nbsp;<label><input type="checkbox" value="'.$grow['group_id'].'" name="groups['.$grow['group_id'].']" '; 
-					if (is_array($current_groups) && in_array($grow['group_id'], $current_groups)) {
-						echo 'checked="checked"';
+					$sql	= "SELECT * FROM ".TABLE_PREFIX."groups WHERE type_id=$row[type_id] ORDER BY title";
+					$g_result = mysql_query($sql, $db);
+					while ($grow = mysql_fetch_assoc($g_result)) {
+						echo '&nbsp;<label><input type="checkbox" value="'.$grow['group_id'].'" name="groups['.$grow['group_id'].']" '; 
+						if (is_array($current_groups) && in_array($grow['group_id'], $current_groups)) {
+							echo 'checked="checked"';
+						}
+						echo '/>'.$grow['title'].'</label><br />';
 					}
-					echo '/>'.$grow['title'].'</label><br />';
 				}
+			} else {
+				echo _AT('none_found');
 			}
 		?>
 	</div>

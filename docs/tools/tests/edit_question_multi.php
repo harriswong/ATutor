@@ -38,43 +38,27 @@ if (isset($_POST['cancel'])) {
 	$_POST['tid']	   = intval($_POST['tid']);
 	$_POST['qid']	   = intval($_POST['qid']);
 	$_POST['weight']   = intval($_POST['weight']);
+	$_POST['answer']   = intval($_POST['answer']);
 
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('question')));
 	}
 
 	if (!$msg->containsErrors()) {
-		$choice_new = array(); // stores the non-blank choices
-		$answer_new = array(); // stores the associated "answer" for the choices
+		$answers    = array_fill(0, 10, 0);
+		$answers[$_POST['answer']] = 1;
 
 		for ($i=0; $i<10; $i++) {
 			$_POST['choice'][$i] = $addslashes(trim($_POST['choice'][$i]));
-			$_POST['answer'][$i] = intval($_POST['answer'][$i]);
-
-			if ($_POST['choice'][$i] == '') {
-				/* an empty option can't be correct */
-				$_POST['answer'][$i] = 0;
-			} else {
-				/* filter out empty choices/ remove gaps */
-				$choice_new[] = $_POST['choice'][$i];
-				$answer_new[] = $_POST['answer'][$i];
-			}
 		}
-
-		$_POST['answer'] = $answer_new;
-		$_POST['choice'] = $choice_new;
-		$_POST['answer'] = array_pad($_POST['answer'], 10, 0);
-		$_POST['choice'] = array_pad($_POST['choice'], 10, '');
 
 		$_POST['feedback']   = $addslashes($_POST['feedback']);
 		$_POST['question']   = $addslashes($_POST['question']);
-		$_POST['properties'] = $addslashes($_POST['properties']);
 
 		$sql	= "UPDATE ".TABLE_PREFIX."tests_questions SET
             category_id=$_POST[category_id],
 		    feedback='$_POST[feedback]',
 			question='$_POST[question]',
-			properties='$_POST[properties]',
 			choice_0='{$_POST[choice][0]}',
 			choice_1='{$_POST[choice][1]}',
 			choice_2='{$_POST[choice][2]}',
@@ -85,16 +69,16 @@ if (isset($_POST['cancel'])) {
 			choice_7='{$_POST[choice][7]}',
 			choice_8='{$_POST[choice][8]}',
 			choice_9='{$_POST[choice][9]}',
-			answer_0={$_POST[answer][0]},
-			answer_1={$_POST[answer][1]},
-			answer_2={$_POST[answer][2]},
-			answer_3={$_POST[answer][3]},
-			answer_4={$_POST[answer][4]},
-			answer_5={$_POST[answer][5]},
-			answer_6={$_POST[answer][6]},
-			answer_7={$_POST[answer][7]},
-			answer_8={$_POST[answer][8]},
-			answer_9={$_POST[answer][9]}
+			answer_0={$answers[0]},
+			answer_1={$answers[1]},
+			answer_2={$answers[2]},
+			answer_3={$answers[3]},
+			answer_4={$answers[4]},
+			answer_5={$answers[5]},
+			answer_6={$answers[6]},
+			answer_7={$answers[7]},
+			answer_8={$answers[8]},
+			answer_9={$answers[9]}
 
 			WHERE question_id=$_POST[qid] AND course_id=$_SESSION[course_id]";
 
@@ -116,7 +100,7 @@ if (!isset($_POST['submit'])) {
 
 	if (!($row = mysql_fetch_array($result))){
 		require(AT_INCLUDE_PATH.'header.inc.php');
-		$msg->printErrors('QUESTION_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
@@ -129,13 +113,6 @@ if (!isset($_POST['submit'])) {
 	for ($i=0; $i<10; $i++) {
 		$_POST['choice'][$i] = $row['choice_'.$i];
 		$_POST['answer'][$i] = $row['answer_'.$i];
-	}
-
-	$_POST['properties'] = $row['properties'];
-	if ($_POST['properties'] == AT_TESTS_QPROP_ALIGN_VERT) {
-		$align_vert = ' checked="checked"';
-	} else {
-		$align_hor  = ' checked="checked"';
 	}
 }
 
@@ -156,11 +133,10 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 	
 	<div class="row">
-		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label> 
-		<?php print_VE('feedback'); ?>	
+		<label for="optional_feedback"><?php echo _AT('optional_feedback'); ?></label> 
+		<?php print_VE('optional_feedback'); ?>	
 
-		<textarea id="feedback" cols="50" rows="3" name="feedback"><?php 
-			echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
+		<textarea id="optional_feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
 	</div>
 
 	<div class="row">
@@ -170,20 +146,13 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 			echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
 	</div>
 
-	<div class="row">
-		<label for="properties"><?php echo _AT('option_alignment'); ?></label><br />
-		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" <?php echo $align_vert; ?> /><?php echo _AT('vertical'); ?></label>
-		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" <?php echo $align_hor;  ?> /><?php echo _AT('horizontal'); ?></label>
-	</div>
-
-
 	<?php 
 	for ($i=0; $i<10; $i++) { ?>
 		<div class="row">
 			<label for="choice_<?php echo $i; ?>"><?php echo _AT('choice'); ?> <?php echo ($i+1); ?></label> 
-			<?php print_VE('choice_' . $i); ?>			
+			<?php print_VE('choice_' . $i); ?>
 			<br />
-			<small><input type="checkbox" name="answer[<?php echo $i; ?>]" id="answer_<?php echo $i; ?>" value="1" <?php if($_POST['answer'][$i]) { echo 'checked="checked"';} ?>><label for="answer_<?php echo $i; ?>"><?php echo _AT('correct_answer'); ?></label></small>
+			<small><input type="radio" name="answer" id="answer_<?php echo $i; ?>" value="<?php echo $i; ?>" <?php if($_POST['answer'][$i]) { echo 'checked="checked"';} ?>><label for="answer_<?php echo $i; ?>"><?php echo _AT('correct_answer'); ?></label></small>
 			
 
 			<textarea id="choice_<?php echo $i; ?>" cols="50" rows="2" name="choice[<?php echo $i; ?>]" class="formfield"><?php echo htmlspecialchars(stripslashes($_POST['choice'][$i])); ?></textarea>

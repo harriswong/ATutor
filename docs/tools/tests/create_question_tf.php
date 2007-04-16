@@ -28,10 +28,9 @@ if (isset($_POST['cancel'])) {
 	$_POST['question']     = trim($_POST['question']);
 	$_POST['category_id']  = intval($_POST['category_id']);
 	$_POST['answer']       = intval($_POST['answer']);
-	$_POST['properties']   = intval($_POST['properties']);
 
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('statement')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -44,7 +43,7 @@ if (isset($_POST['cancel'])) {
 		$row = mysql_fetch_assoc($result);
 		*/
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."tests_questions VALUES (	0,
+		$sql = "INSERT INTO ".TABLE_PREFIX."tests_questions VALUES ( NULL,
 			$_POST[category_id],
 			$_SESSION[course_id],
 			2,
@@ -70,11 +69,21 @@ if (isset($_POST['cancel'])) {
 			0,
 			0,
 			0,
-			$_POST[properties],
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			5,
 			0)";
 		$result	= mysql_query($sql, $db);
 		
-		$msg->addFeedback('QUESTION_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: question_db.php');
 	}
 }
@@ -94,27 +103,21 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 
 	<div class="row">
-		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label>		
-		<?php print_VE('feedback'); ?>
+		<label for="optional_feedback"><?php echo _AT('optional_feedback'); ?></label>		
+		<?php print_VE('optional_feedback'); ?>
 		<br />
 	
-		<textarea id="feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars($stripslashes($_POST['feedback'])); ?></textarea>
+		<textarea id="optional_feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars($stripslashes($_POST['feedback'])); ?></textarea>
 	</div>
 	
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="question"><?php echo _AT('statement'); ?></label>
-		<?php print_VE('question'); ?>
+		<?php print_VE('statement'); ?>
 		<br />
 
 		<textarea id="question" cols="50" rows="6" name="question" style="width:90%;"><?php echo htmlspecialchars($stripslashes($_POST['question'])); ?></textarea>
 	</div>
 	
-	<div class="row">
-		<?php echo _AT('option_alignment'); ?><br />
-		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" checked="checked" /><?php echo _AT('vertical'); ?></label>
-		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" /><?php echo _AT('horizontal'); ?></label>
-	</div>
-
 	<div class="row">
 		<?php echo _AT('answer'); ?><br />
 		<input type="radio" name="answer" value="1" id="answer1" /><label for="answer1"><?php echo _AT('true'); ?></label>, 

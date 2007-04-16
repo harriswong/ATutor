@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -76,7 +76,8 @@ $q_sql = substr($q_sql, 0, -1);
 $num_questions = count($questions);
 
 //get all the marked tests for this test
-$sql	= "SELECT R.*, M.login FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."members M WHERE R.test_id=$tid AND R.final_score<>'' AND R.member_id=M.member_id ORDER BY M.login, R.date_taken";
+$guest_text = '- '._AT('guest').' -';
+$sql	= "SELECT R.*, M.login FROM ".TABLE_PREFIX."tests_results R LEFT JOIN ".TABLE_PREFIX."members M USING (member_id) WHERE R.test_id=$tid AND R.final_score<>'' ORDER BY M.login, R.date_taken";
 $result = mysql_query($sql, $db);
 $num_results = mysql_num_rows($result);
 if ($row = mysql_fetch_assoc($result)) {
@@ -96,6 +97,7 @@ if ($row = mysql_fetch_assoc($result)) {
 	echo '<tbody>';
 
 	do {
+		$row['login']     = $row['login']     ? $row['login']     : $guest_text;
 		echo '<tr>';
 		echo '<td align="center">'.$row['login'].'</td>';
 		echo '<td align="center">'.AT_date('%j/%n/%y %G:%i', $row['date_taken'], AT_DATE_MYSQL_DATETIME).'</td>';
@@ -147,7 +149,7 @@ if ($row = mysql_fetch_assoc($result)) {
 			if ($questions[$i]['weight'] && $count) {
 					echo number_format($questions[$i]['score']/$count, 1);
 			} else {
-				echo '<span style="color:#ccc;">-</span>';
+				echo '0.0';
 			}
 			echo '</strong></td>';
 	}
@@ -170,7 +172,7 @@ if ($row = mysql_fetch_assoc($result)) {
 			if ($questions[$i]['weight'] && $count) {
 				echo number_format($questions[$i]['score']/$count/$questions[$i]['weight']*100, 1).'%';
 			} else {
-				echo '<span style="color:#ccc;">-</span>';
+				echo '00.0%';
 			}
 		echo '</strong></td>';
 	}

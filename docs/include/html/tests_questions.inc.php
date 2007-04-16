@@ -14,7 +14,6 @@
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-
 $cats = array();
 $sql	= "SELECT * FROM ".TABLE_PREFIX."tests_questions_categories WHERE course_id=$_SESSION[course_id] ORDER BY title";
 $result	= mysql_query($sql, $db);
@@ -52,6 +51,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		<td colspan="3">
 			<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> 
 			<input type="submit" name="preview" value="<?php echo _AT('preview'); ?>" />
+			<input type="submit" name="export" value="<?php echo _AT('export'); ?>" />
 			<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
 		</td>
 	</tr>
@@ -72,49 +72,26 @@ foreach ($cats as $cat) {
 		echo '<tr>';
 		echo '<th colspan="'.$cols.'">';
 
-		if ($tid) {
-			echo '<label><input type="checkbox" name="cat'.$cat['category_id'].'" id="cat'.$cat['category_id'].'" onclick="javascript:selectCat('.$cat['category_id'].', this);" /> '.$cat['title'].'</label>';
-		} else {
-			echo $cat['title'];
-		}
+		echo '<input type="checkbox" name="cat'.$cat['category_id'].'" id="cat'.$cat['category_id'].'" onclick="javascript:selectCat('.$cat['category_id'].', this);" /><label for="cat'.$cat['category_id'].'">'.$cat['title'].'</label>';
 		echo '</th>';
 		echo '</tr>';
 
 		do {
-			if ($tid) {
-				echo '<tr onmousedown="document.form[\'q' . $row['question_id'] . '\'].checked = !document.form[\'q' . $row['question_id'] . '\'].checked;">';
-				echo '<td>';
-				echo '<input type="checkbox" value="'.$row['question_id'].'" name="add_questions['.$cat['category_id'].'][]" id="q'.$row['question_id'].'" onmouseup="this.checked=!this.checked" /></td>';
-			} else {
-				echo '<tr onmousedown="document.form[\'q'.$row['question_id'].'\'].checked = true;rowselect(this);" id="r_'.$row['question_id'].'">';
-				echo '<td><input type="radio" name="id" value="'.$row['question_id'].'|'.$row['type'].'" id="q'.$row['question_id'].'" /></td>';
-			}
+			echo '<tr onmousedown="document.form[\'q' . $row['question_id'] . '\'].checked = !document.form[\'q' . $row['question_id'] . '\'].checked;">';
+			echo '<td>';
+			echo '<input type="checkbox" value="'.$row['question_id'].'|'.$row['type'].'" name="questions['.$cat['category_id'].'][]" id="q'.$row['question_id'].'" onmouseup="this.checked=!this.checked" /></td>';
 			echo '<td>';
 			if (strlen($row['question']) > 45) {
-				echo substr(htmlspecialchars($row['question']), 0, 43) . '...';
+				echo AT_print(substr(htmlentities($row['question']), 0, 43), 'tests_questions.question') . '&hellip;';
 			} else {
-				echo htmlspecialchars($row['question']);
+				echo AT_print(htmlentities($row['question']), 'tests_questions.question');
 			}
 
 			echo '</td>';
 			echo '<td>';
-			switch ($row['type']) {
-				case 1:
-					echo _AT('test_mc');
-					break;
+			$o = TestQuestions::getQuestion($row['type']);
+			$o->printName();
 					
-				case 2:
-					echo _AT('test_tf');
-					break;
-			
-				case 3:
-					echo _AT('test_open');
-					break;
-				case 4:
-					echo _AT('test_lk');
-					break;
-			}
-						
 			echo '</td>';
 			
 			echo '</tr>';
@@ -135,7 +112,7 @@ if (!$question_flag) {
 	function selectCat(catID, cat) {
 		for (var i=0;i<document.form.elements.length;i++) {
 			var e = document.form.elements[i];
-			if ((e.name == 'add_questions[' + catID + '][]') && (e.type=='checkbox'))
+			if ((e.name == 'questions[' + catID + '][]') && (e.type=='checkbox'))
 				e.checked = cat.checked;
 		}
 	}

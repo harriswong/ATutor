@@ -24,7 +24,8 @@ if (isset($_POST['back'])) {
 if (isset($_POST['step2'])) { // e-mail bundle
 
 	if ($_POST['email_add'] == '') {
-		$msg->addError('NO_RECIPIENT');
+		$msg->addError(array('EMPTY_FIELDS', _AT('recipient_address')));
+
 		header('Location: ' . $_SERVER['PHP_SELF']);
 		exit;
 	}
@@ -105,7 +106,7 @@ if (isset($_POST['step2'])) { // e-mail bundle
 		}
 		unset($mail);
 
-		$msg->addFeedback('MSG_SENT');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		/* Make sure the tmp bundle file never exists past the lifetime of the bundle manager page */
 		unlink($dir_ . '/bundle.log');
 		header('Location: error_logging.php');

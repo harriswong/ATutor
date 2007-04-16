@@ -30,12 +30,22 @@ if (isset($_GET['id'])) {
 }
 
 if (isset($_POST['submit'])) {
-	if (trim($_POST['question']) == '') {
-		$msg->addError('QUESTION_EMPTY');
+	$_POST['question'] = trim($_POST['question']);
+	$_POST['answer'] = trim($_POST['answer']);
+
+	$missing_fields = array();
+	
+	if (!$_POST['question']) {
+		$missing_fields[] = _AT('question');
 	}
 
-	if (trim($_POST['answer']) == '') {
-		$msg->addError('ANSWER_EMPTY');
+	if (!$_POST['answer']) {
+		$missing_fields[] = _AT('answer');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -56,7 +66,7 @@ $onload = 'document.form.topic.focus();';
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 if ($id == 0) {
-	$msg->printErrors('QUESTION_NOT_FOUND');
+	$msg->printErrors('ITEM_NOT_FOUND');
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
@@ -64,7 +74,7 @@ if ($id == 0) {
 $sql = "SELECT * FROM ".TABLE_PREFIX."faq_entries WHERE entry_id=$id";
 $result = mysql_query($sql,$db);
 if (!($row = mysql_fetch_assoc($result))) {
-	$msg->printErrors('QUESTION_NOT_FOUND');
+	$msg->printErrors('ITEM_NOT_FOUND');
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }

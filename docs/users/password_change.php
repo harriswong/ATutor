@@ -45,18 +45,18 @@ if (isset($_POST['submit'])) {
 			}
 		}
 	} else {
-		$msg->addError('PASSWORD_MISSING');
-		Header('Location: password_change.php');
+		$msg->addError(array('EMPTY_FIELDS', _AT('password')));
+		header('Location: password_change.php');
 		exit;
 	}
 
 	// new password check
 	if ($_POST['password'] == '') { 
-		$msg->addError('PASSWORD_MISSING');
+		$msg->addError(array('EMPTY_FIELDS', _AT('password')));
 	} else {
 		if ($_POST['password'] != $_POST['password2']) {
 			$msg->addError('PASSWORD_MISMATCH');
-		} else if (strlen($_POST['password']) < 8) {
+		} else if (!preg_match('/^\w{8,}$/u', $_POST['password'])) { // strlen($_POST['password']) < 8
 			$msg->addError('PASSWORD_LENGTH');
 		} else if ((preg_match('/[a-z]+/i', $_POST['password']) + preg_match('/[0-9]+/i', $_POST['password']) + preg_match('/[_\-\/+!@#%^$*&)(|.]+/i', $_POST['password'])) < 2) {
 			$msg->addError('PASSWORD_CHARS');
@@ -67,7 +67,7 @@ if (isset($_POST['submit'])) {
 		// insert into the db.
 		$_POST['password']   = $addslashes($_POST['password']);
 
-		$sql = "UPDATE ".TABLE_PREFIX."members SET password='$_POST[password]' WHERE member_id=$_SESSION[member_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."members SET password='$_POST[password]', creation_date=creation_date, last_login=last_login WHERE member_id=$_SESSION[member_id]";
 		$result = mysql_query($sql,$db);
 		if (!$result) {
 			require(AT_INCLUDE_PATH.'header.inc.php');

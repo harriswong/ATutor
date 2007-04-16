@@ -22,6 +22,8 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	$_POST['site_name']          = trim($_POST['site_name']);
 	$_POST['home_url']           = trim($_POST['home_url']);
 	$_POST['default_language']   = trim($_POST['default_language']);
@@ -35,6 +37,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['master_list']        = intval($_POST['master_list']);
 	$_POST['email_confirmation'] = intval($_POST['email_confirmation']);
 	$_POST['email_notification'] = intval($_POST['email_notification']);
+	$_POST['sent_msgs_ttl']      = intval($_POST['sent_msgs_ttl']);
 	$_POST['allow_instructor_requests'] = intval($_POST['allow_instructor_requests']);
 	$_POST['auto_approve_instructors']  = intval($_POST['auto_approve_instructors']);
 	$_POST['theme_categories']          = intval($_POST['theme_categories']);
@@ -46,15 +49,20 @@ if (isset($_POST['cancel'])) {
 	$_POST['check_version']             = $_POST['check_version'] ? 1 : 0;
 	$_POST['fs_versioning']             = $_POST['fs_versioning'] ? 1 : 0;
 	$_POST['enable_mail_queue']         = $_POST['enable_mail_queue'] ? 1 : 0;
+	$_POST['display_name_format']       = intval($_POST['display_name_format']);
+
+	if (!isset($display_name_formats[$_POST['display_name_format']])) {
+		$_POST['display_name_format'] = $_config_defaults['display_name_format'];
+	}
 
 	//check that all values have been set	
 	if (!$_POST['site_name']) {
-		$msg->addError('NO_SITE_NAME');
+		$missing_fields[] = _AT('site_name');
 	}
 
 	/* email check */
 	if (!$_POST['contact_email']) {
-		$msg->addError('EMAIL_MISSING');
+		$missing_fields[] = _AT('contact_email');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['contact_email'])) {
 		$msg->addError('EMAIL_INVALID');	
 	}
@@ -67,11 +75,17 @@ if (isset($_POST['cancel'])) {
 		}
 	}
 	
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
 		$_POST['site_name']     = $addslashes($_POST['site_name']);
 		$_POST['home_url']      = $addslashes($_POST['home_url']);
 		$_POST['default_language']      = $addslashes($_POST['default_language']);
 		$_POST['contact_email'] = $addslashes($_POST['contact_email']);
+		$_POST['time_zone']     = $addslashes($_POST['time_zone']);
 
 
 		foreach ($_config as $name => $value) {
@@ -87,7 +101,7 @@ if (isset($_POST['cancel'])) {
 			}
 		}
 
-		$msg->addFeedback('SYSTEM_PREFS_SAVED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		// special case: disabling the mail queue should flush all queued mail:
 		if (!$_POST['enable_mail_queue'] && $_POST['old_enable_mail_queue']) {
@@ -96,7 +110,7 @@ if (isset($_POST['cancel'])) {
 			$mail->SendQueue();
 		}
 
-		header('Location: index.php');
+		header('Location: '.$_SERVER['PHP_SELF']);
 		exit;
 	}
 }
@@ -146,18 +160,44 @@ if (!isset($_POST['submit'])) {
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="maxfile"><?php echo _AT('maximum_file_size'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_file_size']; ?>)<br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="time_zone"><?php echo _AT('time_zone'); ?></label><br />
+			<?php
+				$sql = "SELECT Name FROM mysql.time_zone_name ORDER BY Name";
+				$result = @mysql_query($sql, $db);
+			?>
+			<?php if ($result && mysql_num_rows($result)): ?>
+				<select name="time_zone" id="time_zone">
+					<option value="" <?php if (!$_config['time_zone']) { echo 'selected="selected"'; } ?>><?php echo _AT('use_system_time'); ?></option>
+					<option value=""></option>
+					<?php while ($row = mysql_fetch_assoc($result)): ?>
+						<option <?php if ($_config['time_zone'] == $row['Name']) { echo 'selected="selected"'; } ?>><?php echo $row['Name']; ?></option>
+					<?php endwhile; ?>
+				</select>
+			<?php else: ?>
+				<?php echo _AT('time_zones_not_supported'); ?>
+			<?php endif; ?>
+	</div>
+
+	<div class="row">
+		<label for="maxfile"><?php echo _AT('maximum_file_size'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_file_size']; ?>)<br />
 		<input type="text" size="10" name="max_file_size" id="maxfile" value="<?php if (!empty($_POST['max_file_size'])) { echo $stripslashes(htmlspecialchars($_POST['max_file_size'])); } else { echo $_config['max_file_size']; } ?>"  /> <?php echo _AT('bytes'); ?>
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="maxcourse"><?php echo _AT('maximum_course_size'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_course_size']; ?>)<br />
+		<label for="maxcourse"><?php echo _AT('maximum_course_size'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_course_size']; ?>)<br />
 		<input type="text" size="10" name="max_course_size" id="maxcourse" value="<?php if (!empty($_POST['max_course_size'])) { echo $stripslashes(htmlspecialchars($_POST['max_course_size'])); } else { echo $_config['max_course_size']; } ?>"  /> <?php echo _AT('bytes'); ?>
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="float"><?php echo _AT('maximum_course_float'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_course_float']; ?>)<br />
+		<label for="float"><?php echo _AT('maximum_course_float'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_course_float']; ?>)<br />
 		<input type="text" size="10" name="max_course_float" id="float" value="<?php if (!empty($_POST['max_course_float'])) { echo $stripslashes(htmlspecialchars($_POST['max_course_float'])); } else { echo $_config['max_course_float']; } ?>"  /> <?php echo _AT('bytes'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('display_name_format'); ?> (<?php echo _AT('default'); ?>: <em><?php echo _AT($display_name_formats[$_config_defaults['display_name_format']], _AT('login_name'), _AT('first_name'), _AT('second_name'), _AT('last_name')); ?></em>)<br />
+		<?php foreach ($display_name_formats as $key => $value): ?>
+			<input type="radio" name="display_name_format" value="<?php echo $key; ?>" id="dnf<?php echo $key; ?>" <?php if ($_config['display_name_format'] == $key) { echo 'checked="checked"'; }?> /><label for="dnf<?php echo $key; ?>"><em><?php echo _AT($value, _AT('login_name'), _AT('first_name'), _AT('second_name'), _AT('last_name')); ?></em></label><br />
+		<?php endforeach; ?>
 	</div>
 
 	<div class="row">
@@ -213,6 +253,11 @@ if (!isset($_POST['submit'])) {
 	</div>
 
 	<div class="row">
+		<label for="sent_msgs_ttl"><?php echo _AT('sent_msgs_ttl_text'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['sent_msgs_ttl']; ?>)<br />
+		<input type="text" size="3" name="sent_msgs_ttl" id="sent_msgs_ttl" value="<?php if (!empty($_POST['sent_msgs_ttl'])) { echo intval($_POST['sent_msgs_ttl']); } else { echo $_config['sent_msgs_ttl']; } ?>"  />
+	</div>
+
+	<div class="row">
 		<?php echo _AT('auto_check_new_version'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['check_version'] ? _AT('enable') : _AT('disable')); ?>)<br />
 		<input type="radio" name="check_version" value="1" id="cv_y" <?php if($_config['check_version']) { echo 'checked="checked"'; }?>  /><label for="cv_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="check_version" value="0" id="cv_n" <?php if(!$_config['check_version']) { echo 'checked="checked"'; }?>  /><label for="cv_n"><?php echo _AT('disable'); ?></label>
 	</div>
@@ -244,7 +289,7 @@ if (!isset($_POST['submit'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s"  />
+			<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s"  />
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />
 	</div>
 </div>

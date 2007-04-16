@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -91,7 +91,7 @@ function save_changes($redir) {
 	}
 
 	if ($_POST['title'] == '') {
-		$msg->addError('NO_TITLE');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 		
 	if (!$msg->containsErrors()) {
@@ -111,8 +111,6 @@ function save_changes($redir) {
 		} else {
 			/* insert new */
 			
-			$inherit_release_date = 0; // for now.
-
 			$cid = $contentManager->addContent($_SESSION['course_id'],
 												  $_POST['new_pid'],
 												  $_POST['new_ordering'],
@@ -121,8 +119,7 @@ function save_changes($redir) {
 												  $_POST['keywords'],
 												  $_POST['related'],
 												  $_POST['formatting'],
-												  $release_date,
-												  $inherit_release_date);
+												  $release_date);
 			$_POST['cid']    = $cid;
 			$_REQUEST['cid'] = $cid;
 		}
@@ -147,7 +144,7 @@ function save_changes($redir) {
 			} else if ($key === false && ($d != '')) {
 				$w = addslashes($w);
 				$related_id = intval($_POST['related_term'][$old_w]);
-				$sql = "INSERT INTO ".TABLE_PREFIX."glossary VALUES (0, $_SESSION[course_id], '$w', '$d', $related_id)";
+				$sql = "INSERT INTO ".TABLE_PREFIX."glossary VALUES (NULL, $_SESSION[course_id], '$w', '$d', $related_id)";
 
 				//debug($sql);
 				$result = mysql_query($sql, $db);
@@ -160,7 +157,7 @@ function save_changes($redir) {
 	if (!$msg->containsErrors() && $redir) {
 		$_SESSION['save_n_close'] = $_POST['save_n_close'];
 
-		$msg->addFeedback('CONTENT_UPDATED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: '.basename($_SERVER['PHP_SELF']).'?cid='.$cid.SEP.'close='.$addslashes($_POST['save_n_close']).SEP.'tab='.$addslashes($_POST['current_tab']).SEP.'setvisual='.$addslashes($_POST['setvisual']));
 		exit;
 	} else {
@@ -344,7 +341,7 @@ function paste_from_file() {
 
 //for accessibility checker
 function write_temp_file() {
-	global $_POST, $_base_href, $msg;
+	global $_POST, $msg;
 
 	if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 		$content_base = 'get.php/';

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -36,9 +36,10 @@ $result	= mysql_query($sql, $db);
 <tbody>
 <?php
 while ($row = mysql_fetch_assoc($result)) {
-	if (!authenticate_test($row['test_id'])) {
+	if (!$row['guests'] && !authenticate_test($row['test_id'])) {
 		continue;
 	}
+
 	$count++;
 	echo '<tr>';
 	echo '<td>';
@@ -97,6 +98,11 @@ if (!$count) {
 	</tbody>
 </table>
 <br />
+
+<?php if (!$_SESSION['enroll']): ?>
+	<?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
+	<?php exit; ?>
+<?php endif; ?>
 <h4><?php echo _AT('completed_tests'); ?></h4><br />
 <table class="data static" summary="" rules="cols">
 <thead>
@@ -109,7 +115,7 @@ if (!$count) {
 </thead>
 <tbody>
 <?php
-$sql	= "SELECT T.*, R.* FROM ".TABLE_PREFIX."tests T, ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."tests_questions_assoc Q WHERE Q.test_id=T.test_id AND R.member_id=$_SESSION[member_id] AND R.test_id=T.test_id AND T.course_id=$_SESSION[course_id] GROUP BY R.result_id ORDER BY R.date_taken";
+$sql	= "SELECT T.*, R.* FROM ".TABLE_PREFIX."tests T, ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."tests_questions_assoc Q WHERE Q.test_id=T.test_id AND R.member_id=$_SESSION[member_id] AND R.test_id=T.test_id AND T.course_id=$_SESSION[course_id] GROUP BY R.result_id ORDER BY R.date_taken DESC";
 
 $result	= mysql_query($sql, $db);
 $num_results = mysql_num_rows($result);

@@ -22,6 +22,9 @@ if (isset($_GET['delete'], $_GET['login'])) {
 } else if (isset($_GET['view_log'], $_GET['login'])) {
 	header('Location: log.php?login='.$_GET['login']);
 	exit;
+} else if (isset($_GET['password'], $_GET['login'])) {
+	header('Location: password.php?login='.$_GET['login']);
+	exit;
 } else if (isset($_GET['edit'], $_GET['login'])) {
 	header('Location: edit.php?login='.$_GET['login']);
 	exit;
@@ -84,7 +87,12 @@ if (isset($_GET['asc'])) {
 </thead>
 <tfoot>
 <tr>
-	<td colspan="6"><input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" /> <input type="submit" name="view_log" value="<?php echo _AT('view_log'); ?>" /> <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
+	<td colspan="6">
+		<input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" />
+		<input type="submit" name="view_log" value="<?php echo _AT('view_log'); ?>" />
+		<input type="submit" name="password" value="<?php echo _AT('password'); ?>" />
+		<input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" />
+	</td>
 </tr>
 </tfoot>
 <tbody>
@@ -99,8 +107,7 @@ if (isset($_GET['asc'])) {
 		<td colspan="6"><?php echo _AT('no_admins_found'); ?></td>
 	</tr><?php
 	} else {
-
-		while ($row = mysql_fetch_assoc($result)) : ?>
+		while ($row = mysql_fetch_assoc($result)): ?>
 			<tr onmousedown="document.form['m<?php echo $row['login']; ?>'].checked = true;rowselect(this);" id="r_<?php echo $row['login']; ?>">
 				<td><input type="radio" name="login" value="<?php echo $row['login']; ?>" id="m<?php echo $row['login']; ?>" /></td>
 				<td><label for="m<?php echo $row['login']; ?>"><?php echo $row['login'];      ?></label></td>

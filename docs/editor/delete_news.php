@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -18,7 +18,7 @@ authenticate(AT_PRIV_ANNOUNCEMENTS);
 
 if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/news/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 	exit;
 } else if (isset($_POST['submit_yes'])) {
 	$_POST['form_news_id'] = intval($_POST['form_news_id']);
@@ -34,8 +34,8 @@ if (isset($_POST['submit_no'])) {
 		@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
 	}
 
-	$msg->addFeedback('NEWS_DELETED');
-	header('Location: '.$_base_href.'tools/news/index.php');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 	exit;
 }
 
@@ -49,7 +49,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	$result = mysql_query($sql,$db);
 	if (mysql_num_rows($result) == 0) {
-		$msg->printErrors('ANN_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 	} else {
 		$row = mysql_fetch_assoc($result);
 

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -13,10 +13,6 @@
 // $Id$
 
 define('AT_INCLUDE_PATH', '../../include/');
-
-// supress notices:
-error_reporting(E_ALL ^ E_NOTICE);
-
 
 /* content id of an optional chapter */
 $cid = intval($_REQUEST['cid']);
@@ -37,7 +33,7 @@ if (isset($_REQUEST['to_tile']) && !isset($_POST['cancel'])) {
 
 	$m = md5(DB_PASSWORD . 'x' . ADMIN_PASSWORD . 'x' . $_SERVER['SERVER_ADDR'] . 'x' . $cid . 'x' . $_SESSION['course_id'] . 'x' . date('Ymd'));
 
-	header('Location: '.AT_TILE_IMPORT. '?cp='.urlencode($_base_href. 'tools/ims/ims_export.php?cid='.$cid.'&c='.$_SESSION['course_id'].'&m='.$m));
+	header('Location: '.AT_TILE_IMPORT. '?cp='.urlencode(AT_BASE_HREF. 'tools/ims/ims_export.php?cid='.$cid.'&c='.$_SESSION['course_id'].'&m='.$m));
 	exit;
 } else if (isset($_GET['m'])) {
 	/* for TILE */
@@ -160,14 +156,16 @@ $parser->set_element_handler('openHandler','closeHandler');
 if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
 	$sql = "SELECT *, UNIX_TIMESTAMP(last_modified) AS u_ts FROM ".TABLE_PREFIX."content WHERE course_id=$course_id ORDER BY content_parent_id, ordering";
 } else {
-	$sql = "SELECT *, UNIX_TIMESTAMP(last_modified) AS u_ts FROM ".TABLE_PREFIX."content WHERE course_id=$course_id AND release_date<=NOW() ORDER BY content_parent_id, ordering";
+	$sql = "SELECT *, UNIX_TIMESTAMP(last_modified) AS u_ts FROM ".TABLE_PREFIX."content WHERE course_id=$course_id ORDER BY content_parent_id, ordering";
 }
 $result = mysql_query($sql, $db);
 while ($row = mysql_fetch_assoc($result)) {
-	$content[$row['content_parent_id']][] = $row;
-	if ($cid == $row['content_id']) {
-		$top_content = $row;
-		$top_content_parent_id = $row['content_parent_id'];
+	if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) || $contentManager->isReleased($row['content_id']) === TRUE) {
+		$content[$row['content_parent_id']][] = $row;
+		if ($cid == $row['content_id']) {
+			$top_content = $row;
+			$top_content_parent_id = $row['content_parent_id'];
+		}
 	}
 }
 
@@ -217,9 +215,11 @@ if (count($used_glossary_terms)) {
 	foreach ($used_glossary_terms as $term) {
 		$term_key = urlencode($term);
 		$glossary[$term_key] = str_replace('&', '&amp;', $glossary[$term_key]);
+		$escaped_term = str_replace('&', '&amp;', $term);
 		$terms_xml .= str_replace(	array('{TERM}', '{DEFINITION}'),
-									array($term, $glossary[$term_key]),
+									array($escaped_term, $glossary[$term_key]),
 									$glossary_term_xml);
+
 		$terms_html .= str_replace(	array('{ENCODED_TERM}', '{TERM}', '{DEFINITION}'),
 									array($term_key, $term, $glossary[$term_key]),
 									$glossary_term_html);
@@ -268,7 +268,7 @@ $vcard = new vCard();
 if ($row = mysql_fetch_assoc($result)) {
 	$vcard->setName($row['last_name'], $row['first_name'], $row['login']);
 	$vcard->setEmail($row['email']);
-	$vcard->setNote('Originated from an ATutor at '.$_base_href.'. See ATutor.ca for additional information.');
+	$vcard->setNote('Originated from an ATutor at '.AT_BASE_HREF.'. See ATutor.ca for additional information.');
 	$vcard->setURL($row['website']);
 
 	$imsmanifest_xml = str_replace('{VCARD}', $vcard->getVCard(), $imsmanifest_xml);

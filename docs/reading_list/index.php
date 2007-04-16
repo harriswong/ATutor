@@ -27,8 +27,8 @@ $result = mysql_query($sql, $db);
 	<th><?php echo _AT('rl_start');    ?></th>
 	<th><?php echo _AT('rl_end');      ?></th>
 	<th><?php echo _AT('title');       ?></th>
-	<th><?php echo _AT('rl_required'); ?></th>
-	<th><?php echo _AT('rl_comment');  ?></th>
+	<th><?php echo _AT('required'); ?></th>
+	<th><?php echo _AT('comment');  ?></th>
 </tr>
 </thead>
 <tbody>
@@ -41,7 +41,7 @@ $result = mysql_query($sql, $db);
 			$resource_result = mysql_query($sql, $db);
 			if ($resource_row = mysql_fetch_assoc($resource_result)){ 
 			?>
-				<tr>
+			<tr onclick="document.location='reading_list/display_resource.php?id=<?php echo $id ?>'">
 				<td>
 				<?php  if ($row['date_start'] == '0000-00-00'){
 					echo _AT ('none');

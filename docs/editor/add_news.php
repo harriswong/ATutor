@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -25,9 +25,27 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/news/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 	exit;
 } 
+
+if (!isset($_REQUEST['setvisual']) && !isset($_REQUEST['settext'])) {
+	if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 1) {
+		$_POST['formatting'] = 1;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
+
+	} else if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 2) {
+		$_POST['formatting'] = 1;
+		$_POST['settext'] = 0;
+		$_POST['setvisual'] = 1;
+
+	} else { // else if == 0
+		$_POST['formatting'] = 0;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
+	}
+}
 
 if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
 	$onload = 'document.form.title.focus();';
@@ -35,20 +53,30 @@ if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
 
 if (isset($_POST['add_news'])&& isset($_POST['submit'])) {
 	$_POST['formatting'] = intval($_POST['formatting']);
+	$_POST['title'] = trim($_POST['title']);
+	$_POST['body_text'] = trim($_POST['body_text']);
 	
-	if (($_POST['title'] == '') && ($_POST['body_text'] == '') && !isset($_POST['setvisual'])) {
-		$msg->addError('ANN_BOTH_EMPTY');
+	$missing_fields = array();
+
+	if (!$_POST['body_text']) {
+		$missing_fields[] = _AT('body');
 	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors() && (!isset($_POST['setvisual']) || isset($_POST['submit']))) {
 
 		$_POST['formatting']  = $addslashes($_POST['formatting']);
 		$_POST['title']  = $addslashes($_POST['title']);
 		$_POST['body_text']  = $addslashes($_POST['body_text']);
 
-		$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (0, $_SESSION[course_id], $_SESSION[member_id], NOW(), $_POST[formatting], '$_POST[title]', '$_POST[body_text]')";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (NULL, $_SESSION[course_id], $_SESSION[member_id], NOW(), $_POST[formatting], '$_POST[title]', '$_POST[body_text]')";
 		mysql_query($sql, $db);
 	
-		$msg->addFeedback('NEWS_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		/* update announcement RSS: */
 		if (file_exists(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS1.0.xml')) {
@@ -58,7 +86,7 @@ if (isset($_POST['add_news'])&& isset($_POST['submit'])) {
 			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
 		}
 
-		header('Location: '.$_base_href.'tools/news/index.php');
+		header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 		exit;
 	}
 }
@@ -76,7 +104,7 @@ $msg->printErrors();
 
 	<div class="input-form">
 		<div class="row">
-			<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="title"><?php echo _AT('title'); ?></label><br />
+			<label for="title"><?php echo _AT('title'); ?></label><br />
 			<input type="text" name="title" size="40" id="title" value="<?php echo $_POST['title']; ?>" />
 		</div>
 

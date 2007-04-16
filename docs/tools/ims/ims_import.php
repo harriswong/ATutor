@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -25,6 +25,7 @@ authenticate(AT_PRIV_CONTENT);
 $_SESSION['done'] = 1;
 
 $package_base_path = '';
+$xml_base_path = '';
 $element_path = array();
 $imported_glossary = array();
 
@@ -33,9 +34,12 @@ $imported_glossary = array();
 	function startElement($parser, $name, $attrs) {
 		global $items, $path, $package_base_path;
 		global $element_path;
-		static $current_identifier;		
+		global $xml_base_path;
+		static $current_identifier;
 
-		if ($name == 'file') {
+		if ($name == 'manifest' && isset($attrs['xml:base']) && $attrs['xml:base']) {
+			$xml_base_path = $attrs['xml:base'];
+		} else if ($name == 'file') {
 			// special case for webCT content packages that don't specify the `href` attribute 
 			// with the `<resource>` element.
 			// we take the `href` from the first `<file>` element.
@@ -395,16 +399,16 @@ if (file_exists($import_path . 'glossary.xml')){
 					xml_error_string(xml_get_error_code($xml_parser)),
 					xml_get_current_line_number($xml_parser)));
 	}
-
 	xml_parser_free($xml_parser);
 	$contains_glossary_terms = true;
 	foreach ($imported_glossary as $term => $defn) {
 		if (!$glossary[urlencode($term)]) {
-			$sql = "INSERT INTO ".TABLE_PREFIX."glossary VALUES (0, $_SESSION[course_id], '$term', '$defn', 0)";
+			$sql = "INSERT INTO ".TABLE_PREFIX."glossary VALUES (NULL, $_SESSION[course_id], '$term', '$defn', 0)";
 			mysql_query($sql, $db);	
 		}
 	}
 }
+
 
 /* generate a unique new package base path based on the package file name and date as needed. */
 /* the package name will be the dir where the content for this package will be put, as a result */
@@ -428,6 +432,12 @@ if (is_dir(AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$package_base_name)) {
 if ($package_base_path) {
 	$package_base_path = implode('/', $package_base_path);
 }
+if ($xml_base_path) {
+	$package_base_path = $xml_base_path . $package_base_path;
+
+	mkdir(AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$xml_base_path);
+	$package_base_name = $xml_base_path . $package_base_name;
+}
 reset($items);
 
 /* get the top level content ordering offset */
@@ -437,6 +447,9 @@ $row	= mysql_fetch_assoc($result);
 $order_offset = intval($row['ordering']); /* it's nice to have a real number to deal with */
 	
 	foreach ($items as $item_id => $content_info) {
+		if (isset($content_info['href'], $xml_base_path)) {
+			$content_info['href'] = $xml_base_path . $content_info['href'];
+		}
 		if (!isset($content_info['href'])) {
 			// this item doesn't have an identifierref. so create an empty page.
 			$content = '';
@@ -475,7 +488,6 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 		} else if (in_array($ext, array('txt', 'css', 'html', 'htm', 'csv', 'asc', 'tsv', 'xml', 'xsl'))) {
 			/* this is a plain text file */
 			$content = file_get_contents(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-
 			if ($content === false) {
 				/* if we can't stat() it then we're unlikely to be able to read it */
 				/* so we'll never get here. */
@@ -483,12 +495,13 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 			}
 
 			// get the contents of the 'head' element
-			$head = get_html_head ($content);
+			$head = get_html_head($content);
 			$content = get_html_body($content);
 			if ($contains_glossary_terms) {
 				// replace glossary content package links to real glossary mark-up using [?] [/?]
-				$content = preg_replace('/<a href="([.\w\d\s]+[^"]+)" target="body" class="at-term">([.\w\d\s"]+)<\/a>/i', '[?]\\2[/?]', $content);
+				$content = preg_replace('/<a href="([.\w\d\s]+[^"]+)" target="body" class="at-term">([.\w\d\s&;"]+)<\/a>/i', '[?]\\2[/?]', $content);
 			}
+
 			/* potential security risk? */
 			if ( strpos($content_info['href'], '..') === false) {
 				@unlink(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
@@ -526,28 +539,30 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 		}
 
 		$sql= 'INSERT INTO '.TABLE_PREFIX.'content VALUES 
-				(0,	'
+				(NULL,	'
 				.$_SESSION['course_id'].','															
 				.$content_parent_id.','		
 				.($content_info['ordering'] + $my_offset + 1).','
 				.'"'.$last_modified.'",													
 				0,1,NOW(),"","'.$content_info['new_path'].'",'
 				.'"'.$content_info['title'].'",'
-				.'"'.$content.'", 0)';
+				.'"'.$content.'")';
 
 		$result = mysql_query($sql, $db);
 
 		// store the contents of the 'head' section
+		/**
 		if ($result){
 			// get content ID
 			$id = mysql_insert_id($db);
 			$head = addslashes($head);
 
-			$sql = 'INSERT INTO '.TABLE_PREFIX.'head VALUES (0, '.$_SESSION['course_id'].','
+			$sql = 'INSERT INTO '.TABLE_PREFIX.'head VALUES (NULL, '.$_SESSION['course_id'].','
 				.$id.','
 				.'"'.$head.'")';
 			$resultHead = mysql_query($sql, $db);
 		}
+		**/
 
 		/* get the content id and update $items */
 		$items[$item_id]['real_content_id'] = mysql_insert_id($db);
@@ -556,11 +571,12 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 	if ($package_base_path == '.') {
 		$package_base_path = '';
 	}
-	if (is_dir(AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name)) {
 
+	if (@rename(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$package_base_path, AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name) === false) {
+		if (!$msg->containsErrors()) {
+			$msg->addError('IMPORT_FAILED');
+		}
 	}
-
-	rename(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$package_base_path, AT_CONTENT_DIR .$_SESSION['course_id'].'/'.$package_base_name);
 	clr_dir(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id']);
 
 	if (isset($_POST['url'])) {
@@ -569,13 +585,17 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 
 
 if ($_POST['s_cid']){
-	$msg->addFeedback('IMS_IMPORT_SUCCESS');
+	if (!$msg->containsErrors()) {
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	}
 	header('Location: ../../editor/edit_content.php?cid='.intval($_POST['cid']));
 	exit;
 } else {
-	$msg->addFeedback('IMS_IMPORT_SUCCESS');
+	if (!$msg->containsErrors()) {
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+	}
 	if ($_GET['tile']) {
-		header('Location: '.$_base_href.'tools/tile/index.php');
+		header('Location: '.AT_BASE_HREF.'tools/tile/index.php');
 	} else {
 		header('Location: ./index.php?cid='.intval($_POST['cid']));
 	}

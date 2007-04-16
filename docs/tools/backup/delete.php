@@ -29,7 +29,7 @@ if (isset($_POST['submit_yes'])) {
 
 	$Backup =& new Backup($db, $_SESSION['course_id']);
 	$Backup->delete($_POST['backup_id']);
-	$msg->addFeedback('BACKUP_DELETED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: index.php');
 	exit;
 }
@@ -44,7 +44,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	
 	$index['backup_id'] = $_GET['backup_id'];
-	$msg->addConfirm('DELETE_BACKUP', $index);
+	$msg->addConfirm('DELETE', $index);
 	$msg->printConfirm();
 
 require (AT_INCLUDE_PATH.'footer.inc.php');

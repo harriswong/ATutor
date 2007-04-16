@@ -82,10 +82,7 @@ div#toc{
 	border: 1px solid #999;
 	background-color: white;
 	padding: 2px;
-	padding-left: 10px;
-	padding-right: 10px;
-	min-width: 100px;
-	margin-left: 5px;
+
 }
 
 .button input:hover {
@@ -100,8 +97,6 @@ input.button {
 	padding: 2px;
 	padding-left: 10px;
 	padding-right: 10px;
-	min-width: 100px;
-	margin-left: 5px;
 }
 input.button:hover {
 	background-color: #f5f5ff;
@@ -409,18 +404,22 @@ div#breadcrumbs {
 	color: black;
 	border-bottom: dashed 1pt #A7D2F8;
 }
-div#breadcrumbs a {
+div#breadcrumbs a:link, div#breadcrumbs a:visited, div#member-links a:link, div#member-links a:visited {
 	color: black;
 	text-decoration:none;
-	border-bottom: 1px solid;
 }
-div#breadcrumbs a:hover {
-	text-decoration:none;
+div#breadcrumbs a:hover, div#member-links a:hover {
+	text-decoration:underline;
 }
 
-div#breadcrumbs a:focus {
+div#breadcrumbs a:focus, div#member-links a:focus {
 	text-decoration:none;
 	color: #AFAFAF;
+}
+
+div#member-links {
+	margin-top:3px;
+	padding-right:5px;
 }
 
 h2.page-title {
@@ -594,7 +593,6 @@ table.data tfoot tr:first-child td {
 	background-position: 4px 5px;
 	padding-left: 40px;
 }
-
 table.data.static tfoot td, table.data.static tfoot tr:first-child td {
 	padding: 5px;
 	background-image: none;
@@ -797,41 +795,28 @@ option#start-page {
 
 /* paging */
 div.paging {
-   width: 100%;
+   width: 98%;
    text-align: center;
-   margin: 0.5em auto;
+	padding: 5px;
+	margin: 10px;
 }
-div.paging ul {
-   list-style: none;
-   display: inline;
-   padding: 0px;
-   border: 1px solid #000;
+div.paging ul, div.paging ul li {
+	display: inline;
+	padding: 0px;
+	margin: 0px;
 }
-div.paging li { 
-	display: inline; 
-	padding-left: 2px; 
-	padding-right: 2px;
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-
-div.paging li a {
+div.paging ul li a {
+	padding: 7px;
+	background-color: #fafaff;
 	text-decoration: none;
-	padding-left: 4px;
-	padding-right: 4px;
-	border-left: 1px solid white;
-	border-right: 1px solid white;
 }
-
-div.paging li a:hover, div.paging li a.current {
-   background-color: #efefef;
-   border-left: 1px solid #000;
-   border-right: 1px solid #000;
+div.paging ul li a:hover, div.paging ul li a.current {
+	background-color: #aaf;
+	color: white;
+	font-weight: bold;
 }
-
 
 /* users/index.php */
-
 div.course {
 	position: relative;
 	width: 300px;
@@ -1206,8 +1191,15 @@ ul.rss_feed {
 }
 
 /* the tools page */
-ol#tools { width: 90%; }
-/* ol#tools>li */ li.top-tool { padding: 2px 2px 2px 15px; margin-bottom: 5px; line-height: 200%; background-color: #fdfdfd; border-bottom: 1px solid #efefef; -moz-border-radius: 4px; list-style-position: inside;  border: 1px solid #eeeeff;}
+/* ol#tools>li */ li.top-tool { 
+list-style: none;
+padding: 2px 2px 2px 15px;
+margin-bottom: 5px; 
+line-height: 200%; 
+background-color: #fdfdfd; 
+border-bottom: 1px solid #efefef; 
+-moz-border-radius: 4px; 
+border: 1px solid #eeeeff;}
 
 ol#tools>li:hover {
 	border: 1px solid #e0e0e0;
@@ -1251,3 +1243,42 @@ a.user.instructor {
 p.fm-desc {
 	font-size: small;
 }
+/* profile page */
+dl#public-profile {
+	width: 100%;
+}
+dl#public-profile dt {
+	float: left;
+	font-weight: bold;
+	width: 30%;
+	text-align: right;
+	clear: left;
+	border-right: 1px solid #f0f0f0;
+	padding: 5px 5px 5px 0px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+dl#public-profile dd {
+	margin-bottom: 5px;
+	clear: right;
+	padding: 5px 0px 5px 5px;
+}
+
+/** forum stuff **/
+#forum-thread li { clear:left; border:1px solid #eee; border-bottom: 1px solid #f0f0f0; float:left; width: 98%; list-style: none; }
+#forum-thread li.even { background: #fdfdfd; border-top: none; }
+#forum-thread li.odd { background: #fff; }
+div.forum-post-author { float:left; width:150px; padding:8px 10px; }
+div.forum-post-author a.title {	font-size: 1.1em; line-height: 1.2em; font-weight: bold; text-decoration:none; }	
+div.forum-post-author img.profile-picture { border: 2px solid #f0f0f0; }
+div.forum-post-content { margin-left: 150px; padding: 5px 0px 18px 18px; }
+div.forum-post-content h3 { font-weight: 500; }
+div.forum-post-ctrl { float: right; padding-right: 5px; color: #a1a1a1; }
+div.forum-post-ctrl a { text-decoration: none; }
+div.forum-post-ctrl span { color: black; background-color: #fefdc2; padding: 3px; }
+div.forum-post-content p.date { color: #a1a1a1; border-bottom: 1px solid #f0f0f0; }
+div.forum-post-content div.body p { margin-bottom:20px; }
+
+/** inbox stuff - reuses some of the forum layout **/
+#inbox-msg li { clear:left; border:1px solid #eee; border-bottom: 1px solid #f0f0f0; width: 98%; list-style: none; }
+

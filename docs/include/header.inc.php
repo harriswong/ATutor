@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -19,7 +19,7 @@ header('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
 global $myLang;
 global $savant;
 global $onload;
-global $_base_href, $content_base_href, $course_base_href;
+global $content_base_href, $course_base_href;
 global $_base_path;
 global $cid;
 global $contentManager;
@@ -40,7 +40,7 @@ $savant->assign('current_date', AT_date(_AT('announcement_date_format')));
 $theme_img  = $_base_path . 'themes/'. $_SESSION['prefs']['PREF_THEME'] . '/images/';
 $savant->assign('img', $theme_img);
 
-$_tmp_base_href = $_base_href;
+$_tmp_base_href = AT_BASE_HREF;
 if (isset($course_base_href) || isset($content_base_href)) {
 	$_tmp_base_href .= $course_base_href;
 	if ($content_base_href) {
@@ -49,7 +49,7 @@ if (isset($course_base_href) || isset($content_base_href)) {
 }
 
 $savant->assign('content_base_href', $_tmp_base_href);
-$savant->assign('base_href', $_base_href);
+$savant->assign('base_href', AT_BASE_HREF);
 
 if ($myLang->isRTL()) {
 	$savant->assign('rtl_css', '<link rel="stylesheet" href="'.$_base_path.'themes/'.$_SESSION['prefs']['PREF_THEME'].'/rtl.css" type="text/css" />');
@@ -68,7 +68,11 @@ if ($onload && ($_SESSION['prefs']['PREF_FORM_FOCUS'] || (substr($onload, -8) !=
 }
 
 if ($_SESSION['valid_user'] === true) {
-	$savant->assign('user_name', AT_print($_SESSION['login'], 'members.login'));
+	if ($_SESSION['member_id']) {
+		$savant->assign('user_name', get_display_name($_SESSION['member_id']));
+	} else {
+		$savant->assign('user_name', $_SESSION['login']);
+	}
 } else {
 	$savant->assign('user_name', _AT('guest'));
 }
@@ -78,7 +82,7 @@ $current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
 if (!isset($_pages[$current_page])) {
 	global $msg;
 	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
-	header('location: '.$_base_href.'index.php');
+	header('location: '.AT_BASE_HREF.'index.php');
 	exit;
 }
 
@@ -97,8 +101,8 @@ if (empty($_top_level_pages)) {
 		$_top_level_pages = get_main_navigation($_pages[AT_NAV_COURSE][0]);
 	}
 }
-
 $_sub_level_pages        = get_sub_navigation($current_page);
+
 $_current_sub_level_page = get_current_sub_navigation_page($current_page);
 
 $_path = get_path($current_page);
@@ -175,12 +179,7 @@ if ($_SESSION['course_id'] > -1) {
 
 		$nav_courses = array(); /* the list of courses we're enrolled in or own */
 		while ($row = @mysql_fetch_assoc($result)) {
-			if (strlen($system_courses[$row['course_id']]['title']) > 33) {
-				$tmp_title = substr($system_courses[$row['course_id']]['title'], 0, 30). '...';
-			} else {
-				$tmp_title = $system_courses[$row['course_id']]['title'];
-			}
-			$nav_courses[$row['course_id']] = $tmp_title;
+			$nav_courses[$row['course_id']] = $system_courses[$row['course_id']]['title'];
 		}
 
 		natcasesort($nav_courses);
@@ -214,7 +213,6 @@ if ($_SESSION['course_id'] > -1) {
 //require_once(AT_INCLUDE_PATH . 'classes/ErrorHandler/ErrorHandler.class.php');
 //$err =& new ErrorHandler();
 
-
 // if filemanager is a inside a popup or a frame
 // i don't like this code. i don't know were these two variables are coming from
 // anyone can add ?framed=1 to a URL to alter the behaviour.
@@ -225,6 +223,5 @@ if ($_REQUEST['framed'] || $_REQUEST['popup']) {
 } else {
 	$savant->display('include/header.tmpl.php');
 }
-
 
 ?>

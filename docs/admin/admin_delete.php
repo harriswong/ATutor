@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -14,15 +14,22 @@
 /* deletes a user from the system.                              */
 /****************************************************************/
 // $Id$
-
 define('AT_INCLUDE_PATH', '../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_USERS);
 
-$id = intval($_GET['id']);
+function delete_user($id) {
+	global $db, $msg;
 
-if (isset($_POST['submit_yes'])) {
-	$id = intval($_POST['id']);
+	//make sure not instructor of a course
+	$sql	= "SELECT course_id FROM ".TABLE_PREFIX."courses WHERE member_id=$id";
+	$result = mysql_query($sql, $db);
+	if (($row = mysql_fetch_assoc($result))) {
+		/*$msg->addError('NODELETE_USER');
+		header('Location: '.AT_BASE_HREF.'users.php');
+		exit;*/
+		return;
+	}
 
 	$sql	= "DELETE FROM ".TABLE_PREFIX."course_enrollment WHERE member_id=$id";
 	mysql_query($sql, $db);
@@ -48,12 +55,12 @@ if (isset($_POST['submit_yes'])) {
 		$result = mysql_query($sql, $db);
 		while ($row = mysql_fetch_assoc($result)) {
 			/* update the forum posts counter */
-			$sql = "UPDATE ".TABLE_PREFIX."forums SET num_posts=num_posts - $row[cnt] WHERE forum_id=$row[forum_id]";
+			$sql = "UPDATE ".TABLE_PREFIX."forums SET num_posts=num_posts - $row[cnt], last_post=last_post WHERE forum_id=$row[forum_id]";
 			mysql_query($sql, $db);
 			write_to_log(AT_ADMIN_LOG_UPDATE, 'forums', mysql_affected_rows($db), $sql);
 			
 			/* update the topics reply counter */
-			$sql = "UPDATE ".TABLE_PREFIX."forums_threads SET num_comments=num_comments-$row[cnt] WHERE post_id=$row[parent_id]";
+			$sql = "UPDATE ".TABLE_PREFIX."forums_threads SET num_comments=num_comments-$row[cnt], last_comment=last_comment, date=date WHERE post_id=$row[parent_id]";
 			mysql_query($sql, $db);
 			write_to_log(AT_ADMIN_LOG_UPDATE, 'forums_threads', mysql_affected_rows($db), $sql);
 		}
@@ -64,7 +71,7 @@ if (isset($_POST['submit_yes'])) {
 		while ($row = mysql_fetch_assoc($result)) {
 			/* update the forum posts and topics counters */
 			$num_posts = $row['num_comments'] + 1;
-			$sql = "UPDATE ".TABLE_PREFIX."forums SET num_topics=num_topics-1, num_posts=num_posts - $num_posts WHERE forum_id=$row[forum_id]";
+			$sql = "UPDATE ".TABLE_PREFIX."forums SET num_topics=num_topics-1, num_posts=num_posts - $num_posts, last_post=last_post WHERE forum_id=$row[forum_id]";
 			mysql_query($sql, $db);
 			write_to_log(AT_ADMIN_LOG_UPDATE, 'forums', mysql_affected_rows($db), $sql);
 
@@ -113,47 +120,44 @@ if (isset($_POST['submit_yes'])) {
 	mysql_query($sql, $db);
 	write_to_log(AT_ADMIN_LOG_DELETE, 'member_track', mysql_affected_rows($db), $sql);
 
-	$msg->addFeedback('USER_DELETED');
+	return;
+}
+
+$ids = explode(',', $_REQUEST['id']);
+
+if (isset($_POST['submit_yes'])) {
+	
+	foreach($ids as $id) {
+		delete_user(intval($id));
+	}
+
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	if (isset($_POST['ml']) && $_REQUEST['ml']) {
-		header('Location: '.$_base_href.'admin/master_list.php');
+		header('Location: '.AT_BASE_HREF.'admin/master_list.php');
 	} else {
-		header('Location: '.$_base_href.'admin/users.php');
+		header('Location: '.AT_BASE_HREF.'admin/users.php');
 	}
 	exit;
 } else if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
 	if (isset($_POST['ml']) && $_REQUEST['ml']) {
-		header('Location: '.$_base_href.'admin/master_list.php');
+		header('Location: '.AT_BASE_HREF.'admin/master_list.php');
 	} else {
-		header('Location: '.$_base_href.'admin/users.php');
+		header('Location: '.AT_BASE_HREF.'admin/users.php');
 	}
 	exit;
 }
 
+require(AT_INCLUDE_PATH.'header.inc.php'); 
+$names = get_login($ids);
+$names_html = '<ul>'.html_get_list($names).'</ul>';
+$hidden_vars['id'] =  implode(',', array_keys($names));
+$hidden_vars['ml'] = intval($_REQUEST['ml']);
 
-$sql	= "SELECT member_id, login FROM ".TABLE_PREFIX."members WHERE member_id=$id";
-$result = mysql_query($sql, $db);
-if (!($row_log = mysql_fetch_assoc($result))) {
-	require(AT_INCLUDE_PATH.'header.inc.php'); 
-	echo _AT('no_user_found');
-} else {
-	$sql	= "SELECT course_id FROM ".TABLE_PREFIX."courses WHERE member_id=$id";
-	$result = mysql_query($sql, $db);
-	if (($row2 = mysql_fetch_assoc($result))) {
-		$msg->addError('NODELETE_USER');
+$confirm = array('DELETE_USER', $names_html);
+$msg->addConfirm($confirm, $hidden_vars);
+$msg->printConfirm();
 
-		header('Location: '.$_base_href.'admin/users.php');
-		exit;
+require(AT_INCLUDE_PATH.'footer.inc.php');
 
-	} else {
-		require(AT_INCLUDE_PATH.'header.inc.php'); 
-		$hidden_vars['id'] = $id;
-		$hidden_vars['ml'] = intval($_REQUEST['ml']);
-		$confirm = array('DELETE_USER', AT_print($row_log['login'], 'members.login'));
-		$msg->addConfirm($confirm, $hidden_vars);
-		$msg->printConfirm();
-	}
-}
-
-require(AT_INCLUDE_PATH.'footer.inc.php'); 
 ?>

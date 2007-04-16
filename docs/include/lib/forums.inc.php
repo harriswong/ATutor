@@ -28,9 +28,9 @@ function get_forums($course) {
 	global $db;
 
 	if ($course) {
-		$sql	= "SELECT F.* FROM ".TABLE_PREFIX."forums_courses FC INNER JOIN ".TABLE_PREFIX."forums F USING (forum_id) WHERE FC.course_id=$course GROUP BY FC.forum_id ORDER BY F.title";
+		$sql	= "SELECT F.*, DATE_FORMAT(F.last_post, '%Y-%m-%d %H-%i:%s') AS last_post FROM ".TABLE_PREFIX."forums_courses FC INNER JOIN ".TABLE_PREFIX."forums F USING (forum_id) WHERE FC.course_id=$course GROUP BY FC.forum_id ORDER BY F.title";
 	} else {
-		$sql	= "SELECT F.*, FC.course_id FROM ".TABLE_PREFIX."forums_courses FC INNER JOIN ".TABLE_PREFIX."forums F USING (forum_id) GROUP BY FC.forum_id ORDER BY F.title";
+		$sql	= "SELECT F.*, FC.course_id, DATE_FORMAT(F.last_post, '%Y-%m-%d %H-%i:%s') AS last_post FROM ".TABLE_PREFIX."forums_courses FC INNER JOIN ".TABLE_PREFIX."forums F USING (forum_id) GROUP BY FC.forum_id ORDER BY F.title";
 	}
 
 	// 'nonshared' forums are always listed first:
@@ -111,6 +111,7 @@ function get_forum($forum_id, $course = '') {
 		$result = mysql_query($sql, $db);
 		$forum = mysql_fetch_assoc($result);
 	} else {
+
 		return;
 	}
 
@@ -161,8 +162,9 @@ function add_forum($_POST) {
 
 	$_POST['title'] = $addslashes($_POST['title']);
 	$_POST['body']  = $addslashes($_POST['body']);
+	$_POST['edit']  = intval($_POST['edit']);
 
-	$sql	= "INSERT INTO ".TABLE_PREFIX."forums VALUES (0,'$_POST[title]', '$_POST[body]', 0, 0, NOW())";
+	$sql	= "INSERT INTO ".TABLE_PREFIX."forums VALUES (NULL,'$_POST[title]', '$_POST[body]', 0, 0, NOW(), $_POST[edit])";
 	$result = mysql_query($sql,$db);
 
 	$sql	= "INSERT INTO ".TABLE_PREFIX."forums_courses VALUES (LAST_INSERT_ID(),  $_SESSION[course_id])";
@@ -187,8 +189,9 @@ function edit_forum($_POST) {
 	$_POST['body']   = $addslashes($_POST['body']);
 
 	$_POST['fid']    = intval($_POST['fid']);
+	$_POST['edit']    = intval($_POST['edit']);
 
-	$sql	= "UPDATE ".TABLE_PREFIX."forums SET title='$_POST[title]', description='$_POST[body]' WHERE forum_id=$_POST[fid]";
+	$sql	= "UPDATE ".TABLE_PREFIX."forums SET title='$_POST[title]', description='$_POST[body]', last_post=last_post, mins_to_edit=$_POST[edit] WHERE forum_id=$_POST[fid]";
 	$result = mysql_query($sql,$db);
 
 	return;
@@ -231,4 +234,49 @@ function delete_forum($forum_id) {
 
 }
 
+function print_entry($row) {
+	global $page,$system_courses, $forum_info;
+	static $counter;
+	$counter++;
+
+	$reply_link = '<a href="forum/view.php?fid='.$row['forum_id'].SEP.'pid=';
+	if ($row['parent_id'] == 0) {
+		$reply_link .= $row['post_id'];
+	} else {
+		$reply_link .= $row['parent_id'];
+	}
+	$reply_link .= SEP.'reply='.$row['post_id'].SEP.'page='.$page.'#post" >'._AT('reply').'</a>';
+
+?>
+
+	<li class="<?php if ($counter %2) { echo 'odd'; } else { echo 'even'; } ?>">
+		<a name="<?php echo $row['post_id']; ?>"></a>
+		<div class="forum-post-author">
+			<a href="profile.php?id=<?php echo $row['member_id']; ?>" class="title"><?php echo AT_print($row['login'], 'members.login'); ?></a><br />
+			<?php print_profile_img($row['member_id']); ?>
+		</div>
+
+		<div class="forum-post-content">
+			<h3><?php echo AT_Print($row['subject'], 'forums_threads.subject'); ?></h3>
+			<div>
+				<div class="forum-post-ctrl">
+					<?php if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN)): ?>
+						<?php echo $reply_link; ?> | <a href="editor/edit_post.php?fid=<?php echo $row['forum_id'].SEP.'pid='.$row['post_id']; ?>"><?php echo _AT('edit'); ?></a> | <a href="forum/delete_thread.php?fid=<?php echo $row['forum_id'].SEP.'pid='.$row['post_id'].SEP.'ppid='.$row['parent_id'].SEP; ?>nest=1"><?php echo _AT('delete'); ?></a>
+					<?php elseif (($row['member_id'] == $_SESSION['member_id']) && (($row['udate'] + $forum_info['mins_to_edit'] * 60) > time())): ?>
+						<?php echo $reply_link; ?> | <a href="editor/edit_post.php?fid=<?php echo $row['forum_id'].SEP.'pid='.$row['post_id']; ?>"><?php echo _AT('edit'); ?></a> <span>(<?php echo _AT('edit_for_minutes', round((($row['udate'] + $forum_info['mins_to_edit'] * 60) - time())/60)); ?>)</span>
+					<?php elseif ($_SESSION['valid_user']): ?>
+						<?php echo $reply_link; ?>
+					<?php endif; ?>
+				</div>
+				<p class="date"><?php echo AT_date(_AT('forum_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></p>
+
+			</div>
+
+			<div class="body">
+				<p><?php echo AT_print($row['body'], 'forums_threads.body'); ?></p>
+			</div>
+		</div>
+	</li>
+<?php
+}
 ?>

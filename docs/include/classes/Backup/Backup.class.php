@@ -13,7 +13,6 @@
 // $Id$
 
 require_once(AT_INCLUDE_PATH.'classes/zipfile.class.php');
-require_once(AT_INCLUDE_PATH.'lib/backup_table_defns.inc.php');
 
 define('NUMBER',	1);
 define('TEXT',		2);
@@ -187,7 +186,7 @@ class Backup {
 	// private
 	// adds a backup to the database
 	function add($row) {
-		$sql = "INSERT INTO ".TABLE_PREFIX."backups VALUES (0, $this->course_id, NOW(), '$row[description]', '$row[file_size]', '$row[system_file_name]', '$row[file_name]', '$row[contents]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."backups VALUES (NULL, $this->course_id, NOW(), '$row[description]', '$row[file_size]', '$row[system_file_name]', '$row[file_name]', '$row[contents]')";
 		mysql_query($sql, $this->db);
 	}
 
@@ -244,6 +243,12 @@ class Backup {
 		header('Pragma: public');
 		header('Content-Length: '.$my_backup['file_size']);
 
+		// see the note in get.php about the use of x-Sendfile
+		ob_end_clean();
+		header("Content-Encoding: none");
+		header('x-Sendfile: ' . AT_BACKUP_DIR . $this->course_id . DIRECTORY_SEPARATOR . $my_backup['system_file_name']. '.zip');
+		header('x-Sendfile: ', TRUE); // if we get here then it didn't work
+
 		readfile(AT_BACKUP_DIR . $this->course_id . DIRECTORY_SEPARATOR . $my_backup['system_file_name']. '.zip');
 		exit;
 	}
@@ -269,7 +274,7 @@ class Backup {
 	// public
 	function edit($backup_id, $description) {
 		// update description in the table:
-		$sql	= "UPDATE ".TABLE_PREFIX."backups SET description='$description' WHERE backup_id=$backup_id AND course_id=$this->course_id";
+		$sql	= "UPDATE ".TABLE_PREFIX."backups SET description='$description', date=date WHERE backup_id=$backup_id AND course_id=$this->course_id";
 		$result = mysql_query($sql, $this->db);
 
 	}

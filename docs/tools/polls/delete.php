@@ -30,7 +30,7 @@ if (isset($_POST['submit_no'])) {
 	$sql = "DELETE FROM ".TABLE_PREFIX."polls_members WHERE poll_id=$_POST[pid] AND course_id=$_SESSION[course_id]";
 	$result = mysql_query($sql, $db);
 
-	$msg->addFeedback('POLL_DELETED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: index.php');
 	exit;
 }
@@ -45,7 +45,7 @@ $sql = "SELECT * FROM ".TABLE_PREFIX."polls WHERE poll_id=$_GET[pid] AND course_
 
 $result = mysql_query($sql,$db);
 if (mysql_num_rows($result) == 0) {
-	$msg->addError('POLL_NOT_FOUND');
+	$msg->addError('ITEM_NOT_FOUND');
 } else {
 	$row = mysql_fetch_assoc($result);
 

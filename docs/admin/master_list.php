@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -86,7 +86,7 @@ if (isset($_POST['submit'])) {
 			// disable missing accounts
 			$existing_accounts = implode(',', $existing_accounts);
 
-			$sql    = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_DISABLED." WHERE member_id IN ($existing_accounts)";
+			$sql    = "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_DISABLED.", creation_date=creation_date, last_login=last_login WHERE member_id IN ($existing_accounts)";
 			$result = mysql_query($sql, $db);
 			
 			write_to_log(AT_ADMIN_LOG_UPDATE, 'members', mysql_affected_rows($db), $sql);
@@ -116,16 +116,16 @@ if (isset($_POST['submit'])) {
 	exit;
 } else if (isset($_GET['edit'], $_GET['id'])) {
 	if (substr($_GET['id'], 0, 1) != '-') {
-		header('Location: '.$_base_href.'admin/edit_user.php?id='.$_GET['id'] . SEP . 'ml=1');
+		header('Location: '.AT_BASE_HREF.'admin/edit_user.php?id='.$_GET['id'] . SEP . 'ml=1');
 	} else {
-		header('Location: '.$_base_href.'admin/master_list_edit.php?id='.substr($_GET['id'], 1) . SEP . 'ml=1');
+		header('Location: '.AT_BASE_HREF.'admin/master_list_edit.php?id='.substr($_GET['id'], 1) . SEP . 'ml=1');
 	}
 	exit;
 } else if (isset($_GET['delete'], $_GET['id'])) {
 	if (substr($_GET['id'], 0, 1) != '-') {
-		header('Location: '.$_base_href.'admin/admin_delete.php?id='.$_GET['id'] . SEP . 'ml=1');
+		header('Location: '.AT_BASE_HREF.'admin/admin_delete.php?id='.$_GET['id'] . SEP . 'ml=1');
 	} else {
-		header('Location: '.$_base_href.'admin/master_list_delete.php?id='.substr($_GET['id'], 1) . SEP . 'ml=1');
+		header('Location: '.AT_BASE_HREF.'admin/master_list_delete.php?id='.substr($_GET['id'], 1) . SEP . 'ml=1');
 	}
 	exit;
 } else if (isset($_GET['delete']) || isset($_GET['edit'])) {
@@ -221,8 +221,9 @@ $page = intval($_GET['p']);
 if (!$page) {
 	$page = 1;
 }
+$offset = ($page-1)*$results_per_page;
 
-$sql	= "SELECT M.*, B.login, B.first_name, B.second_name, B.last_name FROM ".TABLE_PREFIX."master_list M LEFT JOIN ".TABLE_PREFIX."members B USING (member_id) WHERE $status AND $search ORDER BY M.public_field";
+$sql	= "SELECT M.*, B.login, B.first_name, B.second_name, B.last_name FROM ".TABLE_PREFIX."master_list M LEFT JOIN ".TABLE_PREFIX."members B USING (member_id) WHERE $status AND $search ORDER BY M.public_field LIMIT $offset, $results_per_page";
 $result = mysql_query($sql, $db);
 ?>
 

@@ -35,12 +35,16 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['submit'])) {
 	/*if (!$_POST['first_name']) { 
-		$msg->addError('FIRST_NAME_MISSING');
+		$missing_fields[] = _AT('first_name');
 	}
 
 	if (!$_POST['last_name']) { 
-		$msg->addError('LAST_NAME_MISSING');
+		$missing_fields[] = _AT('last_name');
 	}
+
+	$_POST['first_name'] = str_replace('<', '', $_POST['first_name']);
+	$_POST['second_name'] = str_replace('<', '', $_POST['second_name']);
+	$_POST['last_name'] = str_replace('<', '', $_POST['last_name']);
 
 	// check if first+last is unique
 	if ($_POST['first_name'] && $_POST['last_name']) {
@@ -75,7 +79,16 @@ if (isset($_POST['submit'])) {
 		$dob = '0000-00-00';
 		$yr = $mo = $day = 0;
 	}
-		
+
+	if (($_POST['gender'] != 'm') && ($_POST['gender'] != 'f')) {
+		$_POST['gender'] = 'n'; // not specified
+	}
+	
+	
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
 	$login = strtolower($_POST['login']);
 	if (!$msg->containsErrors()) {			
 		if (($_POST['website']) && (!ereg('://',$_POST['website']))) { $_POST['website'] = 'http://'.$_POST['website']; }
@@ -90,6 +103,7 @@ if (isset($_POST['submit'])) {
 		// insert into the db.
 		$_POST['website']    = $addslashes($_POST['website']);
 		$_POST['first_name'] = $addslashes($_POST['first_name']);
+		$_POST['second_name']= $addslashes($_POST['second_name']);
 		$_POST['last_name']  = $addslashes($_POST['last_name']);
 		$_POST['address']    = ''; //$addslashes($_POST['address']);
 		$_POST['postal']     = ''; //$addslashes($_POST['postal']);
@@ -109,9 +123,7 @@ if (isset($_POST['submit'])) {
 		$_POST['phone']      = $addslashes($_POST['phone']);
 		$_POST['gender']     = $addslashes($_POST['gender']);*/
 
-		$sql = "UPDATE ".TABLE_PREFIX."members SET website='$_POST[website]', first_name='$_POST[first_name]', second_name='$_POST[second_name]', last_name='$_POST[last_name]', dob='$dob', gender='$_POST[gender]', address='$_POST[address]', postal='$_POST[postal]', city='$_POST[city]', province='$_POST[province]', country='$_POST[country]', phone='$_POST[phone]', language='$_SESSION[lang]', alternate_email='$_POST[email3]', private_email=$_POST[private_email] WHERE member_id=$_SESSION[member_id]";
-
-		//$sql = "UPDATE ".TABLE_PREFIX."members SET website='$_POST[website]', first_name='$_POST[first_name]', second_name='$_POST[second_name]', last_name='$_POST[last_name]', dob='$dob', gender='$_POST[gender]', address='$_POST[address]', postal='$_POST[postal]', city='$_POST[city]', province='$_POST[province]', country='$_POST[country]', phone='$_POST[phone]', language='$_SESSION[lang]', private_email=$_POST[private_email] WHERE member_id=$_SESSION[member_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."members SET website='$_POST[website]', first_name='$_POST[first_name]', second_name='$_POST[second_name]', last_name='$_POST[last_name]', dob='$dob', gender='$_POST[gender]', address='$_POST[address]', postal='$_POST[postal]', city='$_POST[city]', province='$_POST[province]', country='$_POST[country]', phone='$_POST[phone]', language='$_SESSION[lang]', alternate_email='$_POST[email3]', private_email=$_POST[private_email], creation_date=creation_date, last_login=last_login WHERE member_id=$_SESSION[member_id]";
 
 		$result = mysql_query($sql,$db);
 		if (!$result) {

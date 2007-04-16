@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -21,7 +21,7 @@ require (AT_INCLUDE_PATH.'lib/forums.inc.php');
 
 if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/forums/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 	exit;
 } else if (isset($_POST['submit_yes'])) {
 	$_POST['fid'] = intval($_POST['fid']);
@@ -30,12 +30,12 @@ if (isset($_POST['submit_no'])) {
 	// (if this forum is shared, then we do not want to delete it.)
 	if (!is_shared_forum($_POST['fid']) && valid_forum_user($_POST['fid'])) {
 		delete_forum($_POST['fid']);
-		$msg->addFeedback('FORUM_DELETED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	} else {
 		$msg->addError('FORUM_NO_DEL_SHARE');
 	}
 	
-	header('Location: '.$_base_href.'tools/forums/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 	exit;
 }
 

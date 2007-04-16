@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
 	$cat_theme = $addslashes($_POST['cat_theme']);
 
 	if ($cat_name == '') {
-		$msg->addError('TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	if ($_POST['theme_parent']) {
@@ -42,10 +42,10 @@ if (isset($_POST['submit'])) {
 
 	if (!$msg->containsErrors()) {
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."course_cats VALUES (0, '$cat_name', $cat_parent_id, '$cat_theme')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."course_cats VALUES (NULL, '$cat_name', $cat_parent_id, '$cat_theme')";
 		$result = mysql_query($sql, $db);
 		$cat_id = mysql_insert_id($db);
-		$msg->addFeedback('CAT_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		
 		write_to_log(AT_ADMIN_LOG_INSERT, 'course_cats', mysql_affected_rows($db), $sql);
 

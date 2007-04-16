@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -25,11 +25,11 @@ if (isset($_POST['submit_yes'])) {
 	unset($_SESSION['from_cid']);
 		
 	$msg->addFeedback('CONTENT_DELETED');
-	header('Location: '.$_base_href.'tools/content/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/content/index.php');
 	exit;
 } else if (isset($_POST['submit_no'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/content/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/content/index.php');
 	exit;
 }
 
@@ -55,7 +55,7 @@ if (is_array($children) && (count($children)>0) ) {
 	$msg->addConfirm('GLOSSARY_REMAINS', $hidden_vars);
 }
 	
-$msg->addConfirm('DELETE_CONTENT', $hidden_vars);
+$msg->addConfirm('DELETE', $hidden_vars);
 $msg->printConfirm();
 	
 require(AT_INCLUDE_PATH.'footer.inc.php');

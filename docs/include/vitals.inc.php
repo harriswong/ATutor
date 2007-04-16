@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -13,8 +13,8 @@
 // $Id$
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-define('AT_DEVEL', 1);
-define('AT_DEVEL_TRANSLATE', 0);
+define('AT_DEVEL', 0);
+define('AT_DEVEL_TRANSLATE', 1);
 define('FHA_ATTEMPTS', 4);
 define('AT_USE_GUIDE', 1);
 
@@ -33,8 +33,6 @@ function unregister_GLOBALS() {
        if (!in_array($k, $noUnset) && isset($GLOBALS[$k])) { unset($GLOBALS[$k]); }
    }
 }
-
-unregister_GLOBALS();
 
 /*
  * structure of this document (in order):
@@ -91,10 +89,12 @@ unregister_GLOBALS();
 	}
 
 	ob_start();
-		//session_set_cookie_params(0, $_base_path);
-		session_start();
-		$str = ob_get_contents();
+	//session_set_cookie_params(0, $_base_path);
+	session_start();
+	$str = ob_get_contents();
 	ob_end_clean();
+
+	unregister_GLOBALS();
 
 	if ($str) {
 		require_once(AT_INCLUDE_PATH . 'classes/ErrorHandler/ErrorHandler.class.php');
@@ -106,7 +106,13 @@ unregister_GLOBALS();
 	}
 
 	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && ($_user_location != 'public')) {
-		header('Location: '.$_base_href.'login.php');
+		if (isset($in_get) && $in_get && (($pos = strpos($_SERVER['PHP_SELF'], 'get.php/')) !== FALSE)) {
+			$redirect = substr($_SERVER['PHP_SELF'], 0, $pos) . 'login.php';
+			header('Location: '.$redirect);
+			exit;
+		}
+
+		header('Location: '.AT_BASE_HREF.'login.php');
 		exit;
 	}
 
@@ -135,33 +141,48 @@ if (AT_INCLUDE_PATH !== 'NULL') {
 						E_USER_ERROR);
 		exit;
 	}
-
-	/* development uses a common language db */
-	if (file_exists(AT_INCLUDE_PATH.'cvs_development.inc.php')) {
-		require(AT_INCLUDE_PATH.'cvs_development.inc.php');
-	} else {
-		define('TABLE_PREFIX_LANG', TABLE_PREFIX);
-		define('AT_CVS_DEVELOPMENT', '');
-		define('TABLE_SUFFIX_LANG', '');
-
-		$lang_db =& $db;
-	}
 }
 
-/* defaults: */
-/*if (empty($_SESSION['prefs']) || (count($_SESSION['prefs']) < 2)){
-	$temp_prefs = unserialize(AT_DEFAULT_PREFS);
-	$tmp_theme  = get_default_theme();
-	$temp_prefs['PREF_THEME'] = $tmp_theme['dir_name'];
-
-	assign_session_prefs($temp_prefs);
-	
-	if ($_SESSION['valid_user'] && $_SESSION['member_id']) {
-		save_prefs();
-	}
-} */
-
 require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
+
+/* get config variables. if they're not in the db then it uses the installation default value in constants.inc.php */
+$sql    = "SELECT * FROM ".TABLE_PREFIX."config";
+$result = mysql_query($sql, $db);
+while ($row = mysql_fetch_assoc($result)) { 
+	$_config[$row['name']] = $row['value'];
+}
+
+/* following is added as a transition period and backwards compatability: */
+define('EMAIL',                     $_config['contact_email']);
+define('EMAIL_NOTIFY',              $_config['email_notification']);
+define('ALLOW_INSTRUCTOR_REQUESTS', $_config['allow_instructor_requests']);
+define('AUTO_APPROVE_INSTRUCTORS',  $_config['auto_approve_instructors']);
+define('SITE_NAME',                 $_config['site_name']);
+define('HOME_URL',                  $_config['home_url']);
+define('DEFAULT_LANGUAGE',          $_config['default_language']);
+define('CACHE_DIR',                 $_config['cache_dir']);
+define('AT_ENABLE_CATEGORY_THEMES', $_config['theme_categories']);
+define('AT_COURSE_BACKUPS',         $_config['course_backups']);
+define('AT_EMAIL_CONFIRMATION',     $_config['email_confirmation']);
+define('AT_MASTER_LIST',            $_config['master_list']);
+$MaxFileSize       = $_config['max_file_size']; 
+$MaxCourseSize     = $_config['max_course_size'];
+$MaxCourseFloat    = $_config['max_course_float'];
+$IllegalExtentions = explode('|',$_config['illegal_extentions']);
+define('AT_DEFAULT_PREFS',  $_config['prefs_default']);
+$_config['home_defaults'] .= (isset($_config['home_defaults_2']) ? $_config['home_defaults_2'] : '');
+$_config['main_defaults'] .= (isset($_config['main_defaults_2']) ? $_config['main_defaults_2'] : '');
+
+if ($_config['time_zone']) {
+	$sql = "SET time_zone='{$_config['time_zone']}'";
+	mysql_query($sql, $db);
+
+	if (function_exists('date_default_timezone_set')) {
+		date_default_timezone_set($_config['time_zone']);
+	} else {
+		@putenv("TZ={$_config['time_zone']}");
+	}
+}
 
 /***** 7. start language block *****/
 	// set current language
@@ -184,11 +205,6 @@ require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // 6. cache library
 	$rtl = '';
 	if ($myLang->isRTL()) {
 		$rtl = 'rtl_'; /* basically the prefix to a rtl variant directory/filename. eg. rtl_tree */
-	}
-
-	if (defined('AT_DEVEL_TRANSLATE') && AT_DEVEL_TRANSLATE) {
-		require_once(AT_INCLUDE_PATH . 'classes/Language/LanguageEditor.class.php');
-		$langEditor =& new LanguageEditor($myLang);
 	}
 /***** end language block ****/
 
@@ -250,7 +266,7 @@ if (($_user_location == 'users') && $_SESSION['valid_user'] && ($_SESSION['cours
 }
 
 if (($_SESSION['course_id'] == 0) && ($_user_location != 'users') && ($_user_location != 'prog') && !$_GET['h'] && ($_user_location != 'public')) {
-	header('Location:'.$_base_href.'users/index.php');
+	header('Location:'.AT_BASE_HREF.'users/index.php');
 	exit;
 }
 
@@ -392,7 +408,7 @@ function add_user_online() {
 	global $db;
 
     $expiry = time() + 900; // 15min
-    $sql    = 'REPLACE INTO '.TABLE_PREFIX.'users_online VALUES ('.$_SESSION['member_id'].', '.$_SESSION['course_id'].', "'.get_login($_SESSION['member_id']).'", '.$expiry.')';
+    $sql    = 'REPLACE INTO '.TABLE_PREFIX.'users_online VALUES ('.$_SESSION['member_id'].', '.$_SESSION['course_id'].', "'.addslashes(get_display_name($_SESSION['member_id'])).'", '.$expiry.')';
     $result = mysql_query($sql, $db);
 
 	/* garbage collect and optimize the table every so often */
@@ -414,17 +430,44 @@ function add_user_online() {
 function get_login($id){
 	global $db, $_config_defaults;
 
-	$id		= intval($id);
+	if (is_array($id)) {
+		$id		= implode(',',$id);
+		$sql	= 'SELECT login, member_id FROM '.TABLE_PREFIX.'members WHERE member_id IN ('.$id.') ORDER BY login';
+
+		$rows = array();
+		$result	= mysql_query($sql, $db);
+		while( $row	= mysql_fetch_assoc($result)) {
+			$rows[$row['member_id']] = $row['login'];
+		}
+		return $rows;
+	} else {
+		$id		= intval($id);
+		$sql	= 'SELECT login FROM '.TABLE_PREFIX.'members WHERE member_id='.$id;
+
+		$result	= mysql_query($sql, $db);
+		$row	= mysql_fetch_assoc($result);
+
+		return $row['login'];
+	}
+
+}
+
+function get_display_name($id) {
+	static $db, $_config, $display_name_formats;
+
+	if (!$id) {
+		return $_SESSION['login'];
+	}
+
+	if (!isset($db, $_config)) {
+		global $db, $_config, $display_name_formats;
+	}
 
 	$sql	= 'SELECT login, first_name, second_name, last_name FROM '.TABLE_PREFIX.'members WHERE member_id='.$id;
 	$result	= mysql_query($sql, $db);
 	$row	= mysql_fetch_assoc($result);
 
-	if ($_config_defaults['display_full_name'] && $row['first_name'] && $row['last_name']) {
-		return $row['first_name'] . ' ' . $row['second_name'] . ' ' . $row['last_name'];
-	}
-
-	return $row['login'];
+	return _AT($display_name_formats[$_config['display_name_format']], $row['login'], $row['first_name'], $row['second_name'], $row['last_name']);
 }
 
 function get_forum_name($fid){
@@ -462,7 +505,7 @@ function save_prefs( ) {
 
 	if ($_SESSION['valid_user']) {
 		$data	= addslashes(serialize($_SESSION['prefs']));
-		$sql	= 'UPDATE '.TABLE_PREFIX.'members SET preferences="'.$data.'" WHERE member_id='.$_SESSION['member_id'];
+		$sql	= 'UPDATE '.TABLE_PREFIX.'members SET preferences="'.$data.'", creation_date=creation_date, last_login=last_login WHERE member_id='.$_SESSION['member_id'];
 		$result = mysql_query($sql, $db); 
 	}
  
@@ -509,7 +552,7 @@ if (!$_SESSION['is_admin']       &&
 	{
 		$diff = time() - $_SESSION['cid_time'];
 		if ($diff > 0) {
-			$sql = "UPDATE ".TABLE_PREFIX."member_track SET counter=counter+1, duration=duration+$diff WHERE member_id=$_SESSION[member_id] AND content_id=$_SESSION[s_cid]";
+			$sql = "UPDATE ".TABLE_PREFIX."member_track SET counter=counter+1, duration=duration+$diff, last_accessed=NOW() WHERE member_id=$_SESSION[member_id] AND content_id=$_SESSION[s_cid]";
 
 			$result = mysql_query($sql, $db);
 
@@ -685,8 +728,7 @@ function admin_authenticate($privilege = 0, $check = false) {
 		if ($check) {
 			return false;
 		}
-		global $_base_href;
-		header('Location: '.$_base_href.'login.php');
+		header('Location: '.AT_BASE_HREF.'login.php');
 		exit;
 	}
 
@@ -737,14 +779,10 @@ if (isset($_GET['expand'])) {
 */
 function write_to_log($operation_type, $table_name, $num_affected, $details) {
 	global $db;
-	static $now;
 
-	if (!$now) {
-		$now = date('Y-m-d H:i:s');
-	}
 	if ($num_affected > 0) {
 		$details = addslashes(stripslashes($details));
-		$sql    = "INSERT INTO ".TABLE_PREFIX."admin_log VALUES ('$_SESSION[login]', '$now', $operation_type, '$table_name', $num_affected, '$details')";
+		$sql    = "INSERT INTO ".TABLE_PREFIX."admin_log VALUES ('$_SESSION[login]', NULL, $operation_type, '$table_name', $num_affected, '$details')";
 		$result = mysql_query($sql, $db);
 	}
 }
@@ -759,34 +797,103 @@ function get_group_title($group_id) {
 	return FALSE;
 }
 
-/* get config variables. if they're not in the db then it uses the installation default value in constants.inc.php */
-
-$sql    = "SELECT * FROM ".TABLE_PREFIX."config";
-$result = mysql_query($sql, $db);
-while ($row = mysql_fetch_assoc($result)) { 
-	$_config[$row['name']] = $row['value'];
+function get_status_name($status_id) {
+	switch ($status_id) {
+		case AT_STATUS_DISABLED:
+				return _AT('disabled');
+				break;
+		case AT_STATUS_UNCONFIRMED:
+			return _AT('unconfirmed');
+			break;
+		case AT_STATUS_STUDENT:
+			return _AT('student');
+			break;
+		case AT_STATUS_INSTRUCTOR:
+			return _AT('instructor');
+			break;
+	}
 }
 
-/* following is added as a transition period and backwards compatability: */
-define('EMAIL',                     $_config['contact_email']);
-define('EMAIL_NOTIFY',              $_config['email_notification']);
-define('ALLOW_INSTRUCTOR_REQUESTS', $_config['allow_instructor_requests']);
-define('AUTO_APPROVE_INSTRUCTORS',  $_config['auto_approve_instructors']);
-define('SITE_NAME',                 $_config['site_name']);
-define('HOME_URL',                  $_config['home_url']);
-define('DEFAULT_LANGUAGE',          $_config['default_language']);
-define('CACHE_DIR',                 $_config['cache_dir']);
-define('AT_ENABLE_CATEGORY_THEMES', $_config['theme_categories']);
-define('AT_COURSE_BACKUPS',         $_config['course_backups']);
-define('AT_EMAIL_CONFIRMATION',     $_config['email_confirmation']);
-define('AT_MASTER_LIST',            $_config['master_list']);
-$MaxFileSize       = $_config['max_file_size']; 
-$MaxCourseSize     = $_config['max_course_size'];
-$MaxCourseFloat    = $_config['max_course_float'];
-$IllegalExtentions = explode('|',$_config['illegal_extentions']);
-define('AT_DEFAULT_PREFS',  $_config['prefs_default']);
-$_config['home_defaults'] .= (isset($_config['home_defaults_2']) ? $_config['home_defaults_2'] : '');
-$_config['main_defaults'] .= (isset($_config['main_defaults_2']) ? $_config['main_defaults_2'] : '');
+function profile_image_exists($id) {
+	$extensions = array('gif', 'jpg', 'png');
+
+	foreach ($extensions as $extension) {
+		if (file_exists(AT_CONTENT_DIR.'profile_pictures/originals/'. $id.'.'.$extension)) {
+			return true;
+		}
+	}
+}
+
+function print_profile_img($id) {
+	global $moduleFactory;
+	$mod = $moduleFactory->getModule('_standard/profile_pictures');
+	if ($mod->isEnabled() === FALSE) {
+		return;
+	}
+	if (profile_image_exists($id)) {
+		echo '<img src="get_profile_img.php?id='.$id.'" class="profile-picture" alt="" />';
+	} else {
+		echo '<img src="images/clr.gif" height="100" width="100" class="profile-picture" alt="" />';
+	}
+}
+
+function profile_image_delete($id) {
+	$extensions = array('gif', 'jpg', 'png');
+
+	foreach ($extensions as $extension) {
+		if (file_exists(AT_CONTENT_DIR.'profile_pictures/originals/'. $id.'.'.$extension)) {
+			unlink(AT_CONTENT_DIR.'profile_pictures/originals/'. $id.'.'.$extension);
+		}
+		if (file_exists(AT_CONTENT_DIR.'profile_pictures/thumbs/'. $id.'.'.$extension)) {
+			unlink(AT_CONTENT_DIR.'profile_pictures/thumbs/'. $id.'.'.$extension);
+		}
+	}
+}
+
+/**
+ * get_group_concat
+ * returns a list of $field values from $table using $where_clause, separated by $separator.
+ * uses mysql's GROUP_CONCAT() if available and if within the limit (default is 1024), otherwise
+ * it does it the old school way.
+ * returns the list (as a string) or (int) 0, if none found.
+ */
+function get_group_concat($table, $field, $where_clause = 1, $separator = ',') {
+	global $_config, $db;
+	if (!isset($_config['mysql_group_concat_max_len'])) {
+		$sql = "SELECT  @@global.group_concat_max_len AS max";
+		$result = mysql_query($sql, $db);
+		if ($result && ($row = mysql_fetch_assoc($result))) {
+			$_config['mysql_group_concat_max_len'] = $row['max'];
+		} else {
+			$_config['mysql_group_concat_max_len'] = 0;
+		}
+		$sql = "REPLACE INTO ".TABLE_PREFIX."config VALUES ('mysql_group_concat_max_len', '{$_config['mysql_group_concat_max_len']}')";
+		mysql_query($sql, $db);
+	}
+	if ($_config['mysql_group_concat_max_len'] > 0) {
+		$sql = "SELECT GROUP_CONCAT($field SEPARATOR '$separator') AS list FROM ".TABLE_PREFIX."$table WHERE $where_clause";
+
+		$result = mysql_query($sql, $db);
+		if ($row = mysql_fetch_assoc($result)) {
+			if (strlen($row['list']) < $_config['mysql_group_concat_max_len']) {
+				return $row['list'];
+			} // else: list is truncated, do it the old way
+		} else {
+			return 0; // empty
+		}
+	} // else:
+
+	$list = '';
+	$sql = "SELECT $field AS id FROM ".TABLE_PREFIX."$table WHERE $where_clause";
+	$result = mysql_query($sql, $db);
+	while ($row = mysql_fetch_assoc($result)) {
+		$list .= $row['id'] . ',';
+	}
+	if ($list) {
+		return substr($list, 0, -1);
+	}
+	return 0;
+}
 
 require(AT_INCLUDE_PATH . 'classes/Module/Module.class.php');
 
@@ -797,7 +904,7 @@ if (isset($_GET['submit_language']) && $_SESSION['valid_user']) {
 		$sql = "UPDATE ".TABLE_PREFIX."admins SET language = '$_SESSION[lang]' WHERE login = '$_SESSION[login]'";
 		$result = mysql_query($sql, $db);
 	} else {
-		$sql = "UPDATE ".TABLE_PREFIX."members SET language = '$_SESSION[lang]' WHERE member_id = $_SESSION[member_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."members SET language = '$_SESSION[lang]', creation_date=creation_date, last_login=last_login WHERE member_id = $_SESSION[member_id]";
 		$result = mysql_query($sql, $db);
 	}
 }

@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -33,22 +33,28 @@ if (!isset($_POST['url'])) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 } else if (isset($_POST['add_link']) && isset($_POST['submit'])) {
+	$missing_fields = array();
+	if ($_POST['cat'] == 0 || $_POST['cat'] == '') {
+		$missing_fields[] = _AT('category');
+	}
+	if (trim($_POST['title']) == '') {
+		$missing_fields[] = _AT('title');
+	}
+	if (trim($_POST['url']) == '' || $_POST['url'] == 'http://') {
+		$missing_fields[] = _AT('url');
+	}
+	if (trim($_POST['description']) == '') {
+		$missing_fields[] = _AT('description');
+	}
 
-	if ($_POST['cat'] == 0 || $_POST['cat'] == '') {		
-		$msg->addError('CAT_EMPTY');
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
-	if ($_POST['title'] == '') {		
-		$msg->addError('TITLE_EMPTY');
-	}
-	if (($_POST['url'] == 'http://') || $_POST['url'] == '') {		
-		$msg->addError('URL_EMPTY');
-	}
-	if ($_POST['description'] == '') {		
-		$msg->addError('DESCRIPTION_EMPTY');
-	}
+
 
 	if (!$msg->containsErrors() && isset($_POST['submit'])) {
 
@@ -57,17 +63,17 @@ if (isset($_POST['cancel'])) {
 		$_POST['url'] == $addslashes($_POST['url']);
 		$_POST['description']  = $addslashes($_POST['description']);
 
-		$name = $_SESSION['login'];
+		$name = get_display_name($_SESSION['member_id']);
 		$email = '';
 
 		$approved = 0; //not approved for student submissions
 
-		$sql	= "INSERT INTO ".TABLE_PREFIX."links VALUES (0, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."links VALUES (NULL, $_POST[cat], '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_ADDED');
 
-		header('Location: '.$_base_href.'links/index.php');
+		header('Location: '.AT_BASE_HREF.'links/index.php');
 		exit;
 	} else {
 		$_POST['title']  = stripslashes($_POST['title']);

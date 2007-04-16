@@ -36,7 +36,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['question'] = trim($_POST['question']);
 
 	if ($_POST['question'] == ''){
-		$msg->addError('QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('statement')));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -45,13 +45,10 @@ if (isset($_POST['cancel'])) {
 		$_POST['qid']	      = intval($_POST['qid']);
 		$_POST['category_id'] = intval($_POST['category_id']);
 		$_POST['answer']      = intval($_POST['answer']);
-		$_POST['properties']  = $addslashes($_POST['properties']);
-
 
 		$sql	= "UPDATE ".TABLE_PREFIX."tests_questions SET	category_id=$_POST[category_id],
 			feedback='$_POST[feedback]',
 			question='$_POST[question]',
-			properties='$_POST[properties]',
 			answer_0={$_POST[answer]}
 			WHERE question_id=$_POST[qid] AND course_id=$_SESSION[course_id]";
 
@@ -73,7 +70,7 @@ if (!$_POST['submit']) {
 	$result	= mysql_query($sql, $db);
 
 	if (!($row = mysql_fetch_array($result))){
-		$msg->printErrors('QUESTION_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
@@ -85,12 +82,6 @@ if ($_POST['required'] == 1) {
 	$req_yes = ' checked="checked"';
 } else {
 	$req_no  = ' checked="checked"';
-}
-
-if ($_POST['properties'] == AT_TESTS_QPROP_ALIGN_VERT) {
-	$align_vert = ' checked="checked"';
-} else {
-	$align_hor  = ' checked="checked"';
 }
 
 if ($_POST['answer'] == '') {
@@ -130,10 +121,9 @@ if ($_POST['answer'] == '') {
 	</div>
 
 	<div class="row">
-		<label for="feedback"><?php echo _AT('optional_feedback'); ?></label> 
-		<?php print_VE('feedback'); ?>
-		<textarea id="feedback" cols="50" rows="3" name="feedback"><?php 
-			echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
+		<label for="optional_feedback"><?php echo _AT('optional_feedback'); ?></label> 
+		<?php print_VE('optional_feedback'); ?>
+		<textarea id="optional_feedback" cols="50" rows="3" name="feedback"><?php echo htmlspecialchars(stripslashes($_POST['feedback'])); ?></textarea>
 	</div>
 
 	<div class="row">
@@ -141,12 +131,6 @@ if ($_POST['answer'] == '') {
 		<?php print_VE('question'); ?>	
 		<textarea id="question" cols="50" rows="6" name="question"><?php 
 			echo htmlspecialchars(stripslashes($_POST['question'])); ?></textarea>
-	</div>
-
-	<div class="row">
-		<?php echo _AT('option_alignment'); ?><br />
-		<label for="prop_5"><input type="radio" name="properties" id="prop_5" value="5" <?php echo $align_vert; ?> /><?php echo _AT('vertical'); ?></label>
-		<label for="prop_6"><input type="radio" name="properties" id="prop_6" value="6" <?php echo $align_hor;  ?> /><?php echo _AT('horizontal'); ?></label>
 	</div>
 
 	<div class="row">

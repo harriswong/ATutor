@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -18,7 +18,6 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 /*
 /*	- AT_date(format, timestamp, format_type)
 /*
-/*	- _AC([...])
 /*	- _AT([...])
 /*	- AT_print(input, name, Boolean runtime_html)
 /*
@@ -189,163 +188,128 @@ function AT_date($format='%Y-%M-%d', $timestamp = '', $format_type=AT_DATE_MYSQL
 	return $output;
 }
 
+/**
+* Converts language code to actual language message, caches them according to page url
+* @access	public
+* @param	args				unlimited number of arguments allowed but first arg MUST be name of the language variable/term
+*								i.e		$args[0] = the term to the format string $_template[term]
+*										$args[1..x] = optional arguments to the formatting string 
+* @return	string|array		full resulting message
+* @see		$db			        in include/vitals.inc.php
+* @see		cache()				in include/phpCache/phpCache.inc.php
+* @see		cache_variable()	in include/phpCache/phpCache.inc.php
+* @author	Joel Kronenberg
+*/
+function _AT() {
+	global $_cache_template, $lang_et, $_rel_url;
+	static $_template;
+
+	$args = func_get_args();
+	
+	// a feedback msg
+	if (!is_array($args[0])) {
+		/**
+		 * Added functionality for translating language code String (AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK|AT_HELP).*
+		 * to its text and returning the result. No caching needed.
+		 * @author Jacek Materna
+		 */
+
+		// Check for specific language prefix, extendible as needed
+		// 0002767:  a substring+in_array test should be faster than a preg_match test.
+		// replaced the preg_match with a test of the substring.
+		$sub_arg = substr($args[0], 0, 7); // 7 is the shortest type of msg (AT_HELP)
+		if (in_array($sub_arg, array('AT_ERRO','AT_INFO','AT_WARN','AT_FEED','AT_HELP','AT_CONF'))) {
+			global $db;
+			global $_base_path, $addslashes;
+
+			$args[0] = $addslashes($args[0]);
+					
+			/* get $_msgs_new from the DB */
+			$sql	= 'SELECT text FROM '.TABLE_PREFIX.'language_text WHERE term="' . $args[0] . '" AND (variable="_msgs" OR variable="_c_msgs") AND language_code="'.$_SESSION['lang'].'" ORDER BY variable ASC LIMIT 1';
+
+			$result	= @mysql_query($sql, $db);
+			$i = 1;
+			$msgs = '';
+					
+			if ($row = @mysql_fetch_assoc($result)) {
+				// do not cache key as a digit (no contstant(), use string)
+				$msgs = str_replace('SITE_URL/', $_base_path, $row['text']);
+				if (defined('AT_DEVEL') && AT_DEVEL) {
+					$msgs .= ' <small><small>('. $args[0] .')</small></small>';
+				}
+			}
+
+			$sql = 'INSERT INTO '.TABLE_PREFIX.'language_pages (`term`, `page`) VALUES ("'.$args[0].'", "'.$_rel_url.'")';
+			mysql_query($sql, $db);
+
+			return $msgs;
+		}
+	}
+	
+	// a template variable
+	if (!isset($_template)) {
+		$url_parts = parse_url(AT_BASE_HREF);
+		$name = substr($_SERVER['PHP_SELF'], strlen($url_parts['path'])-1);
+
+		if ( !($lang_et = cache(120, 'lang', $_SESSION['lang'].'_'.$name)) ) {
+			global $db;
+
+			/* get $_template from the DB */
+			
+			$sql = "SELECT L.* FROM ".TABLE_PREFIX."language_text L, ".TABLE_PREFIX."language_pages P WHERE (L.language_code='{$_SESSION['lang']}' OR L.language_code='$parent') AND L.variable<>'_msgs' AND L.term=P.term AND P.page='$_rel_url' ORDER BY L.variable ASC LIMIT 1";
+			$result	= mysql_query($sql, $db);
+			while ($row = mysql_fetch_assoc($result)) {
+				// saves us from doing an ORDER BY
+				if ($row['language_code'] == $_SESSION['lang']) {
+					$_cache_template[$row['term']] = stripslashes($row['text']);
+				} else if (!isset($_cache_template[$row['term']])) {
+					$_cache_template[$row['term']] = stripslashes($row['text']);
+				}
+			}
+		
+			cache_variable('_cache_template');
+			endcache(true, false);
+		}
+		$_template = $_cache_template;
+	}
+	$num_args = func_num_args();
+	if (is_array($args[0])) {
+		$args = $args[0];
+		$num_args = count($args);
+	}
+	$format	  = array_shift($args);
+
+	$outString	= vsprintf($_template[$format], $args);
+	$str = ob_get_contents();
 
 
-/****************************************************************************/
-
-	/**
-	* Converts ACollab language code into actual language message 
-	* @access  public
-	* @see     _AT()					in include/lib/output.inc.php
-	* @author  Joel Kronenberg
-	*/
-	function & _AC() {
-		$args 	  = func_get_args();
-
-		return _AT($args);
+	if ($outString === false) {
+		return ('[Error parsing language. Variable: <code>'.$format.'</code>. Value: <code>'.$_template[$format].'</code>. Language: <code>'.$_SESSION['lang'].'</code> ]');
 	}
 
-	/**
-	* Converts language code to actual language message, caches them according to page url
-	* @access	public
-	* @param	args				unlimited number of arguments allowed but first arg MUST be name of the language variable/term
-	*								i.e		$args[0] = the term to the format string $_template[term]
-	*										$args[1..x] = optional arguments to the formatting string 
-	* @return	string|array		full resulting message
-	* @see		$_base_href			in include/vitals.inc.php
-	* @see		$lang_db			in include/vitals.inc.php
-	* @see		TABLE_PREFIX_LANG	in include/vitals.inc.php
-	* @see		AT_CVS_DEVELOPMENT	in include/vitals.inc.php
-	* @see		cache()				in include/phpCache/phpCache.inc.php
-	* @see		cache_variable()	in include/phpCache/phpCache.inc.php
-	* @author	Joel Kronenberg
-	*/
-	function _AT() {
-		global $_cache_template, $lang_et, $_rel_url;
-		static $_template;
+	if (empty($outString)) {
+		global $db;
 
-		$parent = Language::getParentCode($_SESSION['lang']);
+		$sql	= 'SELECT L.* FROM '.TABLE_PREFIX.'language_text L WHERE L.language_code="'.$_SESSION['lang'].'" AND L.variable<>"_msgs" AND L.term="'.$format.'"';
 
-		$args = func_get_args();
-		
-		if (!is_array($args[0])) {
-				/**
-				 * Added functionality for translating language code String (AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK|AT_HELP).*
-				 * to its text and returning the result. No caching needed.
-				 * @author Jacek Materna
-				 */
-				 
-				// Check for specific language prefix, extendible as needed
-				if (preg_match("/^(AT_ERROR|AT_INFOS|AT_WARNING|AT_FEEDBACK|AT_HELP|AT_CONFIRM).*/", $args[0])) {
-		
-					global $_base_href;
-					global $lang_db;
-					global $_base_path;
-					
-					/* get $_msgs_new from the DB */
-					$sql	= 'SELECT text FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' WHERE term="' . $args[0] . '" AND variable="_msgs" AND (language_code="'.$_SESSION['lang'].'" OR language_code="'.$parent.'")';
-					$result	= @mysql_query($sql, $lang_db);
-					$i = 1;
-					$msgs = '';
-					
-					while ($row = @mysql_fetch_assoc($result)) { // should only be one!!
-						// do not cache key as a digit (no contstant(), use string)
-						$msgs = str_replace('SITE_URL/', $_base_path, $row['text']);
-						if (AT_DEVEL) {
-							$msgs .= ' <small><small>('. $args[0] .')</small></small>';
-						}
+		$result	= mysql_query($sql, $db);
+		$row = mysql_fetch_assoc($result);
 
-					}
-					if (defined('TABLE_SUFFIX_LANG') && TABLE_SUFFIX_LANG) {
-						$sql = 'INSERT INTO '.TABLE_PREFIX_LANG.'language_pages (`term`, `page`) VALUES ("'.$args[0].'", "'.$_rel_url.'")';
-						mysql_query($sql, $lang_db);
-					}
-
-					return $msgs;
-				}
-		}
-			
-		if (!isset($_template)) {
-			global $_base_href;
-			$url_parts = parse_url($_base_href);
-			$name = substr($_SERVER['PHP_SELF'], strlen($url_parts['path'])-1);
-
-			if ( !($lang_et = cache(120, 'lang', $_SESSION['lang'].'_'.$name)) ) {
-				global $lang_db;
-
-				/* get $_template from the DB */
-			
-				$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L, '.TABLE_PREFIX_LANG.'language_pages'.TABLE_SUFFIX_LANG.' P WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable<>"_msgs" AND L.term=P.term AND P.page="'.$_rel_url.'"';
-				$result	= mysql_query($sql, $lang_db);
-				while ($row = mysql_fetch_assoc($result)) {
-					// saves us from doing an ORDER BY
-					if ($row['language_code'] == $_SESSION['lang']) {
-						$_cache_template[$row['term']] = stripslashes($row['text']);
-					} else if (!isset($_cache_template[$row['term']])) {
-						$_cache_template[$row['term']] = stripslashes($row['text']);
-					}
-				}
-		
-				cache_variable('_cache_template');
-				endcache(true, false);
-			}
-			$_template = $_cache_template;
-		}
-
-		$num_args = func_num_args();
-		
-
-		/* fix for the _AC() wrapper: */
-		if (is_array($args[0])) {
-			$args = $args[0];
-			$num_args = count($args);
-		}
-
-		$format		= array_shift($args);
-
-		//$c_error	= error_reporting(0);
-		$outString	= vsprintf($_template[$format], $args);
-		if ($outString === false) {
-			return ('[Error parsing language. Variable: <code>'.$format.'</code>. Value: <code>'.$_template[$format].'</code>. Language: <code>'.$_SESSION['lang'].'</code> ]');
-		}
-		//error_reporting($c_error);
-
+		$_template[$row['term']] = stripslashes($row['text']);
+		$outString = $_template[$row['term']];
 		if (empty($outString)) {
-			global $lang_db;
-
-			//$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L WHERE (L.language_code="'.$_SESSION['lang'].'" OR L.language_code="'.$parent.'") AND L.variable<>"_msgs" AND L.term="'.$format.'"';
-
-			$sql	= 'SELECT L.* FROM '.TABLE_PREFIX_LANG.'language_text'.TABLE_SUFFIX_LANG.' L WHERE L.language_code="'.$_SESSION['lang'].'" AND L.variable<>"_msgs" AND L.term="'.$format.'"';
-
-			$result	= mysql_query($sql, $lang_db);
-			$row = mysql_fetch_assoc($result);
-
-			$_template[$row['term']] = stripslashes($row['text']);
-			$outString = $_template[$row['term']];
-			if (empty($outString)) {
-				if (AT_DEVEL_TRANSLATE) {
-					global $langEditor;
-					$langEditor->addMissingTerm($format);
-				}
-				return ('[ '.$format.' ]');
-			}
-			$outString = $_template[$row['term']];
-			$outString = vsprintf($outString, $args);
-
-			/* purge the language cache */
-			/* update the locations */
-			$sql = 'INSERT INTO '.TABLE_PREFIX_LANG.'language_pages (`term`, `page`) VALUES ("'.$format.'", "'.$_rel_url.'")';
-			mysql_query($sql, $lang_db);
-
+			return ('[ '.$format.' ]');
 		}
+		$outString = $_template[$row['term']];
+		$outString = vsprintf($outString, $args);
 
-		if (AT_DEVEL_TRANSLATE) {
-			global $langEditor;
-			$langEditor->addMissingTerm($format, $_template[$format]);
-		}
-
-		return $outString;
+		/* update the locations */
+		$sql = 'INSERT INTO '.TABLE_PREFIX.'language_pages (`term`, `page`) VALUES ("'.$format.'", "'.$_rel_url.'")';
+		mysql_query($sql, $db);
 	}
+
+	return $outString;
+}
 
 /**********************************************************************************************************/
 	/**
@@ -629,7 +593,7 @@ function fix_quotes($text)
 
 
 function make_clickable($text) {
-	$ret = eregi_replace("([[:space:]])http://([^[:space:]<]*)([[:alnum:]#?/&=])", "\\1<a href=\"http://\\2\\3\">\\2\\3</a>", $text);
+	$ret = eregi_replace("([[:space:]])(http[s]?)://([^[:space:]<]*)([[:alnum:]#?/&=])", "\\1<a href=\"\\2://\\3\\4\">\\3\\4</a>", $text);
 
 	$ret = eregi_replace(	'([_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9\-]+)*'.
 							'\@'.'[_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9\-]+)*'.'(\.[a-zA-Z]{1,6})+)',
@@ -778,13 +742,13 @@ function getTranslatedCodeStr($codes) {
 
 	if (!isset($_msgs_new)) {
 		if ( !($lang_et = cache(120, 'msgs_new', $_SESSION['lang'])) ) {
-			global $lang_db, $_base_path;
+			global $db, $_base_path;
 
 			$parent = Language::getParentCode($_SESSION['lang']);
 
 			/* get $_msgs_new from the DB */
-			$sql	= 'SELECT * FROM '.TABLE_PREFIX_LANG.'language_text WHERE variable="_msgs" AND (language_code="'.$_SESSION['lang'].'" OR language_code="'.$parent.'")';
-			$result	= @mysql_query($sql, $lang_db);
+			$sql	= 'SELECT * FROM '.TABLE_PREFIX.'language_text WHERE variable="_msgs" AND (language_code="'.$_SESSION['lang'].'" OR language_code="'.$parent.'")';
+			$result	= @mysql_query($sql, $db);
 			$i = 1;
 			while ($row = @mysql_fetch_assoc($result)) {
 				// do not cache key as a digit (no contstant(), use string)
@@ -816,8 +780,8 @@ function getTranslatedCodeStr($codes) {
 		if ($message == '') {
 			/* the language for this msg is missing: */
 		
-			$sql	= 'SELECT * FROM '.TABLE_PREFIX_LANG.'language_text WHERE variable="_msgs"';
-			$result	= @mysql_query($sql, $lang_db);
+			$sql	= 'SELECT * FROM '.TABLE_PREFIX.'language_text WHERE variable="_msgs"';
+			$result	= @mysql_query($sql, $db);
 			$i = 1;
 			while ($row = @mysql_fetch_assoc($result)) {
 				if (($row['term']) === $codes) {
@@ -831,4 +795,51 @@ function getTranslatedCodeStr($codes) {
 	return $message;
 }
 
+function html_get_list($array) {
+	$list = '';
+	foreach ($array as $value) {
+		$list .= '<li>'.$value.'</li>';
+	}
+	return $list;
+}
+
+/**
+ * print_paginator
+ *
+ * print out list of page links
+ */
+function print_paginator($current_page, $num_rows, $request_args, $rows_per_page = 50, $window = 5) {
+	$num_pages = ceil($num_rows / $rows_per_page);
+	$request_args = '?'.$request_args;
+
+    if ($num_rows) {
+		echo '<div class="paging">';
+	    echo '<ul>';
+		
+		$i=max($current_page-$window - max($window-$num_pages+$current_page,0), 1);
+
+		if ($i > 1) {
+			echo '<li><a href="'.$_SERVER['PHP_SELF'].$request_args.'&p=1">1</a></li>';
+			if ($i > 2) {
+		        echo '<li>&hellip;</li>';
+			}
+		}
+
+		for ($i; $i<= min($current_page+$window -min($current_page-$window,0),$num_pages); $i++) {
+			if ($current_page == $i) {
+				echo '<li><a href="'.$_SERVER['PHP_SELF'].$request_args.'&p='.$i.'" class="current"><em>'.$current_page.'</em></a></li>';
+			} else {
+				echo '<li><a href="'.$_SERVER['PHP_SELF'].$request_args.'&p='.$i.'">'.$i.'</a></li>';
+			}
+		}
+        if ($i <= $num_pages) {
+			if ($i < $num_pages) {
+		        echo '<li>&hellip;</li>';
+	        }
+			echo '<li><a href="'.$_SERVER['PHP_SELF'].$request_args.'&p='.$num_pages.'">'.$num_pages.'</a></li>';
+		}
+		echo '</ul>';
+		echo '</div>';
+	}
+}
 ?>

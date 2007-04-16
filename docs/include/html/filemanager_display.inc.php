@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -98,8 +98,7 @@ if ($popup == TRUE) {
 }
 $labelcol = 3;
 
-
-if ($framed != TRUE) {
+if (TRUE || $framed != TRUE) {
 	if ($_GET['overwrite'] != '') {
 		// get file name, out of the full path
 		$path_parts = pathinfo($current_path.$_GET['overwrite']);
@@ -144,7 +143,7 @@ if ($framed != TRUE) {
 		|| (($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) && ($course_total < $MaxCourseSize))
 		|| ($my_MaxCourseSize-$course_total > 0)) {
 		echo '<tr><td  colspan="1">';
-		echo '<form onsubmit="openWindow(\''.$_base_href.'tools/prog.php\');" name="form1" method="post" action="tools/filemanager/upload.php?popup='.$popup.'" enctype="multipart/form-data">';
+		echo '<form onsubmit="openWindow(\''.AT_BASE_HREF.'tools/prog.php\');" name="form1" method="post" action="tools/filemanager/upload.php?popup='.$popup.'" enctype="multipart/form-data">';
 		echo '<input type="hidden" name="MAX_FILE_SIZE" value="'.$my_MaxFileSize.'" />';
 		echo '<input type="file" name="uploadedfile" class="formfield" size="20" />';
 		echo '<input type="submit" name="submit" value="'._AT('upload').'" class="button" />';

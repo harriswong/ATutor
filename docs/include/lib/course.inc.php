@@ -25,12 +25,18 @@ function add_update_course($_POST, $isadmin = FALSE) {
 	global $_config_defaults;
 
 	$Backup =& new Backup($db);
+	$missing_fields = array();
 
 	if ($_POST['title'] == '') {
-		$msg->addError('TITLE_EMPTY');
+		$missing_fields[] = _AT('title');
 	} 
 	if (!$_POST['instructor']) {
-		$msg->addError('INSTRUCTOR_EMPTY');
+		$missing_fields[] = _AT('instructor');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	$_POST['access']      = $addslashes($_POST['access']);
@@ -195,11 +201,11 @@ function add_update_course($_POST, $isadmin = FALSE) {
 
 		$cid = $contentManager->addContent($new_course_id, 0, 1,_AT('welcome_to_atutor'),
 											addslashes(_AT('this_is_content')),
-											'', '', 1, date('Y-m-d H:00:00'), 0);
+											'', '', 1, date('Y-m-d H:00:00'));
 
 		$announcement = _AT('default_announcement');
 		
-		$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (0, $new_course_id, $instructor, NOW(), 1, '"._AT('welcome_to_atutor')."', '$announcement')";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."news VALUES (NULL, $new_course_id, $instructor, NOW(), 1, '"._AT('welcome_to_atutor')."', '$announcement')";
 		$result = mysql_query($sql,$db);
 		
 		if ($isadmin) {
@@ -207,7 +213,7 @@ function add_update_course($_POST, $isadmin = FALSE) {
 		}
 
 		// create forum for Welcome Course
-		$sql	= "INSERT INTO ".TABLE_PREFIX."forums VALUES (0, '"._AT('forum_general_discussion')."', '', 0, 0, NOW())";
+		$sql	= "INSERT INTO ".TABLE_PREFIX."forums VALUES (NULL, '"._AT('forum_general_discussion')."', '', 0, 0, NOW())";
 		$result = mysql_query($sql,$db);
 
 		if ($isadmin) {

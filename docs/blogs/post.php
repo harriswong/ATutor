@@ -38,18 +38,18 @@ if (isset($_POST['submit']) && $_SESSION['member_id']) {
 	$_POST['private'] = abs($_POST['private']);
 
 	if ($_POST['body'] == '') {
-		$msg->addError('EMPTY_COMMENTS');
+		$msg->addError(array('EMPTY_FIELDS', _AT('comments')));
 	}
 
 	if (!$msg->containsErrors()) {
-		$sql = "INSERT INTO ".TABLE_PREFIX."blog_posts_comments VALUES (0, $id, $_SESSION[member_id], NOW(), $_POST[private], '$_POST[body]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."blog_posts_comments VALUES (NULL, $id, $_SESSION[member_id], NOW(), $_POST[private], '$_POST[body]')";
 		mysql_query($sql, $db);
 		if (mysql_affected_rows($db) == 1) {
-			$sql = "UPDATE ".TABLE_PREFIX."blog_posts SET num_comments=num_comments+1 WHERE post_id=$id";
+			$sql = "UPDATE ".TABLE_PREFIX."blog_posts SET num_comments=num_comments+1, date=date WHERE post_id=$id";
 			mysql_query($sql, $db);
 		}
 
-		$msg->addFeedback('COMMENT_ADDED_SUCCESSFULLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		header('Location: post.php?ot='.$owner_type.SEP.'oid='.$owner_id.SEP.'id='.$id);
 		exit;
@@ -83,7 +83,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
 	<div class="entry">
-		<h3 class="date"><?php echo get_login($post_row['member_id']); ?> - <?php echo AT_date(_AT('forum_date_format'), $post_row['date'], AT_DATE_MYSQL_DATETIME); ?></h3>
+		<h3 class="date"><?php echo get_display_name($post_row['member_id']); ?> - <?php echo AT_date(_AT('forum_date_format'), $post_row['date'], AT_DATE_MYSQL_DATETIME); ?></h3>
 
 		<p><?php echo AT_PRINT($post_row['body'], 'blog_posts.body'); ?></p>
 	</div>
@@ -96,7 +96,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 <?php while ($row = mysql_fetch_assoc($result)): ?>
 	<div class="input-form">
 		<div class="row">
-			<h4 class="date"><?php echo get_login($row['member_id']); ?> - <?php echo AT_date(_AT('forum_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></h4>
+			<h4 class="date"><?php echo get_display_name($row['member_id']); ?> - <?php echo AT_date(_AT('forum_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></h4>
 
 			<p><?php echo AT_print($row['comment'], 'blog_posts_comments.comment'); ?></p>
 

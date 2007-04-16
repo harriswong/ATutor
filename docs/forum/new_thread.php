@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -39,14 +39,19 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php?fid='.$fid);
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	if ($_POST['subject'] == '')  {
-		$msg->addError('MSG_SUBJECT_EMPTY');
+		$missing_fields[] = _AT('subject');
 	}
 
 	if ($_POST['body'] == '') {
-		$msg->addError('MSG_BODY_EMPTY');
+		$missing_fields[] = _AT('body');
 	}
-
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
 	if (!$msg->containsErrors()) {
 		if ($_POST['replytext'] != '') {
 			$_POST['body'] .= "\n\n".'[reply][b]'._AT('in_reply_to').': [/b]'."\n";
@@ -73,7 +78,7 @@ if (isset($_POST['cancel'])) {
 		$sql_subject = $addslashes($_POST['subject']);
 		$sql_body    = $addslashes($_POST['body']);
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."forums_threads VALUES(0, $_POST[parent_id], $_SESSION[member_id], $_POST[fid], '".addslashes(get_login($_SESSION['member_id']))."', '$now', 0, '$sql_subject', '$sql_body', '$now', 0, 0)";
+		$sql = "INSERT INTO ".TABLE_PREFIX."forums_threads VALUES (NULL, $_POST[parent_id], $_SESSION[member_id], $_POST[fid], '".addslashes(get_display_name($_SESSION['member_id']))."', '$now', 0, '$sql_subject', '$sql_body', '$now', 0, 0)";
 		$result = mysql_query($sql, $db);
 		$this_id = mysql_insert_id($db);
 
@@ -108,7 +113,7 @@ if (isset($_POST['cancel'])) {
 			}
 		}
 
-		$sql = "UPDATE ".TABLE_PREFIX."forums_threads SET num_comments=num_comments+1, last_comment='$now' WHERE post_id=$_POST[parent_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."forums_threads SET num_comments=num_comments+1, last_comment='$now', date=date WHERE post_id=$_POST[parent_id]";
 		$result = mysql_query($sql, $db);
 
 		if ($subscriber_email_list) {
@@ -123,9 +128,9 @@ if (isset($_POST['cancel'])) {
 				$mail = new ATutorMailer;
 				$mail->AddAddress($subscriber['email'], $subscriber['full_name']);
 
-				$body = _AT('forum_new_submsg', $_SESSION['course_title'],  get_forum_name($_POST['fid']), $_POST['parent_name'],  $_base_href.'bounce.php?course='.$_SESSION['course_id']);
+				$body = _AT('forum_new_submsg', $_SESSION['course_title'],  get_forum_name($_POST['fid']), $_POST['parent_name'],  AT_BASE_HREF.'bounce.php?course='.$_SESSION['course_id']);
 				$body .= "\n----------------------------------------------\n";
-				$body .= _AT('posted_by').": ".$_SESSION[login]."\n";
+				$body .= _AT('posted_by').": ".get_display_name($_SESSION['member_id'])."\n";
 				$body .= $_POST['body']."\n";
 				$mail->FromName = $_config['site_name'];
 				$mail->From     = $_config['contact_email'];
@@ -160,12 +165,11 @@ if (isset($_POST['cancel'])) {
 		if ($_POST['parent_id'] == 0) {
 			$sql = "UPDATE ".TABLE_PREFIX."forums SET num_topics=num_topics+1, last_post='$now' WHERE forum_id=$_POST[fid]";
 			$result	 = mysql_query($sql, $db);
-			$msg->addFeedback('THREAD_STARTED');
-			header('Location: ./index.php?fid='.$fid);
-			exit;
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+			$_POST['parent_id'] = $this_id;
 		}
 
-		$msg->addFeedback('THREAD_REPLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: view.php?fid='.$fid.SEP.'pid='.$_POST['parent_id']);
 		exit;
 	}

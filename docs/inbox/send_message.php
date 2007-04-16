@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -32,14 +32,21 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (($_POST['submit']) || ($_POST['submit_delete'])) {
+	$missing_fields = array();
+
 	if (($_POST['to'] == '') || ($_POST['to'] == 0)) {
-		$msg->addError('NO_RECIPIENT');
+		$missing_fields[] = _AT('to');
 	}
 	if ($_POST['subject'] == '') {
-		$msg->addError('MSG_SUBJECT_EMPTY');
+		$missing_fields[] = _AT('subject');
 	}
 	if ($_POST['message'] == '') {
-		$msg->addError('MSG_BODY_EMPTY');
+		$missing_fields[] = _AT('body');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -47,8 +54,11 @@ if (isset($_POST['cancel'])) {
 		$_POST['message'] = $addslashes($_POST['message']);
 		$_POST['to'] = intval($_POST['to']);
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."messages VALUES (0, $_SESSION[course_id], $_SESSION[member_id], $_POST[to], NOW(), 1, 0, '$_POST[subject]', '$_POST[message]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."messages VALUES (NULL, $_SESSION[course_id], $_SESSION[member_id], $_POST[to], NOW(), 1, 0, '$_POST[subject]', '$_POST[message]')";
+		$result = mysql_query($sql,$db);
 
+		// sent message box:
+		$sql = "INSERT INTO ".TABLE_PREFIX."messages_sent VALUES (NULL, $_SESSION[course_id], $_SESSION[member_id], $_POST[to], NOW(), '$_POST[subject]', '$_POST[message]')";
 		$result = mysql_query($sql,$db);
 
 		//send email notification if recipient has message notification enabled
@@ -59,7 +69,7 @@ if (isset($_POST['cancel'])) {
 		if ($row_notify['inbox_notify'] == 1) {
 			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
 
-			$body = _AT('notification_new_inbox', $_SESSION['login'], $_base_href.'bounce.php?course='.$_SESSION['course_id']);
+			$body = _AT('notification_new_inbox', get_display_name($_SESSION['member_id']), $_base_href.'bounce.php?course='.$_SESSION['course_id']);
 			
 			$mail = new ATutorMailer;
 			$mail->AddAddress($row_notify['email'], $row_notify['first_name'] . ' ' . $row_notify['last_name']);
@@ -74,15 +84,13 @@ if (isset($_POST['cancel'])) {
 			unset($mail);
 		}
 
-		if ($_POST['replied'] != '') {
-			$result = mysql_query("UPDATE ".TABLE_PREFIX."messages SET replied=1 WHERE message_id=$_POST[replied]",$db);
-		}
-
 		if ($_POST['submit_delete']) {
 			$result = mysql_query("DELETE FROM ".TABLE_PREFIX."messages WHERE message_id=$_POST[replied] AND to_member_id=$_SESSION[member_id]",$db);
+		} else if ($_POST['replied'] != '') {
+			$result = mysql_query("UPDATE ".TABLE_PREFIX."messages SET replied=1, date_sent=date_sent WHERE message_id=$_POST[replied]",$db);
 		}
 
-		$msg->addFeedback('MSG_SENT');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		header('Location: index.php');
 		exit;
@@ -113,15 +121,22 @@ if (($_GET['reply'] == '') && $_GET['id']) {
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
+$_GET['reply'] = intval($_GET['reply']);
+$_GET['forward'] = intval($_GET['forward']);
 
-if ($_GET['reply'] != '') {
-
-	$_GET['reply'] = intval($_GET['reply']);
-
+if ($_GET['reply']) {
 	// get the member_id of the sender
 	$result = mysql_query("SELECT from_member_id,subject,body FROM ".TABLE_PREFIX."messages WHERE message_id=$_GET[reply] AND to_member_id=$_SESSION[member_id]",$db);
-	if ($myinfo = mysql_fetch_array($result)) {
+	if ($myinfo = mysql_fetch_assoc($result)) {
 		$reply_to	= $myinfo['from_member_id'];
+		$subject	= $myinfo['subject'];
+		$body		= $myinfo['body'];
+	}
+} else if ($_GET['forward']) {
+	// get the member_id of the sender
+	$result = mysql_query("SELECT subject, body FROM ".TABLE_PREFIX."messages_sent WHERE message_id=$_GET[forward] AND from_member_id=$_SESSION[member_id]",$db);
+	if ($myinfo = mysql_fetch_assoc($result)) {
+		$reply_to	= 0;
 		$subject	= $myinfo['subject'];
 		$body		= $myinfo['body'];
 	}
@@ -153,7 +168,6 @@ if ($reply_to) {
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="to"><?php echo _AT('to'); ?></label><br />
 		<?php
 			if (!$reply_to) {
-				//echo '<small class="spacer">'._AT('same_course_users').'</small><br />';
 				$sql	= "SELECT DISTINCT M.first_name, M.second_name, M.last_name, M.login, M.member_id FROM ".TABLE_PREFIX."members M, ".TABLE_PREFIX."course_enrollment E1, ".TABLE_PREFIX."course_enrollment E2 WHERE E2.member_id=$_SESSION[member_id] AND E2.course_id=E1.course_id AND M.member_id=E1.member_id AND (E1.approved='y' OR E1.approved='a') AND (E2.approved='y' OR E2.approved='a') ORDER BY M.first_name, M.second_name, M.last_name, M.login";
 
 				$result = mysql_query($sql, $db);
@@ -167,16 +181,12 @@ if ($reply_to) {
 						echo ' selected="selected"';
 					}
 					echo '>';
-					if ($_config_defaults['display_full_name'] && $row['first_name'] && $row['last_name']) {
-						echo AT_print($row['first_name'] . ' ' . $row['second_name'] . ' ' . $row['last_name'], 'members.login');
-					} else {
-						AT_print($row['login'], 'members.login');
-					}
+					echo get_display_name($row['member_id']);
 					echo '</option>';
 				} while ($row = mysql_fetch_assoc($result));
 				echo '</select>';
 			} else {
-				echo '<strong>'.get_login($reply_to).'</strong>';
+				echo '<strong>'.get_display_name($reply_to).'</strong>';
 				echo '<input type="hidden" name="to" value="'.$reply_to.'" />';
 			} ?>
 	</div>
@@ -185,8 +195,10 @@ if ($reply_to) {
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="subject"><?php echo _AT('subject'); ?></label><br />
 		<input type="text" name="subject" id="subject" value="<?php
 			if (($subject != '') && ($_POST['subject'] == '')) {
-				if (!(substr($subject, 0, 2) == 'Re')) {
-					$subject = "Re: $subject";
+				if ($_GET['reply'] && !(substr($subject, 0, 2) == _AT('re'))) {
+					$subject = _AT('re').' : '.$subject;
+				} else if ($_GET['forward'] && !(substr($subject, 0, 2) == _AT('fwd'))) {
+					$subject = _AT('fwd').' : '.$subject;
 				}
 				echo ContentManager::cleanOutput($subject);
 			} else {

@@ -30,12 +30,17 @@ if (isset($_POST['cancel'])) {
 	$_POST['prefix'] = trim($_POST['prefix']);
 	$_POST['new_type'] = trim($_POST['new_type']);
 
-	if (!$_POST['type'] && !$_POST['new_type']) {
-		$msg->addError('GROUP_TYPE_TITLE_MISSING');
-	}
+	$missing_fields = array();
 
+	if (!$_POST['type'] && !$_POST['new_type']) {
+		$missing_fields[] = _AT('groups_type');
+	}
 	if (!$_POST['prefix']) {
-		$msg->addError('NO_TITLE');
+		$missing_fields[] = _AT('title');
+	}
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -44,7 +49,7 @@ if (isset($_POST['cancel'])) {
 		$_POST['description'] = $addslashes($_POST['description']);
 
 		if ($_POST['new_type']) {
-			$sql = "INSERT INTO ".TABLE_PREFIX."groups_types VALUES (0, $_SESSION[course_id], '$_POST[new_type]')";
+			$sql = "INSERT INTO ".TABLE_PREFIX."groups_types VALUES (NULL, $_SESSION[course_id], '$_POST[new_type]')";
 			$result = mysql_query($sql, $db);
 			$type_id = mysql_insert_id($db);
 		} else {
@@ -57,7 +62,7 @@ if (isset($_POST['cancel'])) {
 			}
 		}
 		if ($type_id) {
-			$sql = "INSERT INTO ".TABLE_PREFIX."groups VALUES (0, $type_id, '$_POST[prefix]', '$_POST[description]', '$modules')";
+			$sql = "INSERT INTO ".TABLE_PREFIX."groups VALUES (NULL, $type_id, '$_POST[prefix]', '$_POST[description]', '$modules')";
 			$result = mysql_query($sql, $db);
 
 			$group_id = mysql_insert_id($db);
@@ -72,7 +77,7 @@ if (isset($_POST['cancel'])) {
 			}
 		}
 
-		$msg->addFeedback('GROUPS_CREATED_SUCCESSFULLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
 		header('Location: index.php');
 		exit;

@@ -28,7 +28,7 @@ if (isset($_POST['submit_no'])) {
 	$sql = "DELETE FROM ".TABLE_PREFIX."reading_list WHERE course_id=$_SESSION[course_id] AND reading_id=$reading_id";
 	$result = mysql_query($sql, $db);
 
-	$msg->addFeedback('RL_READING_DELETED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: index_instructor.php');
 	exit;
 }
@@ -54,7 +54,7 @@ if ($row = mysql_fetch_assoc($result)){
 		$msg->printConfirm();
 	}
 } else {
-	$msg->printErrors('RL_READING_NOT_FOUND');
+	$msg->printErrors('ITEM_NOT_FOUND');
 }
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

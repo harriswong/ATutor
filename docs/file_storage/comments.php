@@ -41,15 +41,15 @@ if (isset($_GET['done'])) {
 	$_POST['comment_id'] = abs($_POST['comment_id']);
 
 	if (!$_POST['edit_comment']) {
-		$msg->addError('MISSING_COMMENT');
+		$msg->addError(array('EMPTY_FIELDS', _AT('comments')));
 	}
 
 	if (!$msg->containsErrors()) {
 		$_POST['edit_comment'] = $addslashes($_POST['edit_comment']);
 
-		$sql = "UPDATE ".TABLE_PREFIX."files_comments SET comment='$_POST[edit_comment]' WHERE member_id=$_SESSION[member_id] AND comment_id=$_POST[comment_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."files_comments SET comment='$_POST[edit_comment]', date=date WHERE member_id=$_SESSION[member_id] AND comment_id=$_POST[comment_id]";
 		mysql_query($sql, $db);
-		$msg->addFeedback('COMMENT_EDITED_SUCCESSFULLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: comments.php'.$owner_arg_prefix.'id='.$_GET['id']);
 		exit;
 	}
@@ -62,19 +62,19 @@ if (isset($_GET['done'])) {
 	$_POST['id'] = abs($_POST['id']);
 
 	if (!$_POST['comment']) {
-		$msg->addError('MISSING_COMMENT');
+		$msg->addError(array('EMPTY_FIELDS', _AT('comments')));
 	}
 
 	if (!$msg->containsErrors()) {
 		$_POST['comment'] = $addslashes($_POST['comment']);
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."files_comments VALUES (0, $_POST[id], $_SESSION[member_id], NOW(), '$_POST[comment]')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."files_comments VALUES (NULL, $_POST[id], $_SESSION[member_id], NOW(), '$_POST[comment]')";
 		if (mysql_query($sql, $db)) {
-			$sql = "UPDATE ".TABLE_PREFIX."files SET num_comments=num_comments+1 WHERE file_id=$_POST[id]";
+			$sql = "UPDATE ".TABLE_PREFIX."files SET num_comments=num_comments+1, date=date WHERE file_id=$_POST[id]";
 			mysql_query($sql, $db);
 		}
 
-		$msg->addFeedback('COMMENT_ADDED_SUCCESSFULLY');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: comments.php'.$owner_arg_prefix.'id='.$_POST['id']);
 		exit;
 	}
@@ -130,8 +130,8 @@ if (!$files) {
 <div class="input-form">
 	<div class="row">
 		<h3><?php echo $current_file['file_name']; ?> <small> - <?php echo _AT('revision'); ?> <?php echo $current_file['num_revisions']; ?></small></h3>
-		<span style="font-size: small"><?php echo get_login($current_file['member_id']); ?> - <?php echo AT_date(_AT('filemanager_date_format'), $current_file['date'], AT_DATE_MYSQL_DATETIME); ?></span>
-		<p><?php echo nl2br($current_file['comments']); ?></p>
+		<span style="font-size: small"><?php echo get_display_name($current_file['member_id']); ?> - <?php echo AT_date(_AT('filemanager_date_format'), $current_file['date'], AT_DATE_MYSQL_DATETIME); ?></span>
+		<p><?php echo nl2br(htmlspecialchars($current_file['description'])); ?></p>
 	</div>
 </div>
 
@@ -145,7 +145,7 @@ if ($row = mysql_fetch_assoc($result)): ?>
 				<form method="post" action="file_storage/comments.php<?php echo $owner_arg_prefix.'id='.$id;?>" name="form">
 				<input type="hidden" name="comment_id" value="<?php echo $row['comment_id']; ?>" />
 				<div class="row">
-					<a name="c<?php echo $row['comment_id']; ?>"></a><h4><?php echo get_login($row['member_id']); ?> - <?php echo $row['date']; ?></h4>
+					<a name="c<?php echo $row['comment_id']; ?>"></a><h4><?php echo get_display_name($row['member_id']); ?> - <?php echo $row['date']; ?></h4>
 					<textarea rows="4" cols="40" name="edit_comment"><?php echo htmlspecialchars($row['comment']); ?></textarea>
 				</div>
 				<div class="row buttons">
@@ -156,8 +156,8 @@ if ($row = mysql_fetch_assoc($result)): ?>
 						
 			<?php else: ?>
 				<div class="row">
-					<h4><?php echo get_login($row['member_id']); ?> - <?php echo AT_date(_AT('filemanager_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></h4>
-					<p><?php echo nl2br($row['comment']); ?></p>
+					<h4><?php echo get_display_name($row['member_id']); ?> - <?php echo AT_date(_AT('filemanager_date_format'), $row['date'], AT_DATE_MYSQL_DATETIME); ?></h4>
+					<p><?php echo nl2br(htmlspecialchars($row['comment'])); ?></p>
 						<?php if ($row['member_id'] == $_SESSION['member_id']): ?>
 							<div style="text-align:right; font-size: smaller">
 								<a href="file_storage/comments.php<?php echo $owner_arg_prefix.'id='.$id.SEP.'comment_id='.$row['comment_id']; ?>#c<?php echo $row['comment_id']; ?>"><?php echo _AT('edit'); ?></a> | <a href="file_storage/delete_comment.php<?php echo $owner_arg_prefix . 'file_id='.$id.SEP; ?>id=<?php echo $row['comment_id']; ?>"><?php echo _AT('delete'); ?></a>

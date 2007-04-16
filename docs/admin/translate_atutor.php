@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2003 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca						*/
 /*                                                              */
@@ -22,9 +22,7 @@ if (!$_REQUEST['f']) {
 	$_REQUEST['f']	= 'en';
 }
 
-if (AT_DEVEL_TRANSLATE != 1) { exit; }
-//if (!isset($_SESSION['translate'])) { exit; }
-//define variables to be used
+if (!defined('AT_DEVEL_TRANSLATE') || !AT_DEVEL_TRANSLATE) { exit; }
 
 $_INCLUDE_PATH = AT_INCLUDE_PATH;
 $_TABLE_PREFIX = TABLE_PREFIX;
@@ -33,7 +31,6 @@ $_TABLE_SUFFIX = '';
 $_SESSION['language'] = $_SESSION['lang'];
 
 global $db;
-global $_base_href;
 global $_user_location;
 global $_base_path;
 global $addslashes;
@@ -43,9 +40,9 @@ global $addslashes;
 <html lang="en">
 <head>
 	<title>ATutor Translator Site</title>
-	<link rel="stylesheet" href="<?php echo $_base_href; ?>include/style_popup.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo AT_BASE_HREF; ?>include/style_popup.css" type="text/css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	<base href="<?php echo $_base_href; ?>" />
+	<base href="<?php echo AT_BASE_HREF; ?>" />
 </head>
 
 <body>
@@ -80,10 +77,7 @@ $row = mysql_fetch_assoc($result);
 	</li>
 	<br />
 
-<?php
+	<?php require_once('translator.php'); ?>
 
-require_once('translator.php');
-
-?>
 </body>
 </html>

@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor                                                               */
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg, Heidi Hazelton */
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg, Heidi Hazelton */
 /* http://atutor.ca                                                     */
 /*                                                                      */
 /* This program is free software. You can redistribute it and/or        */
@@ -62,7 +62,7 @@ class ATutorMailer extends PHPMailer {
 	* @author  Joel Kronenberg
 	*/
 	function Send() {
-		global $_base_href, $_config;
+		global $_config;
 
 		// attach the ATutor footer to the body first:
 		$this->Body .= 	"\n\n".'----------------------------------------------'."\n";
@@ -101,7 +101,7 @@ class ATutorMailer extends PHPMailer {
 	*/
 	function QueueMail($to_email, $to_name, $from_email, $from_name, $subject, $body) {
 		global $db;
-		$sql = "INSERT INTO ".TABLE_PREFIX."mail_queue VALUES (0, '$to_email', '$to_name', '$from_email', '$from_name', '".addslashes($this->CharSet)."', '$subject', '$body')";
+		$sql = "INSERT INTO ".TABLE_PREFIX."mail_queue VALUES (NULL, '$to_email', '$to_name', '$from_email', '$from_name', '".addslashes($this->CharSet)."', '$subject', '$body')";
 		return mysql_query($sql, $db);
 	}
 

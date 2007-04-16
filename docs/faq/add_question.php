@@ -21,13 +21,24 @@ if (isset($_POST['cancel'])) {
 	header('Location: index_instructor.php');
 	exit;
 } else if (isset($_POST['submit'])) {
-	if (trim($_POST['question']) == '') {
-		$msg->addError('QUESTION_EMPTY');
+	$_POST['question'] = trim($_POST['question']);
+	$_POST['answer'] = trim($_POST['answer']);
+
+	$missing_fields = array();
+	
+	if (!$_POST['question']) {
+		$missing_fields[] = _AT('question');
 	}
 
-	if (trim($_POST['answer']) == '') {
-		$msg->addError('ANSWER_EMPTY');
+	if (!$_POST['answer']) {
+		$missing_fields[] = _AT('answer');
 	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 
 	if (!$msg->containsErrors()) {
 		$_POST['question'] = $addslashes($_POST['question']);
@@ -38,11 +49,11 @@ if (isset($_POST['cancel'])) {
 		$sql    = "SELECT topic_id FROM ".TABLE_PREFIX."faq_topics WHERE topic_id=$_POST[topic_id] AND course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql, $db);
 		if ($row = mysql_fetch_assoc($result)) {
-			$sql	= "INSERT INTO ".TABLE_PREFIX."faq_entries VALUES (0, $_POST[topic_id], NOW(), 1, '$_POST[question]', '$_POST[answer]')";
+			$sql	= "INSERT INTO ".TABLE_PREFIX."faq_entries VALUES (NULL, $_POST[topic_id], NOW(), 1, '$_POST[question]', '$_POST[answer]')";
 			$result = mysql_query($sql,$db);
 		}
 		
-		$msg->addFeedback('QUESTION_ADDED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: index_instructor.php');
 		exit;
 	}

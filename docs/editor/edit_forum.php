@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -21,27 +21,24 @@ require (AT_INCLUDE_PATH.'lib/forums.inc.php');
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/forums/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 	exit;
 } else if (isset($_POST['edit_forum'])) {
 	$_POST['fid'] = intval($_POST['fid']);
 
-	// check if this forum is shared:
-	// (if this forum is shared, then we do not want to edit it.)
-
 	if ($_POST['title'] == '') {
-		$msg->addError('TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	if (!$msg->containsErrors()) {
 		if (!is_shared_forum($_POST['fid'])) {
 			edit_forum($_POST);
-			$msg->addFeedback('FORUM_UPDATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		} else {
 			$msg->addError('FORUM_NO_EDIT_SHARE');
 		}
 		
-		header('Location: '.$_base_href.'tools/forums/index.php');
+		header('Location: '.AT_BASE_HREF.'tools/forums/index.php');
 		exit;
 	}
 }
@@ -61,6 +58,7 @@ if (!isset($_POST['submit'])) {
 	}
 } else {
 	$row['description'] = $_POST['body'];
+	$row['mins_to_edit'] = $_POST['edit'];
 }
 
 $msg->printErrors();
@@ -79,6 +77,11 @@ $msg->printErrors();
 	<div class="row">
 		<label for="body"><?php echo _AT('description'); ?></label><br />
 		<textarea name="body" cols="45" rows="2" id="body" wrap="wrap"><?php echo $row['description']; ?></textarea>
+	</div>
+
+	<div class="row">
+		<label for="edit"><?php echo _AT('allow_editing'); ?></label><br />
+		<input type="text" name="edit" size="3" id="edit" value="<?php echo intval($row['mins_to_edit']); ?>" /> <?php echo _AT('in_minutes'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -25,7 +25,7 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/news/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 	exit;
 } else if ($_POST['edit_news']) {
 	$_POST['title'] = trim($_POST['title']);
@@ -41,7 +41,7 @@ if (isset($_POST['cancel'])) {
 		$_POST['title']  = $addslashes($_POST['title']);
 		$_POST['body_text']  = $addslashes($_POST['body_text']);
 
-		$sql = "UPDATE ".TABLE_PREFIX."news SET title='$_POST[title]', body='$_POST[body_text]', formatting=$_POST[formatting] WHERE news_id=$_POST[aid] AND course_id=$_SESSION[course_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."news SET title='$_POST[title]', body='$_POST[body_text]', formatting=$_POST[formatting], date=date WHERE news_id=$_POST[aid] AND course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql,$db);
 
 		/* update announcement RSS: */
@@ -52,9 +52,27 @@ if (isset($_POST['cancel'])) {
 			@unlink(AT_CONTENT_DIR . 'feeds/' . $_SESSION['course_id'] . '/RSS2.0.xml');
 		}
 
-		$msg->addFeedback('NEWS_UPDATED');
-		header('Location: '.$_base_href.'tools/news/index.php');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+		header('Location: '.AT_BASE_HREF.'tools/news/index.php');
 		exit;
+	}
+}
+
+if (!isset($_REQUEST['setvisual']) && !isset($_REQUEST['settext'])) {
+	if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 1) {
+		$_POST['formatting'] = 1;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
+
+	} else if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 2) {
+		$_POST['formatting'] = 1;
+		$_POST['settext'] = 0;
+		$_POST['setvisual'] = 1;
+
+	} else { // else if == 0
+		$_POST['formatting'] = 0;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
 	}
 }
 
@@ -75,7 +93,7 @@ if (isset($_GET['aid'])) {
 }
 
 if ($aid == 0) {
-	$msg->printErrors('ANN_ID_ZERO');
+	$msg->printErrors('ITEM_NOT_FOUND');
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
@@ -83,7 +101,7 @@ if ($aid == 0) {
 $sql = "SELECT * FROM ".TABLE_PREFIX."news WHERE news_id=$aid AND course_id=$_SESSION[course_id]";
 $result = mysql_query($sql,$db);
 if (!($row = mysql_fetch_array($result))) {
-	$msg->printErrors('ANN_NOT_FOUND');
+	$msg->printErrors('ITEM_NOT_FOUND');
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }

@@ -32,7 +32,7 @@ if (isset($_POST['submit_no'])) {
 	$sql = "DELETE FROM ".TABLE_PREFIX."reading_list WHERE course_id=$_SESSION[course_id] AND resource_id=$resource_id";
 	$result = mysql_query($sql, $db);
 
-	$msg->addFeedback('RL_RESOURCE_DELETED');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: display_resources.php');
 	exit;
 }
@@ -53,7 +53,7 @@ if ($row = mysql_fetch_assoc($result)){
 	$msg->printConfirm();
 }
 else {
-	$msg->addError('RL_RESOURCE_NOT_FOUND');
+	$msg->addError('ITEM_NOT_FOUND');
 }
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

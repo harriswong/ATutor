@@ -9,7 +9,7 @@ if (!$_POST['email']) {
 }
 ?>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
-<?php global $languageManager, $_config; ?>
+<?php global $languageManager, $_config, $moduleFactory; ?>
 <input name="ml" type="hidden" value="<?php echo $this->ml; ?>" />
 <div class="input-form">
 
@@ -111,7 +111,7 @@ if (!$_POST['email']) {
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email"><?php echo _AT('email_address'); ?></label><br />
 		<input id="email" name="email" type="text" size="50" maxlength="60" value="<?php echo stripslashes(htmlspecialchars($_POST['email'])); ?>" /> (e.g. firstname.lastname@fraserhealth.ca)
-		<input type="checkbox" id="priv" name="private_email" value="1" <?php if ($_POST['private_email']) { echo 'checked="checked"'; } ?> /><label for="priv"><?php echo _AT('keep_email_private');?></label>
+		<input type="checkbox" id="priv" name="private_email" value="1" <?php if ($_POST['private_email'] || !isset($_POST['submit'])) { echo 'checked="checked"'; } ?> /><label for="priv"><?php echo _AT('keep_email_private');?></label>
 	</div>
 
 	<div class="row">
@@ -165,16 +165,26 @@ if (!$_POST['email']) {
 		<h3><?php echo _AT('personal_information').' ('._AT('optional').')'; ?></h3>
 	</div>
 
+	<?php 
+	$mod = $moduleFactory->getModule('_standard/profile_pictures');
+	if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && $_POST['member_id'] && $mod->isEnabled() === TRUE): ?>
+		<div class="row">
+			<?php echo _AT('picture'); ?><br/>
+			<?php if (profile_image_exists($_POST['member_id'])): ?>
+				<a href="get_profile_img.php?id=<?php echo $_POST['member_id'].SEP.'size=o'; ?>"><?php print_profile_img($_POST['member_id']); ?></a>
+				<input type="checkbox" name="profile_pic_delete" value="1" id="profile_pic_delete" /><label for="profile_pic_delete"><?php echo _AT('delete'); ?></label>
+			<?php else: ?>
+				<?php echo _AT('none'); ?> <a href="admin/profile_picture.php?member_id=<?php echo $_POST['member_id']; ?>"><?php echo _AT('add'); ?></a>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
+
 	<?php if (admin_authenticate(AT_ADMIN_PRIV_USERS, TRUE) && defined('AT_MASTER_LIST') && AT_MASTER_LIST): ?>
 		<input type="hidden" name="old_student_id" value="<?php echo $_POST['old_student_id']; ?>" />
 		<div class="row">
 			<label for="student_id"><?php echo _AT('employee_number'); ?></label><br />
 				<input type="text" name="student_id" value="<?php echo $_POST['student_id']; ?>" size="20" /><br />
 		</div>
-		<!-- div class="row">
-			<label for="student_pin"><?php echo _AT('student_pin'); ?></label><br />
-			<input id="student_pin" name="student_pin" type="password" size="15" maxlength="15" value="<?php echo stripslashes(htmlspecialchars($_POST['student_pin'])); ?>" /><br />
-		</div -->
 		<div class="row">
 			<input type="checkbox" id="overwrite" name="overwrite" value="1" <?php if ($_POST['overwrite']) { echo 'checked="checked"'; } ?> /><label for="overwrite"><?php echo _AT('overwrite_master');?></label>
 		</div>

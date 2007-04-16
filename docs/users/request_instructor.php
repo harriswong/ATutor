@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -20,16 +20,16 @@ $_POST['description'] = trim($_POST['description']);
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'users/index.php');
+	header('Location: '.AT_BASE_HREF.'users/index.php');
 	exit;
 
 } else if ($_POST['description'] == ''){
-	$msg->addError('DESC_REQUIRED');
-	header('Location: '.$_base_href.'users/create_course.php');
+	$msg->addError(array('EMPTY_FIELDS', _AT('description')));
+	header('Location: '.AT_BASE_HREF.'users/create_course.php');
 	exit;
 } else if (isset($_POST['form_request_instructor'])) {
 	 if (defined('AUTO_APPROVE_INSTRUCTORS') && AUTO_APPROVE_INSTRUCTORS) {
-		$sql	= "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_INSTRUCTOR." WHERE member_id=$_SESSION[member_id]";
+		$sql	= "UPDATE ".TABLE_PREFIX."members SET status=".AT_STATUS_INSTRUCTOR.", creation_date=creation_date, last_login=last_login WHERE member_id=$_SESSION[member_id]";
 		$result = mysql_query($sql, $db);
 
 		$msg->addFeedback('ACCOUNT_APPROVED');
@@ -49,7 +49,7 @@ if (isset($_POST['cancel'])) {
 			if ($row = mysql_fetch_assoc($result)) {
 				$email = $row['email'];
 			}
-			$tmp_message = _AT('req_message_instructor', $_SESSION['login'], $_POST['description'], $_base_href);
+			$tmp_message = _AT('req_message_instructor', get_display_name($_SESSION['member_id']), $_POST['description'], AT_BASE_HREF);
 
 			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
 

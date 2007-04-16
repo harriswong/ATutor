@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -19,12 +19,12 @@ authenticate(AT_PRIV_FORUMS);
 $pid = intval($_GET['pid']);
 
 /* ABS(sticky-1) : if 1 then 0, if 0 then 1 */
-$sql	= "UPDATE ".TABLE_PREFIX."forums_threads SET sticky=ABS(sticky-1) WHERE post_id=$pid";
+$sql	= "UPDATE ".TABLE_PREFIX."forums_threads SET sticky=ABS(sticky-1), last_comment=last_comment, date=date WHERE post_id=$pid";
 $result = mysql_query($sql, $db);
 
-$msg->addFeedback('STICKY_UPDATED');
+$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
-header('Location: '.$_base_href.'forum/index.php?fid='.intval($_GET['fid']));
+header('Location: '.AT_BASE_HREF.'forum/index.php?fid='.intval($_GET['fid']));
 exit;
 
 ?>

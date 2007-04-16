@@ -58,8 +58,11 @@ global $system_courses, $_custom_css;
 	<meta name="Generator" content="ATutor - Copyright 2005 by http://atutor.ca" />
 	<base href="<?php echo $this->content_base_href; ?>" />
 	<link rel="shortcut icon" href="<?php echo $this->base_path; ?>favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" href="<?php echo $this->base_path; ?>print.css" type="text/css" media="print" />
+	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/print.css" type="text/css" media="print" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
+	<!--[if IE]>
+	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
+	<![endif]-->
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
 	<?php echo $this->rtl_css; ?>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
@@ -68,113 +71,21 @@ global $system_courses, $_custom_css;
 	<?php endif; ?>
 	<?php echo $this->custom_css; ?>
 </head>
-<body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<body onload="<?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
 //<!--
-
 var newwindow;
 function poptastic(url) {
 	newwindow=window.open(url,'popup','height=600,width=600,scrollbars=yes,resizable=yes');
 	if (window.focus) {newwindow.focus()}
 }
-
-function getexpirydate(nodays){
-	var UTCstring;
-	Today = new Date();
-	nomilli=Date.parse(Today);
-	Today.setTime(nomilli+nodays*24*60*60*1000);
-	UTCstring = Today.toUTCString();
-	return UTCstring;
-}
-
-function setcookie(name,value,duration){
-	cookiestring=name+"="+escape(value)+";path=/;expires="+getexpirydate(duration);
-	document.cookie=cookiestring;
-	if(!getcookie(name)){
-		return false;
-	} else {
-		return true;
-	}
-}
-
-function getcookie(cookiename) {
-	var cookiestring=""+document.cookie;
-	var index1=cookiestring.indexOf(cookiename);
-	if (index1==-1 || cookiename=="") return ""; 
-	var index2=cookiestring.indexOf(';',index1);
-	if (index2==-1) index2=cookiestring.length; 
-	return unescape(cookiestring.substring(index1+cookiename.length+1,index2));
-}
-
-function setDisplay(objId) {
-	var toc = document.getElementById(objId);
-
-	var state = getcookie(objId);
-	if (document.getElementById(objId) && state && (state == 'none')) {
-		toggleToc(objId);
-	}
-}
-
-
-function setstates() {
-	return;
-	var objId = "side-menu";
-	var state = getcookie(objId);
-	if (document.getElementById(objId) && state && (state == 'none')) {
-		toggleToc(objId);
-	}
-
-	var objId = "toccontent";
-	var state = getcookie(objId);
-	if (document.getElementById(objId) && state && (state == 'none')) {
-		toggleToc(objId);
-	}
-	return true;
-}
-
-function showTocToggle(objId, show, hide, key, selected) {
-	if(document.getElementById) {
-		if (key) {
-			var accesskey = " accesskey='" + key + "' title='"+ show + "/" + hide + " Alt+"+ key +"'";
-		} else {
-			var accesskey = "";
-		}
-
-		if (selected == 'hide') {
-			document.writeln('<a href="javascript:toggleToc(\'' + objId + '\')" ' + accesskey + '>' +
-			'<span id="' + objId + 'showlink" style="display:none;">' + show + '</span>' +
-			'<span id="' + objId + 'hidelink">' + hide + '</span>'	+ '</a>');
-		} else {
-			document.writeln('<a href="javascript:toggleToc(\'' + objId + '\')" ' + accesskey + '>' +
-			'<span id="' + objId + 'showlink">' + show + '</span>' +
-			'<span id="' + objId + 'hidelink" style="display:none;">' + hide + '</span>'	+ '</a>');
-		}
-	}
-}
-
-function toggleToc(objId) {
-	var toc = document.getElementById(objId);
-	if (toc == null) {
-		return;
-	}
-	var showlink=document.getElementById(objId + 'showlink');
-	var hidelink=document.getElementById(objId + 'hidelink');
-	if (hidelink.style.display == 'none') {
-		toc.style.display = '';
-		hidelink.style.display='';
-		showlink.style.display='none';
-	} else {
-		toc.style.display = 'none';
-		hidelink.style.display='none';
-		showlink.style.display='';
-	}
-	setcookie(objId, toc.style.display, 1);
-}
 //-->
 </script>
 <!-- section title -->
-<div><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#content" accesskey="c"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" /></a>		<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#menu"  accesskey="m"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_menu'); ?> ALT+m" /></a><h1 id="section-title"><?php echo $this->section_title; ?></h1>
+<div><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#content" accesskey="c"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" /></a>		<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#menu"  accesskey="m"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_menu'); ?> ALT+m" /></a><h1 id="section-title"><?php echo $this->section_title; ?><?php if (($_SESSION['course_id'] > 0) && ($_SESSION['enroll'] == AT_ENROLL_NO)) : ?>
+		- <small><a href="<?php echo $this->base_path; ?>enroll.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('enroll_me'); ?></a></small>
+	<?php endif; ?></h1>
 </div>
 
 <!-- top help/search/login links -->
@@ -213,27 +124,27 @@ function toggleToc(objId) {
 	<img src="<?php echo $this->img; ?>linkTransparent.gif" alt="" /> <a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> <img src="<?php echo $this->img; ?>linkTransparent.gif" alt="" /> <a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
 </div>
 <br />
+<div id="topnavlistcontainer">
 <!-- the main navigation. in our case, tabs -->
-<div class="top">
-	<div class="tabs">
-			<?php foreach ($this->top_level_pages as $page): ?>
-				<?php ++$accesscounter; $accesscounter = ($accesscounter == 10 ? 0 : $accesscounter); ?>
-				<?php $accesskey_text = ($accesscounter < 10 ? 'accesskey="'.$accesscounter.'"' : ''); ?>
-				<?php $accesskey_title = ($accesscounter < 10 ? ' Alt+'.$accesscounter : ''); ?>
-				<?php if ($page['url'] == $this->current_top_level_page): ?>
-					<a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>" class="active"><?php echo $page['title']; ?></a>
-				<?php else: ?>
-					<a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>"><?php echo $page['title']; ?></a>
-				<?php endif; ?>
-				<?php $accesscounter = ($accesscounter == 0 ? 11 : $accesscounter); ?>
-			<?php endforeach; ?>
-	</div>
+	<ul id="topnavlist">
+		<?php foreach ($this->top_level_pages as $page): ?>
+			<?php ++$accesscounter; $accesscounter = ($accesscounter == 10 ? 0 : $accesscounter); ?>
+			<?php $accesskey_text = ($accesscounter < 10 ? 'accesskey="'.$accesscounter.'"' : ''); ?>
+			<?php $accesskey_title = ($accesscounter < 10 ? ' Alt+'.$accesscounter : ''); ?>
+			<?php if ($page['url'] == $this->current_top_level_page): ?>
+				<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>" class="active"><?php echo $page['title']; ?></a></li>
+			<?php else: ?>
+				<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>"><?php echo $page['title']; ?></a></li>
+			<?php endif; ?>
+			<?php $accesscounter = ($accesscounter == 0 ? 11 : $accesscounter); ?>
+		<?php endforeach; ?>
+	</ul>
 </div>
 
 <!-- the sub navigation -->
-<div style="float: right; padding-top: 5px; padding-right: 5px; font-size:0.85em; text-transform: lowercase; ">
+<div style="float: right; padding-top: 5px; padding-right: 5px; font-size:0.85em; text-transform: lowercase;" id="suv-nav-logout">
 	<?php if ($_SESSION['valid_user']): ?>					
-		<strong><?php echo $_SESSION['login']; ?></strong> &nbsp; <img src="<?php echo $this->img; ?>/linkOpaque.gif" alt="" /> <a href="<?php echo $this->base_path; ?>logout.php"><?php echo _AT('logout'); ?></a>
+		<strong><?php echo get_display_name($_SESSION['member_id']); ?></strong> &nbsp; <img src="<?php echo $this->img; ?>/linkOpaque.gif" alt="" /> <a href="<?php echo $this->base_path; ?>logout.php"><?php echo _AT('logout'); ?></a>
 	<?php else: ?>
 		 <img src="<?php echo $this->img; ?>/linkOpaque.gif" alt="" /> <a href="<?php echo $this->base_path; ?>login.php?course=<?php echo $_SESSION['course_id']; ?>"><?php echo _AT('login'); ?></a> &nbsp; <img src="<?php echo $this->img; ?>/linkOpaque.gif" alt="" /> <a href="<?php echo $this->base_path; ?>registration.php"><?php echo _AT('register'); ?></a>
 	<?php endif; ?>
@@ -270,13 +181,12 @@ function toggleToc(objId) {
 	<?php endforeach; ?> <?php echo $this->page_title; ?>
 </div>
 
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="99%">
-	<tr>
-		<?php if ($_SESSION['course_id'] > 0): ?>
-			<td valign="top" width="100%">
-		<?php else: ?>
-			<td valign="top" width="100%" colspan="2">
-		<?php endif; ?>
+<div id="contentwrapper">
+<div id="contentcolumn"
+	<?php if (($_SESSION['course_id'] <= 0) && !$this->side_menu): ?>
+		style="margin-right:0px;width:99%;"
+	<?php endif; ?>
+	>
 
 <!-- the page title -->
 	<div style="text-align: right; padding-bottom: 10px; padding-right: 10px; float: right; margin-top: 10px; padding-right: 5px; font-size:0.95em;">
@@ -297,7 +207,7 @@ function toggleToc(objId) {
 		<?php endif; ?>
 	</div>
 
-	<div style="float:right;padding-top:7px;">
+	<div style="float:right;padding-top:7px;" id="sequence-links">
 		<?php if ($this->sequence_links['resume']): ?>
 				<a style="color:white;" href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="."><img src="<?php echo $this->img; ?>resume.gif" border="0" title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?> Alt+." alt="<?php echo $this->sequence_links['resume']['title']; ?> Alt+." class="img-size-ascdesc" /></a>
 		<?php else:

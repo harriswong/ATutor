@@ -27,19 +27,11 @@ if (isset($_POST['cancel'])) {
 	header('Location: index.php');
 	exit;
 } else if (isset($_POST['submit'])) {
-	/* password validation */
-	if ($_POST['password'] == '') { 
-		$msg->addError('PASSWORD_MISSING');
-	} else {
-		// check for valid passwords
-		if ($_POST['password'] != $_POST['confirm_password']){
-			$msg->addError('PASSWORD_MISMATCH');
-		}
-	}
+	$missing_fields = array();
 
 	/* email validation */
 	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
+		$missing_fields[] = _AT('email');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 		$msg->addError('EMAIL_INVALID');
 	}
@@ -49,34 +41,42 @@ if (isset($_POST['cancel'])) {
 		$msg->addError('EMAIL_EXISTS');
 	}
 
+	$priv = 0;
+
+	if (isset($_POST['priv_admin'])) {
+		// overrides all above.
+		$priv = AT_ADMIN_PRIV_ADMIN;
+	} else if (isset($_POST['privs'])) {
+		foreach ($_POST['privs'] as $value) {
+			$priv += intval($value);
+		}
+	}
+	$_POST['privs'] = $priv;
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
 		$_POST['login']     = $addslashes($_POST['login']);
-		$_POST['password']  = $addslashes($_POST['password']);
 		$_POST['real_name'] = $addslashes($_POST['real_name']);
 		$_POST['email']     = $addslashes($_POST['email']);
 
-		$priv = 0;
-
-		if (isset($_POST['priv_admin'])) {
-			// overrides all above.
-			$priv = AT_ADMIN_PRIV_ADMIN;
-		} else if (isset($_POST['privs'])) {
-			foreach ($_POST['privs'] as $value) {
-				$priv += intval($value);
-			}
-		}
-
-		$sql    = "UPDATE ".TABLE_PREFIX."admins SET password='$_POST[password]', real_name='$_POST[real_name]', email='$_POST[email]', `privileges`=$priv WHERE login='$_POST[login]'";
+		$sql    = "UPDATE ".TABLE_PREFIX."admins SET real_name='$_POST[real_name]', email='$_POST[email]', `privileges`=$priv, last_login=last_login WHERE login='$_POST[login]'";
 		$result = mysql_query($sql, $db);
 
-		$sql    = "UPDATE ".TABLE_PREFIX."admins SET password='*****', real_name='$_POST[real_name]', email='$_POST[email]', `privileges`=$priv WHERE login='$_POST[login]'";
+		$sql    = "UPDATE ".TABLE_PREFIX."admins SET real_name='$_POST[real_name]', email='$_POST[email]', `privileges`=$priv WHERE login='$_POST[login]'";
 
 		write_to_log(AT_ADMIN_LOG_UPDATE, 'admins', mysql_affected_rows($db), $sql);
 
-		$msg->addFeedback('ADMIN_EDITED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: index.php');
 		exit;
 	}
+	$_POST['login']             = $stripslashes($_POST['login']);
+	$_POST['real_name']         = $stripslashes($_POST['real_name']);
+	$_POST['email']             = $stripslashes($_POST['email']);
 } 
 
 require(AT_INCLUDE_PATH.'header.inc.php'); 
@@ -93,7 +93,6 @@ if (!($row = mysql_fetch_assoc($result))) {
 }
 if (!isset($_POST['submit'])) {
 	$_POST = $row;
-	$_POST['confirm_password'] = $_POST['password'];
 	if (query_bit($row['privileges'], AT_ADMIN_PRIV_ADMIN)) {
 		$_POST['priv_admin'] = 1;
 	}
@@ -109,23 +108,13 @@ if (!isset($_POST['submit'])) {
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password"><?php echo _AT('password'); ?></label><br />
-		<input type="password" name="password" id="password" size="25" value="<?php echo $_POST['password']; ?>" />
-	</div>
-
-	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="password2"><?php echo _AT('confirm_password'); ?></label><br />
-		<input type="password" name="confirm_password" id="password2" size="25" value="<?php echo $_POST['confirm_password']; ?>"  />
-	</div>
-
-	<div class="row">
 		<label for="real_name"><?php echo _AT('real_name'); ?></label><br />
-		<input type="text" name="real_name" id="real_name" size="30" value="<?php echo $_POST['real_name']; ?>" />
+		<input type="text" name="real_name" id="real_name" size="30" value="<?php echo htmlspecialchars($_POST['real_name']); ?>" />
 	</div>
 
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="email"><?php echo _AT('email'); ?></label><br />
-		<input type="text" name="email" id="email" size="30" value="<?php echo $_POST['email']; ?>" />
+		<input type="text" name="email" id="email" size="30" value="<?php echo htmlspecialchars($_POST['email']); ?>" />
 	</div>
 
 	<div class="row">
@@ -145,14 +134,14 @@ if (!isset($_POST['submit'])) {
 	</div>
 
 	<div class="row buttons">
-		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" <?php if ($_POST['priv_admin'] != 1) { echo 'onClick="return checkAdmin();"'; } ?> />
+		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" <?php if ($_POST['priv_admin'] != 1) { echo 'onclick="return checkAdmin();"'; } ?> />
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>" />
 	</div>
 </div>
 </form>
 
-<script language="javascript">
-
+<script language="javascript" type="text/javascript">
+// <!--
 function checkAdmin() {
 	if (document.form.priv_admin.checked == true) {
 		return confirm('<?php echo _AT('confirm_admin_create'); ?>');
@@ -160,7 +149,7 @@ function checkAdmin() {
 		return true;
 	}
 }
-
+// -->
 </script>
 
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

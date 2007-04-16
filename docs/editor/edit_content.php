@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -32,11 +32,11 @@ require(AT_INCLUDE_PATH.'lib/editor_tab_functions.inc.php');
 
 if ($_POST['close'] || $_GET['close']) {
 	if ($_GET['close']) {
-		$msg->addFeedback('CONTENT_UPDATED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	} else {
 		$msg->addFeedback('CLOSED');
 		if ($cid == 0) {
-			header('Location: '.$_base_href.'tools/content/index.php');
+			header('Location: '.AT_BASE_HREF.'tools/content/index.php');
 			exit;
 		}
 	}
@@ -120,6 +120,23 @@ if ($current_tab == 4) {
 }
 
 if ($current_tab == 0) {
+	if (!isset($_REQUEST['setvisual']) && !isset($_REQUEST['settext'])) {
+		if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 1) {
+			$_POST['formatting'] = 1;
+			$_REQUEST['settext'] = 0;
+			$_REQUEST['setvisual'] = 0;
+
+		} else if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 2) {
+			$_POST['formatting'] = 1;
+			$_POST['settext'] = 0;
+			$_POST['setvisual'] = 1;
+
+		} else { // else if == 0
+			$_POST['formatting'] = 0;
+			$_REQUEST['settext'] = 0;
+			$_REQUEST['setvisual'] = 0;
+		}
+	}
 	if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
 		$onload = ' document.form.ctitle.focus();';
 	}

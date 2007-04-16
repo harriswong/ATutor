@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -28,8 +28,11 @@ class RemoteLanguageManager extends LanguageManager {
 
 	function RemoteLanguageManager() {
 		$version = str_replace('.','_',VERSION);
-
 		$language_xml = @file_get_contents('http://update.atutor.ca/languages/'.$version.'/languages.xml');
+		if ($language_xml === FALSE) {
+			// fix for bug #2896
+			$language_xml = @file_get_contents('http://update.atutor.ca/languages/1_5_3/languages.xml');
+		}
 		if ($language_xml !== FALSE) {
 
 			$languageParser =& new LanguagesParser();

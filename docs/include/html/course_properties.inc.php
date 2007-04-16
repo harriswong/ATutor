@@ -20,6 +20,24 @@ require_once(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
 $_GET['show_courses'] = $addslashes(intval($_GET['show_courses']));
 $_GET['current_cat'] = $addslashes(intval($_GET['current_cat']));
 
+if (!isset($_REQUEST['setvisual']) && !isset($_REQUEST['settext'])) {
+	if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 1) {
+		$_POST['formatting'] = 1;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
+
+	} else if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 2) {
+		$_POST['formatting'] = 1;
+		$_POST['settext'] = 0;
+		$_POST['setvisual'] = 1;
+
+	} else { // else if == 0
+		$_POST['formatting'] = 0;
+		$_REQUEST['settext'] = 0;
+		$_REQUEST['setvisual'] = 0;
+	}
+}
+
 if (($_POST['setvisual'] && !$_POST['settext']) || $_GET['setvisual']) {
 	load_editor('banner');
 }
@@ -77,7 +95,7 @@ if (isset($_POST['form_course'])) {
 	}
 
 } else if ($course) {
-	$sql	= "SELECT * FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
+	$sql	= "SELECT *, DATE_FORMAT(release_date, '%Y-%m-%d %H:%i:00') AS release_date FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
 	$result = mysql_query($sql, $db);
 	if (!($row	= mysql_fetch_assoc($result))) {
 		echo _AT('no_course_found');

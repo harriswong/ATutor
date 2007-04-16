@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -60,7 +60,7 @@ if ($result && ($row = mysql_fetch_assoc($result))) {
 
 	$offset = ($page-1)*$results_per_page;
 
-	$sql = "SELECT N.* FROM ".TABLE_PREFIX."news N WHERE N.course_id=$_SESSION[course_id] ORDER BY date DESC LIMIT $offset, $results_per_page";
+	$sql = "SELECT N.*, DATE_FORMAT(N.date, '%Y-%m-%d %H-%i:%s') AS date FROM ".TABLE_PREFIX."news N WHERE N.course_id=$_SESSION[course_id] ORDER BY date DESC LIMIT $offset, $results_per_page";
 	
 	$result = mysql_query($sql, $db);
 	while ($row = mysql_fetch_assoc($result)) {

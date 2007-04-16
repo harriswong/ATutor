@@ -42,11 +42,11 @@ if (isset($_POST['submit_no'])) {
 	$sql = "DELETE FROM ".TABLE_PREFIX."files_comments WHERE file_id=$_POST[file_id] AND comment_id=$_POST[id] AND member_id=$_SESSION[member_id]";
 	$result = mysql_query($sql, $db);
 	if (mysql_affected_rows($db) == 1) {
-		$sql = "UPDATE ".TABLE_PREFIX."files SET num_comments=num_comments-1 WHERE owner_type=$owner_type AND owner_id=$owner_id AND file_id=$_POST[file_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."files SET num_comments=num_comments-1, date=date WHERE owner_type=$owner_type AND owner_id=$owner_id AND file_id=$_POST[file_id]";
 		$result = mysql_query($sql, $db);
 	}
 
-	$msg->addFeedback('COMMENT_DELETED_SUCCESSFULLY');
+	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	header('Location: comments.php'.$owner_arg_prefix.'id='.$_POST['file_id']);
 	exit;
 }
@@ -54,7 +54,7 @@ if (isset($_POST['submit_no'])) {
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 $hidden_vars = array('id' => $id, 'ot' => $owner_type, 'oid' => $owner_id, 'file_id' => $_GET['file_id']);
-$msg->addConfirm(array('COMMENT_DELETE'), $hidden_vars);
+$msg->addConfirm(array('DELETE'), $hidden_vars);
 $msg->printConfirm();
 
 

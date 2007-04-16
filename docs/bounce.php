@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca                                             */
 /*                                                              */
@@ -80,6 +80,23 @@ function get_groups($course_id) {
 $_user_location	= 'public';
 define('AT_INCLUDE_PATH', 'include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
+
+$set_to_public = false;
+if ($_SERVER['PHP_SELF'] == $_base_path."acl.php") {
+	//search through the auth table and find password that matches get password
+	$key = $addslashes(key($_GET));
+	$sql = "SELECT * FROM ".TABLE_PREFIX."course_access WHERE password='$key' AND (expiry_date > NOW() OR expiry_date+0 = 0) AND enabled=1";
+	$result = mysql_query($sql, $db);
+	if ($row = mysql_fetch_assoc($result)) {
+		$set_to_public = true;
+		$_GET['course'] = $row['course_id'];
+		$_SESSION['member_id'] = 0;
+		$_SESSION['valid_user'] = false;
+		$_SESSION['login'] = 'guest';
+	}
+}
+
+
 if (isset($_GET['admin']) && isset($_SESSION['is_super_admin'])) {
 	$sql = "SELECT login, `privileges`, language FROM ".TABLE_PREFIX."admins WHERE login='$_SESSION[is_super_admin]' AND `privileges`>0";
 	$result = mysql_query($sql, $db);
@@ -93,6 +110,7 @@ if (isset($_GET['admin']) && isset($_SESSION['is_super_admin'])) {
 		$_SESSION['course_id']  = -1;
 		$_SESSION['privileges'] = intval($row['privileges']);
 		$_SESSION['lang'] = $row['language'];
+		unset($_SESSION['member_id']);
 		unset($_SESSION['is_super_admin']);
 
 		write_to_log(AT_ADMIN_LOG_UPDATE, 'admins', mysql_affected_rows($db), $sql);
@@ -170,9 +188,9 @@ if (($course === 0) && $_SESSION['valid_user']) {
 $sql	= "SELECT member_id, content_packaging, cat_id, access, title, UNIX_TIMESTAMP(release_date) AS u_release_date FROM ".TABLE_PREFIX."courses WHERE course_id=$course";
 $result = mysql_query($sql,$db);
 if (!$row = mysql_fetch_assoc($result)) {
-	$msg->addError('NO_SUCH_COURSE');
+	$msg->addError('ITEM_NOT_FOUND');
 	if ($_SESSION['member_id']) {
-		header('Location: '.$_base_href.'users/index.php');
+		header('Location: '.AT_BASE_HREF.'users/index.php');
 	} else {
 		header('Location: login.php');
 	}
@@ -186,6 +204,11 @@ $_SESSION['groups'] = array();
 unset($_SESSION['fs_owner_type']);
 unset($_SESSION['fs_owner_id']);
 unset($_SESSION['fs_folder_id']);
+
+//check for acl var
+if ($set_to_public) {
+	$row['access'] = "public";
+}
 
 switch ($row['access']){
 	case 'public':
@@ -204,7 +227,7 @@ switch ($row['access']){
 			count_login();
 		} else if (!$_SESSION['valid_user']) {
 			$msg->addError(array('COURSE_NOT_RELEASED', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
-			header('Location: '.$_base_href.'browse.php');
+			header('Location: '.AT_BASE_HREF.'browse.php');
 			exit;
 
 		} else {
@@ -232,7 +255,7 @@ switch ($row['access']){
 
 		if (($row['u_release_date'] > time()) && !($_SESSION['is_admin'] || $_SESSION['privileges'])) {
 			$msg->addError(array('COURSE_NOT_RELEASED', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
-			header('Location: '.$_base_href.'bounce.php?course=0');
+			header('Location: '.AT_BASE_HREF.'bounce.php?course=0');
 			exit;
 		} else if ($row['u_release_date'] > time()) {
 			$msg->addInfo(array('COURSE_RELEASE', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
@@ -288,7 +311,7 @@ switch ($row['access']){
 
 		if (($row['u_release_date'] > time()) && !($_SESSION['is_admin'] || $_SESSION['privileges'])) {
 			$msg->addError(array('COURSE_NOT_RELEASED', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
-			header('Location: '.$_base_href.'bounce.php?course=0');
+			header('Location: '.AT_BASE_HREF.'bounce.php?course=0');
 			exit;
 		} else if ($row['u_release_date'] > time()) {
 			$msg->addInfo(array('COURSE_RELEASE', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
@@ -355,7 +378,7 @@ switch ($row['access']){
 
 		if (($row['u_release_date'] > time()) && !$row2['privileges']) {
 			$msg->addError(array('COURSE_NOT_RELEASED', AT_Date(_AT('announcement_date_format'), $row['u_release_date'], AT_DATE_UNIX_TIMESTAMP)));
-			header('Location: '.$_base_href.'bounce.php?course=0');
+			header('Location: '.$_AT_BASE_HREF.'bounce.php?course=0');
 			exit;
 		} else if ($row['u_release_date'] > time()) {
 			// only instructor and TAs may view  a course before it is released.

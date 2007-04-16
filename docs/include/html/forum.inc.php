@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -43,7 +43,7 @@ if (isset($_GET['asc'])) {
 	$col   = 'last_comment';
 }
 
-$sql	= "SELECT *, last_comment + 0 AS stamp FROM ".TABLE_PREFIX."forums_threads WHERE parent_id=0 AND forum_id=$fid AND member_id>0 ORDER BY sticky DESC, $col $order LIMIT $start,$num_per_page";
+$sql	= "SELECT *, last_comment + 0 AS stamp, DATE_FORMAT(last_comment, '%Y-%m-%d %H-%i:%s') AS last_comment FROM ".TABLE_PREFIX."forums_threads WHERE parent_id=0 AND forum_id=$fid AND member_id>0 ORDER BY sticky DESC, $col $order LIMIT $start,$num_per_page";
 $result	= mysql_query($sql, $db);
 
 if (!($row = mysql_fetch_assoc($result))) {
@@ -51,7 +51,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 	return;
 }
 ?>
-<table class="data static" summary="" rules="cols">
+<table class="data static" summary="" rules="rows">
 <colgroup>
 	<?php if ($col == 'subject'): ?>
 		<col class="sort" />
@@ -73,11 +73,8 @@ if (!($row = mysql_fetch_assoc($result))) {
 <thead>
 <tr>
 	<th scope="col"><a href="forum/index.php?<?php echo $orders[$order]; ?>=subject<?php echo $page_string; ?>"><?php echo _AT('topic'); ?></a></th>
-
 	<th scope="col"><a href="forum/index.php?<?php echo $orders[$order]; ?>=num_comments<?php echo $page_string; ?>"><?php echo _AT('replies'); ?></a></th>
-
 	<th scope="col"><a href="forum/index.php?<?php echo $orders[$order]; ?>=login<?php echo $page_string; ?>"><?php echo _AT('started_by'); ?></a></th>
-
 	<th scope="col"><a href="forum/index.php?<?php echo $orders[$order]; ?>=last_comment<?php echo $page_string; ?>"><?php echo _AT('last_comment'); ?></a></th>
 <?php
 	$colspan = 4;
@@ -90,7 +87,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 	echo '</thead>';
 	echo '<tfoot>';
 	echo '<tr>';
-	echo '<td colspan="'.$colspan.'" align="right">'._AT('page').': ';
+	echo '<td style="background-image: none" colspan="'.$colspan.'" align="right">'._AT('page').': ';
 
 	for ($i=1; $i<=$num_pages; $i++) {
 		if ($i == $page) {
@@ -118,7 +115,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 			$row['subject'] = substr($row['subject'], 0, 25).'...';
 		}
 		echo '<tr>';
-		echo '<td class="row1" width="60%">';
+		echo '<td>';
 
 		if ($_SESSION['valid_user']) {
 			if ($row['stamp'] > $last_accessed[$row['post_id']]['last_accessed']) {
@@ -171,16 +168,16 @@ if (!($row = mysql_fetch_assoc($result))) {
 		}
 		echo '</td>';
 
-		echo '<td class="row1" width="10%" align="center">'.$row['num_comments'].'</td>';
+		echo '<td width="10%" align="center">'.$row['num_comments'].'</td>';
 
-		echo '<td class="row1" width="10%"><a href="'.$_base_href.'profile.php?id='.$row['member_id'].'">'.AT_print($row['login'], 'members.login').'</a></td>';
+		echo '<td width="10%"><a href="'.AT_BASE_HREF.'profile.php?id='.$row['member_id'].'">'.get_display_name($row['member_id']).'</a></td>';
 
-		echo '<td class="row1" width="20%" align="right" nowrap="nowrap">';
+		echo '<td width="20%" align="right" nowrap="nowrap">';
 		echo AT_date(_AT('forum_date_format'), $row['last_comment'], AT_DATE_MYSQL_DATETIME);
 		echo '</td>';
 
 		if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN)) {
-			echo '<td class="row1" nowrap="nowrap">';
+			echo '<td nowrap="nowrap">';
 			echo ' <a href="forum/stick.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/forum/sticky.gif" border="0" alt="'._AT('sticky_thread').'" title="'._AT('sticky_thread').'" /></a> ';
 
 			if ($row['locked'] != 0) {
@@ -188,6 +185,8 @@ if (!($row = mysql_fetch_assoc($result))) {
 			} else {
 				echo '<a href="forum/lock_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].'"><img src="images/lock.gif" border="0" alt="'._AT('lock_thread').'"   title="'._AT('lock_thread').'"/></a>';
 			}
+			echo ' <a href="forum/move_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'ppid=0"><img src="images/forum/move.gif" border="0" alt="'._AT('move_thread').'" title="'._AT('move_thread').'"/></a>';
+
 			echo ' <a href="forum/delete_thread.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'ppid=0"><img src="images/icon_delete.gif" border="0" alt="'._AT('delete_thread').'" title="'._AT('delete_thread').'"/></a>';
 			
 			echo '</td>';

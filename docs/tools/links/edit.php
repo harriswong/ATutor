@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,7 +18,7 @@ require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
 if (!manage_links()) {
 	$msg->addError('ACCESS_DENIED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 }
 
@@ -27,21 +27,27 @@ $link_id = intval($lid[0]);
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/links/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 	exit;
 } else if (isset($_POST['edit_link']) && isset($_POST['submit'])) {
 
-	if ($_POST['title'] == '') {		
-		$msg->addError('TITLE_EMPTY');
+	$missing_fields = array();
+	if ($_POST['cat'] == 0 || $_POST['cat'] == '') {
+		$missing_fields[] = _AT('category');
 	}
-	if ($_POST['cat'] == 0) {		
-		$msg->addError('CAT_EMPTY');
+	if (trim($_POST['title']) == '') {
+		$missing_fields[] = _AT('title');
 	}
-	if (($_POST['url'] == '') || ($_POST['url'] == 'http://')) {
-		$msg->addError('URL_EMPTY');
+	if (trim($_POST['url']) == '' || $_POST['url'] == 'http://') {
+		$missing_fields[] = _AT('url');
 	}
-	if ($_POST['description'] == '') {		
-		$msg->addError('DESCRIPTION_EMPTY');
+	if (trim($_POST['description']) == '') {
+		$missing_fields[] = _AT('description');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors() && isset($_POST['submit'])) {
@@ -51,7 +57,7 @@ if (isset($_POST['cancel'])) {
 		$_POST['url'] == $addslashes($_POST['url']);
 		$_POST['description']  = $addslashes($_POST['description']);
 
-		$name = $_SESSION['login'];
+		$name = get_display_name($_SESSION['member_id']);
 		$email = '';
 
 		//check if new cat is auth? -- shouldn't be a prob. since cat dropdown is already filtered
@@ -59,9 +65,9 @@ if (isset($_POST['cancel'])) {
 		$sql	= "UPDATE ".TABLE_PREFIX."links SET cat_id=$_POST[cat], Url='$_POST[url]', LinkName='$_POST[title]', Description='$_POST[description]', SubmitName='$name', Approved=$_POST[approved] WHERE link_id=".$link_id;
 		mysql_query($sql, $db);
 	
-		$msg->addFeedback('LINK_UPDATED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 
-		header('Location: '.$_base_href.'tools/links/index.php');
+		header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 		exit;
 	} else {
 		$_POST['title']  = $stripslashes($_POST['title']);
@@ -78,7 +84,7 @@ if (isset($_POST['cancel'])) {
 
 		if (!links_authenticate($cat_row['owner_type'], $cat_row['owner_id'])) {
 			$msg->addError('ACCESS_DENIED');
-			header('Location: '.$_base_href.'tools/links/index.php');
+			header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 			exit;
 		}
 
@@ -136,7 +142,7 @@ $msg->printErrors();
 				$y = '';
 			}
 		?>
-		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?> /><label for="yes"><?php echo _AT('yes1'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?> /><label for="no"><?php echo _AT('no1'); ?></label>
+		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?> /><label for="yes"><?php echo _AT('yes'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?> /><label for="no"><?php echo _AT('no'); ?></label>
 	</div>
 	
 	<div class="row buttons">

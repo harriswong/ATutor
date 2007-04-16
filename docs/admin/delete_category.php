@@ -35,7 +35,7 @@ if (isset($_POST['submit_no'])) {
 
 		write_to_log(AT_ADMIN_LOG_DELETE, 'courses', mysql_affected_rows($db), $sql);
 
-		$msg->addFeedback('CAT_DELETED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: course_categories.php');
 		exit;
 	}
@@ -49,7 +49,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	$result = mysql_query($sql,$db);
 
 	if (mysql_num_rows($result) == 0) {
-		$msg->printErrors('CAT_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 	} else {
 		$row = mysql_fetch_assoc($result);
 		

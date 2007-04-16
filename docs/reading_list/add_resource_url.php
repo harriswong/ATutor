@@ -17,7 +17,7 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_READING_LIST);
 
 // initial values for form
-$id = "0";
+$id = intval($_REQUEST['id']);
 $title = "";
 $author = "";
 $comments = "";
@@ -31,11 +31,18 @@ if (isset($_POST['cancel'])) {
 	header('Location: index_instructor.php');
 	exit;
 } else if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	if (trim($_POST['title']) == '') {
-		$msg->addError('TITLE_EMPTY');
+		$missing_fields[] = _AT('title');
 	}
-	if (trim($_POST['url']) == '') {
-		$msg->addError('RL_URL_EMPTY');
+	if (trim($_POST['author']) == '') {
+		$missing_fields[] = _AT('url');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors()) {
@@ -44,10 +51,8 @@ if (isset($_POST['cancel'])) {
 		$_POST['url'] = $addslashes($_POST['url']);
 		$_POST['comments'] = $addslashes($_POST['comments']);
 		
-		$id = intval ($_POST['id']);
-
 		if ($id == '0'){ // creating a new URL resource
-			$sql = "INSERT INTO ".TABLE_PREFIX."external_resources VALUES ($id, $_SESSION[course_id],
+			$sql = "INSERT INTO ".TABLE_PREFIX."external_resources VALUES (NULL, $_SESSION[course_id],
 			".RL_TYPE_URL.", 
 			'$_POST[title]', 
 			'$_POST[author]', 
@@ -61,7 +66,7 @@ if (isset($_POST['cancel'])) {
 			// index to new URL resource
 			$id_new = mysql_insert_id($db);
 
-			$msg->addFeedback('RL_URL_ADDED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		} else { // modifying an existing URL resource
 
 			$sql = "UPDATE ".TABLE_PREFIX."external_resources SET title='$_POST[title]', author='$_POST[author]', url='$_POST[url]', comments='$_POST[comments]', id='$_POST[isbn]' WHERE resource_id='$id' AND course_id=$_SESSION[course_id]";
@@ -71,7 +76,7 @@ if (isset($_POST['cancel'])) {
 			// index to URL resource
 			$id_new = $id;
 
-			$msg->addFeedback('RL_RESOURCE_UPDATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		}
 
 		if (trim($_POST['page_return']) != ''){
@@ -83,7 +88,7 @@ if (isset($_POST['cancel'])) {
 	} else { // submission contained an error, update form values for redisplay
 		$title       = $stripslashes($_POST['title']);
 		$author      = $stripslashes($_POST['author']);
-		$publisher   = $stripslashes($_POST['publisher']); 
+		$url         = $stripslashes($_POST['url']); 
 		$date        = $stripslashes($_POST['date']);
 		$comments    = $stripslashes($_POST['comments']);
 		$isbn        = $stripslashes($_POST['id']);
@@ -92,7 +97,7 @@ if (isset($_POST['cancel'])) {
 }
 
 // is user modifying an existing URL resource?
-if (isset($_GET['id'])){
+if ($id && !isset($_POST['submit'])){
 	// yes, get resource from database
 	$id = intval ($_GET['id']);
 
@@ -105,6 +110,8 @@ if (isset($_GET['id'])){
 		$url      = $row['url'];
 	}
 	// change title of page to 'edit URL resource' (default is 'add URL resource')
+	$_pages['reading_list/add_resource_url.php']['title_var'] = 'rl_edit_resource_url';
+} else if ($id) {
 	$_pages['reading_list/add_resource_url.php']['title_var'] = 'rl_edit_resource_url';
 }
 
@@ -124,17 +131,17 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 
 	<div class="row">
-		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="url"><?php  echo _AT('rl_url'); ?></label><br />
+		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="url"><?php  echo _AT('url'); ?></label><br />
 		<input type="text" name="url" size="50" id="url" value="<?php echo htmlspecialchars($url); ?>" />
 	</div>
 
 	<div class="row">
-		<label for="author"><?php  echo _AT('rl_author'); ?></label><br />
+		<label for="author"><?php  echo _AT('author'); ?></label><br />
 		<input type="text" name="author" size="25" id="author" value="<?php echo htmlspecialchars($author); ?>" />
 	</div>
 
 	<div class="row">
-		<label for="comments"><?php  echo _AT('rl_comment'); ?></label><br />
+		<label for="comments"><?php  echo _AT('comment'); ?></label><br />
 		<textarea name="comments" cols="30" rows="2" id="comments"><?php echo htmlspecialchars($comments); ?></textarea>
 	</div>
 

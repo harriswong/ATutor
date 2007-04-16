@@ -25,7 +25,7 @@ if (isset ($_GET['id'])){
 	// editing an existing assignment
 	$id = intval($_GET['id']); 
 
-	$sql = "SELECT * FROM ".TABLE_PREFIX."assignments WHERE course_id=$_SESSION[course_id] AND assignment_id=$id";
+	$sql = "SELECT *, DATE_FORMAT(date_due, '%Y-%m-%d %H:%i:00') AS date_due, DATE_FORMAT(date_cutoff, '%Y-%m-%d %H:%i:00') AS date_cutoff FROM ".TABLE_PREFIX."assignments WHERE course_id=$_SESSION[course_id] AND assignment_id=$id";
 
 	$result = mysql_query($sql,$db);
 	if (!($row = mysql_fetch_assoc($result))) {
@@ -116,7 +116,7 @@ else if (isset($_POST['submit'])) {
 
 	// ensure title is not empty
 	if (trim($title) == '') {
-		$msg->addError('TITLE_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('title')));
 	}
 
 	// If due date is set and user has selected 'accept late submission until'
@@ -153,19 +153,18 @@ else if (isset($_POST['submit'])) {
 		// note: if due date is NOT set then ignore the late submission date
 		if ($has_due_date == 'true'){
 			$date_due = $dueyear. '-' .str_pad ($duemonth, 2, "0", STR_PAD_LEFT). '-' .str_pad ($dueday, 2, "0", STR_PAD_LEFT). ' '.str_pad ($duehour, 2, "0", STR_PAD_LEFT). ':' .str_pad ($dueminute, 2, "0", STR_PAD_LEFT) . ':00';
-			
-			if ($late_submit == '1'){ // never accept late submissions
-				$date_cutoff = $date_due; // cutoff date will be same as due date
-			}
-			else if ($late_submit == '2'){ // accept late submissions until date
-				$date_cutoff = $cutoffyear. '-' .str_pad ($cutoffmonth, 2, "0", STR_PAD_LEFT). '-' .str_pad ($cutoffday, 2, "0", STR_PAD_LEFT). ' '.str_pad ($cutoffhour, 2, "0", STR_PAD_LEFT). ':' .str_pad ($cutoffminute, 2, "0", STR_PAD_LEFT) . ':00';
-			}
+		}
+
+		if ($late_submit == '1'){ // never accept late submissions
+			$date_cutoff = $date_due; // cutoff date will be same as due date
+		} else if ($late_submit == '2'){ // accept late submissions until date
+			$date_cutoff = $cutoffyear. '-' .str_pad ($cutoffmonth, 2, "0", STR_PAD_LEFT). '-' .str_pad ($cutoffday, 2, "0", STR_PAD_LEFT). ' '.str_pad ($cutoffhour, 2, "0", STR_PAD_LEFT). ':' .str_pad ($cutoffminute, 2, "0", STR_PAD_LEFT) . ':00';
 		}
 
 		// Are we creating a new assignment or updating an existing assignment?
 		if ($id == '0'){
 			// creating a new assignment
-			$sql = "INSERT INTO ".TABLE_PREFIX."assignments VALUES (0, $_SESSION[course_id],
+			$sql = "INSERT INTO ".TABLE_PREFIX."assignments VALUES (NULL, $_SESSION[course_id],
 				'$title',
 				'$assign_to',
 				'$date_due',
@@ -181,7 +180,7 @@ else if (isset($_POST['submit'])) {
 			$sql = "UPDATE ".TABLE_PREFIX."assignments SET title='$title', assign_to=$assign_to, date_due='$date_due', date_cutoff='$date_cutoff' WHERE assignment_id='$id' AND course_id=$_SESSION[course_id]";
 
 			$result = mysql_query($sql,$db);
-			$msg->addFeedback('ASSIGNMENT_UPDATED');
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		}
 		header('Location: index_instructor.php');
 		exit;

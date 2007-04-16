@@ -31,7 +31,7 @@ if (isset($_GET['poll_id'])) {
 
 if ($_POST['edit_poll']) {
 	if (trim($_POST['question']) == '') {
-		$msg->addError('POLL_QUESTION_EMPTY');
+		$msg->addError(array('EMPTY_FIELDS', _AT('question')));
 	}
 
 	if ((trim($_POST['c1']) == '') || (trim($_POST['c2']) == '')) {
@@ -46,10 +46,10 @@ if ($_POST['edit_poll']) {
 		}
 		$choices = substr($choices, 0, -1);
 
-		$sql = "UPDATE ".TABLE_PREFIX."polls SET question='$_POST[question]', $choices WHERE poll_id=$poll_id AND course_id=$_SESSION[course_id]";
+		$sql = "UPDATE ".TABLE_PREFIX."polls SET question='$_POST[question]', created_date=created_date $choices WHERE poll_id=$poll_id AND course_id=$_SESSION[course_id]";
 		$result = mysql_query($sql,$db);
 
-		$msg->addFeedback('POLL_UPDATED');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		Header('Location: index.php');
 		exit;
 	}
@@ -62,7 +62,7 @@ if ($_POST['edit_poll']) {
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 	if ($poll_id == 0) {
-		$msg->printErrors('POLL_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}
@@ -70,7 +70,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	$sql = "SELECT * FROM ".TABLE_PREFIX."polls WHERE poll_id=$poll_id AND course_id=$_SESSION[course_id]";
 	$result = mysql_query($sql,$db);
 	if (!($row = mysql_fetch_assoc($result))) {
-		$msg->printErrors('POLL_NOT_FOUND');
+		$msg->printErrors('ITEM_NOT_FOUND');
 		require (AT_INCLUDE_PATH.'footer.inc.php');
 		exit;
 	}

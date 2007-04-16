@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -18,7 +18,7 @@ require (AT_INCLUDE_PATH.'lib/links.inc.php');
 
 if (!manage_links()) {
 	$msg->addError('ACCESS_DENIED');
-	header('Location: '.$_base_href.'links/index.php');
+	header('Location: '.AT_BASE_HREF.'links/index.php');
 	exit;
 }
 
@@ -28,7 +28,7 @@ if (!isset($_POST['approved'])) {
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: '.$_base_href.'tools/links/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 	exit;
 } 
 
@@ -42,18 +42,27 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 
 	if (!links_authenticate($owner_type, $owner_id)) {
 		$msg->addError('ACCESS_DENIED');
-		header('Location: '.$_base_href.'links/index.php');
+		header('Location: '.AT_BASE_HREF.'links/index.php');
 		exit;
 	}
 
-	if ($_POST['title'] == '') {		
-		$msg->addError('TITLE_EMPTY');
+	$missing_fields = array();
+	if ($_POST['cat'] == 0 || $_POST['cat'] == '') {
+		$missing_fields[] = _AT('category');
 	}
-	if (($_POST['url'] == '') || ($_POST['url'] == 'http://')) {
-		$msg->addError('URL_EMPTY');
+	if (trim($_POST['title']) == '') {
+		$missing_fields[] = _AT('title');
 	}
-	if ($_POST['description'] == '') {		
-		$msg->addError('DESCRIPTION_EMPTY');
+	if (trim($_POST['url']) == '' || $_POST['url'] == 'http://') {
+		$missing_fields[] = _AT('url');
+	}
+	if (trim($_POST['description']) == '') {
+		$missing_fields[] = _AT('description');
+	}
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
 	}
 
 	if (!$msg->containsErrors() && isset($_POST['submit'])) {
@@ -61,17 +70,17 @@ if (isset($_POST['add_link']) && isset($_POST['submit'])) {
 		$_POST['url'] == $addslashes($_POST['url']);
 		$_POST['description']  = $addslashes($_POST['description']);
 
-		$name = $_SESSION['login'];
+		$name = get_display_name($_SESSION['member_id']);
 		$email = '';
 
 		$approved = intval($_POST['approved']);
 
-		$sql = "INSERT INTO ".TABLE_PREFIX."links VALUES (0, $cat_id, '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
+		$sql = "INSERT INTO ".TABLE_PREFIX."links VALUES (NULL, $cat_id, '$_POST[url]', '$_POST[title]', '$_POST[description]', $approved, '$name', '$email', NOW(), 0)";
 		mysql_query($sql, $db);
 	
 		$msg->addFeedback('LINK_ADDED');
 
-		header('Location: '.$_base_href.'tools/links/index.php');
+		header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 		exit;
 	} else {
 		$_POST['title']  = stripslashes($_POST['title']);
@@ -88,7 +97,7 @@ $categories = get_link_categories(true);
 
 if (empty($categories)) {
 	$msg->addError('LINK_CAT_EMPTY');
-	header('Location: '.$_base_href.'tools/links/index.php');
+	header('Location: '.AT_BASE_HREF.'tools/links/index.php');
 	exit;
 }
 
@@ -147,7 +156,7 @@ $msg->printErrors();
 				$n = '';
 			}
 		?>
-		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?>><label for="yes"><?php echo _AT('yes1'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?>><label for="no"><?php echo _AT('no1'); ?></label>
+		<input type="radio" id="yes" name="approved" value="1" <?php echo $y; ?>><label for="yes"><?php echo _AT('yes'); ?></label>  <input type="radio" id="no" name="approved" value="0" <?php echo $n; ?>><label for="no"><?php echo _AT('no'); ?></label>
 	</div>
 	
 	<div class="row buttons">

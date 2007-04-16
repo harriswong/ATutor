@@ -23,7 +23,6 @@ $this->_pages['tools/tests/question_db.php']['guide']     = 'instructor/?p=quest
 	$this->_pages['tools/tests/create_question_multi.php']['title_var'] = 'create_question_multi';
 	$this->_pages['tools/tests/create_question_multi.php']['parent']    = 'tools/tests/question_db.php';
 
-
 $this->_pages['tools/tests/question_cats.php']['title_var'] = 'question_categories';
 $this->_pages['tools/tests/question_cats.php']['parent']    = 'tools/tests/index.php';
 $this->_pages['tools/tests/question_cats.php']['children']  = array('tools/tests/question_cats_manage.php');
@@ -64,9 +63,18 @@ $this->_pages['tools/view_results.php']['children']  = array(); // to create the
 	// test questions
 	$this->_pages['tools/tests/create_question_tf.php']['title_var'] = 'create_new_question';
 	$this->_pages['tools/tests/create_question_tf.php']['parent']    = 'tools/tests/question_db.php';
-	
+
+	$this->_pages['tools/tests/create_question_truefalse.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_truefalse.php']['parent']    = 'tools/tests/question_db.php';
+
 	$this->_pages['tools/tests/create_question_multi.php']['title_var'] = 'create_new_question';
 	$this->_pages['tools/tests/create_question_multi.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/create_question_multichoice.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_multichoice.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/create_question_multianswer.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_multianswer.php']['parent']    = 'tools/tests/question_db.php';
 
 	$this->_pages['tools/tests/create_question_long.php']['title_var'] = 'create_new_question';
 	$this->_pages['tools/tests/create_question_long.php']['parent']    = 'tools/tests/question_db.php';
@@ -74,17 +82,44 @@ $this->_pages['tools/view_results.php']['children']  = array(); // to create the
 	$this->_pages['tools/tests/create_question_likert.php']['title_var'] = 'create_new_question';
 	$this->_pages['tools/tests/create_question_likert.php']['parent']    = 'tools/tests/question_db.php';
 
+	$this->_pages['tools/tests/create_question_matching.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_matching.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/create_question_matchingdd.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_matchingdd.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/create_question_ordering.php']['title_var'] = 'create_new_question';
+	$this->_pages['tools/tests/create_question_ordering.php']['parent']    = 'tools/tests/question_db.php';
+
 	$this->_pages['tools/tests/edit_question_tf.php']['title_var'] = 'edit_question';
 	$this->_pages['tools/tests/edit_question_tf.php']['parent']    = 'tools/tests/question_db.php';
-	
+
+	$this->_pages['tools/tests/edit_question_truefalse.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_truefalse.php']['parent']    = 'tools/tests/question_db.php';
+
 	$this->_pages['tools/tests/edit_question_multi.php']['title_var'] = 'edit_question';
 	$this->_pages['tools/tests/edit_question_multi.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/edit_question_multichoice.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_multichoice.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/edit_question_multianswer.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_multianswer.php']['parent']    = 'tools/tests/question_db.php';
 
 	$this->_pages['tools/tests/edit_question_long.php']['title_var'] = 'edit_question';
 	$this->_pages['tools/tests/edit_question_long.php']['parent']    = 'tools/tests/question_db.php';
 
 	$this->_pages['tools/tests/edit_question_likert.php']['title_var'] = 'edit_question';
 	$this->_pages['tools/tests/edit_question_likert.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/edit_question_matching.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_matching.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/edit_question_matchingdd.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_matchingdd.php']['parent']    = 'tools/tests/question_db.php';
+
+	$this->_pages['tools/tests/edit_question_ordering.php']['title_var'] = 'edit_question';
+	$this->_pages['tools/tests/edit_question_ordering.php']['parent']    = 'tools/tests/question_db.php';
 
 	$this->_pages['tools/tests/delete_question.php']['title_var'] = 'delete';
 	$this->_pages['tools/tests/delete_question.php']['parent'] = 'tools/tests/question_db.php';

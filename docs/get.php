@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -11,8 +11,9 @@
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
 // $Id$
-
 define('AT_INCLUDE_PATH', 'include/');
+ob_end_clean();
+header("Content-Encoding: none");
 if (isset($_GET['test'])) {
 	header('HTTP/1.1 200 OK', TRUE);
 	header('ATutor-Get: OK');
@@ -90,7 +91,7 @@ if ($ext == '') {
 
 //check that this file is within the content directory & exists
 
-// NOTE!! for some reason realpath() is not returning FALSE when the file doesn't exist! NOTE!!
+// NOTE!! for some reason realpath() is not returning FALSE when the file doesn't exist!
 $real = realpath($file);
 
 if (file_exists($real) && (substr($real, 0, strlen(AT_CONTENT_DIR)) == AT_CONTENT_DIR)) {
@@ -101,10 +102,24 @@ if (file_exists($real) && (substr($real, 0, strlen(AT_CONTENT_DIR)) == AT_CONTEN
 	} else {
 		header('Content-Disposition: filename="'.$pathinfo['basename'].'"');
 	}
+	
+	/**
+	 * although we can check if mod_xsendfile is installed in apache2
+	 * we can't actually check if it's enabled. also, we can't check if
+	 * it's enabled and installed in lighty, so instead we send the 
+	 * header anyway, if it works then the line after it will not
+	 * execute. if it doesn't work, then the line after it will replace
+	 * it so that the full server path is not exposed.
+	 *
+	 * x-sendfile is supported in apache2 and lighttpd 1.5+ (previously
+	 * named x-send-file in lighttpd 1.4)
+	 */
+	header('x-Sendfile: '.$real);
+	header('x-Sendfile: ', TRUE); // if we get here then it didn't work
 
 	header('Content-Type: '.$ext);
 
-	echo @file_get_contents($real);
+	@readfile($real);
 	exit;
 } else {
 	header('HTTP/1.1 404 Not Found', TRUE);

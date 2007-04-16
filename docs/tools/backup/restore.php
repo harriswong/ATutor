@@ -32,11 +32,11 @@ if (isset($_POST['cancel'])) {
 	exit;
 } else if (isset($_POST['submit'])) {
 	if (!$_POST['material']) {
-		$msg->addError('RESTORE_MATERIAL');
+		$msg->addError(array('EMPTY_FIELDS', _AT('material')));
 	} else {
 		$Backup->restore($_POST['material'], $_POST['action'], $_POST['backup_id']);
 
-		$msg->addFeedback('IMPORT_SUCCESS');
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 		header('Location: index.php');
 		exit;
 	}

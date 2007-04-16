@@ -2,7 +2,7 @@
 /****************************************************************************/
 /* ATutor																	*/
 /****************************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton	*/
 /* Adaptive Technology Resource Centre / University of Toronto				*/
 /* http://atutor.ca															*/
 /*																			*/
@@ -66,7 +66,7 @@ if (isset($_GET['status']) && ($_GET['status'] != '') && ($_GET['status'] != 2))
 $sql	= "SELECT out_of, anonymous, random, title FROM ".TABLE_PREFIX."tests WHERE test_id=$tid AND course_id=$_SESSION[course_id]";
 $result	= mysql_query($sql, $db);
 if (!($row = mysql_fetch_array($result))){
-	$msg->printErrors('TEST_NOT_FOUND');
+	$msg->printErrors('ITEM_NOT_FOUND');
 	require (AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }
@@ -75,7 +75,7 @@ $anonymous = $row['anonymous'];
 $random = $row['random'];
 
 //count total
-$sql	= "SELECT count(*) as cnt FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."members M WHERE R.test_id=$tid AND R.member_id=M.member_id";
+$sql	= "SELECT count(*) as cnt FROM ".TABLE_PREFIX."tests_results R LEFT JOIN ".TABLE_PREFIX."members M USING (member_id) WHERE R.test_id=$tid";
 $result	= mysql_query($sql, $db);
 $row	= mysql_fetch_array($result);
 $num_sub = $row['cnt'];
@@ -84,11 +84,18 @@ $num_sub = $row['cnt'];
 if ($anonymous == 1) {
 	$sql	= "SELECT R.*, '<em>"._AT('anonymous')."</em>' AS login FROM ".TABLE_PREFIX."tests_results R WHERE R.test_id=$tid $status ORDER BY $col $order";
 } else {	
-	$sql	= "SELECT R.*, login, CONCAT(first_name, ' ', second_name, ' ', last_name) AS full_name, R.final_score+0.0 AS fs FROM ".TABLE_PREFIX."tests_results R, ".TABLE_PREFIX."members M WHERE R.test_id=$tid AND R.member_id=M.member_id $status ORDER BY $col $order, R.final_score $order";
+	$sql	= "SELECT R.*, login, CONCAT(first_name, ' ', second_name, ' ', last_name) AS full_name, R.final_score+0.0 AS fs FROM ".TABLE_PREFIX."tests_results R LEFT JOIN  ".TABLE_PREFIX."members M USING (member_id) WHERE R.test_id=$tid $status ORDER BY $col $order, R.final_score $order";
 }
 
 $result = mysql_query($sql, $db);
+if ($anonymous == 1) {
+	$guest_text = '<em>'._AT('anonymous').'</em>';
+} else {
+	$guest_text = '- '._AT('guest').' -';
+}
 while ($row = mysql_fetch_assoc($result)) {
+	$row['full_name'] = $row['full_name'] ? $row['full_name'] : $guest_text;
+	$row['login']     = $row['login']     ? $row['login']     : $guest_text;
 	$rows[$row['result_id']] = $row;
 }
 
@@ -140,13 +147,17 @@ if (isset($_GET['status']) && ($_GET['status'] != '') && ($_GET['status'] == 0))
 	<?php if ($col == 'login'): ?>
 		<col />
 		<col class="sort" />
+		<col span="3" />
+	<?php elseif ($col == 'full_name'): ?>
+		<col span="2" />
+		<col class="sort" />
 		<col span="2" />
 	<?php elseif($col == 'date_taken'): ?>
-		<col span="2" />
+		<col span="3" />
 		<col class="sort" />
 		<col span="1" />
 	<?php elseif($col == 'fs'): ?>
-		<col span="3" />
+		<col span="4" />
 		<col class="sort" />
 	<?php endif; ?>
 </colgroup>

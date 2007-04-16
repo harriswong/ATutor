@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor																*/
 /************************************************************************/
-/* Copyright (c) 2002-2004 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
+/* Copyright (c) 2002-2007 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
 /* Adaptive Technology Resource Centre / University of Toronto			*/
 /* http://atutor.ca														*/
 /*																		*/
@@ -18,14 +18,16 @@ admin_authenticate(AT_ADMIN_PRIV_USERS);
 
 if (isset($_POST['cancel'])) {
 	if (isset($_POST['ml']) && $_REQUEST['ml']) {
-		header('Location: '.$_base_href.'admin/master_list.php');
+		header('Location: '.AT_BASE_HREF.'admin/master_list.php');
 	} else {
-		header('Location: '.$_base_href.'admin/users.php');
+		header('Location: '.AT_BASE_HREF.'admin/users.php');
 	}
 	exit;
 }
 
 if (isset($_POST['submit'])) {
+	$missing_fields = array();
+
 	$id = intval($_POST['id']);
 
 	//check if student id (public field) is already being used
@@ -38,7 +40,7 @@ if (isset($_POST['submit'])) {
 
 	/* email check */
 	if ($_POST['email'] == '') {
-		$msg->addError('EMAIL_MISSING');
+		$missing_fields[] = _AT('email');
 	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['email'])) {
 		$msg->addError('EMAIL_INVALID');
 	}
@@ -50,12 +52,16 @@ if (isset($_POST['submit'])) {
 	}
 
 	/*if (!$_POST['first_name']) { 
-		$msg->addError('FIRST_NAME_MISSING');
+		$missing_fields[] = _AT('first_name');
 	}
 
 	if (!$_POST['last_name']) { 
-		$msg->addError('LAST_NAME_MISSING');
+		$missing_fields[] = _AT('last_name');
 	}
+
+	$_POST['first_name'] = str_replace('<', '', $_POST['first_name']);
+	$_POST['second_name'] = str_replace('<', '', $_POST['second_name']);
+	$_POST['last_name'] = str_replace('<', '', $_POST['last_name']);
 
 	// check if first+last is unique
 	if ($_POST['first_name'] && $_POST['last_name']) {
@@ -92,7 +98,16 @@ if (isset($_POST['submit'])) {
 		$yr = $mo = $day = 0;
 	}
 
+
+	if ($missing_fields) {
+		$missing_fields = implode(', ', $missing_fields);
+		$msg->addError(array('EMPTY_FIELDS', $missing_fields));
+	}
+
 	if (!$msg->containsErrors()) {
+		if (isset($_POST['profile_pic_delete'])) {
+			profile_image_delete($id);
+		}
 		if (($_POST['website']) && (!ereg("://",$_POST['website']))) { 
 			$_POST['website'] = "http://".$_POST['website']; 
 		}
@@ -138,7 +153,9 @@ if (isset($_POST['submit'])) {
 													phone    = '$_POST[phone]',
 													status   = $_POST[status],
 													language = '$_SESSION[lang]', 
-													private_email = $_POST[private_email]
+													private_email = $_POST[private_email],
+													creation_date=creation_date,
+													last_login=last_login
 				WHERE member_id = $id";
 		$result = mysql_query($sql, $db);
 		if (!$result) {
@@ -210,7 +227,7 @@ if (isset($_POST['submit'])) {
 			$row    = mysql_fetch_assoc($result);
 
 			$code = substr(md5($row['email'] . $row['creation_date']. $id), 0, 10);
-			$confirmation_link = $_base_href . 'confirm.php?id='.$id.SEP.'m='.$code;
+			$confirmation_link = AT_BASE_HREF . 'confirm.php?id='.$id.SEP.'m='.$code;
 
 			/* send the email confirmation message: */
 			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
@@ -226,9 +243,9 @@ if (isset($_POST['submit'])) {
 
 		$msg->addFeedback('PROFILE_UPDATED_ADMIN');
 		if (isset($_POST['ml']) && $_REQUEST['ml']) {
-			header('Location: '.$_base_href.'admin/master_list.php');
+			header('Location: '.AT_BASE_HREF.'admin/master_list.php');
 		} else {
-			header('Location: '.$_base_href.'admin/users.php');
+			header('Location: '.AT_BASE_HREF.'admin/users.php');
 		}
 		exit;
 	}

@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -108,7 +108,7 @@ reset($path);
 $first_page = current($path);
 
 // use any styles that were part of the imported document
-$_custom_css = $_base_href.'headstuff.php?cid='.$cid.SEP.'path='.urlEncode($_base_href.$course_base_href.$content_base_href);
+// $_custom_css = $_base_href.'headstuff.php?cid='.$cid.SEP.'path='.urlEncode($_base_href.$course_base_href.$content_base_href);
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
@@ -116,17 +116,6 @@ save_last_cid($cid);
 if ($top_num != (int) $top_num) {
 	$top_num = substr($top_num, 0, strpos($top_num, '.'));
 }
-
-/* TOC: 
-ob_start();
-$contentManager->printTOCMenu($first_page['content_id'], $top_num);
-$content_stuff = ob_get_contents();
-ob_end_clean();
-
-if ($content_stuff != '') {
-	$savant->assign('table_of_contents', $content_stuff);
-}
-*/
 
 $shortcuts = array();
 if ((	($content_row['r_date'] <= $content_row['n_date'])
@@ -150,15 +139,16 @@ if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
 $savant->assign('shortcuts', $shortcuts);
 
 /* if i'm an admin then let me see content, otherwise only if released */
-if ($contentManager->isReleased($cid) || authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
+$released_status = $contentManager->isReleased($cid);
+if ($released_status === TRUE || authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
 	if ($content_row['text'] == '') {
 		$msg->addInfo('NO_PAGE_CONTENT');
 		$msg->printAll();
 		$savant->assign('body', '');
 	} else {
-		if (!$contentManager->isReleased($cid)) {
+		if ($released_status !== TRUE) {
 			/* show the instructor that this content hasn't been released yet */
-			$infos = array('NOT_RELEASED', AT_date(_AT('announcement_date_format'), $content_row['r_date'], AT_DATE_MYSQL_TIMESTAMP_14));
+			$infos = array('NOT_RELEASED', AT_date(_AT('announcement_date_format'), $released_status, AT_DATE_MYSQL_TIMESTAMP));
 			$msg->addInfo($infos);
 			$msg->printAll();
 			unset($infos);
@@ -168,7 +158,7 @@ if ($contentManager->isReleased($cid) || authenticate(AT_PRIV_CONTENT, AT_PRIV_R
 		$savant->assign('body', format_content($content_row['text'], $content_row['formatting'], $glossary));
 	}
 } else {
-	$infos = array('NOT_RELEASED', '<small>('._AT('release_date').': '.$content_row['release_date'].')</small>');
+	$infos = array('NOT_RELEASED', AT_date(_AT('announcement_date_format'), $released_status, AT_DATE_MYSQL_TIMESTAMP));
 	$msg->addInfo($infos);
 	$msg->printAll();
 	unset($infos);

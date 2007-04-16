@@ -2,7 +2,7 @@
 /****************************************************************/
 /* ATutor														*/
 /****************************************************************/
-/* Copyright (c) 2002-2006 by Greg Gay & Joel Kronenberg        */
+/* Copyright (c) 2002-2007 by Greg Gay & Joel Kronenberg        */
 /* Adaptive Technology Resource Centre / University of Toronto  */
 /* http://atutor.ca												*/
 /*                                                              */
@@ -97,10 +97,10 @@ if (isset($this_login, $this_password) && !isset($_SESSION['session_test'])) {
 
 	if ($used_cookie) {
 		// check if that cookie is valid
-		$sql = "SELECT member_id, login, preferences, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass, language, status FROM ".TABLE_PREFIX."members WHERE login='$this_login' AND SHA1(CONCAT(password, '-', '".DB_PASSWORD."'))='$this_password'";
+		$sql = "SELECT member_id, login, first_name, second_name, last_name, preferences, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass, language, status FROM ".TABLE_PREFIX."members WHERE login='$this_login' AND SHA1(CONCAT(password, '-', '".DB_PASSWORD."'))='$this_password'";
 
 	} else {
-		$sql = "SELECT member_id, login, preferences, language, status, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass FROM ".TABLE_PREFIX."members WHERE (login='$this_login' OR email='$this_login') AND SHA1(CONCAT(password, '$_SESSION[token]'))='$this_password'";
+		$sql = "SELECT member_id, login, first_name, second_name, last_name, preferences, language, status, SHA1(CONCAT(password, '-', '".DB_PASSWORD."')) AS pass FROM ".TABLE_PREFIX."members WHERE (login='$this_login' OR email='$this_login') AND SHA1(CONCAT(password, '$_SESSION[token]'))='$this_password'";
 	}
 	$result = mysql_query($sql, $db);
 
@@ -111,7 +111,7 @@ if (isset($this_login, $this_password) && !isset($_SESSION['session_test'])) {
 	} else if ($row) {
 		$_SESSION['valid_user'] = true;
 		$_SESSION['member_id']	= intval($row['member_id']);
-		$_SESSION['login']		= get_login($_SESSION['member_id']);
+		$_SESSION['login']		= $row['login'];
 		assign_session_prefs(unserialize(stripslashes($row['preferences'])));
 		$_SESSION['is_guest']	= 0;
 		$_SESSION['lang']		= $row['language'];
@@ -124,6 +124,9 @@ if (isset($this_login, $this_password) && !isset($_SESSION['session_test'])) {
 			setcookie('ATLogin', $this_login, $cookie_expire, $parts['path'], $parts['host'], 0);
 			setcookie('ATPass',  $row['pass'],  $cookie_expire, $parts['path'], $parts['host'], 0);
 		}
+
+		$sql = "UPDATE ".TABLE_PREFIX."members SET creation_date=creation_date, last_login=NOW() WHERE member_id=$_SESSION[member_id]";
+		mysql_query($sql, $db);
 
 		$msg->addFeedback('LOGIN_SUCCESS');
 		unset($_SESSION['login_attempts']);
