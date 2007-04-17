@@ -26,7 +26,6 @@ $test_row = mysql_fetch_assoc($result);
 if (!$test_row['guests'] && ($_SESSION['enroll'] == AT_ENROLL_NO || $_SESSION['enroll'] == AT_ENROLL_ALUMNUS)) {
 	require(AT_INCLUDE_PATH.'header.inc.php');
 	$msg->printErrors('FHA_TEST');
-
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }

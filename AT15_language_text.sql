@@ -1,4 +1,4 @@
-REPLACE INTO AT153_language_text VALUES 
+REPLACE INTO AT_language_text VALUES 
 
 ('en', '_msgs', 'AT_ERROR_LOGIN_LOCKED','Maximum login attempts has been reached. Login has been temporarily disabled for 1 hour. Please <a href="./help/contact_support.php">contact FHA</a> if you forgot your login or password.',NOW(),'reached maximum login attempts. Now locked'),
 
