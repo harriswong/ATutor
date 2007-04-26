@@ -119,7 +119,7 @@ function add_users($user_list, $enroll, $course) {
 			if (!$student['exists']) {
 				$student = sql_quote($student);
 		
-				$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$student[uname]','$student[uname]','$student[email]','','$student[fname]','', '$student[lname]', '', '', '','','','','', '', $status, '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], 0, '', 1, '0000-00-00 00:00:00')";
+				$sql = "INSERT INTO ".TABLE_PREFIX."members VALUES (0,'$student[uname]','$student[uname]','$student[email]','','$student[fname]','', '$student[lname]', '', '', '','','','','', '', $status, '$_config[pref_defaults]', '$now','$_config[default_language]', $_config[pref_inbox_notify], '', 1, '0000-00-00 00:00:00')";
 
 
 				$result = mysql_query($sql, $db);
