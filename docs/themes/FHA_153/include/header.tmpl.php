@@ -51,6 +51,9 @@ global $system_courses, $_custom_css;
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/stylesheet.css" type="text/css" />
+	<!--[if IE]>
+	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
+	<![endif]-->
 	<?php echo $this->rtl_css; ?>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_path; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
