@@ -50,6 +50,7 @@ global $system_courses, $_custom_css;
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/print.css" type="text/css" media="print" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/stylesheet.css" type="text/css" />
 	<?php echo $this->rtl_css; ?>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_path; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
@@ -58,7 +59,7 @@ global $system_courses, $_custom_css;
 	<?php echo $this->custom_css; ?>
 </head>
 <body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script language="JScript" type="text/jscript" src="<?php echo $this->base_path; ?>activateActiveX_onload.js"></script>
+<script language="JScript" type="text/jscript" src="<?php echo $this->base_path.'themes/'.$this->theme; ?>activateActiveX_onload.js"></script>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
 //<!--
 
