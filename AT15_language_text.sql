@@ -79,6 +79,8 @@ REPLACE INTO AT_language_text VALUES
 
 ('en' ,'_template', 'contain_only', 'May contain only letters, numbers, underscores, hyphens or periods.', NOW(), ''),
 
+('en' ,'_template', 'email_reminder', 'Email Reminder', NOW(), ''),
+
 ('en' ,'_template', 'combination', 'Password must contain at least 8 characters, of which at least 2 must be numbers or symbols or letters.', NOW(), '')
 
 ;
