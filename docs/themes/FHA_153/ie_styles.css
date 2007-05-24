@@ -21,3 +21,12 @@ label {
 table.data tfoot input {
 	min-width:0px;
 }
+.button {
+	border: 1px solid #999;
+	background-color: white;
+}
+.button input {
+	border: 1px solid #999;
+	background-color: white;
+	padding: 2px;
+}
