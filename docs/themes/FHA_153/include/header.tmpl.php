@@ -50,7 +50,7 @@ global $system_courses, $_custom_css;
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/print.css" type="text/css" media="print" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
-	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/stylesheet.css" type="text/css" />
+	<!--link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/stylesheet.css" type="text/css" /-->
 	<!--[if IE]>
 	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
 	<![endif]-->
@@ -62,7 +62,7 @@ global $system_courses, $_custom_css;
 	<?php echo $this->custom_css; ?>
 </head>
 <body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script language="JScript" type="text/jscript" src="<?php echo $this->base_path.'themes/'.$this->theme; ?>activateActiveX_onload.js"></script>
+<script language="JScript" type="text/jscript" src="<?php echo $this->base_path.'themes/'.$this->theme; ?>/activateActiveX_onload.js"></script>
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
 //<!--
 
