@@ -13,25 +13,22 @@
 // $Id: UrlParser.class.php 7208 2008-04-15 10:00:24Z harris $
 
 // Add classes for the rewrite 
-/*
-require_once(dirname(__FILE__) . '/BlogsUrl.class.php');
-require_once(dirname(__FILE__) . '/BrowseUrl.class.php');
-require_once(dirname(__FILE__) . '/ChatUrl.class.php');
-require_once(dirname(__FILE__) . '/ContentUrl.class.php');
-require_once(dirname(__FILE__) . '/DirectoryUrl.class.php');
-require_once(dirname(__FILE__) . '/FaqUrl.class.php');
-require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
-*/
+//require_once(dirname(__FILE__) . '/BlogsUrl.class.php');
+//require_once(dirname(__FILE__) . '/BrowseUrl.class.php');
+//require_once(dirname(__FILE__) . '/ChatUrl.class.php');
+//require_once(dirname(__FILE__) . '/ContentUrl.class.php');
+//require_once(dirname(__FILE__) . '/DirectoryUrl.class.php');
+//require_once(dirname(__FILE__) . '/FaqUrl.class.php');
+//require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
 require_once(dirname(__FILE__) . '/ForumsUrl.class.php');
-/*
-require_once(dirname(__FILE__) . '/GlossaryUrl.class.php');
-require_once(dirname(__FILE__) . '/GoogleSearchUrl.class.php');
-require_once(dirname(__FILE__) . '/LinksUrl.class.php');
-require_once(dirname(__FILE__) . '/PollsUrl.class.php');
-require_once(dirname(__FILE__) . '/ReadingListUrl.class.php');
+//require_once(dirname(__FILE__) . '/GlossaryUrl.class.php');
+//require_once(dirname(__FILE__) . '/GoogleSearchUrl.class.php');
+//require_once(dirname(__FILE__) . '/LinksUrl.class.php');
+//require_once(dirname(__FILE__) . '/PollsUrl.class.php');
+//require_once(dirname(__FILE__) . '/ReadingListUrl.class.php');
 require_once(dirname(__FILE__) . '/TestsUrl.class.php');
-require_once(dirname(__FILE__) . '/SitemapUrl.class.php');
-*/
+//require_once(dirname(__FILE__) . '/SitemapUrl.class.php');
+
 
 /**
 * UrlParser
@@ -41,8 +38,12 @@ require_once(dirname(__FILE__) . '/SitemapUrl.class.php');
 * @package	UrlParser
 */
 class UrlParser {
+	//Variables
+	var $path_array;	//an array [0]->course_id; [1]->class obj; [2]->extra queries
+
 	// Constructor
-	function UrlParser(){
+	function UrlParser($pathinfo){
+		$this->parsePathInfo($pathinfo);
 	}
 
 	/**
@@ -53,7 +54,7 @@ class UrlParser {
 	 * type is the forums, content, tests, blogs, etc.
 	 * parts is the extra info about this url request.
 	 * @param	string	the pathinfo from the URL
-	 * @access	public
+	 * @access	private
 	 */
 	function parsePathinfo($pathinfo){
 		$pathinfo = strtolower($pathinfo);
@@ -72,8 +73,20 @@ class UrlParser {
 		} 
 		$course_id = $pathinfo[1];
 
-		//Check which course type this is from
-		switch ($path_array[2]){
+		//Check which tool type this is from
+		$url_obj =& $this->getToolObject($path_array[2]);
+
+		$this->path_array = array($course_id, $url_obj, $path_array[3]);
+	}
+
+	
+	/**
+	 * This function takes in the tool type string, and return the object back.
+	 * If the object is not found, return null.
+	 */
+	function getToolObject($tool_name){
+		$url_obj = null;	//initialize
+		switch ($tool_name){
 			case 'blogs': 
 				break;
 			case 'browse':
@@ -102,11 +115,35 @@ class UrlParser {
 			case 'reading_list':
 				break;
 			case 'tests':
+				$url_obj =& new TestsUrl();
 				break;
 			case 'sitemap':
 				break;
 		}
-		return array($course_id, $url_obj, $path_array[3]);
+		return $url_obj;
+	}
+
+	
+	/**
+	 * return the path array
+	 */
+	function getPathArray(){
+		return $this->path_array;
+	}
+
+
+	/**
+	 * This function is used to convert the input URL to a pretty URL.
+	 * @param	string	normal URL, WITHOUT the <prototal>://<host>
+	 * @return	pretty url
+	 */
+	function convertToPrettyURL($url){
+		//TODO
+		//Cut URL to begin and end parts, use '?' as the seperator.
+		//For front, explode '/' to determine where the location of the file is
+		//For back, explode 'SEP' to find what the queries are, and map it onto the class hash map.
+		$url_array = explode($url);
+
 	}
 }
 

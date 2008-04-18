@@ -14,19 +14,19 @@
 require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 
 /**
-* UrlParser
-* Class for rewriting pretty urls.
+* TestsUrl
+* Class for rewriting pretty urls in tests
 * @access	public
 * @author	Harris Wong
 * @package	UrlParser
 */
-class ForumsUrl extends UrlRewrite {
+class TestsUrl extends UrlRewrite {
 	// local variables
 	var $rule;		//an array that maps [lvl->query parts]
 
 	// constructor
-	function ForumsUrl() {
-		$this->rule = array(0=>'fid', 1=>'pid');
+	function TestsUrl() {
+		$this->rule = array(0=>'tid', 1=>'rid');
 	}
 
 	// public
@@ -52,7 +52,7 @@ class ForumsUrl extends UrlRewrite {
 		}
 		$query = substr(trim($query), 0, -1);
 //		return 'forum/view.php?'.$query;
-		return 'forum/view.php';
+		return 'tools/my_tests.php';
 	}
 
 	// public
@@ -68,24 +68,21 @@ class ForumsUrl extends UrlRewrite {
 
 		//if there are no extra query, link it to the defaulted page
 		if (empty($sublvl)){
-			$result['page_to_load'] = 'forum/list.php';
+			$result['page_to_load'] = 'tools/my_tests.php';
 		}
 		foreach ($sublvl as $order => $label){
-			if ($this->rule[$order]=='pid'){
-				$result['page_to_load'] = 'forum/view.php';
-			} elseif ($this->rule[$order]=='fid'){
-				$result['page_to_load'] = 'forum/index.php';
+			if ($this->rule[$order]=='tid'){
+				$result['page_to_load'] = 'tools/test_intro.php';
+			} elseif ($this->rule[$order]=='rid'){
+				$result['page_to_load'] = 'tools/view_results.php';
 			}
 			$result[$this->rule[$order]] = $label;
 		}
 		return $result;
 	}
 
-	/**
-	 * This will return the class name of the function.
-	 */
 	function getClassName(){
-		return 'forums';
+		return 'tests';
 	}
 
 

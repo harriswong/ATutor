@@ -38,6 +38,7 @@ class UrlRewrite  {
 	}
 
 	// public
+	//deprecated
 	function redirect($url){
 		//redirect to that url.
 	}
@@ -50,7 +51,5 @@ class UrlRewrite  {
 		}
 		return explode('/', $query);
 	}
-
-
 }
 ?>
