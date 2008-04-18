@@ -44,6 +44,10 @@ class UrlRewrite  {
 
 	//public 
 	function parseParts($query){
+		//return empty array if query is empty
+		if (empty($query)){
+			return array();
+		}
 		return explode('/', $query);
 	}
 

@@ -41,14 +41,31 @@ require(AT_INCLUDE_PATH . 'lib/menu_pages.php');
 $savant->assign('lang_code', $_SESSION['lang']);
 $savant->assign('lang_charset', $myLang->getCharacterSet());
 $savant->assign('base_path', $_base_path);
-$savant->assign('base_tmpl_path', $_SERVER['HTTP_HOST']);
+if (($temp = strpos(AT_BASE_HREF, 'harris.php')) > 0){
+	//If this is using PrettyURLs
+	$endpos = $temp - strlen($server_protocol . $_SERVER['HTTP_HOST']);
+	$_tmp_base_href = substr(AT_BASE_HREF, 0, $temp);
+	$current_page = $pretty_current_page; //this is set in harris.php
+} else {
+	//Normal URLs
+	$endpos = strlen(AT_BASE_HREF); 
+	$_tmp_base_href = AT_BASE_HREF;
+	$current_page = substr($_SERVER['PHP_SELF'], strlen($_base_path));
+}
+
+/* get the base url	*/
+if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on')) {
+	$server_protocol = 'https://';
+} else {
+	$server_protocol = 'http://';
+}
+$savant->assign('base_tmpl_path',  substr(AT_BASE_HREF, strlen($server_protocol . $_SERVER['HTTP_HOST']), $endpos));
 $savant->assign('theme', $_SESSION['prefs']['PREF_THEME']);
 $savant->assign('current_date', AT_date(_AT('announcement_date_format')));
 
 $theme_img  = $_base_path . 'themes/'. $_SESSION['prefs']['PREF_THEME'] . '/images/';
 $savant->assign('img', $theme_img);
 
-$_tmp_base_href = AT_BASE_HREF;
 if (isset($course_base_href) || isset($content_base_href)) {
 	$_tmp_base_href .= $course_base_href;
 	if ($content_base_href) {
@@ -85,17 +102,8 @@ if (isset($_SESSION['valid_user']) && $_SESSION['valid_user'] === true) {
 	$savant->assign('user_name', _AT('guest'));
 }
 
-$current_page = $substr($_SERVER['PHP_SELF'], $strlen($_base_path));
-$harris_flag = false;
-if ($harris_flag && isset($_SERVER['PATH_INFO'])){
-	$pathinfo = $_SERVER['PATH_INFO'];
-	//run rules parser;
-	debug($pathinfo);
-	debug($_SERVER);
-	//run class
-	exit;
-}
-if (!isset($_pages[$current_page])) {
+$harris_flag = true;
+if (!$harris_flag && !isset($_pages[$current_page])) {
 	global $msg;
 	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
 	header('location: '.AT_BASE_HREF.'index.php');
@@ -167,12 +175,12 @@ if (isset($_SESSION['course_id']) && $_SESSION['course_id'] > 0) {
 		$custom_icon_path = AT_CONTENT_DIR.$_SESSION['course_id']."/custom_icons/";
 		if (file_exists($custom_icon_path.$row['icon'])) {
 			if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
-				$course_icon = $_base_href.'get_course_icon.php/?id='.$_SESSION['course_id'];
+				$course_icon = $_base_path.'get_course_icon.php/?id='.$_SESSION['course_id'];
 			} else {
-				$course_icon = $_base_href.'content/' . $_SESSION['course_id'] . '/';
+				$course_icon = $_base_path.'content/' . $_SESSION['course_id'] . '/';
 			}
 		} else {
-			$course_icon = $_base_href.'images/courses/'.$row['icon'];
+			$course_icon = $_base_path.'images/courses/'.$row['icon'];
 		}
 		$savant->assign('icon', $course_icon);
 	}

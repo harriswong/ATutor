@@ -58,14 +58,30 @@ class ForumsUrl extends UrlRewrite {
 	/**
 	 * This method will read the parts and tries to put it together as an array.
 	 * So that this can get assigned to the GET/POST/REQUEST variable.
+	 * @param	string	this is the query after /forums/
+	 * @return	an array of parts mapped by their query rules.
 	 */
 	function parts2Array($parts){
 		$sublvl = parent::parseParts($parts);
 		$result = array();
+
+		//if there are no extra query, link it to the defaulted page
+		if (empty($sublvl)){
+			$result['page_to_load'] = 'forum/list.php';
+		}
 		foreach ($sublvl as $order => $label){
+			if ($this->rule[$order]=='pid'){
+				$result['page_to_load'] = 'forum/view.php';
+			} elseif ($this->rule[$order]=='fid'){
+				$result['page_to_load'] = 'forum/index.php';
+			}
 			$result[$this->rule[$order]] = $label;
 		}
 		return $result;
+	}
+
+	function getClassName(){
+		return 'forums';
 	}
 
 

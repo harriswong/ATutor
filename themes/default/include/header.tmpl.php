@@ -60,13 +60,13 @@ global $system_courses, $_custom_css,$db;
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->lang_charset; ?>" />
 	<meta name="Generator" content="ATutor - Copyright 2005 by http://atutor.ca" />
 	<base href="<?php echo $this->content_base_href; ?>" />
-	<link rel="shortcut icon" href="<?php echo $this->base_tmpl_path; ?>favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" href="<?php echo $this->base_tmpl_path.'themes/'.$this->theme; ?>/print.css" type="text/css" media="print" />
-	<link rel="stylesheet" href="<?php echo $this->base_tmpl_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
+	<link rel="shortcut icon" href="<?php echo $this->base_path; ?>favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/print.css" type="text/css" media="print" />
+	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/styles.css" type="text/css" />
 	<!--[if IE]>
-	  <link rel="stylesheet" href="<?php echo $this->base_tmpl_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
+	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
 	<![endif]-->
-	<link rel="stylesheet" href="<?php echo $this->base_tmpl_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
 	<?php echo $this->rtl_css; ?>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />

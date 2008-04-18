@@ -63,19 +63,6 @@ function unregister_GLOBALS() {
 /*** end system config block ****/
 
 /*** 1. constants ***/
-	require(AT_INCLUDE_PATH . 'classes/UrlRewrite/UrlParser.class.php');
-	$pathinfo = $_SERVER['PATH_INFO'];
-	$url_parser = new UrlParser();
-	$path_array =  $url_parser->parsePathinfo($pathinfo);
-	$forum_obj = $path_array[1];
-//	debug($path_array);
-	$link = $forum_obj->redirect($path_array[2]);
-	$var_query = $forum_obj->parts2Array($path_array[2]);
-	save2Get($var_query);
-//	$_SERVER['PHP_SELF'] = '/atutor155/ATutor_16/'.$link;
-//	$_SERVER['REQUEST_URI'] = '/atutor155/ATutor_16/harris.php/1/forums/2/1';
-
-
 	require(AT_INCLUDE_PATH.'lib/constants.inc.php');
 
 /***** 2. start session initilization block ****/
