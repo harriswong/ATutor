@@ -215,7 +215,9 @@ if ($_config['time_zone']) {
 /* 8. load common libraries */
 	require(AT_INCLUDE_PATH.'classes/ContentManager.class.php');  /* content management class */
 	require_once(AT_INCLUDE_PATH.'lib/output.inc.php');           /* output functions */
-
+	if (!(defined(AT_URL_PARSER_LOADED))){
+		require_once(AT_INCLUDE_PATH . 'classes/UrlRewrite/UrlParser.class.php');	/* pretty url tool */
+	}
 	require(AT_INCLUDE_PATH.'classes/Savant2/Savant2.php');       /* for the theme and template management */
 
 	// set default template paths:
@@ -716,6 +718,20 @@ function validate_length($input, $len, $forDisplay=0){
 		return $substr($input, 0, $len);
 	}
 	return $input;
+}
+
+/**
+ * If pretty URL within admin config is switched on.  We will apply pretty URL 
+ * to all the links in ATutor.
+ * @author	Harris Wong
+ */
+function url_rewrite($url){
+//	debug ($url);
+	if ($_config['pretty_url']=TRUE){
+		$url_parser = new UrlParser();
+		$url = $url_parser->convertToPrettyUrl($_SESSION['course_id'], $url);
+	} 
+	return $url;
 }
 
 

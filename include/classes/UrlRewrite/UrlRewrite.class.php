@@ -44,12 +44,24 @@ class UrlRewrite  {
 	}
 
 	//public 
-	function parseParts($query){
+	function parsePrettyUrl($query){
 		//return empty array if query is empty
 		if (empty($query)){
 			return array();
 		}
 		return explode('/', $query);
+	}
+
+
+	//public
+	function parseQuery($query){
+		//return empty array if query is empty
+		if (empty($query)){
+			return array();
+		}
+		parse_str($query, $result);
+		return $result;
+
 	}
 }
 ?>

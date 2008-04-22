@@ -43,7 +43,7 @@ class TestsUrl extends UrlRewrite {
 	// public
 	// deprecated
 	function redirect($parts){
-		$sublvl = parent::parseParts($parts);
+		$sublvl = parent::parsePrettyUrl($parts);
 		//0=>fid 1=>pid
 		$query = '';
 		foreach($sublvl as $order=>$label){
@@ -63,7 +63,7 @@ class TestsUrl extends UrlRewrite {
 	 * @return	an array of parts mapped by their query rules.
 	 */
 	function parts2Array($parts){
-		$sublvl = parent::parseParts($parts);
+		$sublvl = parent::parsePrettyUrl($parts);
 		$result = array();
 
 		//if there are no extra query, link it to the defaulted page

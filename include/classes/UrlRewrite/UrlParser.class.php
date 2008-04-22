@@ -42,7 +42,10 @@ class UrlParser {
 	var $path_array;	//an array [0]->course_id; [1]->class obj; [2]->extra queries
 
 	// Constructor
-	function UrlParser($pathinfo){
+	function UrlParser($pathinfo=''){
+		if ($pathinfo==''){
+			$pathinfo = $_SERVER['PATH_INFO'];
+		}
 		$this->parsePathInfo($pathinfo);
 	}
 
@@ -101,7 +104,7 @@ class UrlParser {
 				break;
 			case 'file_storage':
 				break;
-			case 'forums':
+			case 'forum':
 				$url_obj =& new ForumsUrl();
 				break;
 			case 'glossary':
@@ -134,19 +137,25 @@ class UrlParser {
 
 	/**
 	 * This function is used to convert the input URL to a pretty URL.
+	 * @param	int		course id
 	 * @param	string	normal URL, WITHOUT the <prototal>://<host>
 	 * @return	pretty url
 	 */
-	function convertToPrettyURL($url){
+	function convertToPrettyUrl($course_id, $url){
 		//TODO
 		//Cut URL to begin and end parts, use '?' as the seperator.
 		//For front, explode '/' to determine where the location of the file is
 		//For back, explode 'SEP' to find what the queries are, and map it onto the class hash map.
-		$url_array = explode($url);
+		list($front, $end) = preg_split('/\?/', $url);
 
+		$front_array = explode('/', $front);
+		foreach($front_array as $k=>$v){
+			if ($v!=''){
+				$obj = $this->getToolObject($v);  //create class object for the type
+				break;  //break loop
+			}
+		}
+		return 'harris.php/'.$course_id.'/'.$obj->constructPrettyUrl($end);
 	}
 }
-
-
-
 ?>

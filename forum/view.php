@@ -52,7 +52,7 @@ $num_per_page = 10;
 if (!$_GET['page']) {
 	$page = 1;
 } else {
-	$page = intval($_GET['page']);
+	$page = (intval($_GET['page'])>0)?(intval($_GET['page'])):1;
 }
 $start = ($page-1)*$num_per_page;
 	
@@ -109,7 +109,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		if ($i == $page) {
 			echo '<span class="forum-paginator-active">'.$i.'</span>';
 		} else {
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'pid='.$pid.SEP.'page='.$i.'">'.$i.'</a>';
+			echo '<a href="'.url_rewrite('forum/view.php?fid='.$fid.SEP.'pid='.$pid.SEP.'page='.$i).'">'.$i.'</a>';
 		}
 
 		if ($i<$num_pages){
@@ -147,7 +147,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		if ($i == $page) {
 			echo '<span class="forum-paginator-active">'.$i.'</span>';
 		} else {
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'pid='.$pid.SEP.'page='.$i.'">'.$i.'</a>';
+			echo '<a href="'.url_rewrite('forum/view.php?fid='.$fid.SEP.'pid='.$pid.SEP.'page='.$i).'">'.$i.'</a>';
 		}
 
 		if ($i<$num_pages){
