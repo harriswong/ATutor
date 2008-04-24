@@ -723,6 +723,8 @@ function validate_length($input, $len, $forDisplay=0){
 /**
  * If pretty URL within admin config is switched on.  We will apply pretty URL 
  * to all the links in ATutor.
+ * @param	string	the Url should be a relative link, have to improve this later on, to check if 
+ *					it's a relative link, if not, truncate it.
  * @author	Harris Wong
  */
 function url_rewrite($url){

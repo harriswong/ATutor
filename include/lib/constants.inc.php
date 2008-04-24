@@ -176,12 +176,13 @@ $_base_href	 = array_slice($url_parts, 0, count($url_parts) - $dir_deep-1);
 $_base_href	 = $server_protocol . implode('/', $_base_href).'/';
 
 if (($temp = strpos($_base_href, 'harris.php')) > 0){
-	$endpos = $temp - strlen($server_protocol . $_SERVER['HTTP_HOST']);
+	$endpos = $temp;
 } else {
 	$endpos = strlen($_base_href); 
 
 }
-$_base_path  = substr($_base_href, strlen($server_protocol . $_SERVER['HTTP_HOST']), $endpos);
+$_base_href	 = substr($_base_href, 0, $endpos);
+$_base_path  = substr($_base_href, strlen($server_protocol . $_SERVER['HTTP_HOST']));
 
 define('AT_BASE_HREF', $_base_href);
 

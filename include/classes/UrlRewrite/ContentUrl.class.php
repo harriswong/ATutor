@@ -14,21 +14,21 @@
 require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 
 /**
-* UrlParser
+* ContentUrl
 * Class for rewriting pretty urls.
 * @access	public
 * @author	Harris Wong
 * @package	UrlParser
 */
-class ForumsUrl extends UrlRewrite {
+class ContentUrl extends UrlRewrite {
 	// local variables
 //	var $rule;		//an array that maps [lvl->query parts]
 //	var $className;	//the name of this class
 
 	// constructor
-	function ForumsUrl() {
-		$this->rule = array(0=>'fid', 1=>'pid');
-		parent::setClassName('forum');	//set class name
+	function ContentUrl() {
+		$this->rule = array(0=>'cid');
+		parent::setClassName('content');	//set class name
 	}
 
 	// public
@@ -54,7 +54,7 @@ class ForumsUrl extends UrlRewrite {
 		}
 		$query = substr(trim($query), 0, -1);
 //		return 'forum/view.php?'.$query;
-		return 'forum/view.php';
+		return 'content.php';
 	}
 
 	// public
@@ -70,20 +70,18 @@ class ForumsUrl extends UrlRewrite {
 
 		//if there are no extra query, link it to the defaulted page
 		if (empty($sublvl)){
-			$result['page_to_load'] = 'forum/list.php';
+			$result['page_to_load'] = 'index.php';
 		}
 		foreach ($sublvl as $order => $label){
 			//check if pages exist, if it does, end parsing because this is the last part of the pretty url
 			//don't care if there are anymore strings afterwards.  Not part of my constructions.
-			if (preg_match('/([1-9]+)\.html/', $label, $matches)==true){
-				$result['page'] = $matches[1];
-				break;
-			}
+//			if (preg_match('/([1-9]+)\.html/', $label, $matches)==true){
+//				$result['page'] = $matches[1];
+//				break;
+//			}
 
-			if ($this->rule[$order]=='pid'){
-				$result['page_to_load'] = 'forum/view.php';
-			} elseif ($this->rule[$order]=='fid'){
-				$result['page_to_load'] = 'forum/index.php';				
+			if ($this->rule[$order]=='cid'){
+				$result['page_to_load'] = 'content.php';
 			} 
 
 			//Both key and values cannot be emptied.

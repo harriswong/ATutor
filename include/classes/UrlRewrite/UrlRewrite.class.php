@@ -20,7 +20,8 @@
 */
 class UrlRewrite  {
 	// local variables
-	var $rule;
+	var $rule;		//an array that maps [lvl->query parts]
+	var $className;	//the name of this class
 
 	// constructor
 	function UrlRewrite() {
@@ -30,6 +31,13 @@ class UrlRewrite  {
 	function setRule($rule) {
 		echo 'parent setting the rule';
 		$this->rule = $rule;
+	}
+
+	/**
+	 * This will return the class name of the function.
+	 */
+	function setClassName($className){
+		$this->className = $className;
 	}
 
 	// protected
@@ -62,6 +70,14 @@ class UrlRewrite  {
 		parse_str($query, $result);
 		return $result;
 
+	}
+
+
+	/**
+	 * This will return the class name of the function.
+	 */
+	function getClassName(){
+		return $this->className;
 	}
 }
 ?>

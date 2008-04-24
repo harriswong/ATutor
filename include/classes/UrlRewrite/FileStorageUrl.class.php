@@ -14,32 +14,29 @@
 require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 
 /**
-* UrlParser
-* Class for rewriting pretty urls.
+* FileStorageUrl
+* Class for rewriting pretty urls in tests
 * @access	public
 * @author	Harris Wong
 * @package	UrlParser
 */
-class ForumsUrl extends UrlRewrite {
+class FileStorageUrl extends UrlRewrite {
 	// local variables
-//	var $rule;		//an array that maps [lvl->query parts]
-//	var $className;	//the name of this class
+	var $rule;		//an array that maps [lvl->query parts]
 
 	// constructor
-	function ForumsUrl() {
-		$this->rule = array(0=>'fid', 1=>'pid');
-		parent::setClassName('forum');	//set class name
+	function FileStorageUrl() {
+		$this->rule = array(0=>'action', 1=>'ot', 2=>'oid', 3=>'folder');	//default 3=folder, but it can be id as well for comment
+		parent::setClassName('file_storage');	//set class name
 	}
 
 	// public
 	function getRule($rule_key){
-
 	}
 
 	//
-	function setRule($rule){
-		echo 'child setting the rule';
-		$this->rule = $rule;
+	function setRule($id, $ruleName){
+		$this->rule[$id] = $ruleName;
 	}
 
 	// public
@@ -54,14 +51,15 @@ class ForumsUrl extends UrlRewrite {
 		}
 		$query = substr(trim($query), 0, -1);
 //		return 'forum/view.php?'.$query;
-		return 'forum/view.php';
+		return 'file_storage/index.php';
 	}
+
 
 	// public
 	/**
 	 * This method will read the parts and tries to put it together as an array.
 	 * So that this can get assigned to the GET/POST/REQUEST variable.
-	 * @param	string	this is the query after /forums/
+	 * @param	string	this is the query after /file_storage/
 	 * @return	an array of parts mapped by their query rules.
 	 */
 	function parts2Array($parts){
@@ -70,21 +68,29 @@ class ForumsUrl extends UrlRewrite {
 
 		//if there are no extra query, link it to the defaulted page
 		if (empty($sublvl)){
-			$result['page_to_load'] = 'forum/list.php';
+			$result['page_to_load'] = 'tools/my_tests.php';
 		}
+
 		foreach ($sublvl as $order => $label){
 			//check if pages exist, if it does, end parsing because this is the last part of the pretty url
 			//don't care if there are anymore strings afterwards.  Not part of my constructions.
-			if (preg_match('/([1-9]+)\.html/', $label, $matches)==true){
-				$result['page'] = $matches[1];
-				break;
-			}
+//			if (preg_match('/([1-9]+)\.html/', $label, $matches)==true){
+//				$result['page'] = $matches[1];
+//				break;
+//			}
 
-			if ($this->rule[$order]=='pid'){
-				$result['page_to_load'] = 'forum/view.php';
-			} elseif ($this->rule[$order]=='fid'){
-				$result['page_to_load'] = 'forum/index.php';				
-			} 
+			if ($this->rule[$order]=='action'){
+				if ($label=='comments'){
+					$result['page_to_load'] = 'file_storage/comments.php';
+					$this->setRule(3, 'id');		//for comments, the 'id' attribute is required
+				} elseif($label=='revisions'){
+					$result['page_to_load'] = 'file_storage/revisions.php';
+					$this->setRule(3, 'id');	//for opening folders, the 'folder' attribute is required
+				} else {
+					$result['page_to_load'] = 'file_storage/index.php';
+					$this->setRule(3, 'folder');	//for opening folders, the 'folder' attribute is required
+				}
+			}
 
 			//Both key and values cannot be emptied.
 			if ($this->rule[$order]!='' && $label!=''){
@@ -97,16 +103,27 @@ class ForumsUrl extends UrlRewrite {
 
 	/**
 	 * Construct pretty url by the given query string.
+	 * Note:	This method will be a bit different from ForumsUrl, TestsUrl, ContentUrl because it has browse/comment in the rule which 
+	 *			doesn't exist in the actual query.
+	 * @param	string	the query string of the url
+	 * @param	string	filename of the request, this consists of revisions.php, index.php, comments.php
 	 */
-	function constructPrettyUrl($query){
+	function constructPrettyUrl($query, $filename){
 		$url = $this->getClassName();
 		$query_parts = parent::parseQuery($query);
 		$query_string = '';
+		//determine if this uses 'browse' or 'comment'
+		$prefix = $this->configRule($filename);
+		$url .=	'/' . $prefix ;	//add either browse or comment to the url
+
 		//construct pretty url on mapping
 		foreach ($this->rule as $key=>$value){
 
-			//if this value is empty, the url construction should quit.
-			if ($query_parts[$value] ==''){
+			//if this is action, skip it.
+			if ($value == 'action'){
+				continue;
+			} elseif ($query_parts[$value] ==''){
+				//if this value is empty, the url construction should quit.
 				break;
 			}
 			$url .= '/'.$query_parts[$value];
@@ -140,5 +157,29 @@ class ForumsUrl extends UrlRewrite {
 
 		return $url;
 	}
+
+
+	/**
+	 * A helper method for constructPrettyUrl
+	 * @param	string	filename
+	 */
+	function configRule($filename){
+		//run through the query once, extract if it uses id or folder.
+		//if 'id', it is comments.php
+		//if 'folder', it is index.php
+		if ($filename=='comments.php'){
+			$this->setRule(3, 'id');
+			return 'comments';
+		} elseif ($filename=='revisions.php'){
+			$this->setRule(3, 'id');
+			return 'revisions';
+		} else {
+			$this->setRule(3, 'folder');
+			return 'browse';
+		}
+
+	}
+
+
 }
 ?>

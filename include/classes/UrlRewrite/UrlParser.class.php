@@ -16,10 +16,10 @@
 //require_once(dirname(__FILE__) . '/BlogsUrl.class.php');
 //require_once(dirname(__FILE__) . '/BrowseUrl.class.php');
 //require_once(dirname(__FILE__) . '/ChatUrl.class.php');
-//require_once(dirname(__FILE__) . '/ContentUrl.class.php');
+require_once(dirname(__FILE__) . '/ContentUrl.class.php');
 //require_once(dirname(__FILE__) . '/DirectoryUrl.class.php');
 //require_once(dirname(__FILE__) . '/FaqUrl.class.php');
-//require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
+require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
 require_once(dirname(__FILE__) . '/ForumsUrl.class.php');
 //require_once(dirname(__FILE__) . '/GlossaryUrl.class.php');
 //require_once(dirname(__FILE__) . '/GoogleSearchUrl.class.php');
@@ -97,12 +97,15 @@ class UrlParser {
 			case 'chat':
 				break;
 			case 'content':
+			case 'content.php':
+				$url_obj =& new ContentUrl();
 				break;
 			case 'directory':
 				break;
 			case 'faq':
 				break;
 			case 'file_storage':
+				$url_obj =& new FileStorageUrl();
 				break;
 			case 'forum':
 				$url_obj =& new ForumsUrl();
@@ -117,10 +120,13 @@ class UrlParser {
 				break;
 			case 'reading_list':
 				break;
-			case 'tests':
+			case 'tools':
+			case 'test':
 				$url_obj =& new TestsUrl();
 				break;
 			case 'sitemap':
+				break;
+			default:
 				break;
 		}
 		return $url_obj;
@@ -143,17 +149,28 @@ class UrlParser {
 	 */
 	function convertToPrettyUrl($course_id, $url){
 		//TODO
-		//Cut URL to begin and end parts, use '?' as the seperator.
-		//For front, explode '/' to determine where the location of the file is
-		//For back, explode 'SEP' to find what the queries are, and map it onto the class hash map.
+		//Needs to handle PHP_SELF for URL
 		list($front, $end) = preg_split('/\?/', $url);
 
 		$front_array = explode('/', $front);
+		//assume the first chunk is always the class name
 		foreach($front_array as $k=>$v){
-			if ($v!=''){
-				$obj = $this->getToolObject($v);  //create class object for the type
+			$obj = $this->getToolObject($v);  //create class object for the type
+			if ($obj != null){
 				break;  //break loop
 			}
+		}
+
+		//if obj is still null after a full url walk
+		if ($obj==null){
+			return '';
+		}
+		
+		//handles exception cases
+		if ($obj->getClassName()=='file_storage'){
+			//we need to know which file to open, ie. comments.php, index.php, or revisions.php.  
+			$filepos = array_search('harris.php', $front_array)+1;
+			return 'harris.php/'.$course_id.'/'.$obj->constructPrettyUrl($end, $front_array[$filepos]);
 		}
 		return 'harris.php/'.$course_id.'/'.$obj->constructPrettyUrl($end);
 	}

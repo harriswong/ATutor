@@ -67,10 +67,10 @@ if (!($row = mysql_fetch_assoc($result))) {
 </colgroup>
 <thead>
 <tr>
-	<th scope="col"><a href="<?php echo url_rewrite("forum/index.php?$orders[$order]=subject$page_string"); ?>"><?php echo _AT('topic'); ?></a></th>
-	<th scope="col"><a href="<?php echo url_rewrite("forum/index.php?$orders[$order]=num_comments$page_string"); ?>"><?php echo _AT('replies'); ?></a></th>
+	<th scope="col"><a href="<?php echo url_rewrite($_SERVER['PHP_SELF']."?$orders[$order]=subject$page_string"); ?>"><?php echo _AT('topic'); ?></a></th>
+	<th scope="col"><a href="<?php echo url_rewrite($_SERVER['PHP_SELF']."?$orders[$order]=num_comments$page_string"); ?>"><?php echo _AT('replies'); ?></a></th>
 	<th scope="col"><?php echo _AT('started_by'); ?></th>
-	<th scope="col"><a href="<?php echo url_rewrite("forum/index.php?$orders[$order]=last_comment$page_string"); ?>"><?php echo _AT('last_comment'); ?></a></th>
+	<th scope="col"><a href="<?php echo url_rewrite($_SERVER['PHP_SELF']."?$orders[$order]=last_comment$page_string"); ?>"><?php echo _AT('last_comment'); ?></a></th>
 <?php
 	$colspan = 4;
 	if (authenticate(AT_PRIV_FORUMS, AT_PRIV_RETURN)) {
@@ -88,7 +88,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 		if ($i == $page) {
 			echo $i;
 		} else {
-			echo '<a href="'.url_rewrite('forum/index.php'.'?fid='.$fid.SEP.'page='.$i).'">'.$i.'</a>';
+			echo '<a href="'.url_rewrite($_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'page='.$i).'">'.$i.'</a>';
 		}
 
 		if ($i<$num_pages){
@@ -147,7 +147,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 		if ($num_pages_2 > 1) {
 			echo ' <small class="spacer">( Page: ';
 			for ($i=2; $i<=$num_pages_2; $i++) {
-				echo '<a href="'.url_rewrite('forum/view.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'page='.$i).'" title="'.$full_subject.'">'.$i.'</a>';
+				echo '<a href="'.url_rewrite($_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'page='.$i).'" title="'.$full_subject.'">'.$i.'</a>';
 
 				if ($i<$num_pages_2){
 					echo ' | ';
