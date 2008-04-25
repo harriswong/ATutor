@@ -14,20 +14,20 @@
 require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 
 /**
-* FileStorageUrl
+* LinksUrl
 * Class for rewriting pretty urls in tests
 * @access	public
 * @author	Harris Wong
 * @package	UrlParser
 */
-class FileStorageUrl extends UrlRewrite {
+class LinksUrl extends UrlRewrite {
 	// local variables
 	var $rule;		//an array that maps [lvl->query parts]
 
 	// constructor
-	function FileStorageUrl() {
-		$this->rule = array(0=>'action', 1=>'ot', 2=>'oid', 3=>'folder');	//default 3=folder, but it can be id as well for comment
-		parent::setClassName('file_storage');	//set class name
+	function LinksUrl() {
+		$this->rule = array(0=>'view');
+		parent::setClassName('links');	//set class name
 	}
 
 	// public
@@ -35,31 +35,15 @@ class FileStorageUrl extends UrlRewrite {
 	}
 
 	//
-	function setRule($id, $ruleName){
-		$this->rule[$id] = $ruleName;
+	function setRule($rule){
+		echo 'child setting the rule';
+		$this->rule = $rule;
 	}
 
 	// public
 	// return the uri of this pretty url, used by constants.inc.php $_rel_link
 	function redirect($parts){
-		$sublvl = parent::parsePrettyUrl($parts);
-		//0=>fid 1=>pid
-		$query = '';
-		if (empty($sublvl)){
-			$page_to_load = '/file_storage/index.php';
-		}
-		foreach($sublvl as $order=>$label){			
-			if ($this->rule[$order]=='action'){
-				if ($label=='comments'){
-					$page_to_load = '/file_storage/comments.php';
-				} elseif($label=='revisions'){
-					$page_to_load = '/file_storage/revisions.php';
-				} else {
-					$page_to_load = '/file_storage/index.php';
-				}
-			}
-		}
-		return $page_to_load;
+		return '/links/index.php';
 	}
 
 
@@ -67,7 +51,7 @@ class FileStorageUrl extends UrlRewrite {
 	/**
 	 * This method will read the parts and tries to put it together as an array.
 	 * So that this can get assigned to the GET/POST/REQUEST variable.
-	 * @param	string	this is the query after /file_storage/
+	 * @param	string	this is the query after /test/
 	 * @return	an array of parts mapped by their query rules.
 	 */
 	function parts2Array($parts){
@@ -76,9 +60,8 @@ class FileStorageUrl extends UrlRewrite {
 
 		//if there are no extra query, link it to the defaulted page
 		if (empty($sublvl)){
-			$result['page_to_load'] = 'file_storage/index.php';
+			$result['page_to_load'] = 'links/index.php';
 		}
-
 		foreach ($sublvl as $order => $label){
 			//check if pages exist, if it does, end parsing because this is the last part of the pretty url
 			//don't care if there are anymore strings afterwards.  Not part of my constructions.
@@ -87,18 +70,10 @@ class FileStorageUrl extends UrlRewrite {
 //				break;
 //			}
 
-			if ($this->rule[$order]=='action'){
-				if ($label=='comments'){
-					$result['page_to_load'] = 'file_storage/comments.php';
-					$this->setRule(3, 'id');		//for comments, the 'id' attribute is required
-				} elseif($label=='revisions'){
-					$result['page_to_load'] = 'file_storage/revisions.php';
-					$this->setRule(3, 'id');	//for opening folders, the 'folder' attribute is required
-				} else {
-					$result['page_to_load'] = 'file_storage/index.php';
-					$this->setRule(3, 'folder');	//for opening folders, the 'folder' attribute is required
-				}
-			}
+			//cat_parent_id and search are coherent 
+			if ($this->rule[$order]=='view'){
+				$result['page_to_load'] = 'links/index.php';
+			} 
 
 			//Both key and values cannot be emptied.
 			if ($this->rule[$order]!='' && $label!=''){
@@ -111,27 +86,16 @@ class FileStorageUrl extends UrlRewrite {
 
 	/**
 	 * Construct pretty url by the given query string.
-	 * Note:	This method will be a bit different from ForumsUrl, TestsUrl, ContentUrl because it has browse/comment in the rule which 
-	 *			doesn't exist in the actual query.
-	 * @param	string	the query string of the url
-	 * @param	string	filename of the request, this consists of revisions.php, index.php, comments.php
 	 */
-	function constructPrettyUrl($query, $filename){
+	function constructPrettyUrl($query){
 		$url = $this->getClassName();
 		$query_parts = parent::parseQuery($query);
 		$query_string = '';
-		//determine if this uses 'browse' or 'comment'
-		$prefix = $this->configRule($filename);
-		$url .=	'/' . $prefix ;	//add either browse or comment to the url
-
 		//construct pretty url on mapping
 		foreach ($this->rule as $key=>$value){
 
-			//if this is action, skip it.
-			if ($value == 'action'){
-				continue;
-			} elseif ($query_parts[$value] ==''){
-				//if this value is empty, the url construction should quit.
+			//if this value is empty, the url construction should quit.
+			if ($query_parts[$value] ==''){
 				break;
 			}
 			$url .= '/'.$query_parts[$value];
@@ -164,28 +128,6 @@ class FileStorageUrl extends UrlRewrite {
 		}
 
 		return $url;
-	}
-
-
-	/**
-	 * A helper method for constructPrettyUrl
-	 * @param	string	filename
-	 */
-	function configRule($filename){
-		//run through the query once, extract if it uses id or folder.
-		//if 'id', it is comments.php
-		//if 'folder', it is index.php
-		if ($filename=='comments.php'){
-			$this->setRule(3, 'id');
-			return 'comments';
-		} elseif ($filename=='revisions.php'){
-			$this->setRule(3, 'id');
-			return 'revisions';
-		} else {
-			$this->setRule(3, 'folder');
-			return 'browse';
-		}
-
 	}
 
 

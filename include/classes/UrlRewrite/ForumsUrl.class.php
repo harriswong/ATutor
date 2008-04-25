@@ -43,18 +43,22 @@ class ForumsUrl extends UrlRewrite {
 	}
 
 	// public
-	// deprecated
+	// return the uri of this pretty url, used by constants.inc.php $_rel_link
 	function redirect($parts){
 		$sublvl = parent::parsePrettyUrl($parts);
 		//0=>fid 1=>pid
 		$query = '';
-		foreach($sublvl as $order=>$label){
-			//construct query
-			$query .= $this->rule[$order].'='.$label.'&';
+		if (empty($sublvl)){
+			$page_to_load = '/forum/list.php';
 		}
-		$query = substr(trim($query), 0, -1);
-//		return 'forum/view.php?'.$query;
-		return 'forum/view.php';
+		foreach($sublvl as $order=>$label){			
+			if ($this->rule[$order]=='pid'){
+				$page_to_load = '/forum/view.php';
+			} elseif ($this->rule[$order]=='fid'){
+				$page_to_load = '/forum/index.php';				
+			} 
+		}
+		return $page_to_load;
 	}
 
 	// public

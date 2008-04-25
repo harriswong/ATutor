@@ -45,16 +45,7 @@ class ContentUrl extends UrlRewrite {
 	// public
 	// deprecated
 	function redirect($parts){
-		$sublvl = parent::parsePrettyUrl($parts);
-		//0=>fid 1=>pid
-		$query = '';
-		foreach($sublvl as $order=>$label){
-			//construct query
-			$query .= $this->rule[$order].'='.$label.'&';
-		}
-		$query = substr(trim($query), 0, -1);
-//		return 'forum/view.php?'.$query;
-		return 'content.php';
+		return '/content.php';
 	}
 
 	// public

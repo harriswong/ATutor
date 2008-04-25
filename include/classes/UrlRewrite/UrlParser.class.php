@@ -23,7 +23,7 @@ require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
 require_once(dirname(__FILE__) . '/ForumsUrl.class.php');
 //require_once(dirname(__FILE__) . '/GlossaryUrl.class.php');
 //require_once(dirname(__FILE__) . '/GoogleSearchUrl.class.php');
-//require_once(dirname(__FILE__) . '/LinksUrl.class.php');
+require_once(dirname(__FILE__) . '/LinksUrl.class.php');
 //require_once(dirname(__FILE__) . '/PollsUrl.class.php');
 //require_once(dirname(__FILE__) . '/ReadingListUrl.class.php');
 require_once(dirname(__FILE__) . '/TestsUrl.class.php');
@@ -115,6 +115,7 @@ class UrlParser {
 			case 'google_search':
 				break;
 			case 'links':
+				$url_obj =& new LinksUrl();
 				break;
 			case 'polls':
 				break;
@@ -165,7 +166,7 @@ class UrlParser {
 		if ($obj==null){
 			return '';
 		}
-		
+
 		//handles exception cases
 		if ($obj->getClassName()=='file_storage'){
 			//we need to know which file to open, ie. comments.php, index.php, or revisions.php.  
