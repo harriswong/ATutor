@@ -728,8 +728,8 @@ function validate_length($input, $len, $forDisplay=0){
  * @author	Harris Wong
  */
 function url_rewrite($url){
-//	debug ($url);
-	if ($_config['pretty_url']=TRUE){
+	global $_config;
+	if ($_config['pretty_url'] > 0){
 		$url_parser = new UrlParser();
 		$url = $url_parser->convertToPrettyUrl($_SESSION['course_id'], $url);
 	} 

@@ -13,22 +13,7 @@
 // $Id: UrlParser.class.php 7208 2008-04-15 10:00:24Z harris $
 
 // Add classes for the rewrite 
-//require_once(dirname(__FILE__) . '/BlogsUrl.class.php');
-//require_once(dirname(__FILE__) . '/BrowseUrl.class.php');
-//require_once(dirname(__FILE__) . '/ChatUrl.class.php');
-require_once(dirname(__FILE__) . '/ContentUrl.class.php');
-//require_once(dirname(__FILE__) . '/DirectoryUrl.class.php');
-//require_once(dirname(__FILE__) . '/FaqUrl.class.php');
-require_once(dirname(__FILE__) . '/FileStorageUrl.class.php');
-require_once(dirname(__FILE__) . '/ForumsUrl.class.php');
-//require_once(dirname(__FILE__) . '/GlossaryUrl.class.php');
-//require_once(dirname(__FILE__) . '/GoogleSearchUrl.class.php');
-require_once(dirname(__FILE__) . '/LinksUrl.class.php');
-//require_once(dirname(__FILE__) . '/PollsUrl.class.php');
-//require_once(dirname(__FILE__) . '/ReadingListUrl.class.php');
-require_once(dirname(__FILE__) . '/TestsUrl.class.php');
-//require_once(dirname(__FILE__) . '/SitemapUrl.class.php');
-
+require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 
 /**
 * UrlParser
@@ -60,77 +45,37 @@ class UrlParser {
 	 * @access	private
 	 */
 	function parsePathinfo($pathinfo){
+		global $db;
 		$pathinfo = strtolower($pathinfo);
-		$path_array = explode('/', $pathinfo, 4); //the first one is always empty.
-		$url_obj = null;
-
-		//Invalid ATutor URLs
-		if (sizeof($path_array) < 3){
-			return false;
-		}
+//		debug($pathinfo);
+		/* 
+		 * matches[1] = course slug/id
+		 * matches[2] = path
+		 * matches[3] = filename
+		 * matches[4] = query string in pretty format
+		 * @http://ca3.php.net/preg_match
+		 */
+		preg_match('/(\/[\w]+)([\/\w]*)\/([\w\_\.]+\.php)([\/\w\W]*)/', $pathinfo, $matches);
 
 		//Check if this is using a course_slug.
-		if ($_config['course_slug']==1){
-			//It is using a course slug, get its relative course_id
-			//TODO: Get course slug, sql? Overhead per page load
+		if ($_config['course_dir_name']=true){
+			//check if this is a course slug or course id.
+			$course_id = intval(substr($matches[1], 1));
+			if ($course_id==0){
+				//it's a course slug, log into the course.
+				$sql	= "SELECT course_id FROM ".TABLE_PREFIX."courses WHERE course_dir_name='$matches[1]'";
+				$result = mysql_query($sql, $db);
+				$row = mysql_fetch_assoc($result);
+				$course_id = $row['course_id'];
+			}
+//			$_SESSION['course_id'] = $course_id;
 		} 
-		$course_id = $pathinfo[1];
+		
 
 		//Check which tool type this is from
-		$url_obj =& $this->getToolObject($path_array[2]);
+		$url_obj = new UrlRewrite($matches[2], $matches[3], $matches[4]);
 
-		$this->path_array = array($course_id, $url_obj, $path_array[3]);
-	}
-
-	
-	/**
-	 * This function takes in the tool type string, and return the object back.
-	 * If the object is not found, return null.
-	 */
-	function getToolObject($tool_name){
-		$url_obj = null;	//initialize
-		switch ($tool_name){
-			case 'blogs': 
-				break;
-			case 'browse':
-				break;
-			case 'chat':
-				break;
-			case 'content':
-			case 'content.php':
-				$url_obj =& new ContentUrl();
-				break;
-			case 'directory':
-				break;
-			case 'faq':
-				break;
-			case 'file_storage':
-				$url_obj =& new FileStorageUrl();
-				break;
-			case 'forum':
-				$url_obj =& new ForumsUrl();
-				break;
-			case 'glossary':
-				break;
-			case 'google_search':
-				break;
-			case 'links':
-				$url_obj =& new LinksUrl();
-				break;
-			case 'polls':
-				break;
-			case 'reading_list':
-				break;
-			case 'tools':
-			case 'test':
-				$url_obj =& new TestsUrl();
-				break;
-			case 'sitemap':
-				break;
-			default:
-				break;
-		}
-		return $url_obj;
+		$this->path_array = array($course_id, $url_obj);
 	}
 
 	
@@ -149,31 +94,39 @@ class UrlParser {
 	 * @return	pretty url
 	 */
 	function convertToPrettyUrl($course_id, $url){
-		//TODO
-		//Needs to handle PHP_SELF for URL
 		list($front, $end) = preg_split('/\?/', $url);
+		$obj = $this->path_array[1];
 
 		$front_array = explode('/', $front);
-		//assume the first chunk is always the class name
-		foreach($front_array as $k=>$v){
-			$obj = $this->getToolObject($v);  //create class object for the type
-			if ($obj != null){
-				break;  //break loop
+//		debug($front_array);
+
+		//find out what kind of link this is, pretty url? relative url? or PHP_SELF url?
+		$dir_deep	 = substr_count(AT_INCLUDE_PATH, '..');
+		$url_parts	 = explode('/', $_SERVER['PHP_SELF']);
+		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
+
+		//The relative link is a pretty URL
+		if(in_array('harris.php', $front_array)===TRUE){
+			$front_result = array();			
+			//spit out the URL in between 'harris.php' to *.php
+			//note, pretty url is defined to be harris.php/course_slug/type/location/...
+			//ie. harris.php/1/forum/view.php/...
+			$needle = array_search('harris.php', $front_array);
+			$front_array = array_slice($front_array, $needle + 2);  //+2 because we want the entries after the course_slug
+			//cut off everything at the back
+			foreach($front_array as $fk=>$fv){
+				array_push($front_result, $fv);
+				if 	(preg_match('/\.php/', $fv)==1){
+					break;
+				}
 			}
+			$front = implode('/', $front_result);
+		} elseif (strpos($front, $host_dir)!==FALSE){
+//			debug('here');
+			//Not a relative link, it contains the full PHP_SELF path.
+			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
 		}
-
-		//if obj is still null after a full url walk
-		if ($obj==null){
-			return '';
-		}
-
-		//handles exception cases
-		if ($obj->getClassName()=='file_storage'){
-			//we need to know which file to open, ie. comments.php, index.php, or revisions.php.  
-			$filepos = array_search('harris.php', $front_array)+1;
-			return 'harris.php/'.$course_id.'/'.$obj->constructPrettyUrl($end, $front_array[$filepos]);
-		}
-		return 'harris.php/'.$course_id.'/'.$obj->constructPrettyUrl($end);
+		return 'harris.php/'.$course_id.'/'.$front.'/'.$obj->constructPrettyUrl($end);
 	}
 }
 ?>

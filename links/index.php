@@ -172,7 +172,7 @@ $num_results = mysql_num_rows($result);
 	do {
 		?>
 		<tr onmousedown="document.form['m<?php echo $row['link_id']; ?>'].checked = true;">
-			<td><a href="links/index.php?view=<?php echo $row['link_id']; ?>" target="_new" title="<?php echo AT_print($row['LinkName'], 'links.LinkName'); ?>"><?php echo AT_print($row['LinkName'], 'links.LinkName'); ?></a></td>
+			<td><a href="<?php echo url_rewrite('links/index.php?view='.$row['link_id']); ?>" target="_new" title="<?php echo AT_print($row['LinkName'], 'links.LinkName'); ?>"><?php echo AT_print($row['LinkName'], 'links.LinkName'); ?></a></td>
 			<td><?php 
 				if (empty($row['name'])) {
 					$row['name'] = get_group_name($row['owner_id']);

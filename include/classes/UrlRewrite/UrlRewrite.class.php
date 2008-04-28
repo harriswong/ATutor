@@ -20,24 +20,21 @@
 */
 class UrlRewrite  {
 	// local variables
-	var $rule;		//an array that maps [lvl->query parts]
-	var $className;	//the name of this class
+	var $path;		//the path of this script
+	var $filename;	//script name
+	var $query;		//the queries of the REQUEST
 
 	// constructor
-	function UrlRewrite() {
+	function UrlRewrite($path, $filename, $query) {
+		$this->path = $path;
+		$this->filename = $filename;
+		$this->query = $query;
 	}
 
 	// public 
 	function setRule($rule) {
 		echo 'parent setting the rule';
 		$this->rule = $rule;
-	}
-
-	/**
-	 * This will return the class name of the function.
-	 */
-	function setClassName($className){
-		$this->className = $className;
 	}
 
 	// protected
@@ -51,13 +48,29 @@ class UrlRewrite  {
 		//redirect to that url.
 	}
 
-	//public 
-	function parsePrettyUrl($query){
+	//public
+	function parsePrettyQuery(){
+		$result = array();
+
 		//return empty array if query is empty
-		if (empty($query)){
-			return array();
+		if (empty($this->query)){
+			return $result;
 		}
-		return explode('/', $query);
+		
+		//If the first char is /, cut it
+		if (strpos($this->query, '/') == 0){
+			$query_parts = explode('/', substr($this->query, 1));
+		} else {
+			$query_parts = explode('/', $this->query);
+		}
+
+		//assign dynamic pretty url
+		foreach ($query_parts as $array_index=>$key_value){
+			if($array_index%2 == 0 && $query_parts[$array_index]!=''){
+				$result[$key_value] = $query_parts[$array_index+1];
+			}
+		}
+		return $result;
 	}
 
 
@@ -67,17 +80,46 @@ class UrlRewrite  {
 		if (empty($query)){
 			return array();
 		}
-		parse_str($query, $result);
-		return $result;
 
+		parse_str($this->query, $result);
+		return $result;
 	}
 
 
+	//public
+	//This method will construct a pretty url based on the given query
+	function constructPrettyUrl($query){
+		$pretty_url = '';		//init url
+		$query_parts = explode(SEP, $query);		
+		foreach ($query_parts as $index=>$attributes){
+			list($key, $value) = preg_split('/\=/', $attributes, 2);
+			$pretty_url .= $key . '/' . $value .'/';
+		}
+		return $pretty_url;
+	}
+
 	/**
-	 * This will return the class name of the function.
+	 * Return the paths where this script is
 	 */
-	function getClassName(){
-		return $this->className;
+	function getPath(){
+		if ($this->path != ''){
+			return substr($this->path, 1).'/';
+		}
+		return '';
+	}
+
+	/**
+	 * Return the script name
+	 */
+	function getFileName(){
+		return $this->filename;
+	}
+
+	/**
+	 * 
+	 */
+	function getPage(){
+		return $this->getPath().$this->getFileName();
 	}
 }
 ?>

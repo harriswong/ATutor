@@ -62,20 +62,20 @@ if (!$post_row = mysql_fetch_assoc($result)) {
 }
 
 $_pages['blogs/post.php']['title'] = AT_PRINT($post_row['title'], 'blog_posts.title') . ($post_row['private'] ? ' - '._AT('private') : '');
-$_pages['blogs/post.php']['parent']    = 'blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'];
+$_pages['blogs/post.php']['parent']    = url_rewrite('blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid']);
 if (query_bit($owner_status, BLOGS_AUTH_WRITE)) {
 	$_pages['blogs/post.php']['children']  = array('blogs/edit_post.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'].SEP.'id='.$_REQUEST['id'], 'blogs/delete_post.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'].SEP.'id='.$_REQUEST['id']);
 } else {
 	$_pages['blogs/post.php']['children']  = array();
 }
 
-$_pages['blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid']]['title'] = blogs_get_blog_name(BLOGS_GROUP, $_REQUEST['oid']);
-$_pages['blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid']]['parent']    = 'blogs/index.php';
+$_pages[url_rewrite('blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'])]['title'] = blogs_get_blog_name(BLOGS_GROUP, $_REQUEST['oid']);
+$_pages[url_rewrite('blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'])]['parent']    = 'blogs/index.php';
 
 if (query_bit($owner_status, BLOGS_AUTH_WRITE)) {
-	$_pages['blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid']]['children']  = array('blogs/add_post.php');
+	$_pages[url_rewrite('blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'])]['children']  = array('blogs/add_post.php');
 } else {
-	$_pages['blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid']]['children']  = array();
+	$_pages[url_rewrite('blogs/view.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'])]['children']  = array();
 }
 
 

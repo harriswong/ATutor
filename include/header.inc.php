@@ -60,7 +60,7 @@ $savant->assign('content_base_href', $_tmp_base_href);
 $savant->assign('base_href', AT_BASE_HREF);
 
 //Handle pretty url pages
-if ($_config['pretty_url']=TRUE && ($temp = strpos($_SERVER['PHP_SELF'], 'harris.php')) > 0){
+if ($_config['pretty_url'] > 0 && ($temp = strpos($_SERVER['PHP_SELF'], 'harris.php')) > 0){
 	$current_page = $pretty_current_page; //this is set in harris.php
 }
 
