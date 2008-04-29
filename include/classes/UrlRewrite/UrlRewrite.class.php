@@ -44,8 +44,9 @@ class UrlRewrite  {
 
 	// public
 	//deprecated
-	function redirect($url){
+	function redirect(){
 		//redirect to that url.
+		return $this->getPage();
 	}
 
 	//public
