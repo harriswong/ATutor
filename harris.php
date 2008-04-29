@@ -19,8 +19,7 @@ $obj = $path_array[1];
  * Addresses the issue for relative uri 
  * @refer to constants.inc.php $_rel_link
  */
-//$pretty_rel_link = $obj->redirect($path_array[2]);
-$pretty_rel_link = 'forum/index.php';
+$pretty_rel_link = $obj->redirect();
 
 if ($obj == null){
 	//if there is no such rules defined.
