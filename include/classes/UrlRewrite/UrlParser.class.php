@@ -24,7 +24,7 @@ require_once(dirname(__FILE__) . '/UrlRewrite.class.php');
 */
 class UrlParser {
 	//Variables
-	var $path_array;	//an array [0]->course_id; [1]->class obj; [2]->extra queries
+	var $path_array;	//an array [0]->course_id; [1]->class obj
 
 	// Constructor
 	function UrlParser($pathinfo=''){
@@ -57,16 +57,22 @@ class UrlParser {
 		 */
 		preg_match('/(\/[\w]+)([\/\w]*)\/([\w\_\.]+\.php)([\/\w\W]*)/', $pathinfo, $matches);
 
+		//take out the front slash
+		$matches[1] = substr($matches[1], 1);
 		//Check if this is using a course_slug.
 		if ($_config['course_dir_name']=true){
 			//check if this is a course slug or course id.
-			$course_id = intval(substr($matches[1], 1));
+			$course_id = intval($matches[1]);
 			if ($course_id==0){
 				//it's a course slug, log into the course.
 				$sql	= "SELECT course_id FROM ".TABLE_PREFIX."courses WHERE course_dir_name='$matches[1]'";
 				$result = mysql_query($sql, $db);
 				$row = mysql_fetch_assoc($result);
-				$course_id = $row['course_id'];
+				if ($row['course_id']!=''){
+					$course_id = $row['course_id'];
+				} else {
+					$course_id = 0;
+				}
 			}
 //			$_SESSION['course_id'] = $course_id;
 		} 
@@ -93,7 +99,7 @@ class UrlParser {
 	 * @param	string	normal URL, WITHOUT the <prototal>://<host>
 	 * @return	pretty url
 	 */
-	function convertToPrettyUrl($course_id, $url){
+/*	function convertToPrettyUrl($course_id, $url){
 		list($front, $end) = preg_split('/\?/', $url);
 		$obj = $this->path_array[1];
 
@@ -128,5 +134,6 @@ class UrlParser {
 		}
 		return 'harris.php/'.$course_id.'/'.$front.'/'.$obj->constructPrettyUrl($end);
 	}
+*/
 }
 ?>

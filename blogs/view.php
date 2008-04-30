@@ -12,7 +12,7 @@
 /****************************************************************/
 // $Id$
 define('AT_INCLUDE_PATH', '../include/');
-require (AT_INCLUDE_PATH.'vitals.inc.php');
+require_once (AT_INCLUDE_PATH.'vitals.inc.php');
 
 $owner_type = intval($_REQUEST['ot']);
 $owner_id   = intval($_REQUEST['oid']);

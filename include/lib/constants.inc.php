@@ -188,11 +188,7 @@ $_base_path  = substr($_base_href, strlen($server_protocol . $_SERVER['HTTP_HOST
 define('AT_BASE_HREF', $_base_href);
 
 /* relative uri */
-if (isset($pretty_rel_link)){
-	$_rel_url = $pretty_rel_link;	//from pretty url
-} else {
-	$_rel_url = '/'.implode('/', array_slice($url_parts, count($url_parts) - $dir_deep-1));
-}
+$_rel_url = '/'.implode('/', array_slice($url_parts, count($url_parts) - $dir_deep-1));
 
 /* where the gudes are (could be a full URL if needed): */
 define('AT_GUIDES_PATH', $_base_path . 'documentation/');

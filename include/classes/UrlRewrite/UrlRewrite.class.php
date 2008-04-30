@@ -46,7 +46,7 @@ class UrlRewrite  {
 	//deprecated
 	function redirect(){
 		//redirect to that url.
-		return $this->getPage();
+		return '/'.$this->getPage();
 	}
 
 	//public
@@ -98,6 +98,49 @@ class UrlRewrite  {
 		}
 		return $pretty_url;
 	}
+
+
+	/**
+	 * This function is used to convert the input URL to a pretty URL.
+	 * @param	int		course id
+	 * @param	string	normal URL, WITHOUT the <prototal>://<host>
+	 * @return	pretty url
+	 */
+	function convertToPrettyUrl($course_id, $url){
+		list($front, $end) = preg_split('/\?/', $url);
+
+		$front_array = explode('/', $front);
+//		debug($front_array);
+
+		//find out what kind of link this is, pretty url? relative url? or PHP_SELF url?
+		$dir_deep	 = substr_count(AT_INCLUDE_PATH, '..');
+		$url_parts	 = explode('/', $_SERVER['PHP_SELF']);
+		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
+
+		//The relative link is a pretty URL
+		if(in_array('harris.php', $front_array)===TRUE){
+			$front_result = array();			
+			//spit out the URL in between 'harris.php' to *.php
+			//note, pretty url is defined to be harris.php/course_slug/type/location/...
+			//ie. harris.php/1/forum/view.php/...
+			$needle = array_search('harris.php', $front_array);
+			$front_array = array_slice($front_array, $needle + 2);  //+2 because we want the entries after the course_slug
+			//cut off everything at the back
+			foreach($front_array as $fk=>$fv){
+				array_push($front_result, $fv);
+				if 	(preg_match('/\.php/', $fv)==1){
+					break;
+				}
+			}
+			$front = implode('/', $front_result);
+		} elseif (strpos($front, $host_dir)!==FALSE){
+//			debug('here');
+			//Not a relative link, it contains the full PHP_SELF path.
+			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
+		}
+		return 'harris.php/'.$course_id.'/'.$front.'/'.$this->constructPrettyUrl($end);
+	}
+
 
 	/**
 	 * Return the paths where this script is

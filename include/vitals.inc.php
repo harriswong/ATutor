@@ -49,7 +49,9 @@ function unregister_GLOBALS() {
 
 /**** 0. start system configuration options block ****/
 	error_reporting(0);
-	include(AT_INCLUDE_PATH.'config.inc.php');
+	if (!defined(AT_REDIRECT_LOADED)){
+		include_once(AT_INCLUDE_PATH.'config.inc.php');
+	}
 	error_reporting(AT_ERROR_REPORTING);
 
 	if (!defined('AT_INSTALL') || !AT_INSTALL) {
@@ -63,7 +65,9 @@ function unregister_GLOBALS() {
 /*** end system config block ****/
 
 /*** 1. constants ***/
-	require(AT_INCLUDE_PATH.'lib/constants.inc.php');
+	if (!defined(AT_REDIRECT_LOADED)){
+		require_once(AT_INCLUDE_PATH.'lib/constants.inc.php');
+	}
 
 /***** 2. start session initilization block ****/
 	if (headers_sent()) {
@@ -124,22 +128,8 @@ if ((@ini_get('output_handler') == '') && (@ini_get('zlib.output_handler') == ''
 }
 
 /* 5. database connection */
-if (AT_INCLUDE_PATH !== 'NULL') {
-	$db = @mysql_connect(DB_HOST . ':' . DB_PORT, DB_USER, DB_PASSWORD);
-	if (!$db) {
-		/* AT_ERROR_NO_DB_CONNECT */
-		require_once(AT_INCLUDE_PATH . 'classes/ErrorHandler/ErrorHandler.class.php');
-		$err =& new ErrorHandler();
-		trigger_error('VITAL#Unable to connect to db.', E_USER_ERROR);
-		exit;
-	}
-	if (!@mysql_select_db(DB_NAME, $db)) {
-		require_once(AT_INCLUDE_PATH . 'classes/ErrorHandler/ErrorHandler.class.php');
-		$err =& new ErrorHandler();
-		trigger_error('VITAL#DB connection established, but database "'.DB_NAME.'" cannot be selected.',
-						E_USER_ERROR);
-		exit;
-	}
+if (!defined(AT_REDIRECT_LOADED)){
+	require_once(AT_INCLUDE_PATH.'lib/mysql_connect.inc.php');
 }
 
 /* get config variables. if they're not in the db then it uses the installation default value in constants.inc.php */
@@ -215,8 +205,13 @@ if ($_config['time_zone']) {
 /* 8. load common libraries */
 	require(AT_INCLUDE_PATH.'classes/ContentManager.class.php');  /* content management class */
 	require_once(AT_INCLUDE_PATH.'lib/output.inc.php');           /* output functions */
-	if (!(defined(AT_URL_PARSER_LOADED))){
+	if (!(defined(AT_REDIRECT_LOADED))){
 		require_once(AT_INCLUDE_PATH . 'classes/UrlRewrite/UrlParser.class.php');	/* pretty url tool */
+	}
+
+	//if this is a pretty url, reassign the course_id because sessions have just begun.
+	if (isset($AT_PRETTY_URL_COURSE_ID)){
+		$_SESSION['course_id'] = $AT_PRETTY_URL_COURSE_ID;
 	}
 	require(AT_INCLUDE_PATH.'classes/Savant2/Savant2.php');       /* for the theme and template management */
 
@@ -731,7 +726,8 @@ function url_rewrite($url){
 	global $_config;
 	if ($_config['pretty_url'] > 0){
 		$url_parser = new UrlParser();
-		$url = $url_parser->convertToPrettyUrl($_SESSION['course_id'], $url);
+		$pathinfo = $url_parser->getPathArray();
+		$url = $pathinfo[1]->convertToPrettyUrl($_SESSION['course_id'], $url);
 	} 
 	return $url;
 }

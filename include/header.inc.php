@@ -63,6 +63,13 @@ $savant->assign('base_href', AT_BASE_HREF);
 if ($_config['pretty_url'] > 0 && ($temp = strpos($_SERVER['PHP_SELF'], 'harris.php')) > 0){
 	$current_page = $pretty_current_page; //this is set in harris.php
 }
+/* check if we are in the requested course, if not, bounce to it.
+ * @author harris, for pretty url, read harris.php
+ */
+if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
+	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_SESSION['pretty_url_course_id']);
+	exit;
+}
 
 if ($myLang->isRTL()) {
 	$savant->assign('rtl_css', '<link rel="stylesheet" href="'.$_base_path.'themes/'.$_SESSION['prefs']['PREF_THEME'].'/rtl.css" type="text/css" />');
@@ -91,7 +98,6 @@ if (isset($_SESSION['valid_user']) && $_SESSION['valid_user'] === true) {
 }
 
 $harris_flag = true;
-
 if (!$harris_flag && !isset($_pages[$current_page])) {
 	global $msg;
 	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
