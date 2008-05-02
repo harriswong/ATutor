@@ -108,7 +108,7 @@ function unregister_GLOBALS() {
 		exit;
 	}
 
-	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public')) {
+	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public') && !isset($AT_PRETTY_URL_COURSE_ID)) {
 		if (isset($in_get) && $in_get && (($pos = strpos($_SERVER['PHP_SELF'], 'get.php/')) !== FALSE)) {
 			$redirect = substr($_SERVER['PHP_SELF'], 0, $pos) . 'login.php';
 			header('Location: '.$redirect);
@@ -208,11 +208,6 @@ if ($_config['time_zone']) {
 	if (!(defined(AT_REDIRECT_LOADED))){
 		require_once(AT_INCLUDE_PATH . 'classes/UrlRewrite/UrlParser.class.php');	/* pretty url tool */
 	}
-
-	//if this is a pretty url, reassign the course_id because sessions have just begun.
-	if (isset($AT_PRETTY_URL_COURSE_ID)){
-		$_SESSION['course_id'] = $AT_PRETTY_URL_COURSE_ID;
-	}
 	require(AT_INCLUDE_PATH.'classes/Savant2/Savant2.php');       /* for the theme and template management */
 
 	// set default template paths:
@@ -266,11 +261,17 @@ if (isset($_user_location) && ($_user_location == 'users') && $_SESSION['valid_u
 	$_SESSION['course_id'] = 0;
 }
 
-if ((!isset($_SESSION['course_id']) || $_SESSION['course_id'] == 0) && ($_user_location != 'users') && ($_user_location != 'prog') && !isset($_GET['h']) && ($_user_location != 'public')) {
+if ((!isset($_SESSION['course_id']) || $_SESSION['course_id'] == 0) && ($_user_location != 'users') && ($_user_location != 'prog') && !isset($_GET['h']) && ($_user_location != 'public') && (!isset($AT_PRETTY_URL_COURSE_ID) || $AT_PRETTY_URL_COURSE_ID == 0)) {
 	header('Location:'.AT_BASE_HREF.'users/index.php');
 	exit;
 }
-
+/* check if we are in the requested course, if not, bounce to it.
+ * @author harris, for pretty url, read AT_PRETTY_URL_HANDLER
+ */
+if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
+	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$AT_PRETTY_URL_COURSE_ID.SEP.'pu='.$_SERVER['PATH_INFO']);
+	exit;
+}
 
    /**
    * This function is used for printing variables for debugging.

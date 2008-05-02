@@ -23,9 +23,15 @@ class UrlRewrite  {
 	var $path;		//the path of this script
 	var $filename;	//script name
 	var $query;		//the queries of the REQUEST
+	var $isEmpty;	//true if path, filename, and query are empty
 
 	// constructor
 	function UrlRewrite($path, $filename, $query) {
+		if ($path=='' && $filename=='' && $query==''){
+			$this->isEmpty = true;
+		} else {
+			$this->isEmpty = false;
+		}
 		$this->path = $path;
 		$this->filename = $filename;
 		$this->query = $query;
@@ -110,20 +116,22 @@ class UrlRewrite  {
 		list($front, $end) = preg_split('/\?/', $url);
 
 		$front_array = explode('/', $front);
-//		debug($front_array);
 
 		//find out what kind of link this is, pretty url? relative url? or PHP_SELF url?
 		$dir_deep	 = substr_count(AT_INCLUDE_PATH, '..');
 		$url_parts	 = explode('/', $_SERVER['PHP_SELF']);
 		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
 
-		//The relative link is a pretty URL
-		if(in_array('harris.php', $front_array)===TRUE){
+		//The link is a bounce link
+		if(preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches)==1){
+			$pretty_url = $matches[1];
+		} elseif(in_array(AT_PRETTY_URL_HANDLER, $front_array)===TRUE){
+			//The relative link is a pretty URL
 			$front_result = array();			
-			//spit out the URL in between 'harris.php' to *.php
-			//note, pretty url is defined to be harris.php/course_slug/type/location/...
-			//ie. harris.php/1/forum/view.php/...
-			$needle = array_search('harris.php', $front_array);
+			//spit out the URL in between AT_PRETTY_URL_HANDLER to *.php
+			//note, pretty url is defined to be AT_PRETTY_URL_HANDLER/course_slug/type/location/...
+			//ie. AT_PRETTY_URL_HANDLER/1/forum/view.php/...
+			$needle = array_search(AT_PRETTY_URL_HANDLER, $front_array);
 			$front_array = array_slice($front_array, $needle + 2);  //+2 because we want the entries after the course_slug
 			//cut off everything at the back
 			foreach($front_array as $fk=>$fv){
@@ -134,11 +142,19 @@ class UrlRewrite  {
 			}
 			$front = implode('/', $front_result);
 		} elseif (strpos($front, $host_dir)!==FALSE){
-//			debug('here');
 			//Not a relative link, it contains the full PHP_SELF path.
 			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
 		}
-		return 'harris.php/'.$course_id.'/'.$front.'/'.$this->constructPrettyUrl($end);
+		
+		if ($pretty_url==''){
+			$pretty_url = $course_id.'/'.$front.'/'.$this->constructPrettyUrl($end);
+		}
+
+		//if mod_rewrite is switched on, defined in constants.inc.php
+		if (AT_PRETTY_URL_MOD_LOADED===true){
+			return $pretty_url;
+		}
+		return AT_PRETTY_URL_HANDLER.'/'.$pretty_url;
 	}
 
 
@@ -164,6 +180,13 @@ class UrlRewrite  {
 	 */
 	function getPage(){
 		return $this->getPath().$this->getFileName();
+	}
+
+	/**
+	 * 
+	 */
+	function isEmpty(){
+		return $this->isEmpty;
 	}
 }
 ?>

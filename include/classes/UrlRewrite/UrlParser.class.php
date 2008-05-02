@@ -47,7 +47,7 @@ class UrlParser {
 	function parsePathinfo($pathinfo){
 		global $db;
 		$pathinfo = strtolower($pathinfo);
-//		debug($pathinfo);
+
 		/* 
 		 * matches[1] = course slug/id
 		 * matches[2] = path
@@ -55,15 +55,24 @@ class UrlParser {
 		 * matches[4] = query string in pretty format
 		 * @http://ca3.php.net/preg_match
 		 */
-		preg_match('/(\/[\w]+)([\/\w]*)\/([\w\_\.]+\.php)([\/\w\W]*)/', $pathinfo, $matches);
+		preg_match('/^\/[\w\-]+\/?$|(\/[\w]+)([\/\w]*)\/([\w\_\.]+\.php)([\/\w\W]*)/', $pathinfo, $matches);
+
+		if (empty($matches)){
+			//no matches.
+			$matches[1] = 0;
+		} elseif (sizeof($matches)==1){
+			//if the url consist of just the course slug, the size would be just 2 b
+			$matches[1] = $matches[0];
+		} 
 
 		//take out the front slash
-		$matches[1] = substr($matches[1], 1);
+		$matches[1] = preg_replace('/\//', '', $matches[1]);
+		$course_id = $matches[1];
+
 		//Check if this is using a course_slug.
 		if ($_config['course_dir_name']=true){
 			//check if this is a course slug or course id.
-			$course_id = intval($matches[1]);
-			if ($course_id==0){
+			if (preg_match('/^[\d]+$/', $matches[1])==0){
 				//it's a course slug, log into the course.
 				$sql	= "SELECT course_id FROM ".TABLE_PREFIX."courses WHERE course_dir_name='$matches[1]'";
 				$result = mysql_query($sql, $db);
@@ -75,8 +84,7 @@ class UrlParser {
 				}
 			}
 //			$_SESSION['course_id'] = $course_id;
-		} 
-		
+		} 		
 
 		//Check which tool type this is from
 		$url_obj = new UrlRewrite($matches[2], $matches[3], $matches[4]);
@@ -112,12 +120,12 @@ class UrlParser {
 		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
 
 		//The relative link is a pretty URL
-		if(in_array('harris.php', $front_array)===TRUE){
+		if(in_array(AT_PRETTY_URL_HANDLER, $front_array)===TRUE){
 			$front_result = array();			
-			//spit out the URL in between 'harris.php' to *.php
-			//note, pretty url is defined to be harris.php/course_slug/type/location/...
-			//ie. harris.php/1/forum/view.php/...
-			$needle = array_search('harris.php', $front_array);
+			//spit out the URL in between AT_PRETTY_URL_HANDLER to *.php
+			//note, pretty url is defined to be AT_PRETTY_URL_HANDLER/course_slug/type/location/...
+			//ie. AT_PRETTY_URL_HANDLER/1/forum/view.php/...
+			$needle = array_search(AT_PRETTY_URL_HANDLER, $front_array);
 			$front_array = array_slice($front_array, $needle + 2);  //+2 because we want the entries after the course_slug
 			//cut off everything at the back
 			foreach($front_array as $fk=>$fv){
@@ -132,7 +140,7 @@ class UrlParser {
 			//Not a relative link, it contains the full PHP_SELF path.
 			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
 		}
-		return 'harris.php/'.$course_id.'/'.$front.'/'.$obj->constructPrettyUrl($end);
+		return AT_PRETTY_URL_HANDLER.'/'.$course_id.'/'.$front.'/'.$obj->constructPrettyUrl($end);
 	}
 */
 }

@@ -60,16 +60,16 @@ $savant->assign('content_base_href', $_tmp_base_href);
 $savant->assign('base_href', AT_BASE_HREF);
 
 //Handle pretty url pages
-if ($_config['pretty_url'] > 0 && ($temp = strpos($_SERVER['PHP_SELF'], 'harris.php')) > 0){
-	$current_page = $pretty_current_page; //this is set in harris.php
+if ($_config['pretty_url'] > 0 && ($temp = strpos($_SERVER['PHP_SELF'], AT_PRETTY_URL_HANDLER)) > 0){
+	$current_page = $pretty_current_page; //this is set in AT_PRETTY_URL_HANDLER
 }
 /* check if we are in the requested course, if not, bounce to it.
- * @author harris, for pretty url, read harris.php
+ * @author harris, for pretty url, read AT_PRETTY_URL_HANDLER
  */
-if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
-	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_SESSION['pretty_url_course_id']);
-	exit;
-}
+//if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
+//	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$AT_PRETTY_URL_COURSE_ID.SEP.'pu='.$_SERVER['PATH_INFO']);
+//	exit;
+//}
 
 if ($myLang->isRTL()) {
 	$savant->assign('rtl_css', '<link rel="stylesheet" href="'.$_base_path.'themes/'.$_SESSION['prefs']['PREF_THEME'].'/rtl.css" type="text/css" />');
@@ -97,8 +97,7 @@ if (isset($_SESSION['valid_user']) && $_SESSION['valid_user'] === true) {
 	$savant->assign('user_name', _AT('guest'));
 }
 
-$harris_flag = true;
-if (!$harris_flag && !isset($_pages[$current_page])) {
+if (!isset($_pages[$current_page])) {
 	global $msg;
 	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
 	header('location: '.AT_BASE_HREF.'index.php');
@@ -262,5 +261,4 @@ if ((isset($_REQUEST['framed']) && $_REQUEST['framed']) || (isset($_REQUEST['pop
 } else {
 	$savant->display('include/header.tmpl.php');
 }
-
 ?>

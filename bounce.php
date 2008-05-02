@@ -122,7 +122,10 @@ if (isset($_GET['admin']) && isset($_SESSION['is_super_admin'])) {
 	}
 }
 
-if (!empty($_REQUEST['p'])) {
+if (!empty($_REQUEST['pu'])) {
+	//for pretty url
+	$page = AT_PRETTY_URL_HANDLER.$_REQUEST['pu'];
+} elseif (!empty($_REQUEST['p'])) {
 	$page = urldecode($_REQUEST['p']);
 	if (substr($page, 0, 1) == '/') {
 		$page = substr($page, 1);

@@ -170,13 +170,20 @@ if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on')) {
 	$server_protocol = 'http://';
 }
 
+/* Handles pretty url - @author Harris */
+define('AT_PRETTY_URL_HANDLER', 'redirect.php');	
+if (in_array('mod_rewrite', apache_get_modules())) {
+	define('AT_PRETTY_URL_MOD_LOADED', true);
+} else {
+	define('AT_PRETTY_URL_MOD_LOADED', false);
+}
 
 $dir_deep	 = substr_count(AT_INCLUDE_PATH, '..');
 $url_parts	 = explode('/', $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 $_base_href	 = array_slice($url_parts, 0, count($url_parts) - $dir_deep-1);
 $_base_href	 = $server_protocol . implode('/', $_base_href).'/';
 
-if (($temp = strpos($_base_href, 'harris.php')) > 0){
+if (($temp = strpos($_base_href, AT_PRETTY_URL_HANDLER)) > 0){
 	$endpos = $temp;
 } else {
 	$endpos = strlen($_base_href); 
