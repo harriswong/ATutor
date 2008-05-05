@@ -168,7 +168,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 						<a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id']); ?>"><img src="<?php echo $course_icon; ?>" class="headicon" alt="" /></a>	
 					<?php } ?>
 				</dt>
-				<dd><h3 <?php echo $style_for_title; ?>><a href="bounce.php?course=<?php echo $row['course_id']; ?>"><?php echo $row['title']; ?></a></h3></dd>
+				<dd><h3 <?php echo $style_for_title; ?>><a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id']); ?>"><?php echo $row['title']; ?></a></h3></dd>
 				
 			<?php if ($row['description']): ?>
 				<dt><?php echo _AT('description'); ?></dt>

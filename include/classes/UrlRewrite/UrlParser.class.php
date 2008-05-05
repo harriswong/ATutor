@@ -70,7 +70,7 @@ class UrlParser {
 		$course_id = $matches[1];
 
 		//Check if this is using a course_slug.
-		if ($_config['course_dir_name']=true){
+//		if ($_config['course_dir_name']==true){
 			//check if this is a course slug or course id.
 			if (preg_match('/^[\d]+$/', $matches[1])==0){
 				//it's a course slug, log into the course.
@@ -84,7 +84,7 @@ class UrlParser {
 				}
 			}
 //			$_SESSION['course_id'] = $course_id;
-		} 		
+//		} 		
 
 		//Check which tool type this is from
 		$url_obj = new UrlRewrite($matches[2], $matches[3], $matches[4]);
@@ -100,6 +100,29 @@ class UrlParser {
 		return $this->path_array;
 	}
 
+
+	/**
+	 * Returns course_id if config_[course_dir_name] is off, otherwise, 
+	 * return the course dir name.
+	 * Called by vitals.inc.php
+	 *
+	 * @param	int	course id
+	 * @return	mixed	course id if config[course_dir_name] is 0, course_dir_name otherwise
+	 */
+	function getCourseDirName($course_id){
+		global $db; 
+		$course_id = intval($course_id);
+
+		//it's a course slug, log into the course.
+		$sql	= "SELECT course_dir_name FROM ".TABLE_PREFIX."courses WHERE course_id=$course_id";
+		$result = mysql_query($sql, $db);
+		$row = mysql_fetch_assoc($result);
+		if ($row['course_dir_name']!=''){
+			$course_id = $row['course_dir_name'];
+		} 
+
+		return $course_id;
+	}
 
 	/**
 	 * This function is used to convert the input URL to a pretty URL.

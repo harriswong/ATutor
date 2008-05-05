@@ -293,6 +293,11 @@ if (!isset($_POST['submit'])) {
 		<input type="radio" name="pretty_url" value="1" id="pu_y" <?php if($_config['pretty_url']) { echo 'checked="checked"'; }?>  /><label for="pu_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="pretty_url" value="0" id="pu_n" <?php if(!$_config['pretty_url']) { echo 'checked="checked"'; }?>  /><label for="pu_n"><?php echo _AT('disable'); ?></label>
 	</div>
 
+	<div class="row">
+		<?php echo _AT('course_dir_name'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['course_dir_name'] ? _AT('enable') : _AT('disable')); ?>)<br />
+		<input type="radio" name="course_dir_name" value="1" id="cdn_y" <?php if($_config['course_dir_name']) { echo 'checked="checked"'; }?>  /><label for="cdn_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="course_dir_name" value="0" id="cdn_n" <?php if(!$_config['course_dir_name']) { echo 'checked="checked"'; }?>  /><label for="cdn_n"><?php echo _AT('disable'); ?></label>
+	</div>
+
 	<div class="row buttons">
 			<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s"  />
 		<input type="submit" name="cancel" value="<?php echo _AT('cancel'); ?>"  />

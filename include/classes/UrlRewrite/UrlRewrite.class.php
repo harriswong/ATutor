@@ -123,8 +123,8 @@ class UrlRewrite  {
 		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
 
 		//The link is a bounce link
-		if(preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches)==1){
-			$pretty_url = $matches[1];
+		if(preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches)==1){						
+			$pretty_url = $course_id;		//course_id should be assigned by vitals depending on the system pref.
 		} elseif(in_array(AT_PRETTY_URL_HANDLER, $front_array)===TRUE){
 			//The relative link is a pretty URL
 			$front_result = array();			

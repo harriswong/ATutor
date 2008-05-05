@@ -724,11 +724,23 @@ function validate_length($input, $len, $forDisplay=0){
  * @author	Harris Wong
  */
 function url_rewrite($url){
-	global $_config;
+	global $_config, $db;
+
+	//if we allow pretty url in the system
 	if ($_config['pretty_url'] > 0){
 		$url_parser = new UrlParser();
 		$pathinfo = $url_parser->getPathArray();
-		$url = $pathinfo[1]->convertToPrettyUrl($_SESSION['course_id'], $url);
+		//If we allow course dir name from sys perf
+		if ($_config['course_dir_name'] > 0){
+			if (isset($_SESSION['course_id']) && $_SESSION['course_id'] > 0){
+				$course_id = $url_parser->getCourseDirName($_SESSION['course_id']);
+			} elseif (preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches) == 1){
+				$course_id = $url_parser->getCourseDirName($matches[1]);
+			}
+		} else {
+			$course_id = $_SESSION['course_id'];
+		}
+		$url = $pathinfo[1]->convertToPrettyUrl($course_id, $url);
 	} 
 	return $url;
 }
