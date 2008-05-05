@@ -27,7 +27,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 </table>
 <br />
 
-<form method="get" action="<?php echo $_SESSION['PHP_SELF']; ?>">
+<form method="get" action="chat/view_transcript.php">
 	<input type="submit" value="<?php echo _AT('back'); ?>" name="back" class="button" />
 </form>
 

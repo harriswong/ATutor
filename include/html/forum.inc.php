@@ -147,7 +147,7 @@ if (!($row = mysql_fetch_assoc($result))) {
 		if ($num_pages_2 > 1) {
 			echo ' <small class="spacer">( Page: ';
 			for ($i=2; $i<=$num_pages_2; $i++) {
-				echo '<a href="'.url_rewrite($_SERVER['PHP_SELF'].'?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'page='.$i).'" title="'.$full_subject.'">'.$i.'</a>';
+				echo '<a href="'.url_rewrite('forum/view.php?fid='.$fid.SEP.'pid='.$row['post_id'].SEP.'page='.$i).'" title="'.$full_subject.'">'.$i.'</a>';
 
 				if ($i<$num_pages_2){
 					echo ' | ';
