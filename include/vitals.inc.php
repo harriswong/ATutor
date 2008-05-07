@@ -718,17 +718,22 @@ function validate_length($input, $len, $forDisplay=0){
 
 /**
  * If pretty URL within admin config is switched on.  We will apply pretty URL 
- * to all the links in ATutor.
+ * to all the links in ATutor.  This function will authenticate itself towards the current pages.
+ * In our definition, admins, login, registration pages shouldn't have pretty url applied.  However,
+ * if one want to use url_rewrite on these pages, please force it by using the second parameter.  
+ * Note: If system config turned off this feature, force will have no effect.
  * @param	string	the Url should be a relative link, have to improve this later on, to check if 
  *					it's a relative link, if not, truncate it.
+ * @param	boolean	true to force the url_rewrite, false otheriwse.  False is the default.
  * @author	Harris Wong
  */
-function url_rewrite($url){
+function url_rewrite($url, $force=false){
 	global $_config, $db;
 
 	//If this is an admin (of any kind), don't prettify the url
-	if ((admin_authenticate(AT_ADMIN_PRIV_ADMIN, AT_PRIV_RETURN) || //authenticate(AT_ADMIN_PRIV, AT_PRIV_RETURN) || 
-		admin_authenticate($_SESSION['privileges'], AT_PRIV_RETURN)) || $_SESSION['valid_user']=='') {
+	if ($force) {
+	} elseif ((admin_authenticate(AT_ADMIN_PRIV_ADMIN, AT_PRIV_RETURN) || admin_authenticate($_SESSION['privileges'], AT_PRIV_RETURN)) 
+		|| $_SESSION['valid_user']=='') {
 		return $url;
 	} 
 

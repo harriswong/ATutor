@@ -73,6 +73,9 @@ pre.code {
 <ul>
 	<li>0. <a href="#version">Version Considerations</a></li>
 	<li>1. <a href="#introduction">Introduction</a></li>
+		<ul>
+			<li>1.1 <a href="#introduction-api">API Documentation</a></li>
+		</ul>
 	<li>2. <a href="#conventions">Conventions Used in This Document</a>
 		<ul>
 			<li>2.1 <a href="#typographic-conventions">Typographic Conventions</a></li>
@@ -89,6 +92,7 @@ pre.code {
 			<li>4.2 <a href="#svn-installing_atutor">Installing ATutor From SVN</a></li>
 			<li>4.3 <a href="#svn-update">Updating ATutor From SVN</a></li>
 			<li>4.4 <a href="#svn-keywords">Keywords</a></li>
+
 		</ul></li>
     <li>5. <a href="#communication">Communication</a></li>
     <li>6. <a href="#patches">Patches</a></li>
@@ -153,6 +157,7 @@ pre.code {
 			<li>18.6 <a href="#fn-debug">debug()</a></li>
 			<li>18.7 <a href="#fn-get_login">get_login()</a></li>
 			<li>18.8 <a href="#fn-urlencode_feedback">urlencode_feedback()</a></li>
+			<li>18.9 <a href="#fn-url_rewrite">url_rewrite()</a></li>
 		</ul></li>
 	<li>19. <a href="#useful-constants">Useful Constants</a>
 		<ul>
@@ -182,7 +187,10 @@ pre.code {
 	<p>ATutor, as an open source project, encourages PHP developers to develop their own custom features, and potentially contribute those features so they become a permanent part of ATutor. To ensure that  code is easy to  maintain, we urge developers to follow the guidelines outlined below. These rules and recommendations were created to standardize the distributed development process.</p>
 
 	<p>The latest version of this document can always be found at <a href="http://www.atutor.ca/atutor/docs/">ATutor.ca</a>.</p>
+	<h3><a name="introduction-api"></a>1.1 API Documentation</h3>
+		<p>Detailed API documentation is distributed throughout the ATutor source code, describing functions and classes, and how they are used in developing features. API documentation can be extracted into a relatively compact form for easy scanning and searching using the <strong>phpDocumentor module</strong>. Download the module from atutor.ca, and install it like any other module, then run the application to extract the API documentation from ATutor.</p>
 
+		<p><a href="http://www.atutor.ca/atutor/modules/index.php">phpDocumentor Module</p>
 <a href="#top" class="top">top</a>
 <h2><a name="conventions"></a>2. Conventions Used in This Document</h2>
 	<p>This section covers the typographical conventions used in this document.</p>
@@ -289,7 +297,8 @@ register_argc_argv   = Off</pre></p>
 
 <a href="#top" class="top">top</a>
 <h2><a name="patches"></a>6. Patches</h2>
-	<p>Patches should be applied using the UNIX <kbd>patch</kbd> command. Make sure your <kbd>`.patch`</kbd> or <kbd>`.diff`</kbd> files will be compatible or include explicit instructions on how to apply your changes. Always specify what release or source date you are patching against. We prefer unified diffs. Diffs can be posted as attachment to the atutor.ca <a href="http://www.atutor.ca/forum/12/1.html">Development Forum </a>.</p>
+	<p>As of ATutor 1.6 the Patcher module is available for applying and developing patches to repair bugs, and to add or modify features. Details on creating and applying patches can be found in the ATutor Handbook for version 1.6.1+, or on the ATutor Wiki.</p>
+	<p><a href="http://wiki.atutor.ca/display/atutorwiki/Patcher+Module+Documentation">Patcher Documentation</a></p>
 
 <a href="#top" class="top">top</a>
 <h2><a name="editor-tips"></a>7. Editor Tips</h2>
@@ -1451,6 +1460,31 @@ $f[] = array(AT_FEEDBACK_FILE_UPLOADED_ZIP, $file_name);
 
 header('Location: file_manager.php?f='.urlencode_feedback($f));
 exit;
+</pre></p>
+
+	<h3><a name="fn-url_rewrite"></a>18.9 url_rewrite()</h3>
+		<p><kbd>url_rewrite()</kbd> -- Change an url to a pretty url.</p>
+
+		<h4>Description</h4>
+			<p><kbd>string <strong>urlencode_rewrite</strong>( string $f, boolean $g)</kbd></p>
+
+			<p>This function returns a pretty URL from the given parameter. Its purpose is to change the URLs to a "prettier" format in order to extend user friendliness in the system, and to create indexes for Google search.  This function will authenticate itself towards the current pages.  In our definition, admins, login, registration pages should not have pretty url applied.  However, if one want to use url_rewrite on these pages, please force it by using the second parameter, <kbd>$g</kbd>.  Please note that the system preference will overwrite the force effect.  <kbd>$f</kbd> may be an <kbd>string</kbd> of URL, '?' and the seprators in the URL query will be replaced by slashes.</p>
+
+		<h4>Location</h4>
+			<p><kbd>`include/vitals.inc.php`</kbd></p>
+		
+		<h4>Example 1</h4>
+		<p>To change an URL:
+<pre class="code">
+$url = 'forum/view.php?fid=3&pid=4';
+echo url_rewrite($url);		//output redirect.php/1/forum/view.php/fid/3/pid/4
+</pre></p>
+
+		<h4>Example 2</h4>
+		<p>To change an URL for mods:
+<pre class="code">
+$url = 'mods/hello_world/index.php';
+echo url_rewrite($url, true);		//output redirect.php/1/mods/hello_world/index.php
 </pre></p>
 
 
