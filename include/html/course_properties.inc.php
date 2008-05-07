@@ -201,10 +201,12 @@ if (($_POST['setvisual'] || $_POST['settext']) && !$_POST['submit']){
 		<textarea id="description" cols="45" rows="2" name="description"><?php echo $row['description']; ?></textarea>
 	</div>
 
+	<?php if ($_config['course_dir_name']): ?>
 	<div class="row">
 		<label for="course_dir_name"><?php echo _AT('course_dir_name'); ?></label><br />
 		<input type="text" id="course_dir_name" name="course_dir_name" size="40" value="<?php echo htmlspecialchars($row['course_dir_name']); ?>" />
 	</div>
+	<?php endif; ?>
 
 	<?php $categories = get_categories(); ?>
 	<?php if (is_array($categories)): ?>
