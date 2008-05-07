@@ -96,6 +96,10 @@ class UrlRewrite  {
 	//public
 	//This method will construct a pretty url based on the given query
 	function constructPrettyUrl($query){
+		if (empty($query)){
+			return '';
+		}
+
 		$pretty_url = '';		//init url
 		$query_parts = explode(SEP, $query);		
 		foreach ($query_parts as $index=>$attributes){
@@ -123,8 +127,12 @@ class UrlRewrite  {
 		$host_dir	 = implode('/', array_slice($url_parts, 0, count($url_parts) - $dir_deep-1));
 
 		//The link is a bounce link
-		if(preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches)==1){						
-			$pretty_url = $course_id;		//course_id should be assigned by vitals depending on the system pref.
+		if(preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches)==1){
+			if (!empty($course_id)) {
+				$pretty_url = $course_id;		//course_id should be assigned by vitals depending on the system pref.
+			} else {
+				$pretty_url = $matches[1];		//happens when course dir name is disabled
+			}
 		} elseif(in_array(AT_PRETTY_URL_HANDLER, $front_array)===TRUE){
 			//The relative link is a pretty URL
 			$front_result = array();			
@@ -154,6 +162,7 @@ class UrlRewrite  {
 		if (AT_PRETTY_URL_MOD_LOADED===true){
 			return $pretty_url;
 		}
+
 		return AT_PRETTY_URL_HANDLER.'/'.$pretty_url;
 	}
 

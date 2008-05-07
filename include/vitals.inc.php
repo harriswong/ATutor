@@ -726,6 +726,12 @@ function validate_length($input, $len, $forDisplay=0){
 function url_rewrite($url){
 	global $_config, $db;
 
+	//If this is an admin (of any kind), don't prettify the url
+	if ((admin_authenticate(AT_ADMIN_PRIV_ADMIN, AT_PRIV_RETURN) || //authenticate(AT_ADMIN_PRIV, AT_PRIV_RETURN) || 
+		admin_authenticate($_SESSION['privileges'], AT_PRIV_RETURN)) || $_SESSION['valid_user']=='') {
+		return $url;
+	} 
+
 	//if we allow pretty url in the system
 	if ($_config['pretty_url'] > 0){
 		$url_parser = new UrlParser();

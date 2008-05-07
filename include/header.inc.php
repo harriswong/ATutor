@@ -63,13 +63,6 @@ $savant->assign('base_href', AT_BASE_HREF);
 if ($_config['pretty_url'] > 0 && ($temp = strpos($_SERVER['PHP_SELF'], AT_PRETTY_URL_HANDLER)) > 0){
 	$current_page = $pretty_current_page; //this is set in AT_PRETTY_URL_HANDLER
 }
-/* check if we are in the requested course, if not, bounce to it.
- * @author harris, for pretty url, read AT_PRETTY_URL_HANDLER
- */
-//if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
-//	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$AT_PRETTY_URL_COURSE_ID.SEP.'pu='.$_SERVER['PATH_INFO']);
-//	exit;
-//}
 
 if ($myLang->isRTL()) {
 	$savant->assign('rtl_css', '<link rel="stylesheet" href="'.$_base_path.'themes/'.$_SESSION['prefs']['PREF_THEME'].'/rtl.css" type="text/css" />');
