@@ -731,9 +731,9 @@ function url_rewrite($url, $force=false){
 	global $_config, $db;
 
 	//If this is an admin (of any kind), don't prettify the url
-	if ($force) {
+	if ($force || $_SESSION['course_id']<1) {
 	} elseif ((admin_authenticate(AT_ADMIN_PRIV_ADMIN, AT_PRIV_RETURN) || admin_authenticate($_SESSION['privileges'], AT_PRIV_RETURN)) 
-		|| $_SESSION['valid_user']=='') {
+		|| $_SESSION['valid_user']=='' || $_SESSION['course_id']<1) {
 		return $url;
 	} 
 

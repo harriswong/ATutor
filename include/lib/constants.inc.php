@@ -172,7 +172,7 @@ if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on')) {
 }
 
 /* Handles pretty url - @author Harris */
-define('AT_PRETTY_URL_HANDLER', 'redirect.php');	
+define('AT_PRETTY_URL_HANDLER', 'go.php');	
 if (in_array('mod_rewrite', apache_get_modules())) {
 	define('AT_PRETTY_URL_MOD_LOADED', true);
 } else {
