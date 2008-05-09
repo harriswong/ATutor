@@ -126,16 +126,6 @@ if (!isset($_POST['submit'])) {
 }
 ?>
 
-<script type="text/javascript">
-function enableCourseDir(obj){
-	obj.form.pu_y.checked = true;
-}
-
-function disableCourseDir(obj){
-	obj.form.cdn_n.checked  = true; 
-}
-</script>
-
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" name="form">
 <div class="input-form">
 	<div class="row">
@@ -300,12 +290,12 @@ function disableCourseDir(obj){
 
 	<div class="row">
 		<?php echo _AT('pretty_url'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['pretty_url'] ? _AT('enable') : _AT('disable')); ?>)<br />
-		<input type="radio" name="pretty_url" value="1" id="pu_y" <?php if($_config['pretty_url']) { echo 'checked="checked"'; }?> /><label for="pu_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="pretty_url" value="0" id="pu_n" <?php if(!$_config['pretty_url']) { echo 'checked="checked"'; }?> onclick='disableCourseDir(this);' /><label for="pu_n"><?php echo _AT('disable'); ?></label>
+		<input type="radio" name="pretty_url" value="1" id="pu_y" <?php if($_config['pretty_url']) { echo 'checked="checked"'; }?> /><label for="pu_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="pretty_url" value="0" id="pu_n" <?php if(!$_config['pretty_url']) { echo 'checked="checked"'; }?> /><label for="pu_n"><?php echo _AT('disable'); ?></label>
 	</div>
 
 	<div class="row">
 		<?php echo _AT('course_dir_name'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['course_dir_name'] ? _AT('enable') : _AT('disable')); ?>)<br />
-		<input type="radio" name="course_dir_name" value="1" id="cdn_y" <?php if($_config['course_dir_name']) { echo 'checked="checked"'; }?> onclick="enableCourseDir(this);" /><label for="cdn_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="course_dir_name" value="0" id="cdn_n" <?php if(!$_config['course_dir_name']) { echo 'checked="checked"'; }?>  /><label for="cdn_n"><?php echo _AT('disable'); ?></label>
+		<input type="radio" name="course_dir_name" value="1" id="cdn_y" <?php if($_config['course_dir_name']) { echo 'checked="checked"'; }?> /><label for="cdn_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="course_dir_name" value="0" id="cdn_n" <?php if(!$_config['course_dir_name']) { echo 'checked="checked"'; }?>  /><label for="cdn_n"><?php echo _AT('disable'); ?></label>
 	</div>
 
 	<div class="row buttons">

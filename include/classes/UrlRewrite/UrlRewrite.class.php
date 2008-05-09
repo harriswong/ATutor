@@ -57,13 +57,19 @@ class UrlRewrite  {
 
 	//public
 	function parsePrettyQuery(){
+		global $_config;
 		$result = array();
 
 		//return empty array if query is empty
 		if (empty($this->query)){
 			return $result;
 		}
-		
+
+		//if course_dir_name is disabled from admin. 
+		if ($_config['pretty_url']==0){
+			return $this->query;
+		}
+
 		//If the first char is /, cut it
 		if (strpos($this->query, '/') == 0){
 			$query_parts = explode('/', substr($this->query, 1));
@@ -96,8 +102,14 @@ class UrlRewrite  {
 	//public
 	//This method will construct a pretty url based on the given query
 	function constructPrettyUrl($query){
+		global $_config; 
 		if (empty($query)){
 			return '';
+		}
+
+		//do not change query if pretty url is disabled
+		if ($_config['pretty_url'] == 0){
+			return $query;
 		}
 
 		$pretty_url = '';		//init url
@@ -117,6 +129,7 @@ class UrlRewrite  {
 	 * @return	pretty url
 	 */
 	function convertToPrettyUrl($course_id, $url){
+		global $_config;
 		list($front, $end) = preg_split('/\?/', $url);
 
 		$front_array = explode('/', $front);
@@ -153,9 +166,14 @@ class UrlRewrite  {
 			//Not a relative link, it contains the full PHP_SELF path.
 			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
 		}
-		
 		if ($pretty_url==''){
-			$pretty_url = $course_id.'/'.$front.'/'.$this->constructPrettyUrl($end);
+			$pretty_url = $course_id.'/'.$front;
+			if ($end != ''){
+			//if pretty url is turned off, use '?' to separate the querystring.
+			($_config['pretty_url'] == 0)? $qs_sep = '?': $qs_sep = '/';
+
+			 $pretty_url .= $qs_sep.$this->constructPrettyUrl($end);
+			}
 		}
 
 		//if mod_rewrite is switched on, defined in constants.inc.php

@@ -108,7 +108,7 @@ function unregister_GLOBALS() {
 		exit;
 	}
 
-	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public') && !isset($AT_PRETTY_URL_COURSE_ID)) {
+	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public') && !isset($_pretty_url_course_id)) {
 		if (isset($in_get) && $in_get && (($pos = strpos($_SERVER['PHP_SELF'], 'get.php/')) !== FALSE)) {
 			$redirect = substr($_SERVER['PHP_SELF'], 0, $pos) . 'login.php';
 			header('Location: '.$redirect);
@@ -261,15 +261,19 @@ if (isset($_user_location) && ($_user_location == 'users') && $_SESSION['valid_u
 	$_SESSION['course_id'] = 0;
 }
 
-if ((!isset($_SESSION['course_id']) || $_SESSION['course_id'] == 0) && ($_user_location != 'users') && ($_user_location != 'prog') && !isset($_GET['h']) && ($_user_location != 'public') && (!isset($AT_PRETTY_URL_COURSE_ID) || $AT_PRETTY_URL_COURSE_ID == 0)) {
+if ((!isset($_SESSION['course_id']) || $_SESSION['course_id'] == 0) && ($_user_location != 'users') && ($_user_location != 'prog') && !isset($_GET['h']) && ($_user_location != 'public') && (!isset($_pretty_url_course_id) || $_pretty_url_course_id == 0)) {
 	header('Location:'.AT_BASE_HREF.'users/index.php');
 	exit;
 }
 /* check if we are in the requested course, if not, bounce to it.
  * @author harris, for pretty url, read AT_PRETTY_URL_HANDLER
  */
-if (isset($AT_PRETTY_URL_COURSE_ID) && $_SESSION['course_id'] != $AT_PRETTY_URL_COURSE_ID){
-	header('Location: '.AT_BASE_HREF.'bounce.php?course='.$AT_PRETTY_URL_COURSE_ID.SEP.'pu='.$_SERVER['PATH_INFO']);
+if (isset($_pretty_url_course_id) && $_SESSION['course_id'] != $_pretty_url_course_id){
+	if($_config['pretty_url'] == 0){
+		header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_pretty_url_course_id.SEP.'pu='.$_SERVER['PATH_INFO'].urlencode('?'.$_SERVER['QUERY_STRING']));
+	} else {
+		header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_pretty_url_course_id.SEP.'pu='.$_SERVER['PATH_INFO']);
+	}
 	exit;
 }
 
@@ -729,6 +733,8 @@ function validate_length($input, $len, $forDisplay=0){
  */
 function url_rewrite($url, $force=false){
 	global $_config, $db;
+	$url_parser = new UrlParser();
+	$pathinfo = $url_parser->getPathArray();
 
 	//If this is an admin (of any kind), don't prettify the url
 	if ($force || $_SESSION['course_id']>0) {
@@ -739,8 +745,6 @@ function url_rewrite($url, $force=false){
 
 	//if we allow pretty url in the system
 	if ($_config['pretty_url'] > 0){
-		$url_parser = new UrlParser();
-		$pathinfo = $url_parser->getPathArray();
 		//If we allow course dir name from sys perf
 		if ($_config['course_dir_name'] > 0){
 			if (isset($_SESSION['course_id']) && $_SESSION['course_id'] > 0){
@@ -752,7 +756,16 @@ function url_rewrite($url, $force=false){
 			$course_id = $_SESSION['course_id'];
 		}
 		$url = $pathinfo[1]->convertToPrettyUrl($course_id, $url);
-	} 
+	} elseif ($_config['course_dir_name'] > 0) {
+		if (isset($_SESSION['course_id']) && $_SESSION['course_id'] > 0){
+			$course_id = $url_parser->getCourseDirName($_SESSION['course_id']);
+		} elseif (preg_match('/bounce.php\?course=([\d]+)$/', $url, $matches) == 1){
+			$course_id = $url_parser->getCourseDirName($matches[1]);
+		}
+
+		$url = $pathinfo[1]->convertToPrettyUrl($course_id, $url);
+	}
+		
 	return $url;
 }
 
