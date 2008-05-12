@@ -63,7 +63,7 @@ class UrlParser {
 		} elseif (sizeof($matches)==1){
 			//if the url consist of just the course slug, the size would be just 2 
 			$matches[1] = $matches[0];
-			$matches[2] = '';
+			$matches[2] = '';  //offset error @7521
 			$matches[3] = '';
 			$matches[4] = '';
 		} 

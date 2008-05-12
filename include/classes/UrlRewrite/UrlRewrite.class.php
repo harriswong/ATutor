@@ -165,7 +165,11 @@ class UrlRewrite  {
 		} elseif (strpos($front, $host_dir)!==FALSE){
 			//Not a relative link, it contains the full PHP_SELF path.
 			$front = substr($front, strlen($host_dir)+1);  //stripe off the slash after the host_dir as well
+		} elseif ($course_id == ''){
+			//no course id, and not from the bounce page.
+			return $url;
 		}
+
 		if ($pretty_url==''){
 			$pretty_url = $course_id.'/'.$front;
 			if ($end != ''){
@@ -175,6 +179,7 @@ class UrlRewrite  {
 			 $pretty_url .= $qs_sep.$this->constructPrettyUrl($end);
 			}
 		}
+		
 
 		//if mod_rewrite is switched on, defined in constants.inc.php
 		if (AT_PRETTY_URL_MOD_LOADED===true){
