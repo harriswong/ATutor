@@ -61,8 +61,11 @@ class UrlParser {
 			//no matches.
 			$matches[1] = 0;
 		} elseif (sizeof($matches)==1){
-			//if the url consist of just the course slug, the size would be just 2 b
+			//if the url consist of just the course slug, the size would be just 2 
 			$matches[1] = $matches[0];
+			$matches[2] = '';
+			$matches[3] = '';
+			$matches[4] = '';
 		} 
 
 		//take out the front slash
