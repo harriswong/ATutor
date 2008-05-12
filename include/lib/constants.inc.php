@@ -57,6 +57,7 @@ $_config_defaults['latex_server']              = 'http://www.forkosh.dreamhost.c
 $_config_defaults['gtype']					   = 0;	//Defaulted to be original google search, @author Harris
 $_config_defaults['pretty_url']				   = 0;	//pretty url, disabled
 $_config_defaults['course_dir_name']		   = 0;	//course dir name (course slug), disabled
+$_config_defaults['apache_mod_rewrite']		   = 0;	//apache mod_rewrite extension, disabled by default.
 $_config = $_config_defaults;
 
 
@@ -173,7 +174,7 @@ if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on')) {
 
 /* Handles pretty url - @author Harris */
 define('AT_PRETTY_URL_HANDLER', 'go.php');	
-if (in_array('mod_rewrite', apache_get_modules())) {
+if ($_config['apache_mod_rewrite'] > 0) {
 	define('AT_PRETTY_URL_MOD_LOADED', true);
 } else {
 	define('AT_PRETTY_URL_MOD_LOADED', false);
