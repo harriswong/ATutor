@@ -75,9 +75,8 @@ global $system_courses, $_custom_css,$db;
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
 	<?php endif; ?>
 	<?php echo $this->custom_css; ?>
-<script language="JavaScript" src="<?php echo $this->base_path; ?>TILE.js" type="text/javascript"></script>
 </head>
-<body onload="<?php echo $this->onload; ?>;checkATTSignLang();checkAudioDesc();checkVisualText();checkCaptions();checkCaptionRate();checkATASignLang();"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<body onload="<?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 
 <script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">

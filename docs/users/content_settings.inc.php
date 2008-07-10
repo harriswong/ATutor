@@ -1,220 +1,293 @@
+<fieldset>
+<legend><strong><?php echo _AT("text_alternatives"); ?></strong> </legend>  
 
- <fieldset>
-<legend><strong>Text Alternatives</strong> </legend>  
-<table border="0" cellpadding="3" width="100%"> 
-<tbody> 
-<tr>
-<td> <span class="formlabel"> <span class="spaced"> Use Alternate Text: </span> </span> 
-<span class="formfield">   
-<input id="vt1" name="visualText" onclick="checkVisualText()" onkeypress="checkVisualText()" value="true" type="radio">   
-<label for="vt1">Yes</label>   
-<input checked="checked" id="vt2" name="visualText" onclick="checkVisualText()" onkeypress="checkVisualText()" value="false" type="radio">   <label for="vt2">No</label> 
-</span> 
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> "Alt text" Language: </span> </span> 
-<span class="formfield">   
-<select disabled="disabled" id="altTextLang" name="altTextLang">       
-<option selected="selected" value="en">English</option>       
-<option value="fr">français</option>       
-<option value="de">Deutsche</option>       
-<option value="es">Española</option>       
-<option value="it">Italiano</option>       
-<option value="ta">Tamil</option>       
-<option value="ur">Urdu</option>   
-</select> 
-</span> 
-</td>
-</tr> 
-<tr>
-<td> <span class="formlabel"> <span class="spaced"> Long Description Language: </span> </span> 
-<span class="formfield">   
-<select disabled="disabled" id="longDescLang" name="longDescLang">       
-<option selected="selected" value="en">English</option>       
-<option value="fr">français</option>       
-<option value="de">Deutsche</option>       
-<option value="es">Española</option>       
-<option value="it">Italiano</option>       
-<option value="ta">Tamil</option>       
-<option value="ur">Urdu</option>   
-</select> 
-</span> 
-</td>
-</tr> 
+	<div class="row">
+		<?php echo _AT('use_alternate_text'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["use_alternate_text"]))
+				$selected_uat = $_POST["use_alternate_text"];
+			else
+				$selected_uat = $_SESSION['prefs']['PREF_USE_ALTERNATE_TEXT'];
+				
+			if ($selected_uat == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="use_alternate_text" id="uat_yes" value="1" <?php echo $yes; ?> /><label for="uat_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="use_alternate_text" id="uat_no" value="0" <?php echo $no; ?> /><label for="uat_no"><?php echo _AT('no'); ?></label>		
+	</div>
 
- <tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Use Graphic Alternative: </span> </span> 
-<span class="formfield">   
-<input id="ga1" name="graphicAlt" value="true" type="radio">   
-<label for="ga1">Yes</label>   
-<input checked="checked" id="ga2" name="graphicAlt" value="false" type="radio">   
-<label for="ga2">No</label> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Use Sign Language: </span> </span> 
-<span class="formfield">   
-<input id="tsl1" name="attSignLang" onclick="checkATTSignLang()" onkeypress="checkATTSignLang()" value="true" type="radio">  
-<label for="tsl1">Yes</label>   
-<input checked="checked" id="tsl2" name="attSignLang" onclick="checkATTSignLang()" onkeypress="checkATTSignLang()" value="false" type="radio">   
-<label for="tsl2">No</label> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> <label for="signlangtype">Sign Language:</label> </span> </span> 
-<span class="formfield">   
-<select disabled="disabled" id="signlangtype" name="attSignLangVal">     
-<option selected="selected" value="American-ASL">American-ASL</option>     
-<option value="Australian-Auslan">Australian-Auslan</option>     
-<option value="Austrian">Austrian</option>     
-<option value="British-BSL">British-BSL</option>     
-<option value="Danish-DSL">Danish-DSL</option>     
-<option value="French-LSF">French-LSF</option>     
-<option value="German-DGS">German-DGS</option>     
-<option value="Irish-ISL">Irish-ISL</option>     
-<option value="Italian-LIS">Italian-LIS</option>     
-<option value="Japanese-JSL">Japanese-JSL</option>     
-<option value="Malaysian-MSL">Malaysian-MSL</option>     
-<option value="Mexican-LSM">Mexican-LSM</option>     
-<option value="Native-American">Native-American</option>     
-<option value="Norwegian-NSL">Norwegian-NSL</option>     
-<option value="Russian-RSL">Russian-RSL</option>     
-<option value="Quebec-LSQ">Quebec-LSQ</option>     
-<option value="Singapore-SLS">Singapore-SLS</option>     
-<option value="Netherlands-NGT">Netherlands-NGT</option>     
-<option value="Spanish-LSE">Spanish-LSE</option>     
-<option value="Swedish">Swedish</option>     
-<option value="other">other</option>   
-</select> 
-</span>
-</td>
-</tr> 
-</tbody>
-</table>
+	<div class="row">
+		<label for="alt_text_lang"><?php echo _AT('alt_text_lang'); ?></label><br />
+			<select name="alt_text_lang" id="alt_text_lang"><?php
+				if (isset($_POST['alt_text_lang']))
+					$selected_lang = $_POST['alt_text_lang'];
+				else
+					$selected_lang = $_SESSION['prefs']['PREF_ALT_TEXT_LANG'];
+?>
+				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
+				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
+				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
+				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
+				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
+				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
+				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
+			</select>
+	</div>
+
+	<div class="row">
+		<label for="long_desc_lang"><?php echo _AT('long_desc_lang'); ?></label><br />
+			<select name="long_desc_lang" id="long_desc_lang"><?php
+				if (isset($_POST['long_desc_lang']))
+					$selected_lang = $_POST['long_desc_lang'];
+				else
+					$selected_lang = $_SESSION['prefs']['PREF_LONG_DESC_LANG'];
+?>
+				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
+				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
+				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
+				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
+				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
+				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
+				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
+			</select>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('use_graphic_alternative'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["use_graphic_alternative"]))
+				$selected_uga = $_POST["use_graphic_alternative"];
+			else
+				$selected_uga = $_SESSION['prefs']['PREF_USE_GRAPHIC_ALTERNATIVE'];
+				
+			if ($selected_uga == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="use_graphic_alternative" id="uga_yes" value="1" <?php echo $yes; ?> /><label for="uga_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="use_graphic_alternative" id="uga_no" value="0" <?php echo $no; ?> /><label for="uga_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<?php echo _AT('use_graphic_alternative'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["use_sign_lang"]))
+				$selected_usl = $_POST["use_sign_lang"];
+			else
+				$selected_usl = $_SESSION['prefs']['PREF_USE_SIGN_LANG'];
+				
+			if ($selected_usl == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="use_sign_lang" id="usl_yes" value="1" <?php echo $yes; ?> /><label for="usl_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="use_sign_lang" id="usl_no" value="0" <?php echo $no; ?> /><label for="usl_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<label for="sign_lang"><?php echo _AT('sign_lang'); ?></label><br />
+			<select name="sign_lang" id="sign_lang"><?php
+				if (isset($_POST['sign_lang']))
+					$selected_lang = $_POST['sign_lang'];
+				else
+					$selected_lang = $_SESSION['prefs']['PREF_SIGN_LANG'];
+?>
+				<option value="American-ASL" <?php if ($selected_lang == "American-ASL") echo 'selected="selected"'; ?>><?php echo _AT('american-asl'); ?></option>     
+				<option value="Australian-Auslan" <?php if ($selected_lang == "Australian-Auslan") echo 'selected="selected"'; ?>><?php echo _AT('australian-auslan'); ?></option>     
+				<option value="Austrian" <?php if ($selected_lang == "Austrian") echo 'selected="selected"'; ?>><?php echo _AT('austrian'); ?></option>     
+				<option value="British-BSL" <?php if ($selected_lang == "British-BSL") echo 'selected="selected"'; ?>><?php echo _AT('british-bsl'); ?></option>     
+				<option value="Danish-DSL" <?php if ($selected_lang == "Danish-DSL") echo 'selected="selected"'; ?>><?php echo _AT('danish-dsl'); ?></option>     
+				<option value="French-LSF" <?php if ($selected_lang == "French-LSF") echo 'selected="selected"'; ?>><?php echo _AT('french-lsf'); ?></option>     
+				<option value="German-DGS" <?php if ($selected_lang == "German-DGS") echo 'selected="selected"'; ?>><?php echo _AT('german-dgs'); ?></option>     
+				<option value="Irish-ISL" <?php if ($selected_lang == "Irish-ISL") echo 'selected="selected"'; ?>><?php echo _AT('irish-isl'); ?></option>     
+				<option value="Italian-LIS" <?php if ($selected_lang == "Italian-LIS") echo 'selected="selected"'; ?>><?php echo _AT('italian-lis'); ?></option>     
+				<option value="Japanese-JSL" <?php if ($selected_lang == "Japanese-JSL") echo 'selected="selected"'; ?>><?php echo _AT('japanese-jsl'); ?></option>     
+				<option value="Malaysian-MSL" <?php if ($selected_lang == "Malaysian-MSL") echo 'selected="selected"'; ?>><?php echo _AT('malaysian-msl'); ?></option>     
+				<option value="Mexican-LSM" <?php if ($selected_lang == "Mexican-LSM") echo 'selected="selected"'; ?>><?php echo _AT('mexican-lsm'); ?></option>     
+				<option value="Native-American" <?php if ($selected_lang == "Native-American") echo 'selected="selected"'; ?>><?php echo _AT('native-american'); ?></option>     
+				<option value="Norwegian-NSL" <?php if ($selected_lang == "Norwegian-NSL") echo 'selected="selected"'; ?>><?php echo _AT('norwegian-nsl'); ?></option>     
+				<option value="Russian-RSL" <?php if ($selected_lang == "Russian-RSL") echo 'selected="selected"'; ?>><?php echo _AT('russian-rsl'); ?></option>     
+				<option value="Quebec-LSQ" <?php if ($selected_lang == "Quebec-LSQ") echo 'selected="selected"'; ?>><?php echo _AT('quebec-lsq'); ?></option>     
+				<option value="Singapore-SLS" <?php if ($selected_lang == "Singapore-SLS") echo 'selected="selected"'; ?>><?php echo _AT('singapore-sls'); ?></option>     
+				<option value="Netherlands-NGT" <?php if ($selected_lang == "Netherlands-NGT") echo 'selected="selected"'; ?>><?php echo _AT('netherlands-ngt'); ?>Netherlands-NGT</option>     
+				<option value="Spanish-LSE" <?php if ($selected_lang == "Spanish-LSE") echo 'selected="selected"'; ?>><?php echo _AT('spanish-lse'); ?></option>     
+				<option value="Swedish" <?php if ($selected_lang == "Swedish") echo 'selected="selected"'; ?>><?php echo _AT('swedish'); ?></option>     
+				<option value="other" <?php if ($selected_lang == "other") echo 'selected="selected"'; ?>><?php echo _AT('other'); ?></option>   
+			</select>
+	</div>
 </fieldset>
- <fieldset>
-<legend><strong>Described Video</strong> </legend>  
 
-<table border="0" cellpadding="3" width="100%"> 
-<tbody> 
-<tr>
-<td> <span class="formlabel"> <span class="spaced"> Use Described Video: </span> </span>
-<span class="formfield">   
-<input checked="checked" id="ad1" name="audioDesc" onclick="checkAudioDesc()" onkeypress="checkAudioDesc()" value="true" type="radio">   <label for="ad1">Yes</label>   
-<input id="ad2" name="audioDesc" onclick="checkAudioDesc()" onkeypress="checkAudioDesc()" value="false" type="radio">   
-<label for="ad2">No</label> 
-</span> 
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Preferred Language: </span> </span> 
-<span class="formfield">   
-<select id="audioDescLang" name="audioDescLang">       
-<option selected="selected" value="en">English</option>       
-<option value="fr">français</option>       
-<option value="de">Deutsche</option>       
-<option value="es">Española</option>      
-<option value="it">Italiano</option>       
-<option value="ta">Tamil</option>       
-<option value="ur">Urdu</option>   
-</select> 
-</span> 
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Description Type: </span> </span> 
-<span class="formfield">   
-<input checked="checked" id="adt1" name="audioDescType" value="standard" type="radio">   
-<label for="adt1">Standard</label>   
-<input id="adt2" name="audioDescType" value="expanded" type="radio">   
-<label for="adt2">Expanded</label> 
-</span> 
-</td> 
-</tr> 
-</tbody>
-</table>
+<fieldset>
+<legend><strong><?php echo _AT("described_video"); ?></strong> </legend>  
+
+	<div class="row">
+		<?php echo _AT('use_video'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["use_video"]))
+				$selected_uv = $_POST["use_video"];
+			else
+				$selected_uv = $_SESSION['prefs']['PREF_USE_VIDEO'];
+				
+			if ($selected_uv == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="use_video" id="uv_yes" value="1" <?php echo $yes; ?> /><label for="uv_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="use_video" id="uv_no" value="0" <?php echo $no; ?> /><label for="uv_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<label for="prefer_lang"><?php echo _AT('prefer_lang'); ?></label><br />
+			<select name="prefer_lang" id="prefer_lang"><?php
+				if (isset($_POST['prefer_lang']))
+					$selected_lang = $_POST['prefer_lang'];
+				else
+					$selected_lang = $_SESSION['prefs']['PREF_PREFER_LANG'];
+?>
+				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
+				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
+				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
+				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
+				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
+				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
+				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
+			</select>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('description_type'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["description_type"]))
+				$selected_dt = $_POST["description_type"];
+			else
+				$selected_dt = $_SESSION['prefs']['PREF_DESC_TYPE'];
+?>
+		<input type="radio" name="description_type" id="dt_s" value="standard" <?php if ($selected_dt == "standard" || $selected_dt == "") echo "checked=checked"; ?> /><label for="dt_s"><?php echo _AT('standard'); ?></label> 
+		<input type="radio" name="description_type" id="dt_e" value="expanded" <?php if ($selected_dt == "expanded") echo "checked=checked"; ?> /><label for="dt_e"><?php echo _AT('expanded'); ?></label>		
+	</div>
 </fieldset>
-<fieldset> <legend><strong>Captioning</strong>  </legend>  
-<table border="0" cellpadding="3" width="100%"> 
-<tbody> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Enable Captions: </span> </span> 
-<span class="formfield">   
-<input checked="checked" id="c1" name="caption" onclick="checkCaptions()" onkeypress="checkCaptions()" value="true" type="radio">   
-<label for="c1">Yes</label>   
-<input id="c2" name="caption" onclick="checkCaptions()" onkeypress="checkCaptions()" value="false" type="radio">   
-<label for="c2">No</label> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> Caption Type: </span> </span> 
-<span class="formfield">  
-<input checked="checked" id="ct1" name="captionType" value="verbatim" type="radio">   
-<label for="ct1">Verbatim</label>   
-<input id="ct2" name="captionType" value="reducedReadingLevel" type="radio">   
-<label for="ct2">Reduced Reading Level</label> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> <span class="formlabel"> <span class="spaced"> Caption Language: </span> </span> 
-<span class="formfield">   
-<select id="captionLang" name="captionLang">       
-<option selected="selected" value="en">English</option>       
-<option value="fr">français</option>       
-<option value="de">Deutsche</option>       
-<option value="es">Española</option>       
-<option value="it">Italiano</option>       
-<option value="ta">Tamil</option>       
-<option value="ur">Urdu</option>   
-</select> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> 
-<span class="spaced"> Enhanced Captions: </span> </span> 
-<span class="formfield">   
-<input id="ec1" name="enhancedCaption" value="true" type="radio">   
-<label for="ec1">Yes</label>   
-<input checked="checked" id="ec2" name="enhancedCaption" value="false" type="radio">   
-<label for="ec2">No</label> </span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> <span style="color: red;">*</span> Request Caption Rate: </span> </span> 
-<span class="formfield">   
-<input id="rs1" name="reducedSpeed" onclick="checkCaptionRate()" onkeypress="checkCaptionRate()" value="true" type="radio">   
-<label for="rs1">Yes</label>   
-<input checked="checked" id="rs2" name="reducedSpeed" onclick="checkCaptionRate()" onkeypress="checkCaptionRate()" value="false" type="radio">  <label for="rs2">No</label> 
-</span>
-</td>
-</tr> 
-<tr>
-<td> 
-<span class="formlabel"> <span class="spaced"> 
-<label for="cr"> <span style="color: red;">*</span> Caption Rate (1 - 300 WPM):</label> </span> </span> 
-<span class="formfield"> 
-<input disabled="disabled" id="cr" name="captionRate" value="150" type="text"> 
-</span>
-</td>
-</tr> 
 
-</tbody> 
-</table> 
+<fieldset>
+<legend><strong><?php echo _AT("captioning"); ?></strong> </legend>  
+
+	<div class="row">
+		<?php echo _AT('enable_captions'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["enable_captions"]))
+				$selected_ec = $_POST["enable_captions"];
+			else
+				$selected_ec = $_SESSION['prefs']['PREF_ENABLE_CAPTIONS'];
+				
+			if ($selected_ec == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="enable_captions" id="ec_yes" value="1" <?php echo $yes; ?> /><label for="ec_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="enable_captions" id="ec_no" value="0" <?php echo $no; ?> /><label for="ec_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<?php echo _AT('caption_type'); ?><br />
+		<?php
+			if (isset($_POST["caption_type"]))
+				$selected_ct = $_POST["caption_type"];
+			else
+				$selected_ct = $_SESSION['prefs']['PREF_CAPTION_TYPE'];
+?>
+		<input type="radio" name="caption_type" id="ct_v" value="verbatim" <?php if ($selected_ct == "verbatim" || $selected_ct == "") echo 'checked="checked"'; ?> /><label for="ct_v"><?php echo _AT('verbatim'); ?></label> 
+		<input type="radio" name="caption_type" id="ct_r" value="reduced" <?php if ($selected_ct == "reduced") echo 'checked="checked"'; ?> /><label for="ct_r"><?php echo _AT('reduced_level'); ?></label>		
+	</div>
+
+	<div class="row">
+		<label for="caption_lang"><?php echo _AT('caption_language'); ?></label><br />
+			<select name="caption_lang" id="caption_lang"><?php
+				if (isset($_POST['caption_lang']))
+					$selected_lang = $_POST['caption_lang'];
+				else
+					$selected_lang = $_SESSION['prefs']['PREF_CAPTION_LANG'];
+	?>
+				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
+				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
+				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
+				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
+				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
+				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
+				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
+			</select>
+	</div>
+
+	<div class="row">
+		<?php echo _AT('enhanced_captions'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["enhanced_captions"]))
+				$selected_ec = $_POST["enhanced_captions"];
+			else
+				$selected_ec = $_SESSION['prefs']['PREF_ENHANCED_CAPTIONS'];
+				
+			if ($selected_ec == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="enhanced_captions" id="ec1_yes" value="1" <?php echo $yes; ?> /><label for="ec1_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="enhanced_captions" id="ec1_no" value="0" <?php echo $no; ?> /><label for="ec1_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<?php echo _AT('request_caption_rate'); ?><br />
+		<?php
+			$yes = $no  = '';
+			
+			if (isset($_POST["request_caption_rate"]))
+				$selected_rcr = $_POST["request_caption_rate"];
+			else
+				$selected_rcr = $_SESSION['prefs']['PREF_REQUEST_CAPTION_RATE'];
+				
+			if ($selected_rcr == 1) {
+				$yes = ' checked="checked"';
+			} else {
+				$no  = ' checked="checked"';
+			}
+?>
+		<input type="radio" name="request_caption_rate" id="rcr_yes" value="1" <?php echo $yes; ?> /><label for="rcr_yes"><?php echo _AT('yes'); ?></label> 
+		<input type="radio" name="request_caption_rate" id="rcr_no" value="0" <?php echo $no; ?> /><label for="rcr_no"><?php echo _AT('no'); ?></label>		
+	</div>
+
+	<div class="row">
+		<?php echo _AT('caption_rate'); ?><br />
+		<?php
+			if (isset($_POST["caption_rate"]))
+				$selected_caption_rate = $_POST["caption_rate"];
+			else
+				$selected_caption_rate = $_SESSION['prefs']['PREF_CAPTION_RATE'];
+?>
+		<input type="text" name="caption_rate" id="caption_rate" size="30" value="<?php echo $selected_caption_rate; ?>" />
+	</div>
 </fieldset>
 

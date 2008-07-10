@@ -1,27 +1,32 @@
 <fieldset>
-<legend><strong>ATutor Setting</strong> </legend>  
+<legend><strong><?php echo _AT("atutor_settings"); ?></strong> </legend>  
 	<div class="row">
 		<?php if (defined('AT_ENABLE_CATEGORY_THEMES') && AT_ENABLE_CATEGORY_THEMES): ?>
 			<?php echo _AT('themes_disabled'); ?>
 		<?php else: ?>
 			<label for="theme"><?php echo _AT('theme'); ?></label><br />
 				<select name="theme" id="theme"><?php
-							$_themes = get_enabled_themes();
-							
-							foreach ($_themes as $theme) {
-								if (!$theme) {
-									continue;
-								}
+					if (isset($_POST['theme']))
+						$selected_theme = $_POST['theme'];
+					else
+						$selected_theme = $_SESSION['prefs']['PREF_THEME'];
+						
+					$_themes = get_enabled_themes();
+					
+					foreach ($_themes as $theme) {
+						if (!$theme) {
+							continue;
+						}
 
-								$theme_fldr = get_folder($theme);
+						$theme_fldr = get_folder($theme);
 
-								if ($theme_fldr == $_SESSION['prefs']['PREF_THEME']) {
-									echo '<option value="'.$theme_fldr.'" selected="selected">'.$theme.'</option>';
-								} else {
-									echo '<option value="'.$theme_fldr.'">'.$theme.'</option>';
-								}
-							}
-						?>
+						if ($theme_fldr == $selected_theme) {
+							echo '<option value="'.$theme_fldr.'" selected="selected">'.$theme.'</option>';
+						} else {
+							echo '<option value="'.$theme_fldr.'">'.$theme.'</option>';
+						}
+					}
+				?>
 				</select>
 		<?php endif; ?>
 	</div>
@@ -30,7 +35,13 @@
 		<?php echo _AT('inbox_notification'); ?><br />
 		<?php
 			$yes = $no  = '';
-			if ($this->notify == 1) {
+			
+			if (isset($_POST["mnot"]))
+				$selected_mnot = $_POST["mnot"];
+			else
+				$selected_mnot = $this->notify;
+				
+			if ($selected_mnot == 1) {
 				$yes = ' checked="checked"';
 			} else {
 				$no  = ' checked="checked"';
@@ -43,8 +54,13 @@
 	<div class="row">
 		<?php echo _AT('show_numbers');  ?><br />
 		<?php
+			if (isset($_POST['numbering']))
+				$selected_numbering = $_POST['numbering'];
+			else
+				$selected_numbering = $_SESSION['prefs']['PREF_NUMBERING'];
+				
 			$num = $num2 = '';
-			if ($_SESSION['prefs']['PREF_NUMBERING'] == 1) {
+			if ($selected_numbering == 1) {
 				$num = ' checked="checked"';
 			} else {
 				$num2 = ' checked="checked"';
@@ -56,8 +72,13 @@
 	<div class="row">
 		<?php echo _AT('jump_redirect'); ?><br />
 		<?php
+			if (isset($_POST['use_jump_redirect']))
+				$selected_numbering = $_POST['use_jump_redirect'];
+			else
+				$selected_numbering = $_SESSION['prefs']['PREF_JUMP_REDIRECT'];
+				
 			$num = $num2 = '';
-			if ($_SESSION['prefs']['PREF_JUMP_REDIRECT'] == 1) {
+			if ($selected_numbering == 1) {
 				$num = ' checked="checked"';
 			} else {
 				$num2 = ' checked="checked"';
@@ -81,8 +102,13 @@
 	<div class="row">
 		<?php echo _AT('form_focus');  ?><br />
 		<?php
+			if (isset($_POST['form_focus']))
+				$selected_form_focus = $_POST['form_focus'];
+			else
+				$selected_form_focus = $_SESSION['prefs']['PREF_FORM_FOCUS'];
+				
 			$num = $num2 = '';
-			if ($_SESSION['prefs']['PREF_FORM_FOCUS'] == 1) {
+			if ($selected_form_focus == 1) {
 				$num = ' checked="checked"';
 			} else {
 				$num2 = ' checked="checked"';
@@ -93,8 +119,13 @@
 
 	<div class="row">
 		<?php
+			if (isset($_POST['content_editor']))
+				$selected_content_editor = $_POST['content_editor'];
+			else
+				$selected_content_editor = $_SESSION['prefs']['PREF_CONTENT_EDITOR'];
+				
 			$num0 = $num1 = $num2 = '';
-			if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 1) {
+			if ($selected_content_editor == 1) {
 				$num1 = ' checked="checked"';
 			} else if ($_SESSION['prefs']['PREF_CONTENT_EDITOR'] == 2) {
 				$num2 = ' checked="checked"';
