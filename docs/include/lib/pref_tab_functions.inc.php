@@ -25,7 +25,6 @@ function get_tabs() {
 	return $tabs;
 }
 
-
 function output_tabs($current_tab, $changes) {
 	global $_base_path;
 	$tabs = get_tabs();
@@ -60,5 +59,19 @@ function output_tabs($current_tab, $changes) {
 	</table>
 <?php }
 
-
+// returns given $languges in html <option> tag
+function output_language_options($languages, $selected_lang)
+{
+	foreach ($languages as $codes)
+	{
+		$language = current($codes);
+		
+		$lang_code = $language->getCode();
+		$lang_native_name = $language->getNativeName();
+		$lang_english_name = $language->getEnglishName()
+?>
+		<option value="<?php echo $lang_code ?>" <?php if ($selected_lang == $lang_code) echo 'selected="selected"'; ?>><?php echo $lang_english_name . ' - '. $lang_native_name; ?></option>
+<?php
+	}
+}
 ?>

@@ -28,14 +28,9 @@
 					$selected_lang = $_POST['alt_text_lang'];
 				else
 					$selected_lang = $_SESSION['prefs']['PREF_ALT_TEXT_LANG'];
+
+				output_language_options($this->languages, $selected_lang);
 ?>
-				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
-				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
-				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
-				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
-				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
-				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
-				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
 			</select>
 	</div>
 
@@ -46,14 +41,9 @@
 					$selected_lang = $_POST['long_desc_lang'];
 				else
 					$selected_lang = $_SESSION['prefs']['PREF_LONG_DESC_LANG'];
+
+				output_language_options($this->languages, $selected_lang);
 ?>
-				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
-				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
-				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
-				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
-				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
-				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
-				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
 			</select>
 	</div>
 
@@ -160,14 +150,9 @@
 					$selected_lang = $_POST['prefer_lang'];
 				else
 					$selected_lang = $_SESSION['prefs']['PREF_PREFER_LANG'];
+
+				output_language_options($this->languages, $selected_lang);
 ?>
-				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
-				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
-				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
-				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
-				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
-				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
-				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
 			</select>
 	</div>
 
@@ -228,14 +213,9 @@
 					$selected_lang = $_POST['caption_lang'];
 				else
 					$selected_lang = $_SESSION['prefs']['PREF_CAPTION_LANG'];
+
+				output_language_options($this->languages, $selected_lang);
 	?>
-				<option value="en" <?php if ($selected_lang == "en") echo 'selected="selected"'; ?>><?php echo _AT('english'); ?></option>       
-				<option value="fr" <?php if ($selected_lang == "fr") echo 'selected="selected"'; ?>><?php echo _AT('french'); ?></option>       
-				<option value="de" <?php if ($selected_lang == "de") echo 'selected="selected"'; ?>><?php echo _AT('german'); ?></option>       
-				<option value="es" <?php if ($selected_lang == "es") echo 'selected="selected"'; ?>><?php echo _AT('spanish'); ?></option>       
-				<option value="it" <?php if ($selected_lang == "it") echo 'selected="selected"'; ?>><?php echo _AT('italian'); ?></option>       
-				<option value="ta" <?php if ($selected_lang == "ta") echo 'selected="selected"'; ?>><?php echo _AT('tamil'); ?></option>       
-				<option value="ur" <?php if ($selected_lang == "ur") echo 'selected="selected"'; ?>><?php echo _AT('urdu'); ?></option>   
 			</select>
 	</div>
 

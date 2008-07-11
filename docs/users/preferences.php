@@ -91,10 +91,12 @@ $sql	= "SELECT inbox_notify FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSI
 $result = mysql_query($sql, $db);
 $row_notify = mysql_fetch_assoc($result);
 
+$languages = $languageManager->getAvailableLanguages();
+
 /* page contents starts here */
 $savant->assign('notify', $row_notify['inbox_notify']);
+$savant->assign('languages', $languages);
 
 $savant->display('users/preferences.tmpl.php');
 
 ?>
-
