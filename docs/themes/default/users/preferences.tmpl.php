@@ -1,7 +1,5 @@
 <?php 
 
-require(AT_INCLUDE_PATH.'header.inc.php'); 
-
 $tabs = get_tabs();	
 $num_tabs = count($tabs);
 if($_POST['current_tab'])
@@ -23,6 +21,16 @@ else
 		}			
 	}
 }
+
+if ($current_tab == 1)
+{
+	global $_custom_head, $onload;
+	
+	$_custom_head = "<script language=\"JavaScript\" src=\"jscripts/TILE.js\" type=\"text/javascript\"></script>";
+	$onload = "setPreviewFace(); setPreviewSize(); setPreviewColours();";
+}
+
+require(AT_INCLUDE_PATH.'header.inc.php'); 
 ?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>"  method="post" name="form" enctype="multipart/form-data">
@@ -36,7 +44,7 @@ else
 
 	if ($current_tab != 0) 
 	{
-		// save selected options on tab 0
+		// save selected options on tab 0 (ATutor settings)
 		if (isset($_POST['theme']))
 			echo '	<input type="hidden" name="theme" value="'.$_POST['theme'].'" />'."\n\r";
 		
@@ -59,9 +67,47 @@ else
 			echo '	<input type="hidden" name="content_editor" value="'.$_POST['content_editor'].'" />'."\n\r";
 	}
 
+	if ($current_tab != 1) 
+	{
+//		phpinfo();
+		// save selected options on tab 1 (display settings)
+		if (isset($_POST['fontface']))
+			echo '	<input type="hidden" name="fontface" value="'.$_POST['fontface'].'" />'."\n\r";
+
+		if (isset($_POST['fontsize']))
+			echo '	<input type="hidden" name="fontsize" value="'.$_POST['fontsize'].'" />'."\n\r";
+
+		if (isset($_POST['fg']))
+			echo '	<input type="hidden" name="fg" value="'.$_POST['fg'].'" />'."\n\r";
+
+		if (isset($_POST['bg']))
+			echo '	<input type="hidden" name="bg" value="'.$_POST['bg'].'" />'."\n\r";
+
+		if (isset($_POST['hl']))
+			echo '	<input type="hidden" name="hl" value="'.$_POST['hl'].'" />'."\n\r";
+
+		if (isset($_POST['invert_colour_selection']))
+			echo '	<input type="hidden" name="invert_colour_selection" value="'.$_POST['invert_colour_selection'].'" />'."\n\r";
+
+		if (isset($_POST['avoid_red']))
+			echo '	<input type="hidden" name="avoid_red" value="'.$_POST['avoid_red'].'" />'."\n\r";
+
+		if (isset($_POST['avoid_red_green']))
+			echo '	<input type="hidden" name="avoid_red_green" value="'.$_POST['avoid_red_green'].'" />'."\n\r";
+
+		if (isset($_POST['avoid_blue_yellow']))
+			echo '	<input type="hidden" name="avoid_blue_yellow" value="'.$_POST['avoid_blue_yellow'].'" />'."\n\r";
+
+		if (isset($_POST['avoid_green_yellow']))
+			echo '	<input type="hidden" name="avoid_green_yellow" value="'.$_POST['avoid_green_yellow'].'" />'."\n\r";
+
+		if (isset($_POST['use_max_contrast']))
+			echo '	<input type="hidden" name="use_max_contrast" value="'.$_POST['use_max_contrast'].'" />'."\n\r";
+	}
+		
 	if ($current_tab != 2) 
 	{
-		// save selected options on tab 0
+		// save selected options on tab 2 (content settings)
 		if (isset($_POST['use_alternate_text']))
 			echo '	<input type="hidden" name="use_alternate_text" value="'.$_POST['use_alternate_text'].'" />'."\n\r";
 		
@@ -108,7 +154,57 @@ else
 		echo '	<input type="hidden" name="caption_rate" value="'.$_POST['caption_rate'].'" />'."\n\r";
 	}
 
- include(getcwd().'/'.$tabs[$current_tab][1]);
+	if ($current_tab != 3) 
+	{
+		// save selected options on tab 3 (tool settings)
+		if (isset($_POST['dictionary_val']))
+			echo '	<input type="hidden" name="dictionary_val" value="'.$_POST['dictionary_val'].'" />'."\n\r";
+
+		if (isset($_POST['thesaurus_val']))
+			echo '	<input type="hidden" name="thesaurus_val" value="'.$_POST['thesaurus_val'].'" />'."\n\r";
+
+		if (isset($_POST['note_taking_val']))
+			echo '	<input type="hidden" name="note_taking_val" value="'.$_POST['note_taking_val'].'" />'."\n\r";
+
+		if (isset($_POST['calculator_val']))
+			echo '	<input type="hidden" name="calculator_val" value="'.$_POST['calculator_val'].'" />'."\n\r";
+
+		if (isset($_POST['peer_interaction_val']))
+			echo '	<input type="hidden" name="peer_interaction_val" value="'.$_POST['peer_interaction_val'].'" />'."\n\r";
+
+		if (isset($_POST['abacus_val']))
+			echo '	<input type="hidden" name="abacus_val" value="'.$_POST['abacus_val'].'" />'."\n\r";
+	}
+	
+	if ($current_tab != 4) 
+	{
+		// save selected options on tab 4 (control settings)
+		if (isset($_POST['show_contents']))
+			echo '	<input type="hidden" name="show_contents" value="'.$_POST['show_contents'].'" />'."\n\r";
+
+		if (isset($_POST['next_previous_buttons']))
+			echo '	<input type="hidden" name="next_previous_buttons" value="'.$_POST['next_previous_buttons'].'" />'."\n\r";
+
+		if (isset($_POST['show_notes']))
+			echo '	<input type="hidden" name="show_notes" value="'.$_POST['show_notes'].'" />'."\n\r";
+
+		if (isset($_POST['level_of_detail']))
+			echo '	<input type="hidden" name="level_of_detail" value="'.$_POST['level_of_detail'].'" />'."\n\r";
+
+		if (isset($_POST['content_views']))
+			echo '	<input type="hidden" name="content_views" value="'.$_POST['content_views'].'" />'."\n\r";
+
+		if (isset($_POST['show_separate_links']))
+			echo '	<input type="hidden" name="show_separate_links" value="'.$_POST['show_separate_links'].'" />'."\n\r";
+
+		if (isset($_POST['show_transcript']))
+			echo '	<input type="hidden" name="show_transcript" value="'.$_POST['show_transcript'].'" />'."\n\r";
+
+		if (isset($_POST['window_layout']))
+			echo '	<input type="hidden" name="window_layout" value="'.$_POST['window_layout'].'" />'."\n\r";
+	}
+
+	include(getcwd().'/'.$tabs[$current_tab][1]);
 
 ?>
 	<div class="row buttons">

@@ -48,7 +48,7 @@ function popUp(width,height,url,wname,smallwindow) {
 
 }
       function changeColour(c1, c2, c3) {
-  var frm = document.forms[0];
+  var frm = document.forms[1];
   var c1Num = frm.elements[c1].selectedIndex;
   var c2Num = frm.elements[c2].selectedIndex;
   var c3Num = frm.elements[c3].selectedIndex;
