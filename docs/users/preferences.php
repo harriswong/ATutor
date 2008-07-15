@@ -96,16 +96,16 @@ if (isset($_POST['submit'])) {
 	//update auto-login settings
 	if (isset($_POST['auto']) && ($_POST['auto'] == 'disable')) {
 		$parts = parse_url(AT_BASE_HREF);
-		setcookie('ATLogin', '', time()-172800, $parts['path'], $parts['host'], 0);
-		setcookie('ATPass',  '', time()-172800, $parts['path'], $parts['host'], 0);		
+		setcookie('ATLogin', '', time()-172800, $parts['path']);
+		setcookie('ATPass',  '', time()-172800, $parts['path']);
 	} else if (isset($_POST['auto']) && ($_POST['auto'] == 'enable')) {
 		$parts = parse_url(AT_BASE_HREF);
 		$sql	= "SELECT password FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[member_id]";
 		$result = mysql_query($sql, $db);
 		$row	= mysql_fetch_assoc($result);
 		$password = sha1($row['password'] . '-' . DB_PASSWORD);
-		setcookie('ATLogin', $_SESSION['login'], time()+172800, $parts['path'], $parts['host'], 0);
-		setcookie('ATPass',  $password, time()+172800, $parts['path'], $parts['host'], 0);
+		setcookie('ATLogin', $_SESSION['login'], time()+172800, $parts['path']);
+		setcookie('ATPass',  $password, time()+172800, $parts['path']);
 	}
 
 	/* also update message notification pref */
@@ -114,8 +114,6 @@ if (isset($_POST['submit'])) {
 	$result = mysql_query($sql, $db);
 
 	$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
-	header('Location: '.AT_BASE_HREF.'users/preferences.php');
-	exit;
 }
 
 $sql	= "SELECT inbox_notify FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[member_id]";

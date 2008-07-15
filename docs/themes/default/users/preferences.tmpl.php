@@ -2,24 +2,22 @@
 
 $tabs = get_tabs();	
 $num_tabs = count($tabs);
-if($_POST['current_tab'])
+
+$current_tab = 0;  // set default tab
+$switch_tab = false;
+
+for ($i=0; $i < $num_tabs; $i++) 
 {
-	$current_tab = addslashes($_POST['current_tab']);
-}
-else
-{
-	for ($i=0; $i < $num_tabs; $i++) 
-	{
-		if (isset($_POST['button_'.$i]) && ($_POST['button_'.$i] != -1)) 
-		{ 
-			$current_tab = $i;
-			break;
-		}
-		else
-		{
-			$current_tab = 0;
-		}			
+	if (isset($_POST['button_'.$i]) && ($_POST['button_'.$i] != -1)) 
+	{ 
+		$current_tab = $i;
+		$switch_tab = true;
+		break;
 	}
+}
+
+if (!$switch_tab && isset($_POST['current_tab'])) {
+	$current_tab = intval($_POST['current_tab']);
 }
 
 if ($current_tab == 1)
@@ -40,8 +38,8 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	</div>
 
 	<div class="input-form">
+		<input type="hidden" name="current_tab" value="<?php echo $current_tab; ?>" />
 <?php
-
 	if ($current_tab != 0) 
 	{
 		// save selected options on tab 0 (ATutor settings)
@@ -69,7 +67,6 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 	if ($current_tab != 1) 
 	{
-//		phpinfo();
 		// save selected options on tab 1 (display settings)
 		if (isset($_POST['fontface']))
 			echo '	<input type="hidden" name="fontface" value="'.$_POST['fontface'].'" />'."\n\r";
