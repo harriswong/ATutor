@@ -264,8 +264,10 @@
 		<?php
 			if (isset($_POST["caption_rate"]))
 				$selected_caption_rate = $_POST["caption_rate"];
-			else
+			else if (isset($_SESSION['prefs']['PREF_CAPTION_RATE']))
 				$selected_caption_rate = $_SESSION['prefs']['PREF_CAPTION_RATE'];
+			else
+				$selected_caption_rate = 200;    // set default
 ?>
 		<input type="text" name="caption_rate" id="caption_rate" size="30" value="<?php echo $selected_caption_rate; ?>" />
 	</div>
