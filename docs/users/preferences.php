@@ -29,7 +29,7 @@ if (!$_SESSION['valid_user']) {
 }
 
 if (isset($_POST['submit'])) {
-	if (intval($_POST['caption_rate'])>300 || intval($_POST['caption_rate'])<1)
+	if (isset($_POST['caption_rate']) && (intval($_POST['caption_rate'])>300 || intval($_POST['caption_rate'])<1))
 		$msg->addError('WRONG_CAPTION_RATE');
 	
 	if (!$msg->containsErrors()) 
@@ -107,7 +107,7 @@ if (isset($_POST['submit'])) {
 			$sql	= "SELECT password FROM ".TABLE_PREFIX."members WHERE member_id=$_SESSION[member_id]";
 			$result = mysql_query($sql, $db);
 			$row	= mysql_fetch_assoc($result);
-			$password = sha1($row['password'] . '-' . DB_PASSWORD);
+			$password = $row["password"];
 			setcookie('ATLogin', $_SESSION['login'], time()+172800, $parts['path']);
 			setcookie('ATPass',  $password, time()+172800, $parts['path']);
 		}
