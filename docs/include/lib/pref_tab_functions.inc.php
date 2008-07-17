@@ -35,7 +35,7 @@ function output_tabs($current_tab, $changes) {
 		<?php 
 		for ($i=0; $i < $num_tabs; $i++): 
 			if ($current_tab == $i):?>
-				<td class="selected" style=”white-space: nowrap”>
+				<td class="selected" style="white-space: nowrap">
 					<?php if ($changes[$i]): ?>
 						<img src="<?php echo $_base_path; ?>images/changes_bullet.gif" alt="<?php echo _AT('usaved_changes_made'); ?>" height="12" width="15" />
 					<?php echo '<input type="submit" name="button_'.$i.'" value="'._AT($tabs[$i][0]).'" title="'._AT($tabs[$i][0]).' - alt '.$tabs[$i][2].'" class="buttontab" accesskey="'.$tabs[$i][2].'" onmouseover="this.style.cursor=\'pointer\';" '.$clickEvent.' />'; ?>
@@ -44,7 +44,7 @@ function output_tabs($current_tab, $changes) {
 				</td>
 				<td class="tab-spacer">&nbsp;</td>
 			<?php else: ?>
-				<td class="tab" style=”white-space: nowrap”>
+				<td class="tab" style="white-space: nowrap">
 					<?php if ($changes[$i]): ?>
 						<img src="<?php echo $_base_path; ?>images/changes_bullet.gif" alt="<?php echo _AT('usaved_changes_made'); ?>" height="12" width="15" />
 					<?php endif; ?>
