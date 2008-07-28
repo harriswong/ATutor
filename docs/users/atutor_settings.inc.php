@@ -90,7 +90,10 @@
 	<div class="row">
 		<?php echo _AT('auto_login1');  ?><br /><?php
 			$auto_en = $auto_dis = '';
-			if ( !empty($_COOKIE['ATLogin']) && !empty($_COOKIE['ATPass']) ) {
+
+			// Check flag $is_auto_login instead of session vars !empty($_SESSION['ATLogin']) is because 
+			// the set cookies are only accessible at the next page reload
+			if ( $this->is_auto_login ) {
 				$auto_en = 'checked="checked"';
 			} else {
 				$auto_dis = 'checked="checked"';
