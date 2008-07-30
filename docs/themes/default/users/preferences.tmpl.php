@@ -105,50 +105,41 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 	if ($current_tab != 2) 
 	{
 		// save selected options on tab 2 (content settings)
-		if (isset($_POST['use_alternate_text']))
-			echo '	<input type="hidden" name="use_alternate_text" value="'.$_POST['use_alternate_text'].'" />'."\n\r";
+		if (isset($_POST['use_alternative_to_text']))
+			echo '	<input type="hidden" name="use_alternative_to_text" value="'.$_POST['use_alternative_to_text'].'" />'."\n\r";
 		
-		if (isset($_POST['alt_text_lang']))
-			echo '	<input type="hidden" name="alt_text_lang" value="'.$_POST['alt_text_lang'].'" />'."\n\r";
+		if (isset($_POST['preferred_alt_to_text']))
+			echo '	<input type="hidden" name="preferred_alt_to_text" value="'.$_POST['preferred_alt_to_text'].'" />'."\n\r";
 		
-		if (isset($_POST['long_desc_lang']))
-		echo '	<input type="hidden" name="long_desc_lang" value="'.$_POST['long_desc_lang'].'" />'."\n\r";
+		if (isset($_POST['alt_to_text_append_or_replace']))
+		echo '	<input type="hidden" name="alt_to_text_append_or_replace" value="'.$_POST['alt_to_text_append_or_replace'].'" />'."\n\r";
 		
-		if (isset($_POST['use_graphic_alternative']))
-		echo '	<input type="hidden" name="use_graphic_alternative" value="'.$_POST['use_graphic_alternative'].'" />'."\n\r";
+		if (isset($_POST['alt_text_prefer_lang']))
+		echo '	<input type="hidden" name="alt_text_prefer_lang" value="'.$_POST['alt_text_prefer_lang'].'" />'."\n\r";
 		
-		if (isset($_POST['use_sign_lang']))
-		echo '	<input type="hidden" name="use_sign_lang" value="'.$_POST['use_sign_lang'].'" />'."\n\r";
+		if (isset($_POST['use_alternative_to_audio']))
+		echo '	<input type="hidden" name="use_alternative_to_audio" value="'.$_POST['use_alternative_to_audio'].'" />'."\n\r";
 		
-		if (isset($_POST['sign_lang']))
-		echo '	<input type="hidden" name="sign_lang" value="'.$_POST['sign_lang'].'" />'."\n\r";
+		if (isset($_POST['preferred_alt_to_audio']))
+		echo '	<input type="hidden" name="preferred_alt_to_audio" value="'.$_POST['preferred_alt_to_audio'].'" />'."\n\r";
 		
-		if (isset($_POST['use_video']))
-		echo '	<input type="hidden" name="use_video" value="'.$_POST['use_video'].'" />'."\n\r";
+		if (isset($_POST['alt_to_audio_append_or_replace']))
+		echo '	<input type="hidden" name="alt_to_audio_append_or_replace" value="'.$_POST['alt_to_audio_append_or_replace'].'" />'."\n\r";
 		
-		if (isset($_POST['prefer_lang']))
-		echo '	<input type="hidden" name="prefer_lang" value="'.$_POST['prefer_lang'].'" />'."\n\r";
+		if (isset($_POST['alt_audio_prefer_lang']))
+		echo '	<input type="hidden" name="alt_audio_prefer_lang" value="'.$_POST['alt_audio_prefer_lang'].'" />'."\n\r";
 		
-		if (isset($_POST['description_type']))
-		echo '	<input type="hidden" name="description_type" value="'.$_POST['description_type'].'" />'."\n\r";
+		if (isset($_POST['use_alternative_to_visual']))
+		echo '	<input type="hidden" name="use_alternative_to_visual" value="'.$_POST['use_alternative_to_visual'].'" />'."\n\r";
 		
-		if (isset($_POST['enable_captions']))
-		echo '	<input type="hidden" name="enable_captions" value="'.$_POST['enable_captions'].'" />'."\n\r";
+		if (isset($_POST['preferred_alt_to_visual']))
+		echo '	<input type="hidden" name="preferred_alt_to_visual" value="'.$_POST['preferred_alt_to_visual'].'" />'."\n\r";
 		
-		if (isset($_POST['caption_type']))
-		echo '	<input type="hidden" name="caption_type" value="'.$_POST['caption_type'].'" />'."\n\r";
+		if (isset($_POST['alt_to_visual_append_or_replace']))
+		echo '	<input type="hidden" name="alt_to_visual_append_or_replace" value="'.$_POST['alt_to_visual_append_or_replace'].'" />'."\n\r";
 		
-		if (isset($_POST['caption_lang']))
-		echo '	<input type="hidden" name="caption_lang" value="'.$_POST['caption_lang'].'" />'."\n\r";
-		
-		if (isset($_POST['enhanced_captions']))
-		echo '	<input type="hidden" name="enhanced_captions" value="'.$_POST['enhanced_captions'].'" />'."\n\r";
-		
-		if (isset($_POST['request_caption_rate']))
-		echo '	<input type="hidden" name="request_caption_rate" value="'.$_POST['request_caption_rate'].'" />'."\n\r";
-		
-		if (isset($_POST['caption_rate']))
-		echo '	<input type="hidden" name="caption_rate" value="'.$_POST['caption_rate'].'" />'."\n\r";
+		if (isset($_POST['alt_visual_prefer_lang']))
+		echo '	<input type="hidden" name="alt_visual_prefer_lang" value="'.$_POST['alt_visual_prefer_lang'].'" />'."\n\r";
 	}
 
 	if ($current_tab != 3) 

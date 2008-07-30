@@ -56,21 +56,33 @@ if (isset($_POST['submit'])) {
 		$temp_prefs['PREF_USE_MAX_CONTRAST']	 = intval($_POST['use_max_contrast']);
 	
 		// content settings (tab 2)
-		$temp_prefs['PREF_USE_ALTERNATE_TEXT'] = intval($_POST['use_alternate_text']);
-		$temp_prefs['PREF_ALT_TEXT_LANG']	     = $addslashes($_POST['alt_text_lang']);
-		$temp_prefs['PREF_LONG_DESC_LANG']	   = $addslashes($_POST['long_desc_lang']);
-		$temp_prefs['PREF_USE_GRAPHIC_ALTERNATIVE'] = intval($_POST['use_graphic_alternative']);
-		$temp_prefs['PREF_USE_SIGN_LANG'] = intval($_POST['use_sign_lang']);
-		$temp_prefs['PREF_SIGN_LANG']	    = $addslashes($_POST['sign_lang']);
-		$temp_prefs['PREF_USE_VIDEO']     = intval($_POST['use_video']);
-		$temp_prefs['PREF_PREFER_LANG']	  = $addslashes($_POST['prefer_lang']);
-		$temp_prefs['PREF_DESC_TYPE']	    = $addslashes($_POST['description_type']);
-		$temp_prefs['PREF_ENABLE_CAPTIONS'] = intval($_POST['enable_captions']);
-		$temp_prefs['PREF_CAPTION_TYPE']	  = $addslashes($_POST['caption_type']);
-		$temp_prefs['PREF_CAPTION_LANG']	  = $addslashes($_POST['caption_lang']);
-		$temp_prefs['PREF_ENHANCED_CAPTIONS'] = intval($_POST['enhanced_captions']);
-		$temp_prefs['PREF_REQUEST_CAPTION_RATE'] = intval($_POST['request_caption_rate']);
-		$temp_prefs['PREF_CAPTION_RATE']	   = intval($_POST['caption_rate']);
+//		$temp_prefs['PREF_USE_ALTERNATE_TEXT'] = intval($_POST['use_alternate_text']);
+//		$temp_prefs['PREF_ALT_TEXT_LANG']	     = $addslashes($_POST['alt_text_lang']);
+//		$temp_prefs['PREF_LONG_DESC_LANG']	   = $addslashes($_POST['long_desc_lang']);
+//		$temp_prefs['PREF_USE_GRAPHIC_ALTERNATIVE'] = intval($_POST['use_graphic_alternative']);
+//		$temp_prefs['PREF_USE_SIGN_LANG'] = intval($_POST['use_sign_lang']);
+//		$temp_prefs['PREF_SIGN_LANG']	    = $addslashes($_POST['sign_lang']);
+//		$temp_prefs['PREF_USE_VIDEO']     = intval($_POST['use_video']);
+//		$temp_prefs['PREF_PREFER_LANG']	  = $addslashes($_POST['prefer_lang']);
+//		$temp_prefs['PREF_DESC_TYPE']	    = $addslashes($_POST['description_type']);
+//		$temp_prefs['PREF_ENABLE_CAPTIONS'] = intval($_POST['enable_captions']);
+//		$temp_prefs['PREF_CAPTION_TYPE']	  = $addslashes($_POST['caption_type']);
+//		$temp_prefs['PREF_CAPTION_LANG']	  = $addslashes($_POST['caption_lang']);
+//		$temp_prefs['PREF_ENHANCED_CAPTIONS'] = intval($_POST['enhanced_captions']);
+//		$temp_prefs['PREF_REQUEST_CAPTION_RATE'] = intval($_POST['request_caption_rate']);
+//		$temp_prefs['PREF_CAPTION_RATE']	   = intval($_POST['caption_rate']);
+		$temp_prefs['PREF_USE_ALTERNATIVE_TO_TEXT'] = intval($_POST['use_alternative_to_text']);
+		$temp_prefs['PREF_ALT_TO_TEXT'] = $addslashes($_POST['preferred_alt_to_text']);
+		$temp_prefs['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'] = intval($_POST['alt_to_text_append_or_replace']);
+		$temp_prefs['PREF_ALT_TEXT_PREFER_LANG'] = $addslashes($_POST['alt_text_prefer_lang']);
+		$temp_prefs['PREF_USE_ALTERNATIVE_TO_AUDIO'] = intval($_POST['use_alternative_to_audio']);
+		$temp_prefs['PREF_ALT_TO_AUDIO'] = $addslashes($_POST['preferred_alt_to_audio']);
+		$temp_prefs['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'] = intval($_POST['alt_to_audio_append_or_replace']);
+		$temp_prefs['PREF_ALT_AUDIO_PREFER_LANG'] = $addslashes($_POST['alt_audio_prefer_lang']);
+		$temp_prefs['PREF_USE_ALTERNATIVE_TO_VISUAL'] = intval($_POST['use_alternative_to_visual']);
+		$temp_prefs['PREF_ALT_TO_VISUAL'] = $addslashes($_POST['preferred_alt_to_visual']);
+		$temp_prefs['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE'] = intval($_POST['alt_to_visual_append_or_replace']);
+		$temp_prefs['PREF_ALT_VISUAL_PREFER_LANG'] = $addslashes($_POST['alt_visual_prefer_lang']);
 	
 		// tool settings (tab 3)
 		$temp_prefs['PREF_DICTIONARY'] = intval($_POST['dictionary_val']);
