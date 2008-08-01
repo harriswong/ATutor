@@ -73,15 +73,15 @@ if (isset($_POST['submit'])) {
 //		$temp_prefs['PREF_CAPTION_RATE']	   = intval($_POST['caption_rate']);
 		$temp_prefs['PREF_USE_ALTERNATIVE_TO_TEXT'] = intval($_POST['use_alternative_to_text']);
 		$temp_prefs['PREF_ALT_TO_TEXT'] = $addslashes($_POST['preferred_alt_to_text']);
-		$temp_prefs['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'] = intval($_POST['alt_to_text_append_or_replace']);
+		$temp_prefs['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'] = $addslashes($_POST['alt_to_text_append_or_replace']);
 		$temp_prefs['PREF_ALT_TEXT_PREFER_LANG'] = $addslashes($_POST['alt_text_prefer_lang']);
 		$temp_prefs['PREF_USE_ALTERNATIVE_TO_AUDIO'] = intval($_POST['use_alternative_to_audio']);
 		$temp_prefs['PREF_ALT_TO_AUDIO'] = $addslashes($_POST['preferred_alt_to_audio']);
-		$temp_prefs['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'] = intval($_POST['alt_to_audio_append_or_replace']);
+		$temp_prefs['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE'] = $addslashes($_POST['alt_to_audio_append_or_replace']);
 		$temp_prefs['PREF_ALT_AUDIO_PREFER_LANG'] = $addslashes($_POST['alt_audio_prefer_lang']);
 		$temp_prefs['PREF_USE_ALTERNATIVE_TO_VISUAL'] = intval($_POST['use_alternative_to_visual']);
 		$temp_prefs['PREF_ALT_TO_VISUAL'] = $addslashes($_POST['preferred_alt_to_visual']);
-		$temp_prefs['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE'] = intval($_POST['alt_to_visual_append_or_replace']);
+		$temp_prefs['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE'] = $addslashes($_POST['alt_to_visual_append_or_replace']);
 		$temp_prefs['PREF_ALT_VISUAL_PREFER_LANG'] = $addslashes($_POST['alt_visual_prefer_lang']);
 	
 		// tool settings (tab 3)

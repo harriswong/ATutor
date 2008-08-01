@@ -38,21 +38,21 @@
 	<div class="row">
 		<?php echo _AT('append_or_replace'); ?><br />
 		<?php
-			$yes = $no  = '';
+			$append = $replace = '';
 			
 			if (isset($_POST["alt_to_text_append_or_replace"]))
 				$selected_ar = $_POST["alt_to_text_append_or_replace"];
 			else
 				$selected_ar = $_SESSION['prefs']['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'];
 				
-			if ($selected_ar == 1) {
-				$yes = ' checked="checked"';
+			if ($selected_ar == 'replace') {
+				$replace = ' checked="checked"';
 			} else {
-				$no  = ' checked="checked"';
-			}
+				$append  = ' checked="checked"';
+			} 
 ?>
-		<input type="radio" name="alt_to_text_append_or_replace" id="ar_yes" value="1" <?php echo $yes; ?> /><label for="ar_yes"><?php echo _AT('yes'); ?></label> 
-		<input type="radio" name="alt_to_text_append_or_replace" id="ar_no" value="0" <?php echo $no; ?> /><label for="ar_no"><?php echo _AT('no'); ?></label>		
+		<input type="radio" name="alt_to_text_append_or_replace" id="ar_append" value="append" <?php echo $append; ?> /><label for="ar_append"><?php echo _AT('append'); ?></label> 
+		<input type="radio" name="alt_to_text_append_or_replace" id="ar_replace" value="replace" <?php echo $replace; ?> /><label for="ar_replace"><?php echo _AT('replace'); ?></label>		
 	</div>
 
 	<div class="row">
@@ -110,21 +110,21 @@
 	<div class="row">
 		<?php echo _AT('append_or_replace'); ?><br />
 		<?php
-			$yes = $no  = '';
+			$append = $replace = '';
 			
 			if (isset($_POST["alt_to_audio_append_or_replace"]))
 				$selected_aa = $_POST["alt_to_audio_append_or_replace"];
 			else
-				$selected_aa = $_SESSION['prefs']['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE'];
+				$selected_aa = $_SESSION['prefs']['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE'];
 				
-			if ($selected_aa == 1) {
-				$yes = ' checked="checked"';
+			if ($selected_aa == "replace") {
+				$replace = ' checked="checked"';
 			} else {
-				$no  = ' checked="checked"';
+				$append  = ' checked="checked"';
 			}
 ?>
-		<input type="radio" name="alt_to_audio_append_or_replace" id="aa_yes" value="1" <?php echo $yes; ?> /><label for="aa_yes"><?php echo _AT('yes'); ?></label> 
-		<input type="radio" name="alt_to_audio_append_or_replace" id="aa_no" value="0" <?php echo $no; ?> /><label for="aa_no"><?php echo _AT('no'); ?></label>
+		<input type="radio" name="alt_to_audio_append_or_replace" id="aa_append" value="append" <?php echo $append; ?> /><label for="aa_append"><?php echo _AT('append'); ?></label> 
+		<input type="radio" name="alt_to_audio_append_or_replace" id="aa_replace" value="replace" <?php echo $replace; ?> /><label for="aa_replace"><?php echo _AT('replace'); ?></label>
 	</div>
 
 	<div class="row">
@@ -182,21 +182,23 @@
 	<div class="row">
 		<?php echo _AT('append_or_replace'); ?><br />
 		<?php
-			$yes = $no  = '';
+			$append = $replace = '';
 			
 			if (isset($_POST["alt_to_visual_append_or_replace"]))
+			{
 				$selected_av = $_POST["alt_to_visual_append_or_replace"];
+			}
 			else
 				$selected_av = $_SESSION['prefs']['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE'];
 				
-			if ($selected_av == 1) {
-				$yes = ' checked="checked"';
+			if ($selected_av == "replace") {
+				$replace = ' checked="checked"';
 			} else {
-				$no  = ' checked="checked"';
+				$append  = ' checked="checked"';
 			}
 ?>
-		<input type="radio" name="alt_to_visual_append_or_replace" id="av_yes" value="1" <?php echo $yes; ?> /><label for="av_yes"><?php echo _AT('yes'); ?></label> 
-		<input type="radio" name="alt_to_visual_append_or_replace" id="av_no" value="0" <?php echo $no; ?> /><label for="av_no"><?php echo _AT('no'); ?></label>
+		<input type="radio" name="alt_to_visual_append_or_replace" id="av_append" value="append" <?php echo $append; ?> /><label for="av_append"><?php echo _AT('append'); ?></label> 
+		<input type="radio" name="alt_to_visual_append_or_replace" id="av_replace" value="replace" <?php echo $replace; ?> /><label for="av_replace"><?php echo _AT('replace'); ?></label>
 	</div>
 
 	<div class="row">
