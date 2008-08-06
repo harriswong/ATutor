@@ -159,7 +159,90 @@ function save_changes($redir) {
 			}
 		}
 	}
+	if (isset($_GET['tab'])) {
+	$current_tab = intval($_GET['tab']);
+	}
+	if (isset($_POST['current_tab'])) {
+		$current_tab = intval($_POST['current_tab']);
+	}
 
+	if ($current_tab=='5') {
+		if($_POST['alternatives']==1){
+	//		echo $_POST['submit'];
+			$sql	= "SELECT primary_resource_id FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid'";
+	    	$result = mysql_query($sql, $db);
+
+	    	if (mysql_num_rows($result) > 0) {
+	   	 		while ($row = mysql_fetch_assoc($result)) {
+	   	 		//	echo 'dentro while primary resource   ';
+					$sql_type	= "SELECT * FROM ".TABLE_PREFIX."resource_types";
+	    			$result_type = mysql_query($sql_type, $db);
+	    			
+     	 			if (mysql_num_rows($result_type) > 0) {
+	   	 				while ($type = mysql_fetch_assoc($result_type)) {
+	   	 				//	echo 'dentro while types     ';
+	   	 					$sql_contr  = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id='$row[primary_resource_id]' and type_id='$type[type_id]'";
+	   	 					$contr	= mysql_query($sql_contr, $db);	   
+	   	 					if (mysql_num_rows($contr) > 0) {
+	   	 						while ($control = mysql_fetch_assoc($contr)) {
+	   	 						//	echo 'dentro while controllo     ';
+	   	 							if (isset($_POST['checkbox_'.$type[type].'_'.$row[primary_resource_id].'']))
+	   	 								continue;
+	   	 							else {
+	   	 								$sql_del = "DELETE FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id='$control[primary_resource_id]' and type_id='$control[type_id]'";
+										$result_del = mysql_query($sql_del, $db);
+		 							}
+	   	 						}	
+	   	 					}
+	   	 					else 
+	   	 						if (isset($_POST['checkbox_'.$type[type].'_'.$row[primary_resource_id].''])){
+								//	echo 'e qui faccio inserimento    ';
+		   	 						$sql_ins	= "INSERT INTO ".TABLE_PREFIX."primary_resources_types VALUES ($row[primary_resource_id], $type[type_id])";
+									$ins 		= mysql_query($sql_ins, $db);
+								//	echo $sql_ins;
+	   	 						}	
+	   	 						
+	   	 					$sql_alt	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]'";
+	    					$result_alt = mysql_query($sql_alt, $db);
+     	 					//echo $sql_alt;
+	    					
+							if (mysql_num_rows($result_alt) > 0) {
+     	 						while ($alt = mysql_fetch_assoc($result_alt)) {
+									$sql_contr  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id='$alt[secondary_resource_id]' and type_id='$type[type_id]'";
+	   	 							$contr	= mysql_query($sql_contr, $db);	   
+	   	 							if (mysql_num_rows($contr) > 0) {
+	   	 								while ($control = mysql_fetch_assoc($contr)) {
+	   	 									if (isset($_POST['checkbox_'.$type[type].'_'.$alt[secondary_resource_id].'']))
+	   	 										continue;
+	   	 									else {
+	   	 										$sql_del = "DELETE FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id='$control[secondary_resource_id]' and type_id='$control[type_id]'";
+												$result_del = mysql_query($sql_del, $db);
+		 									}
+	   	 								}		
+	   	 							}
+	   	 							else 
+										if (isset($_POST['checkbox_'.$type[type].'_'.$alt[secondary_resource_id].''])){
+											$sql_ins	= "INSERT INTO ".TABLE_PREFIX."secondary_resources_types VALUES ($alt[secondary_resource_id], $type[type_id])";
+											$ins 		= mysql_query($sql_ins, $db);
+	   	 								}
+	   	 							$lang=$_POST['lang_'.$alt[secondary_resource_id].''];
+									$sql_up	= "UPDATE ".TABLE_PREFIX."secondary_resources SET language_code='$lang' WHERE secondary_resource_id=$alt[secondary_resource_id]";
+									$up 	= mysql_query($sql_up, $db);
+	   	 							}	
+								}			
+							}
+						
+						}
+						$lang=$_POST['lang_'.$row[primary_resource_id].''];
+						$sql_up	= "UPDATE ".TABLE_PREFIX."primary_resources SET language_code='$lang' WHERE primary_resource_id=$row[primary_resource_id]";
+						$up 	= mysql_query($sql_up, $db);
+	   	 			
+	   	 			}
+	   	 		
+			}
+		}
+	}
+	
 
 	if (!$msg->containsErrors() && $redir) {
 		$_SESSION['save_n_close'] = $_POST['save_n_close'];
