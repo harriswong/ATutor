@@ -12,7 +12,6 @@
 /************************************************************************/
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-
 function in_array_cin($strItem, $arItems)
 {
    foreach ($arItems as $key => $strValue)
