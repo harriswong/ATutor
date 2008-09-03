@@ -558,7 +558,7 @@ function get_forum_name($fid){
 }
 
 /* takes the array of valid prefs and assigns them to the current session */
-function assign_session_prefs ($prefs) {
+function assign_session_prefs($prefs) {
 	unset($_SESSION['prefs']);
 	if (is_array($prefs)) {
 		foreach($prefs as $pref_name => $value) {
