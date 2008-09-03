@@ -21,7 +21,7 @@ define('AT_INCLUDE_PATH', '../include/');
 $c   = isset($_REQUEST['c'])   ? intval($_REQUEST['c'])   : 0;
 
 $body_text 	= htmlspecialchars($stripslashes($_POST['body_text']));
-$body_t		=html_entity_decode($body_text);
+$body_t		= html_entity_decode($body_text);
 		
 
 require(AT_INCLUDE_PATH.'classes/XML/XML_HTMLSax/XML_HTMLSax.php');	/* for XML_HTMLSax */
