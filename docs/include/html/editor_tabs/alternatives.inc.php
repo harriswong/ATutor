@@ -269,7 +269,7 @@ if ($do_check) {
 }
 
 ?>
-		<textarea name="body_text" id="body_text" cols="" rows="20"><?php echo htmlspecialchars($_POST['body_text']); ?></textarea>	
+		<textarea name="body_text_alt" id="body_text_alt" cols="" rows="20"><?php echo htmlspecialchars($_POST['body_text']); ?></textarea>	
 	</div>
 	
 	<div class="row">
