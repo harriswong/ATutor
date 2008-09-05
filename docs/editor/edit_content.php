@@ -175,13 +175,13 @@ if ($current_tab == 5){
 	    		
 		    		if (mysql_num_rows($result) > 0) {
 	    	 	 		while ($row = mysql_fetch_assoc($result)) {
-	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
+	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[body_text_alt]'";
 	     	 				$contr 	 	= mysql_query($sql_contr, $db);
 	     	 				if (mysql_num_rows($contr) > 0) {
 	     	 					$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
 		     	 			}
 		     	 			else {
-	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
+	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[body_text_alt]', 'en')";
 								$ins     = mysql_query($sql_ins, $db);
 								$msg->addFeedback('ALTERNATIVE_ADDED');
 							}
