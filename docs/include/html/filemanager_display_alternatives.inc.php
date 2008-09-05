@@ -18,16 +18,8 @@ define('AT_INCLUDE_PATH', '../../include/');
 //require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
-
-
 global $db;
 
-/*
-if (isset($_POST['alternatives']))
-	echo $_POST['alternatives'];
-	else 
-	echo $alter;*/
-		
 
 // from tools/filemanager/index.php
 if ((isset($_REQUEST['popup']) && $_REQUEST['popup']) && 
@@ -41,7 +33,7 @@ if ((isset($_REQUEST['popup']) && $_REQUEST['popup']) &&
 	$popup = FALSE;
 	$framed = FALSE;
 }
-// fine tools/filemanager/index.php
+// end tools/filemanager/index.php
 
 // tools/filemanager/top.php
 //require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
@@ -55,53 +47,6 @@ if (!authenticate(AT_PRIV_FILES,AT_PRIV_RETURN)) {
 
 $current_path = AT_CONTENT_DIR.$_SESSION['course_id'].'/';
 
-//$pathext = $current_path;
-/*
-if (isset($_POST['rename'])) {
-	if (!is_array($_POST['check'])) {
-		// error: you must select a file/dir to rename
-		$msg->addError('NO_FILE_SELECT');
-	} else if (count($_POST['check']) != 1) {
-		// error: you must select one file/dir to rename
-		$msg->addError('NO_ITEM_SELECTED');
-	} else {
-		header('Location: rename.php?pathext='.urlencode($_POST['pathext']).SEP.'framed='.$framed.SEP.'popup='.$popup.SEP.'oldname='.urlencode($_POST['check'][0]));
-		exit;
-	}
-} else if (isset($_POST['edit'])) {
-	if (!isset($_POST['check'][0])) {
-		// error: you must select a file/dir 
-		$msg->addError('NO_FILE_SELECT');
-	} else if (count($_POST['check']) != 1) {
-		// error: you must select one file/dir to rename
-		$msg->addError('NO_ITEM_SELECTED');
-	} else {
-		$file = $_POST['check'][0];
-		header('Location: edit.php?pathext='.urlencode($_POST['pathext']).SEP.'framed='.$framed.SEP.'popup='.$popup.SEP.'file=' . $file);
-		exit;
-	}
-} else if (isset($_POST['delete'])) {
-	
-	if (!is_array($_POST['check'])) {
-		$msg->addError('NO_FILE_SELECT');
-	} else {
-
-		$list = implode(',', $_POST['check']);
-		header('Location: delete.php?pathext=' . urlencode($_POST['pathext']) . SEP . 'framed=' . $framed . SEP . 'popup=' . $popup . SEP . 'list=' . urlencode($list));
-		exit;
-	}
-} else if (isset($_POST['move'])) {
-
-	if (!is_array($_POST['check'])) {
-		$msg->addError('NO_FILE_SELECT');
-	} else {
-
-		$list = implode(',', $_POST['check']);		
-		header('Location: move.php?pathext='.urlencode($_POST['pathext']).SEP.'framed='.$framed.SEP.'popup='.$popup.SEP.'list='.urlencode($list));
-		exit;
-	}
-}
-*/
 $MakeDirOn = true;
 
 /* get this courses MaxQuota and MaxFileSize: */
@@ -225,7 +170,7 @@ if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
 }
 
-//fine header.inc.php
+//end header.inc.php
 
 
 // upload.php
@@ -235,14 +180,6 @@ if (isset($_POST['cancel'])) {
 $_SESSION['done'] = 1;
 $popup = $_REQUEST['popup'];
 $framed = $_REQUEST['framed'];
-/*$alter = $_GET['alter'];
-
-echo $alter;*/
-
-//echo $_REQUEST['cid'];
-//echo $_REQUEST['tab'];
-
-//echo $alter;
 
 /* get this courses MaxQuota and MaxFileSize: */
 $sql	= "SELECT max_quota, max_file_size FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
@@ -335,60 +272,30 @@ if (isset($_POST['upload'])) {
 										$_GET['popup'],
 										SEP);
 						$msg->addFeedback($f);
-		/*				if ($alter)
-							header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_REQUEST['cid'].SEP . 'pathext='.$_POST['pathext'].SEP. 'popup='.$_GET['popup'].SEP. 'tab='.$_REQUEST['tab']);
-						else
-							header('Location: index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup']);
-						exit;*/
+		
 					} /* else */
 
 					$msg->addFeedback('FILE_UPLOADED');
-
-	/*				if ($alter)
-							header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_REQUEST['cid'].SEP . 'pathext='.$_POST['pathext'].SEP. 'popup='.$_GET['popup'].SEP. 'tab='.$_REQUEST['tab']);
-						else
-							header('Location: index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup']);
-					exit;*/
 				}
 			} else {
 				$msg->addError(array('MAX_STORAGE_EXCEEDED', get_human_size($my_MaxCourseSize)));
-	/*			if ($alter)
-							header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_REQUEST['cid'].SEP . 'pathext='.$_POST['pathext'].SEP. 'popup='.$_GET['popup'].SEP. 'tab='.$_REQUEST['tab']);
-						else
-							header('Location: index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup']);
-						
-				exit;*/
 			}
 		} else {
 			$msg->addError(array('FILE_TOO_BIG', get_human_size($my_MaxFileSize)));
-		/*	if ($alter)
-							header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_REQUEST['cid'].SEP . 'pathext='.$_POST['pathext'].SEP. 'popup='.$_GET['popup'].SEP. 'tab='.$_REQUEST['tab']);
-						else
-							header('Location: index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup']);
-						
-			exit;*/
 		}
 	} else {
 		$msg->addError('FILE_NOT_SELECTED');
-	/*	if ($alter)
-							header('Location: '.$_base_href.'editor/edit_content.php?cid='.$_REQUEST['cid'].SEP . 'pathext='.$_POST['pathext'].SEP. 'popup='.$_GET['popup'].SEP. 'tab='.$_REQUEST['tab']);
-						else
-							header('Location: index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup']);
-		exit;*/
 	}
 }
 
-// fine upload.php
+// end upload.php
 
 
 
-
-
-
-
-// fine tools/filemanager/top.php		
+// end tools/filemanager/top.php		
 		
-		//require(AT_INCLUDE_PATH.'html/filemanager_display.inc.php');
+
+//require(AT_INCLUDE_PATH.'html/filemanager_display.inc.php');
 
 		
 function get_file_extension($file_name) {
@@ -509,10 +416,7 @@ if (TRUE || $framed != TRUE) {
 	echo '<table cellspacing="1" cellpadding="0" border="0" summary="" align="center">';
 	echo '<tr><td colspan="2">';
 	echo '<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?pathext='.urlencode($pathext).SEP. 'popup='.$popup.SEP. 'tab='.$current_tab.'">';
-	
-//	echo $current_tab;
-	
-//	echo 'UFFA';
+
 
 if( $MakeDirOn ) {
 		if ($depth < $MaxDirDepth) {
@@ -669,37 +573,21 @@ while (false !== ($file = readdir($dir)) ) {
 	if ($is_dir) {
 		
 		$dirs[$file1] .= '<tr><td>&nbsp;</td>';
-//		$dirs[$file1] .= '<tr>';
-//		$dirs[$file1] .= '<input type="radio" id="'.$file.'" value="'.$file.'" name="radio[]"/></td>';
 		$dirs[$file1] .= '<td>'.$fileicon.'</td>';
 		$dirs[$file1] .= '&nbsp;';
 		$dirs[$file1] .= '<td>'.$filename.'</td>';
-//		$dirs[$file1] .= '<td>&nbsp;</td></tr>';
 		$dirs[$file1] .= '</tr>';
-/*
-		$dirs[$file1] .= '<td  align="right">&nbsp;';
-		$dirs[$file1] .= AT_date(_AT('filemanager_date_format'), $filedata[10], AT_DATE_UNIX_TIMESTAMP);
-		$dirs[$file1] .= '&nbsp;</td>';
-
-		$dirs[$file1] .= '<td  align="right">';
-		$dirs[$file1] .= get_human_size($size).'</td>';
-*/		
+	
 	} else {
 		
 		$files[$file1] .= '<tr>';
 		$files[$file1] .= '<tr> <td  align="center">';
 		$files[$file1] .= '<input type="radio" id="'.$file.'" value="'.$file.'" name="radio_alt"/> </td>';
-	//	$files[$file1] .= '<td align="center"><label for="'.$file.'">'.$fileicon.'</label></td>';
 		$files[$file1] .= '<td align="center">'.$fileicon.'</td>';
 
 		$files[$file1] .= '<td ><label for="'.$file.'">&nbsp;';
 
-//		if ($framed) {
-			$files[$file1] .= '<a href="'.$get_file.$pathext.urlencode($filename).'">'.$file.'</a>';
-//		} else {
-//			$files[$file1] .= '<a href="'.$_base_href.'tools/filemanager/preview.php?file='.$pathext.$filename.SEP.'pathext='.urlencode($pathext).SEP.'popup='.$popup.'">'.$filename.'</a>';
-//			$files[$file1] .= '<a href="'.$get_file.$pathext.urlencode($filename).'">'.$filename.'</a>';
-//		}
+		$files[$file1] .= '<a href="'.$get_file.$pathext.urlencode($filename).'">'.$file.'</a>';
 
 		if ($ext == 'zip') {
 			$files[$file1] .= ' <a href="tools/filemanager/zip.php?pathext=' . urlencode($pathext) . SEP . 'file=' . urlencode($file) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed .'">';
@@ -713,18 +601,8 @@ while (false !== ($file = readdir($dir)) ) {
 			$files[$file1] .= '</a>';
 		}
 
-//		$files[$file1] .= '&nbsp;</td>';
-
-//		$files[$file1] .= '<td  align="right" style="white-space:nowrap">';
-
-	//	$files[$file1] .= '&nbsp;<input class="button" type="submit" name="add" value="Add"/>';
-		
-
-	//	$files[$file1] .= AT_date(_AT('filemanager_date_format'), $filedata[10], AT_DATE_UNIX_TIMESTAMP);
 		$files[$file1] .= '&nbsp;</label></td></tr>';
 		
-//		$files[$file1] .= '<td  align="right" style="white-space:nowrap">';
-//		$files[$file1] .= get_human_size($filedata[7]).'</td>';*/
 	}
 } // end while
 

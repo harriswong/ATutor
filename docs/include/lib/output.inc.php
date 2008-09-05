@@ -955,8 +955,8 @@ function print_paginator($current_page, $num_rows, $request_args, $rows_per_page
 /**
 * According to user's preferences, it provides appropriated resources in the content page.
 * @access	public
-* @param	args				$cid: content id, 
-* 								$content_page: the original content page ($content_row['text'], from content.php);
+* @param	$cid: 				content id.
+* @param	$content_page: 		the original content page ($content_row['text'], from content.php).
 * @return	string|array		$content: the content page with the appropriated resources.
 * @see		$db			        in include/vitals.inc.php
 * @author	Silvia Mirri
@@ -964,17 +964,51 @@ function print_paginator($current_page, $num_rows, $request_args, $rows_per_page
 function provide_alternatives($cid, $content_page){
 	global $db;
 	
-		//CHECK USER'S ALTERNATIVE CONTENT PREFERENCES
 		$content = $content_page;
 		if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==0)) {
+			//No user's preferences related to content format are declared
 			return $content;
 		}
 		else 
 			if ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==1){
-				echo 'per ora nulla';
+				$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." and resource=$content_page";
+				$result		 = mysql_query($sql_primary, $db);
+				if (mysql_num_rows($result) > 0) {
+					while ($row = mysql_fetch_assoc($result)) {
+				        $sql_type 	 = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id=$row[primary_resource_id]";	
+				        $result_type = mysql_query($sql_type, $db);
+						if (mysql_num_rows($result_type) > 0) {
+				       		while ($row_type = mysql_fetch_assoc($result_type)){
+				       			if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TEXT']==1) && ($row_type[type_id]==3)){
+						   			$sql_text	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_TEXT_PREFER_LANG']."'";	
+				    			    $result_text = mysql_query($sql_text, $db);
+				    			 	if (mysql_num_rows($result_text) > 0) {
+				    			 		while ($row_text = mysql_fetch_assoc($result_text)){
+				       						$sql_text_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_text[secondary_resource_id]";	
+				        					$result_text_alt = mysql_query($sql_text_alt, $db);
+				        					if (mysql_num_rows($result_text_alt) > 0) {
+				        						while ($row_text_alt = mysql_fetch_assoc($result_text_alt)){
+													if ((($_SESSION['prefs']['PREF_ALT_TO_TEXT']==visual) && ($row_text_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==audio) && ($row_audio_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==sign_lang) && ($row_text_alt[type_id]==2))) {
+						       							if (($_SESSION['prefs']['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE']=='replace')){
+						       								$content = $row_text_alt['secondary_resource'];
+						       							}
+						       							else 
+						       								$content = $content.'<br/>'.$row_text_alt['secondary_resource'];
+						       						}
+						       					}	
+						       				}
+						       			}
+						       		}
+						       	}
+						   }
+						}
+					}
+
+				}
+						       						
 			}
 			else {
-				$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." order by primary_resource_id";
+				$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." ORDER BY primary_resource_id";
 				$result		 = mysql_query($sql_primary, $db);
 	      		if (mysql_num_rows($result) > 0) {
 					while ($row = mysql_fetch_assoc($result)) {
@@ -982,103 +1016,87 @@ function provide_alternatives($cid, $content_page){
 				        $result_type = mysql_query($sql_type, $db);
 				        if (mysql_num_rows($result_type) > 0) {
 				       		while ($row_type = mysql_fetch_assoc($result_type)){
-				       			//echo $row_type[primary_resource_id];
-					       		//echo $row_type[type_id];
-								if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==1) && ($row_type[type_id]==1)){
-						   			//echo ' va cambiato audio ';
-						   			//controllo presenza alternativa richiesta all'audio
-									$sql_audio	   = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_VISUAL_PREFER_LANG']."'";	
+				       			if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==1) && ($row_type[type_id]==1)){
+						   			$sql_audio	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_AUDIO_PREFER_LANG']."'";	
 				    			    $result_audio = mysql_query($sql_audio, $db);
 				    			 	if (mysql_num_rows($result_audio) > 0) {
-				    			 		//echo 'ho alt';
-				       					while ($row_audio = mysql_fetch_assoc($result_audio)){
-				       						$sql_audio_alt 	 = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_audio[secondary_resource_id]";	
-				        					$result_audio_alt	 = mysql_query($sql_audio_alt, $db);
-				        					//echo $sql_visual_alt;
+				    			 		while ($row_audio = mysql_fetch_assoc($result_audio)){
+				       						$sql_audio_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_audio[secondary_resource_id]";	
+				        					$result_audio_alt = mysql_query($sql_audio_alt, $db);
 				        					if (mysql_num_rows($result_audio_alt) > 0) {
-				        						//echo 'controllo tipi di alt';
-				       							while ($row_audio_alt = mysql_fetch_assoc($result_audio_alt)){
-						       						if ((($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==visual) && ($row_audio_alt[type_id]==4))) {
-						       							// questo va riguardato per via di visual e img. Va semplificato anche la parte per text e sign language
-						       							//echo 'voglio img al posto di audio';
-						       							if (($_SESSION['prefs']['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE']=='replace') || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==text) && ($row_audio_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==sign_lang) && ($row_audio_alt[type_id]==2))){
-						       						
+				        						while ($row_audio_alt = mysql_fetch_assoc($result_audio_alt)){
+						       						if ((($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==visual) && ($row_audio_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==text) && ($row_audio_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==sign_lang) && ($row_audio_alt[type_id]==2))) {
+						       							if (($_SESSION['prefs']['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE']=='replace')){
 						       								$before  = split($row['resource'], $content);
-						       								$shift   = strripos($before[0], '<a');
+						       								$shift   = strripos($before[0], '<');
 						       								$len     = strlen($before[0]);
 						       								$shift   = $len-$shift;
 						       								$first   = substr($before[0], 0, -$shift);
 						       								$new 	 = '<a href="';
 						       								$content = $first.$new.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'];
-						       								$shift 	 = strpos($before[1], '</a>');
+						       								$shift 	 = strpos($before[1], '</');
 						       							    $after 	 = substr($before[1], $shift);
 						       							    $content = $content.$after;
 						       							}
 						       							else {
 						       								$before    = split($row['resource'], $content);
 						       								$content   = $before[0].$row['resource'];
-						       								$shift 	   = strpos($before[1], '</a>');
+						       								$shift 	   = strpos($before[1], '</');
 						       								$alt_shift = $len-$shift;
-						       								$res       =     substr($before[1], 0, -$alt_shift);
+						       								$res       = substr($before[1], 0, -$alt_shift);
 						       							    $after 	   = substr($before[1], $shift);
 						       							    $content   = $content.$res.'<p><a href="'.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'].'</a></p>'.$after;
 						       							}
 						       						}
 				       							}
 				       						}
-				       						//else echo 'prob: ho alternativa, ma non è stato dichiarato il tipo';
 				       					}
 				       				}
-				       				//else 
-				       					//echo 'no alt con la lingua richiesta';
 								}
 								if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==1) && ($row_type[type_id]==4)){
-						   			//echo ' va cambiato VISUAL ';
-						   			//controllo presenza alternativa richiesta a video
 						   			$sql_visual	   = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_VISUAL_PREFER_LANG']."'";	
 				    			    $result_visual = mysql_query($sql_visual, $db);
-				    			    //echo $sql_visual;
 						   			if (mysql_num_rows($result_visual) > 0) {
 				       					while ($row_visual = mysql_fetch_assoc($result_visual)){
 				       						$sql_visual_alt 	 = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_visual[secondary_resource_id]";	
 				        					$result_visual_alt	 = mysql_query($sql_visual_alt, $db);
-				        					//echo $sql_visual_alt;
 				        					if (mysql_num_rows($result_visual_alt) > 0) {
 				       							while ($row_visual_alt = mysql_fetch_assoc($result_visual_alt)){
 						       						if ((($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==audio) && ($row_visual_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==text) && ($row_visual_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==sign_lang) && ($row_visual_alt[type_id]==2))){
 						       							if ($_SESSION['prefs']['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE']=='replace'){
-						       								$before = split($row['resource'], $content);
-						       								$first=substr($before[0],0,-10);
-						       								$new = '<p><a href="';
-						       								$content = $first.$new.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a></p>';
-						       								$after = split('/>', $before[1]);
-						       								$content = $content.$after[1];
+						       								$before  = split($row['resource'], $content);
+						       								$shift   = strripos($before[0], '<');
+						       								$len     = strlen($before[0]);
+						       								$shift   = $len-$shift;
+						       								$first   = substr($before[0], 0, -$shift);
+						       								$new 	 = '<a href="';
+						       								$content = $first.$new.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a>';
+						       								$shift 	 = strpos($before[1], '</');
+						       							    $after 	 = substr($before[1], $shift);
+						       							    $content = $content.$after;
 						       							}
 						       							else {
-						       								$before = split($row['resource'], $content);
-						       								$content = $before[0].$row['resource'];
-						       								$after = split('/>', $before[1]);
-						       								$content = $content.$after[0].'/>';
-						       								$content = $content.'<p><a href="'.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a></p>'.$after[1];
+						       								$before    = split($row['resource'], $content);
+						       								$content   = $before[0].$row['resource'];
+						       								$shift 	   = strpos($before[1], '</');
+						       								$alt_shift = $len-$shift;
+						       								$res       = substr($before[1], 0, -$alt_shift);
+						       							    $after 	   = substr($before[1], $shift);
+						       							    $content   = $content.$res.'<p><a href="'.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a></p>'.$after;
 						       							}
 						       						}
 				       							}
 				       						}
-				       						//else echo 'prob: ho alternativa, ma non è stato dichiarato il tipo';
 				       					}
 				       				}
-				       				//else 
-				       					//echo 'no alt con la lingua richiesta';
 								}
 							}
 						}
-						//else 
-							//echo ' no alt ';
-							//$content = $content_page;
 					}
 					return $content;
 				}
 				else {
+					//No alternatives are declared by content authors
 					$content=$content_page;
 					return $content;
 				}

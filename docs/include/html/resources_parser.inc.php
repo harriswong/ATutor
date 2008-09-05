@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-// $Id: alternatives.inc.php 7208 2008-07-04 16:07:24Z silvia $
+// $Id: resources_parser_inc.inc.php 7208 2008-07-04 16:07:24Z silvia $
 
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $db;
@@ -36,9 +36,7 @@ img		=> src
 a		=> href				// ignore if href doesn't exist (ie. <a name>)
 object	=> data | classid	// probably only want data
 applet	=> classid | archive			// whatever these two are should double check to see if it's a valid file (not a dir)
-link	=> href
 script	=> src
-form	=> action
 input	=> src
 iframe	=> src
 */
@@ -55,13 +53,10 @@ class MyHandler {
 							'a'			=> 'href',				
 							'object'	=> array('data', 'classid'),
 							'applet'	=> array('classid', 'archive'),
-						//	'link'		=> 'href',
 							'script'	=> 'src',
-						//	'form'		=> 'action',
 							'input'		=> 'src',
 							'iframe'	=> 'src',
 							'embed'		=> 'src'
-						//	'param'		=> 'value'
 							);
 
 		/* check if this attribute specifies the files in different ways: (ie. java) */

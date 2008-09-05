@@ -16,24 +16,15 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 require(AT_INCLUDE_PATH.'lib/alternatives_functions.inc.php');
 
 global $db;
-//global $alter;
-
-//echo $_POST['current_tab'];
 
 ?>
 
 <div class="row_alternatives" id="radio_alt">
 	<input type="radio" name="alternatives" value="1" id="single_resources" checked="checked" onClick="openIt(1)" <?php if (($_POST['alternatives'] == 1) || ($_GET['alternatives'] == 1)) { echo 'checked="checked"';} ?> />
-	<label for="single_resources">Define alternatives to non-textual resources.</label>
+	<label for="single_resources"><?php echo _AT('define_alternatives_to_non_textual_resources');  ?>.</label>
 	<br/>
 	<input type="radio" name="alternatives" value="2" id="whole_page" onClick="openIt(2)" <?php if (($_POST['alternatives'] == 2) || ($_GET['alternatives'] == 2)) { echo 'checked="checked"'; } ?> />
-	<label for="whole_page">Define alternatives to textual resources.</label>
-
-	<?php
-	//	if (!isset($_POST['alternatives']))		<input type="hidden" id="pippo" name="alternatives" value="0" />
-	
-	//			echo $alternatives;	
-	?>
+	<label for="whole_page"><?php echo _AT('define_alternatives_to_textual_resources');  ?></label>
 </div>
 
 <div class="row_alternatives" id="1" style="display:'none';">
@@ -44,8 +35,11 @@ global $db;
 
 		$n=count($resources);
 				
-		if ($n==0)
-			echo '<p>No non-textual resources!</p>';
+		if ($n==0){
+			echo '<p>';
+			echo _AT('No_non_textual_resources');
+			echo '!</p>';
+			}
 		else {
 			$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." order by primary_resource_id";
 	      	$result	= mysql_query($sql, $db);
@@ -98,7 +92,7 @@ global $db;
 								<?php checkbox_types($row[primary_resource_id], 'primary', 'non_textual');
 								
 							$languages = $languageManager->getAvailableLanguages();
-							echo '<label for="lang_'.$row[primary_resource_id].'">Resource language</label><br />';
+							echo '<label for="lang_'.$row[primary_resource_id].'">'._AT('resource_language').'</label><br />';
 							echo '<select name="lang_'.$row[primary_resource_id].'" id="lang_'.$row[primary_resource_id].'">';
 							foreach ($languages as $codes)
 							{
@@ -118,7 +112,7 @@ global $db;
 	      					$result_alt	= mysql_query($sql_alt, $db);
 		      				if (mysql_num_rows($result_alt) > 0) {
 		      					?>
-									<h2 class="alternatives_to">Alternatives to <?php echo $row['resource'];?></h2>
+									<h2 class="alternatives_to"><?php echo _AT('alternatives_to').' '.$row['resource'];?></h2>
 									<?php
 								while ($alternative = mysql_fetch_assoc($result_alt)){
 									?>
@@ -127,7 +121,7 @@ global $db;
 		      							<?php 
 		      							checkbox_types($alternative['secondary_resource_id'], 'secondary', 'non_textual');
 			      						$languages = $languageManager->getAvailableLanguages();
-										echo '<label for="lang_'.$alternative['secondary_resource_id'].'">Resource language</label><br />';
+										echo '<label for="lang_'.$alternative['secondary_resource_id'].'">'._AT('resource_language').'</label><br />';
 										echo '<select name="lang_'.$alternative['secondary_resource_id'].'" id="lang_'.$alternative['secondary_resource_id'].'">';
 										foreach ($languages as $codes){
 											$language = current($codes);
@@ -178,13 +172,9 @@ global $db;
 	</div>
 	
 	
-	
-	
-	
 	<div class="row_alternatives" id="2" style="display: none;">
 		<div class="row">
 			<?php
-				//se non è salvato. Se è salvato?! Come faccio?
 				
 				if ($changes_made)
 					$body_ins = $_POST['body_text'];
@@ -196,13 +186,10 @@ global $db;
 						$body_ins = addslashes($row['text']);
 					}
 				}
-				//echo $body_ins;
 				
 				$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='".$body_ins."'";
 	      		$result	= mysql_query($sql, $db);
 	      			    
-	      		//echo $body_ins;
-	      		  		
 	      		if (mysql_num_rows($result) > 0) {
 	      			while ($row = mysql_fetch_assoc($result)) {
 	      				$whole_resource = $stripslashes(htmlspecialchars($row['resource']));
@@ -224,12 +211,30 @@ global $db;
 						}
 	     			}
 	    		checkbox_types($content_id, 'primary', 'textual');
-			?>
+	    		
+	    		$languages = $languageManager->getAvailableLanguages();
+				echo '<label for="lang_'.$content_id.'">'._AT('resource_language').'</label><br />';
+				echo '<select name="lang_'.$content_id.'" id="lang_'.$content_id.'">';
+				foreach ($languages as $codes)
+						{
+							$language = current($codes);
+							$lang_code = $language->getCode();
+							$lang_native_name = $language->getNativeName();
+							$lang_english_name = $language->getEnglishName()
+							?>
+								<option value="<?php echo $lang_code ?>"
+								<?php if($lang_code == $row[language_code]) echo 'selected'?>><?php echo $lang_english_name . ' - '. $lang_native_name ?></option>
+							<?php
+						}
+						?>
+					</select>
 		</div>
 				
 	
 		<div class="row">
 			<?php echo _AT('formatting'); ?><br />
+			
+			
 
 			<input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] == 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton.disabled=true;" />
 			<label for="text"><?php echo _AT('plain_text'); ?></label>
@@ -278,6 +283,39 @@ if ($do_check) {
 		&middot;<?php echo _AT('edit_after_upload'); ?></small>
 	</div>
 	
+	<div class="row">
+	<?php  
+		$sql_alt	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=".$content_id." order by secondary_resource_id";
+	    $result_alt	= mysql_query($sql_alt, $db);
+		if (mysql_num_rows($result_alt) > 0) {
+			echo '<p class="alternatives_to">'. _AT('alternatives').'</p>';
+			while ($alternative = mysql_fetch_assoc($result_alt)){
+				$savant->assign('body', format_content($alternative['secondary_resource'], $content_row['formatting'], $glossary));
+			    checkbox_types($alternative['secondary_resource_id'], 'secondary', 'non_textual');
+			     						$languages = $languageManager->getAvailableLanguages();
+										echo '<label for="lang_'.$alternative['secondary_resource_id'].'">Resource language</label><br />';
+										echo '<select name="lang_'.$alternative['secondary_resource_id'].'" id="lang_'.$alternative['secondary_resource_id'].'">';
+										foreach ($languages as $codes){
+											$language = current($codes);
+											$lang_code = $language->getCode();
+											$lang_native_name = $language->getNativeName();
+											$lang_english_name = $language->getEnglishName();
+											echo '<option value="'.$lang_code.'"';
+											if ($lang_code == $alternative['language_code']) 
+												echo 'selected';
+											echo '>';
+											echo $lang_english_name . ' - '. $lang_native_name; 
+											echo '</option>';
+											}
+										?>
+										</select>
+										<p><?php delete_alternative($alternative, $cid, $current_tab); ?></p>
+									</div>
+									<?php
+									}
+								}
+							?>
+	</div>
 </div>	
 
 	<script type="text/javascript" language="javascript">
@@ -353,7 +391,7 @@ function openIt(x){
     else {
 		document.getElementById('1').style.display = "none";
   		document.getElementById('2').style.display = "block";
-  	
+  		
   	}
 }
 //-->

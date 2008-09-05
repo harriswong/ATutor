@@ -124,58 +124,88 @@ if ($current_tab == 4) {
 	$content_base_href = '';
 }
 
-
+//Added by Silvia
 if ($current_tab == 5){
-	//echo $_POST[0];
-	//echo $_POST['alternatives'];
 	if ($_POST['alternatives']==1){
-	if (isset($_POST['add'])){
-		if (isset($_POST['resources'])){
-			if (isset($_POST['radio_alt'])){
+		if (isset($_POST['add'])){
+			if (isset($_POST['resources'])){
+				if (isset($_POST['radio_alt'])){
 				
-				$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='$_POST[resources]'";
-	    		$result = mysql_query($sql, $db);
-	    		//echo $sql;
-	    		//echo ';;';
+					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='$_POST[resources]'";
+		    		$result = mysql_query($sql, $db);
 	    		
-	    		if (mysql_num_rows($result) > 0) {
-	     	 		while ($row = mysql_fetch_assoc($result)) {
-	     	 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
-	     	 			$contr 	 	= mysql_query($sql_contr, $db);
-	     	 	//		echo $sql_contr;
-	     	 			if (mysql_num_rows($contr) > 0) {
-	     	 				$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
-	     	 			}
-	     	 			else {
-	     	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
-							$ins     = mysql_query($sql_ins, $db);
-							//		echo $sql_ins;
-							$msg->addFeedback('ALTERNATIVE_ADDED');
+		    		if (mysql_num_rows($result) > 0) {
+	    	 	 		while ($row = mysql_fetch_assoc($result)) {
+	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
+	     	 				$contr 	 	= mysql_query($sql_contr, $db);
+	     	 				if (mysql_num_rows($contr) > 0) {
+	     	 					$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
+		     	 			}
+		     	 			else {
+	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
+								$ins     = mysql_query($sql_ins, $db);
+								$msg->addFeedback('ALTERNATIVE_ADDED');
+							}
 						}
 					}
-				}
-	    	}
+	    		}
+				else 
+					$msg->addError('ALTERNATIVE_NOT_DEFINED');
+			}
 			else 
-				$msg->addError('ALTERNATIVE_NOT_DEFINED');
+				$msg->addError('RESOURCE_NOT_DEFINED');
+			}
 		}
-		else 
-			$msg->addError('RESOURCE_NOT_DEFINED');
+		else {
+			if (isset($_POST['resources'])){
+				//if (isset($_POST['radio_alt'])){
+					if ($changes_made)
+						$body_ins = $_POST['body_text'];
+					else {
+						$sql = "SELECT * FROM AT_content WHERE content_id='$cid'";
+						$result = mysql_query($sql, $db);
+						 //echo $sql;
+						while ($row = mysql_fetch_assoc($result)) {
+							$body_ins = addslashes($row['text']);
+						}
+					}
+					
+					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource=$body_ins";
+		    		$result = mysql_query($sql, $db);
+	    		
+		    		if (mysql_num_rows($result) > 0) {
+	    	 	 		while ($row = mysql_fetch_assoc($result)) {
+	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
+	     	 				$contr 	 	= mysql_query($sql_contr, $db);
+	     	 				if (mysql_num_rows($contr) > 0) {
+	     	 					$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
+		     	 			}
+		     	 			else {
+	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
+								$ins     = mysql_query($sql_ins, $db);
+								$msg->addFeedback('ALTERNATIVE_ADDED');
+							}
+						}
+					}
+	    		//}
+		//		else 
+		//			$msg->addError('ALTERNATIVE_NOT_DEFINED');
+			}
+		//	else 
+		//		$msg->addError('RESOURCE_NOT_DEFINED');
 		}
-	}
+		
+		
 	if ($_REQUEST[act]=='delete')	{
-		//echo 'cancella';
-		//echo $_REQUEST[id_alt];
 		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources WHERE secondary_resource_id='$_REQUEST[id_alt]'";
 		$result = mysql_query($sql,$db);
 		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id='$_REQUEST[id_alt]'";
 		$result = mysql_query($sql,$db);
 		
 		$msg->addFeedback('ALTERNATIVE_DELETED');
-		
 	}
-
-		//	continue;
 }
+//End Added by Silvia
 
 
 if ($current_tab == 0) {

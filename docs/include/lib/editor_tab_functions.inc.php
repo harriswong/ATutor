@@ -33,9 +33,9 @@ function get_tabs() {
 	$tabs[2] = array('glossary_terms',		'glossary.inc.php',      'g');
 	$tabs[3] = array('preview',       		'preview.inc.php',       'r');
 	$tabs[4] = array('accessibility', 		'accessibility.inc.php', 'a');	
+	//Silvia: Added to declare alternative resources
 	$tabs[5] = array('alternative_content', 'alternatives.inc.php',  'l');	
-	//Silvia: 'l' could be already used as an accesskey: I have to CHECK IT!
-
+	
 	return $tabs;
 }
 
@@ -101,7 +101,7 @@ function save_changes($redir) {
 
 		$_POST['title']     = $addslashes($_POST['title']);
 		$_POST['body_text'] = $addslashes($_POST['body_text']);
-		$_POST['head']  = $addslashes($_POST['head']);
+		$_POST['head']  	= $addslashes($_POST['head']);
 		$_POST['keywords']  = $addslashes($_POST['keywords']);
 		$_POST['keywords']  = $addslashes($_POST['keywords']);
 
@@ -165,26 +165,23 @@ function save_changes($redir) {
 		$current_tab = intval($_POST['current_tab']);
 	}
 
+	//Added by Silvia 
 	if ($current_tab=='5') {
 		if($_POST['alternatives']==1){
-	//		echo $_POST['submit'];
 			$sql	= "SELECT primary_resource_id FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid'";
 	    	$result = mysql_query($sql, $db);
 
 	    	if (mysql_num_rows($result) > 0) {
 	   	 		while ($row = mysql_fetch_assoc($result)) {
-	   	 		//	echo 'dentro while primary resource   ';
-					$sql_type	= "SELECT * FROM ".TABLE_PREFIX."resource_types";
+	   	 			$sql_type	 = "SELECT * FROM ".TABLE_PREFIX."resource_types";
 	    			$result_type = mysql_query($sql_type, $db);
 	    			
      	 			if (mysql_num_rows($result_type) > 0) {
 	   	 				while ($type = mysql_fetch_assoc($result_type)) {
-	   	 				//	echo 'dentro while types     ';
 	   	 					$sql_contr  = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id='$row[primary_resource_id]' and type_id='$type[type_id]'";
-	   	 					$contr	= mysql_query($sql_contr, $db);	   
+	   	 					$contr		= mysql_query($sql_contr, $db);	   
 	   	 					if (mysql_num_rows($contr) > 0) {
 	   	 						while ($control = mysql_fetch_assoc($contr)) {
-	   	 						//	echo 'dentro while controllo     ';
 	   	 							if (isset($_POST['checkbox_'.$type[type].'_'.$row[primary_resource_id].'']))
 	   	 								continue;
 	   	 							else {
@@ -195,15 +192,12 @@ function save_changes($redir) {
 	   	 					}
 	   	 					else 
 	   	 						if (isset($_POST['checkbox_'.$type[type].'_'.$row[primary_resource_id].''])){
-								//	echo 'e qui faccio inserimento    ';
-		   	 						$sql_ins	= "INSERT INTO ".TABLE_PREFIX."primary_resources_types VALUES ($row[primary_resource_id], $type[type_id])";
+									$sql_ins	= "INSERT INTO ".TABLE_PREFIX."primary_resources_types VALUES ($row[primary_resource_id], $type[type_id])";
 									$ins 		= mysql_query($sql_ins, $db);
-								//	echo $sql_ins;
-	   	 						}	
+								}	
 	   	 						
 	   	 					$sql_alt	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]'";
 	    					$result_alt = mysql_query($sql_alt, $db);
-     	 					//echo $sql_alt;
 	    					
 							if (mysql_num_rows($result_alt) > 0) {
      	 						while ($alt = mysql_fetch_assoc($result_alt)) {
@@ -235,12 +229,11 @@ function save_changes($redir) {
 						$lang=$_POST['lang_'.$row[primary_resource_id].''];
 						$sql_up	= "UPDATE ".TABLE_PREFIX."primary_resources SET language_code='$lang' WHERE primary_resource_id=$row[primary_resource_id]";
 						$up 	= mysql_query($sql_up, $db);
-	   	 			
 	   	 			}
-	   	 		
 			}
 		}
 	}
+	//End Added by Silvia 
 	
 
 	if (!$msg->containsErrors() && $redir) {
