@@ -16,17 +16,18 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 define('AT_INCLUDE_PATH', '../../include/');
 //require(AT_INCLUDE_PATH.'vitals.inc.php');
-require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
+//require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
 global $db;
 
 
-// from tools/filemanager/index.php
+//from tools/filemanager/index.php
 if ((isset($_REQUEST['popup']) && $_REQUEST['popup']) && 
 	(!isset($_REQUEST['framed']) || !$_REQUEST['framed'])) {
 	$popup = TRUE;
 	$framed = FALSE;
-} else if (isset($_REQUEST['framed']) && $_REQUEST['framed'] && isset($_REQUEST['popup']) && $_REQUEST['popup']) {
+} else if (isset($_REQUEST['framed']) && $_REQUEST['framed'] &&
+	 isset($_REQUEST['popup']) && $_REQUEST['popup']) {
 	$popup = TRUE;
 	$framed = TRUE;
 } else {
@@ -35,265 +36,6 @@ if ((isset($_REQUEST['popup']) && $_REQUEST['popup']) &&
 }
 // end tools/filemanager/index.php
 
-// tools/filemanager/top.php
-//require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
-
-if (!$_GET['f']) {
-	$_SESSION['done'] = 0;
-}
-if (!authenticate(AT_PRIV_FILES,AT_PRIV_RETURN)) {
-	authenticate(AT_PRIV_CONTENT);
-}
-
-$current_path = AT_CONTENT_DIR.$_SESSION['course_id'].'/';
-
-$MakeDirOn = true;
-
-/* get this courses MaxQuota and MaxFileSize: */
-$sql	= "SELECT max_quota, max_file_size FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
-$result = mysql_query($sql, $db);
-$row	= mysql_fetch_array($result);
-$my_MaxCourseSize	= $row['max_quota'];
-$my_MaxFileSize		= $row['max_file_size'];
-
-if ($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) {
-	$my_MaxCourseSize = $MaxCourseSize;
-}
-if ($my_MaxFileSize == AT_FILESIZE_DEFAULT) {
-	$my_MaxFileSize = $MaxFileSize;
-} else if ($my_MaxFileSize == AT_FILESIZE_SYSTEM_MAX) {
-	$my_MaxFileSize = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
-}
-
-$MaxSubDirs  = 5;
-$MaxDirDepth = 10;
-
-if ($_GET['pathext'] != '') {
-	$pathext = urldecode($_GET['pathext']);
-} else if ($_POST['pathext'] != '') {
-	$pathext = $_POST['pathext'];
-}
-
-if (strpos($pathext, '..') !== false) {
-	require(AT_INCLUDE_PATH.'header.inc.php');
-	$msg->printErrors('UNKNOWN');	
-	require(AT_INCLUDE_PATH.'footer.inc.php');
-	exit;
-}
-if($_GET['back'] == 1) {
-	$pathext  = substr($pathext, 0, -1);
-	$slashpos = strrpos($pathext, '/');
-	if($slashpos == 0) {
-		$pathext = '';
-	} else {
-		$pathext = substr($pathext, 0, ($slashpos+1));
-	}
-
-}
-
-$start_at = 2;
-/* remove the forward or backwards slash from the path */
-$newpath = $current_path;
-$depth = substr_count($pathext, '/');
-
-if ($pathext != '') {
-	$bits = explode('/', $pathext);
-	foreach ($bits as $bit) {
-		if ($bit != '') {
-			$bit_path .= $bit;
-
-			$_section[$start_at][0] = $bit;
-			$_section[$start_at][1] = '../tools/filemanager/index.php?pathext=' . urlencode($bit_path) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed;
-
-			$start_at++;
-		}
-	}
-	$bit_path = "";
-	$bit = "";
-}
-
-/* if upload successful, close the window */
-if ($f) {
-	$onload = 'closeWindow(\'progWin\');';
-}
-
-/* make new directory */
-if (isset($_POST['mkdir'])) {
-if ($_POST['mkdir_value'] && ($depth < $MaxDirDepth) ) {
-	$_POST['dirname'] = trim($_POST['dirname']);
-
-	/* anything else should be okay, since we're on *nix..hopefully */
-	$_POST['dirname'] = ereg_replace('[^a-zA-Z0-9._]', '', $_POST['dirname']);
-
-	if ($_POST['dirname'] == '') {
-		$msg->addError(array('FOLDER_NOT_CREATED', $_POST['dirname'] ));
-	} 
-	else if (strpos($_POST['dirname'], '..') !== false) {
-		$msg->addError('BAD_FOLDER_NAME');
-	}	
-	else {
-		$result = @mkdir($current_path.$pathext.$_POST['dirname'], 0700);
-		if($result == 0) {
-			$msg->addError(array('FOLDER_NOT_CREATED', $_POST['dirname'] ));
-		}
-		else {
-			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
-		}
-	}
-}
-}
-$newpath = substr($current_path.$pathext, 0, -1);
-
-
-/* open the directory */
-if (!($dir = @opendir($newpath))) {
-	if (isset($_GET['create']) && ($newpath.'/' == $current_path)) {
-		@mkdir($newpath);
-		if (!($dir = @opendir($newpath))) {
-			require(AT_INCLUDE_PATH.'header.inc.php');
-			$msg->printErrors('CANNOT_CREATE_DIR');			
-			require(AT_INCLUDE_PATH.'footer.inc.php');
-			exit;
-		} else {
-			$msg->addFeedback('CONTENT_DIR_CREATED');
-		}
-	} else {
-		require(AT_INCLUDE_PATH.'header.inc.php');
-
-		$msg->printErrors('CANNOT_OPEN_DIR');
-		require(AT_INCLUDE_PATH.'footer.inc.php');
-		exit;
-	}
-}
-
-if (isset($_POST['cancel'])) {
-	$msg->addFeedback('CANCELLED');
-}
-
-//end header.inc.php
-
-
-// upload.php
-
-
-
-$_SESSION['done'] = 1;
-$popup = $_REQUEST['popup'];
-$framed = $_REQUEST['framed'];
-
-/* get this courses MaxQuota and MaxFileSize: */
-$sql	= "SELECT max_quota, max_file_size FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
-$result = mysql_query($sql, $db);
-$row	= mysql_fetch_array($result);
-$my_MaxCourseSize	= $row['max_quota'];
-$my_MaxFileSize	= $row['max_file_size'];
-
-	if ($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) {
-		$my_MaxCourseSize = $MaxCourseSize;
-	}
-	if ($my_MaxFileSize == AT_FILESIZE_DEFAULT) {
-		$my_MaxFileSize = $MaxFileSize;
-	} else if ($my_MaxFileSize == AT_FILESIZE_SYSTEM_MAX) {
-		$my_MaxFileSize = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
-	}
-
-$path = AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$_POST['pathext'];
-
-if (isset($_POST['upload'])) {
-
-	if($_FILES['uploadedfile']['name'])	{
-
-		$_FILES['uploadedfile']['name'] = trim($_FILES['uploadedfile']['name']);
-		$_FILES['uploadedfile']['name'] = str_replace(' ', '_', $_FILES['uploadedfile']['name']);
-
-		$path_parts = pathinfo($_FILES['uploadedfile']['name']);
-		$ext = $path_parts['extension'];
-
-		/* check if this file extension is allowed: */
-		/* $IllegalExtentions is defined in ./include/config.inc.php */
-		if (in_array($ext, $IllegalExtentions)) {
-			$errors = array('FILE_ILLEGAL', $ext);
-			$msg->addError($errors);
-			header('Location: index.php?pathext='.$_POST['pathext']);
-			exit;
-		}
-
-		/* also have to handle the 'application/x-zip-compressed'  case	*/
-		if (   ($_FILES['uploadedfile']['type'] == 'application/x-zip-compressed')
-			|| ($_FILES['uploadedfile']['type'] == 'application/zip')
-			|| ($_FILES['uploadedfile']['type'] == 'application/x-zip')){
-			$is_zip = true;						
-		}
-
-	
-		/* anything else should be okay, since we're on *nix.. hopefully */
-		$_FILES['uploadedfile']['name'] = str_replace(array(' ', '/', '\\', ':', '*', '?', '"', '<', '>', '|', '\''), '', $_FILES['uploadedfile']['name']);
-
-
-		/* if the file size is within allowed limits */
-		if( ($_FILES['uploadedfile']['size'] > 0) && ($_FILES['uploadedfile']['size'] <= $my_MaxFileSize) ) {
-
-			/* if adding the file will not exceed the maximum allowed total */
-			$course_total = dirsize($path);
-
-			if ((($course_total + $_FILES['uploadedfile']['size']) <= ($my_MaxCourseSize + $MaxCourseFloat)) || ($my_MaxCourseSize == AT_COURSESIZE_UNLIMITED)) {
-
-				/* check if this file exists first */
-				if (file_exists($path.$_FILES['uploadedfile']['name'])) {
-					/* this file already exists, so we want to prompt for override */
-
-					/* save it somewhere else, temporarily first			*/
-					/* file_name.time ? */
-					$_FILES['uploadedfile']['name'] = substr(time(), -4).'.'.$_FILES['uploadedfile']['name'];
-
-					$f = array('FILE_EXISTS',
-									substr($_FILES['uploadedfile']['name'], 5), 
-									$_FILES['uploadedfile']['name'],
-									$_POST['pathext'],
-									$_GET['popup'],
-									SEP);
-					$msg->addFeedback($f);
-				}
-
-				/* copy the file in the directory */
-				$result = move_uploaded_file( $_FILES['uploadedfile']['tmp_name'], $path.$_FILES['uploadedfile']['name'] );
-
-				if (!$result) {
-					require(AT_INCLUDE_PATH.'header.inc.php');
-					$msg->printErrors('FILE_NOT_SAVED');
-					echo '<a href="tools/filemanager/index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup'] . '">' . _AT('back') . '</a>';
-					require(AT_INCLUDE_PATH.'footer.inc.php');
-					exit;
-				} else {
-					if ($is_zip) {
-						$f = array('FILE_UPLOADED_ZIP',
-										urlencode($_POST['pathext']), 
-										urlencode($_FILES['uploadedfile']['name']), 
-										$_GET['popup'],
-										SEP);
-						$msg->addFeedback($f);
-		
-					} /* else */
-
-					$msg->addFeedback('FILE_UPLOADED');
-				}
-			} else {
-				$msg->addError(array('MAX_STORAGE_EXCEEDED', get_human_size($my_MaxCourseSize)));
-			}
-		} else {
-			$msg->addError(array('FILE_TOO_BIG', get_human_size($my_MaxFileSize)));
-		}
-	} else {
-		$msg->addError('FILE_NOT_SELECTED');
-	}
-}
-
-// end upload.php
-
-
-
-// end tools/filemanager/top.php		
-		
 
 //require(AT_INCLUDE_PATH.'html/filemanager_display.inc.php');
 
@@ -412,10 +154,17 @@ if (TRUE || $framed != TRUE) {
 	
 	// filemanager listing table
 	// make new directory 
+//	echo '<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?pathext='.urlencode($pathext).SEP. 'popup='.$popup.SEP. 'tab='.$current_tab.'" enctype="multipart/form-data">';
+
+//	echo '<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?cid='.$cid.'" enctype="multipart/form-data">';
+
+	
+//	echo 'ecco';
+//	echo '<input type="hidden" name="body_text" value="'.htmlspecialchars($stripslashes($_POST['body_text'])).'" />';
+	
 	echo '<fieldset><legend class="group_form">'._AT('add').'</legend>';
 	echo '<table cellspacing="1" cellpadding="0" border="0" summary="" align="center">';
 	echo '<tr><td colspan="2">';
-	echo '<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?pathext='.urlencode($pathext).SEP. 'popup='.$popup.SEP. 'tab='.$current_tab.'">';
 
 
 if( $MakeDirOn ) {
@@ -443,17 +192,15 @@ if( $MakeDirOn ) {
 		echo '<tr><td  colspan="1">';
 //		echo '<form onsubmit="openWindow(\''.AT_BASE_HREF.'tools/prog.php\');" name="form1" method="post" action="../tools/filemanager/upload.php?alter='.$alter. SEP .'cid='.$cid. SEP . 'tab='.$current_tab.'" enctype="multipart/form-data">';
 		echo '<input type="hidden" name="MAX_FILE_SIZE" value="'.$my_MaxFileSize.'" />';
-		echo '<input type="file" name="uploadedfile" class="formfield" size="20" />';
-		echo '<input type="submit" name="upload" value="'._AT('upload').'" onClick="openWindow(\''.AT_BASE_HREF.'tools/prog.php\');" class="button" />';
+		echo '<input type="file" name="uploadedfile" id="uploadedfile" class="formfield" size="20" />';
+		echo '<input type="submit" name="upload" value="'._AT('upload').'" class="button" />';
+		//onClick="openWindow(\''.AT_BASE_HREF.'tools/prog.php\');"
 		echo '<input type="hidden" name="pathext" value="'.$pathext.'" />  ';
 		echo '<input type="hidden" name="alter" value="TRUE" />  ';
-	//	echo _AT('or'); 
-	//	echo ' <a href="../tools/filemanager/new.php?pathext=' . urlencode($pathext) . SEP . 'framed=' . $framed . SEP . 'popup=' . $popup . '">' . _AT('file_manager_new') . '</a>';
 
 		if ($popup == TRUE) {
 			echo '<input type="hidden" name="popup" value="1" />';
 		}
-//		echo '</form>';
 		echo '</td></tr></table></fieldset>';
 
 	} else {
@@ -493,28 +240,7 @@ echo '<input type="hidden" name="pathext" value ="'.$pathext.'" />';
 	</td>
 </tr>
 </tfoot>
-<!--
-<tr>
-	<td colspan="4" align="right"><strong><?php //echo _AT('directory_total'); ?>:</strong></td>
-	<td align="right">&nbsp;<strong><?php //echo get_human_size(dirsize($current_path.$pathext.$file.'/')); ?></strong>&nbsp;</td>
-</tr>
 
-<tr>
-	<td colspan="4" align="right"><strong><?php // echo _AT('course_total'); ?>:</strong></td>
-	<td align="right">&nbsp;<strong><?php // echo get_human_size($course_total); ?></strong>&nbsp;</td>
-</tr>
-<tr>
-	<td colspan="4" align="right"><strong><?php //echo _AT('course_available'); ?>:</strong></td>
-	<td align="right"><strong><?php /*
-		if ($my_MaxCourseSize == AT_COURSESIZE_UNLIMITED) {
-			echo _AT('unlimited');
-		} else if ($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) {
-			echo get_human_size($MaxCourseSize-$course_total);
-		} else {
-			echo get_human_size($my_MaxCourseSize-$course_total);
-		} */ ?></strong>&nbsp;</td>
-</tr>
-</tfoot>-->
 <?php
 
 
@@ -550,7 +276,7 @@ while (false !== ($file = readdir($dir)) ) {
 		$totalBytes += $size;
 		$filename = '<a href="'.$_SERVER['PHP_SELF'].'?cid='.$cid. SEP .'pathext='.urlencode($pathext.$file.'/'). SEP . 'popup=' . $popup . SEP . 'framed='. $framed . SEP.'cp='.$_GET['cp']. SEP. 'tab='.$current_tab. SEP. 'alternatives='.$_POST['alternatives'].'">'.$file.'</a>';
 		$fileicon = '&nbsp;';
-		$fileicon .= '<img src="'.$_base_href.'images/folder.gif" alt="'._AT('folder').':'.$file.'" height="18" width="20" class="img-size-fm1" />';
+		$fileicon .= '<img src="'.$_base_href.'images/folder.gif" alt="'._AT('folder').':'.$file.'" height="18" width="20" class="img-size-fm1" />'."\n";
 		$fileicon .= '&nbsp;';
 		if(!$MakeDirOn) {
 			$deletelink = '';
@@ -561,12 +287,12 @@ while (false !== ($file = readdir($dir)) ) {
 
 		$totalBytes += $filedata[7];
 		$filename = $file;
-		$fileicon = '&nbsp;<img src="'.$_base_href.'images/icon-zip.gif" alt="'._AT('zip_archive').':'.$file.'" height="16" width="16" border="0" class="img-size-fm2" />&nbsp;';
+		$fileicon = '&nbsp;<img src="'.$_base_href.'images/icon-zip.gif" alt="'._AT('zip_archive').':'.$file.'" height="16" width="16" border="0" class="img-size-fm2" />&nbsp;'."\n";
 
 	} else {
 		$totalBytes += $filedata[7];
 		$filename = $file;
-		$fileicon = '&nbsp;<img src="'.$_base_href.'images/file_types/'.get_file_type_icon($filename).'.gif" height="16" width="16" alt="" title="" class="img-size-fm2" />&nbsp;';
+		$fileicon = '&nbsp;<img src="'.$_base_href.'images/file_types/'.get_file_type_icon($filename).'.gif" height="16" width="16" alt="" title="" class="img-size-fm2" />&nbsp;'."\n";
 	} 
 	$file1 = strtolower($file);
 	// create listing for dirctor or file
@@ -576,7 +302,7 @@ while (false !== ($file = readdir($dir)) ) {
 		$dirs[$file1] .= '<td>'.$fileicon.'</td>';
 		$dirs[$file1] .= '&nbsp;';
 		$dirs[$file1] .= '<td>'.$filename.'</td>';
-		$dirs[$file1] .= '</tr>';
+		$dirs[$file1] .= '</tr>'."\n";
 	
 	} else {
 		
@@ -590,18 +316,18 @@ while (false !== ($file = readdir($dir)) ) {
 		$files[$file1] .= '<a href="'.$get_file.$pathext.urlencode($filename).'">'.$file.'</a>';
 
 		if ($ext == 'zip') {
-			$files[$file1] .= ' <a href="tools/filemanager/zip.php?pathext=' . urlencode($pathext) . SEP . 'file=' . urlencode($file) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed .'">';
-			$files[$file1] .= '<img src="'.$_base_href.'images/archive.gif" border="0" alt="'._AT('extract_archive').'" title="'._AT('extract_archive').'"height="16" width="11" class="img-size-fm3" />';
+			$files[$file1] .= ' <a href="tools/filemanager/zip.php?pathext=' . urlencode($pathext) . SEP . 'file=' . urlencode($file) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed .'">'."\n";
+			$files[$file1] .= '<img src="'.$_base_href.'images/archive.gif" border="0" alt="'._AT('extract_archive').'" title="'._AT('extract_archive').'"height="16" width="11" class="img-size-fm3" />'."\n";
 			$files[$file1] .= '</a>';
 		}
 
 		if (in_array($ext, $editable_file_types)) {
-			$files[$file1] .= ' <a href="tools/filemanager/edit.php?pathext=' . urlencode($pathext) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed . SEP . 'file=' . $file . '">';
-			$files[$file1] .= '<img src="'.$_base_href.'images/edit.gif" border="0" alt="'._AT('extract_archive').'" title="'._AT('edit').'" height="15" width="18" class="img-size-fm4" />';
+			$files[$file1] .= ' <a href="tools/filemanager/edit.php?pathext=' . urlencode($pathext) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed . SEP . 'file=' . $file . '">'."\n";
+			$files[$file1] .= '<img src="'.$_base_href.'images/edit.gif" border="0" alt="'._AT('extract_archive').'" title="'._AT('edit').'" height="15" width="18" class="img-size-fm4" />'."\n";
 			$files[$file1] .= '</a>';
 		}
 
-		$files[$file1] .= '&nbsp;</label></td></tr>';
+		$files[$file1] .= '&nbsp;</label></td></tr>'."\n";
 		
 	}
 } // end while
@@ -623,8 +349,8 @@ if (is_array($files)) {
 }
 
 
-echo '</table>';
-echo '</form>';
+echo '</table>'."\n";
+//echo '</form>';
 
 
 
@@ -707,11 +433,7 @@ closedir($dir);
 ?>
 <script type="text/javascript">
 //<!--
-function Checkall(form){ 
-  for (var i = 0; i < form.elements.length; i++){    
-    eval("form.elements[" + i + "].checked = form.checkall.checked");  
-  } 
-}
+
 function openWindow(page) {
 	newWindow = window.open(page, "progWin", "width=400,height=200,toolbar=no,location=no");
 	newWindow.focus();

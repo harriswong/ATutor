@@ -163,8 +163,8 @@ require(AT_INCLUDE_PATH.'phpCache/phpCache.inc.php'); // cache library
 require(AT_INCLUDE_PATH.'lib/utf8.php');			//UTF-8 multibyte library
 
 if ($_config['time_zone']) {
-	$sql = "SET time_zone='{$_config['time_zone']}'";
-	mysql_query($sql, $db);
+	//$sql = "SET time_zone='{$_config['time_zone']}'";
+	//mysql_query($sql, $db);
 
 	if (function_exists('date_default_timezone_set')) {
 		date_default_timezone_set($_config['time_zone']);
@@ -756,6 +756,74 @@ if ( get_magic_quotes_gpc() == 1 ) {
  }
 
 
+/*~~~~~~~~~~~~~~~~~flash detection~~~~~~~~~~~~~~~~*/
+if(isset($_COOKIE["flash"])){
+    $_SESSION['flash'] = $_COOKIE["flash"];
+
+    //delete the cookie
+    setcookie("flash",'',time()-3600);
+}
+
+if (!isset($_SESSION["flash"])) {
+	$_custom_head .= '
+		<script type="text/javascript">
+		<!--
+
+			//VB-Script for InternetExplorer
+			function iExploreCheck()
+			{
+				document.writeln("<scr" + "ipt language=\'VBscript\'>");
+				//document.writeln("\'Test to see if VBScripting works");
+				document.writeln("detectableWithVB = False");
+				document.writeln("If ScriptEngineMajorVersion >= 2 then");
+				document.writeln("   detectableWithVB = True");
+				document.writeln("End If");
+				//document.writeln("\'This will check for the plugin");
+				document.writeln("Function detectActiveXControl(activeXControlName)");
+				document.writeln("   on error resume next");
+				document.writeln("   detectActiveXControl = False");
+				document.writeln("   If detectableWithVB Then");
+				document.writeln("      detectActiveXControl = IsObject(CreateObject(activeXControlName))");
+				document.writeln("   End If");
+				document.writeln("End Function");
+				document.writeln("</scr" + "ipt>");
+				return detectActiveXControl("ShockwaveFlash.ShockwaveFlash.1");
+			}
+
+
+			var plugin = (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"]) ? navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin : false;
+			if(!(plugin) && (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 && (navigator.appVersion.indexOf("Win") != -1)))
+				if (iExploreCheck())
+					flash_detect = "flash=yes";
+				else
+					flash_detect = "flash=no";
+
+			else if(plugin)
+				flash_detect = "flash=yes";
+			else
+				flash_detect = "flash=no";
+
+			writeCookie(flash_detect);
+
+			function writeCookie(value)
+			{
+				var today = new Date();
+				var the_date = new Date("December 31, 2099");
+				var the_cookie_date = the_date.toGMTString();
+				var the_cookie = value + ";expires=" + the_cookie_date;
+				document.cookie = the_cookie;
+			}
+		//-->
+		</script>
+';
+}
+
+
+
+/*~~~~~~~~~~~~~~end flash detection~~~~~~~~~~~~~~~*/
+
+
+
 /**
 * Checks if the data exceeded the database predefined length, if so,
 * truncate it.
@@ -763,7 +831,7 @@ if ( get_magic_quotes_gpc() == 1 ) {
 * If this function is used for display purposes, you may want to add the '...' 
 *  at the end of the string by setting the $forDisplay=1
 * @param	the mbstring that needed to be checked
-* @param	the length of what the input should be
+* @param	the byte length of what the input should be in the database.
 * @param	(OPTIONAL)
 *			append '...' at the end of the string.  Should not use this when 
 *			dealing with database.  This should only be set for display purposes.
@@ -772,6 +840,28 @@ if ( get_magic_quotes_gpc() == 1 ) {
 */
 function validate_length($input, $len, $forDisplay=0){
 	global $strlen, $substr;
+	$input_bytes_len = strlen($input);
+	$input_len = $strlen($input);
+
+	//If the input has exceeded the db column limit
+	if ($input_bytes_len > $len){
+		//calculate where to chop off the string
+		$percentage = $input_bytes_len / $input_len;
+		//Get the suitable length that should be stored in the db
+		$suitable_len = floor($len / $percentage);
+
+		if ($forDisplay===1){
+			return $substr($input, 0, $suitable_len).'...';
+		}
+		return $substr($input, 0, $suitable_len);
+	}
+	//if valid length
+	return $input;
+
+/*
+ * Instead of blindly cutting off the input from the given param
+ * 
+	global $strlen, $substr;
 	if ($strlen($input) > $len) {
 		if ($forDisplay===1){
 			return $substr($input, 0, $len).'...';
@@ -779,6 +869,7 @@ function validate_length($input, $len, $forDisplay=0){
 		return $substr($input, 0, $len);
 	}
 	return $input;
+*/
 }
 
 /**
@@ -1129,5 +1220,5 @@ if (isset($_GET['submit_language']) && $_SESSION['valid_user']) {
 		$result = mysql_query($sql, $db);
 	}
 }
-//debug($_SESSION);
+
 ?>
