@@ -13,6 +13,8 @@
 // $Id$
 
 define('AT_INCLUDE_PATH', '../include/');
+require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
+
 global $db;
 
 $get_related_glossary = true;
@@ -158,7 +160,7 @@ if ($current_tab == 5){
 		}
 		else {
 			if (isset($_POST['resources'])){
-				//if (isset($_POST['radio_alt'])){
+				if (isset($_POST['radio_alt'])){
 					if ($changes_made)
 						$body_ins = $_POST['body_text'];
 					else {
@@ -178,7 +180,7 @@ if ($current_tab == 5){
 	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[body_text_alt]'";
 	     	 				$contr 	 	= mysql_query($sql_contr, $db);
 	     	 				if (mysql_num_rows($contr) > 0) {
-	     	 					$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
+	     	 					$msg->addError('ALTERNATIVE_ALREADY_DECLARED');
 		     	 			}
 		     	 			else {
 	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[body_text_alt]', 'en')";
@@ -187,7 +189,7 @@ if ($current_tab == 5){
 							}
 						}
 					}
-	    		//}
+	    		}
 		//		else 
 		//			$msg->addError('ALTERNATIVE_NOT_DEFINED');
 			}
@@ -204,7 +206,267 @@ if ($current_tab == 5){
 		
 		$msg->addFeedback('ALTERNATIVE_DELETED');
 	}
+// tools/filemanager/top.php
+//require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
+
+if (!$_GET['f']) {
+	$_SESSION['done'] = 0;
 }
+if (!authenticate(AT_PRIV_FILES,AT_PRIV_RETURN)) {
+	authenticate(AT_PRIV_CONTENT);
+}
+
+$current_path = AT_CONTENT_DIR.$_SESSION['course_id'].'/';
+
+$MakeDirOn = true;
+
+/* get this courses MaxQuota and MaxFileSize: */
+$sql	= "SELECT max_quota, max_file_size FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
+$result = mysql_query($sql, $db);
+$row	= mysql_fetch_array($result);
+$my_MaxCourseSize	= $row['max_quota'];
+$my_MaxFileSize		= $row['max_file_size'];
+
+if ($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) {
+	$my_MaxCourseSize = $MaxCourseSize;
+}
+if ($my_MaxFileSize == AT_FILESIZE_DEFAULT) {
+	$my_MaxFileSize = $MaxFileSize;
+} else if ($my_MaxFileSize == AT_FILESIZE_SYSTEM_MAX) {
+	$my_MaxFileSize = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
+}
+
+$MaxSubDirs  = 5;
+$MaxDirDepth = 10;
+
+if ($_GET['pathext'] != '') {
+	$pathext = urldecode($_GET['pathext']);
+} else if ($_POST['pathext'] != '') {
+	$pathext = $_POST['pathext'];
+}
+
+if (strpos($pathext, '..') !== false) {
+	require(AT_INCLUDE_PATH.'header.inc.php');
+	$msg->printErrors('UNKNOWN');	
+	require(AT_INCLUDE_PATH.'footer.inc.php');
+	exit;
+}
+if($_GET['back'] == 1) {
+	$pathext  = substr($pathext, 0, -1);
+	$slashpos = strrpos($pathext, '/');
+	if($slashpos == 0) {
+		$pathext = '';
+	} else {
+		$pathext = substr($pathext, 0, ($slashpos+1));
+	}
+
+}
+
+$start_at = 2;
+/* remove the forward or backwards slash from the path */
+$newpath = $current_path;
+$depth = substr_count($pathext, '/');
+
+if ($pathext != '') {
+	$bits = explode('/', $pathext);
+	foreach ($bits as $bit) {
+		if ($bit != '') {
+			$bit_path .= $bit;
+
+			$_section[$start_at][0] = $bit;
+			$_section[$start_at][1] = '../tools/filemanager/index.php?pathext=' . urlencode($bit_path) . SEP . 'popup=' . $popup . SEP . 'framed=' . $framed;
+
+			$start_at++;
+		}
+	}
+	$bit_path = "";
+	$bit = "";
+}
+
+/* if upload successful, close the window */
+if ($f) {
+	$onload = 'closeWindow(\'progWin\');';
+}
+
+/* make new directory */
+if (isset($_POST['mkdir'])) {
+if ($_POST['mkdir_value'] && ($depth < $MaxDirDepth) ) {
+	$_POST['dirname'] = trim($_POST['dirname']);
+
+	/* anything else should be okay, since we're on *nix..hopefully */
+	$_POST['dirname'] = ereg_replace('[^a-zA-Z0-9._]', '', $_POST['dirname']);
+
+	if ($_POST['dirname'] == '') {
+		$msg->addError(array('FOLDER_NOT_CREATED', $_POST['dirname'] ));
+	} 
+	else if (strpos($_POST['dirname'], '..') !== false) {
+		$msg->addError('BAD_FOLDER_NAME');
+	}	
+	else {
+		$result = @mkdir($current_path.$pathext.$_POST['dirname'], 0700);
+		if($result == 0) {
+			$msg->addError(array('FOLDER_NOT_CREATED', $_POST['dirname'] ));
+		}
+		else {
+			$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
+		}
+	}
+}
+}
+$newpath = substr($current_path.$pathext, 0, -1);
+
+
+/* open the directory */
+if (!($dir = @opendir($newpath))) {
+	if (isset($_GET['create']) && ($newpath.'/' == $current_path)) {
+		@mkdir($newpath);
+		if (!($dir = @opendir($newpath))) {
+			require(AT_INCLUDE_PATH.'header.inc.php');
+			$msg->printErrors('CANNOT_CREATE_DIR');			
+			require(AT_INCLUDE_PATH.'footer.inc.php');
+			exit;
+		} else {
+			$msg->addFeedback('CONTENT_DIR_CREATED');
+		}
+	} else {
+		require(AT_INCLUDE_PATH.'header.inc.php');
+
+		$msg->printErrors('CANNOT_OPEN_DIR');
+		require(AT_INCLUDE_PATH.'footer.inc.php');
+		exit;
+	}
+}
+/*
+if (isset($_POST['cancel'])) {
+	$msg->addFeedback('CANCELLED');
+}*/
+//end top.inc.php
+
+// upload.php
+$_SESSION['done'] = 1;
+$popup = $_REQUEST['popup'];
+$framed = $_REQUEST['framed'];
+
+/* get this courses MaxQuota and MaxFileSize: */
+$sql	= "SELECT max_quota, max_file_size FROM ".TABLE_PREFIX."courses WHERE course_id=$_SESSION[course_id]";
+$result = mysql_query($sql, $db);
+$row	= mysql_fetch_array($result);
+$my_MaxCourseSize	= $row['max_quota'];
+$my_MaxFileSize	= $row['max_file_size'];
+
+	if ($my_MaxCourseSize == AT_COURSESIZE_DEFAULT) {
+		$my_MaxCourseSize = $MaxCourseSize;
+	}
+	if ($my_MaxFileSize == AT_FILESIZE_DEFAULT) {
+		$my_MaxFileSize = $MaxFileSize;
+	} else if ($my_MaxFileSize == AT_FILESIZE_SYSTEM_MAX) {
+		$my_MaxFileSize = megabytes_to_bytes(substr(ini_get('upload_max_filesize'), 0, -1));
+	}
+
+$path = AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$_POST['pathext'];
+
+if (isset($_POST['upload'])) {
+//	print_r($_FILES);
+//	exit();
+	debug($_FILES);
+	debug($_POST);
+	
+	//$_FILES['uploadedfile']['name'];
+	echo 'uffa';
+//	echo $_FILES['uploadedfile']['size'];
+	if($_FILES['uploadedfile']['name'])	{
+//		echo 'il file esiste';
+		$_FILES['uploadedfile']['name'] = trim($_FILES['uploadedfile']['name']);
+		$_FILES['uploadedfile']['name'] = str_replace(' ', '_', $_FILES['uploadedfile']['name']);
+
+		$path_parts = pathinfo($_FILES['uploadedfile']['name']);
+		$ext = $path_parts['extension'];
+
+		/* check if this file extension is allowed: */
+		/* $IllegalExtentions is defined in ./include/config.inc.php */
+		if (in_array($ext, $IllegalExtentions)) {
+			$errors = array('FILE_ILLEGAL', $ext);
+			$msg->addError($errors);
+			header('Location: index.php?pathext='.$_POST['pathext']);
+			exit;
+		}
+
+		/* also have to handle the 'application/x-zip-compressed'  case	*/
+		if (   ($_FILES['uploadedfile']['type'] == 'application/x-zip-compressed')
+			|| ($_FILES['uploadedfile']['type'] == 'application/zip')
+			|| ($_FILES['uploadedfile']['type'] == 'application/x-zip')){
+			$is_zip = true;						
+		}
+
+	
+		/* anything else should be okay, since we're on *nix.. hopefully */
+		$_FILES['uploadedfile']['name'] = str_replace(array(' ', '/', '\\', ':', '*', '?', '"', '<', '>', '|', '\''), '', $_FILES['uploadedfile']['name']);
+
+
+		/* if the file size is within allowed limits */
+		if( ($_FILES['uploadedfile']['size'] > 0) && ($_FILES['uploadedfile']['size'] <= $my_MaxFileSize) ) {
+
+			/* if adding the file will not exceed the maximum allowed total */
+			$course_total = dirsize($path);
+
+			if ((($course_total + $_FILES['uploadedfile']['size']) <= ($my_MaxCourseSize + $MaxCourseFloat)) || ($my_MaxCourseSize == AT_COURSESIZE_UNLIMITED)) {
+
+				/* check if this file exists first */
+				if (file_exists($path.$_FILES['uploadedfile']['name'])) {
+					/* this file already exists, so we want to prompt for override */
+
+					/* save it somewhere else, temporarily first			*/
+					/* file_name.time ? */
+					$_FILES['uploadedfile']['name'] = substr(time(), -4).'.'.$_FILES['uploadedfile']['name'];
+
+					$f = array('FILE_EXISTS',
+									substr($_FILES['uploadedfile']['name'], 5), 
+									$_FILES['uploadedfile']['name'],
+									$_POST['pathext'],
+									$_GET['popup'],
+									SEP);
+					$msg->addFeedback($f);
+				}
+
+				/* copy the file in the directory */
+				$result = move_uploaded_file( $_FILES['uploadedfile']['tmp_name'], $path.$_FILES['uploadedfile']['name'] );
+
+				if (!$result) {
+					require(AT_INCLUDE_PATH.'header.inc.php');
+					$msg->printErrors('FILE_NOT_SAVED');
+					echo '<a href="tools/filemanager/index.php?pathext=' . $_POST['pathext'] . SEP . 'popup=' . $_GET['popup'] . '">' . _AT('back') . '</a>';
+					require(AT_INCLUDE_PATH.'footer.inc.php');
+					exit;
+				} else {
+					if ($is_zip) {
+						$f = array('FILE_UPLOADED_ZIP',
+										urlencode($_POST['pathext']), 
+										urlencode($_FILES['uploadedfile']['name']), 
+										$_GET['popup'],
+										SEP);
+						$msg->addFeedback($f);
+		
+					} /* else */
+
+					$msg->addFeedback('FILE_UPLOADED');
+				}
+			} else {
+				$msg->addError(array('MAX_STORAGE_EXCEEDED', get_human_size($my_MaxCourseSize)));
+			}
+		} else {
+			$msg->addError(array('FILE_TOO_BIG', get_human_size($my_MaxFileSize)));
+		}
+	} else {
+		$msg->addError('FILE_NOT_SELECTED');
+	}
+}
+
+// end upload.php	
+
+}
+
+
+
 //End Added by Silvia
 
 
@@ -227,14 +489,19 @@ if ($current_tab == 0) {
 		}
 	}
 	if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
-		$onload = ' document.form.ctitle.focus();';
+		$onload = ' document.contentForm.ctitle.focus(); ';
 	}
 }
 
 // initialize buttons, texts, radio buttons for editor
 if ($current_tab == 0) 
 {
-	$onload="on_load()";
+	$onload.="on_load();";
+}
+
+if ($current_tab == 5) 
+{
+	$onload.="on_load();";
 }
 
 require(AT_INCLUDE_PATH.'header.inc.php');
@@ -244,11 +511,16 @@ if ($current_tab == 0)
 	load_editor(false, "none");
 }
 
+if ($current_tab == 5) 
+{
+	load_editor(false, "none");
+}
+
 $cid = intval($_REQUEST['cid']);
 $pid = intval($_REQUEST['pid']);
 
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?cid=<?php echo $cid; ?>" method="post" name="form" enctype="multipart/form-data">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?cid=<?php echo $cid; ?>" method="post" name="contentForm" enctype="multipart/form-data">
 <?php
 
 	if ($cid) {
@@ -308,7 +580,7 @@ $pid = intval($_REQUEST['pid']);
 	if ($current_tab != 0) {
 		echo '<input type="hidden" name="body_text" value="'.htmlspecialchars($stripslashes($_POST['body_text'])).'" />';
 		echo '<input type="hidden" name="head" value="'.htmlspecialchars($stripslashes($_POST['head'])).'" />';
-		echo '<input type="hidden" name="use_customized_head" value="'.$_POST['use_customized_head'].'" />';
+		echo '<input type="hidden" name="use_customized_head" value="'.(($_POST['use_customized_head']=="") ? 0 : $_POST['use_customized_head']).'" />';
 		echo '<input type="hidden" name="displayhead" value="'.$_POST['displayhead'].'" />';
 		echo '<input type="hidden" name="setvisual" value="'.$_POST['setvisual'].'" />';
 		echo '<input type="hidden" name="settext" value="'.$_POST['settext'].'" />';		
@@ -320,7 +592,7 @@ $pid = intval($_REQUEST['pid']);
 	}
 
 	echo '<input type="hidden" name="ordering" value="'.$_POST['ordering'].'" />';
-	echo  '<input type="hidden" name="pid" value="'.$pid.'" />';
+	echo '<input type="hidden" name="pid" value="'.$pid.'" />';
 
 	echo '<input type="hidden" name="day" value="'.$_POST['day'].'" />';
 	echo '<input type="hidden" name="month" value="'.$_POST['month'].'" />';
@@ -383,9 +655,9 @@ $pid = intval($_REQUEST['pid']);
 	<?php if ($changes_made): ?>
 		<div class="unsaved">
 			<span style="color:red;"><?php echo _AT('save_changes_unsaved'); ?></span> 
-				<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" style="border: 1px solid red;" /> 
-				<input type="submit" name="close" class="button green" value="<?php echo _AT('close'); ?>" />  <input type="checkbox" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> />
-				<label for="close"><?php echo _AT('close_after_saving'); ?></label>
+			<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" style="border: 1px solid red;" /> 
+			<input type="submit" name="close" class="button green" value="<?php echo _AT('close'); ?>" />  <input type="checkbox" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> />
+			<label for="close"><?php echo _AT('close_after_saving'); ?></label>
 		</div>
 
 	<?php else: ?>
@@ -393,10 +665,18 @@ $pid = intval($_REQUEST['pid']);
 			<?php //if ($cid) { echo _AT('save_changes_saved'); } ?> <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" title="<?php echo _AT('save_changes'); ?> alt-s" accesskey="s" /> <input type="submit" name="close" value="<?php echo _AT('close'); ?>" /> <input type="checkbox" style="border:0px;" id="close" name="save_n_close" value="1" <?php if ($_SESSION['save_n_close']) { echo 'checked="checked"'; } ?> /><label for="close"><?php echo _AT('close_after_saving'); ?></label>
 		</div>
 	<?php endif; ?>
-
-	<?php include(AT_INCLUDE_PATH.'html/editor_tabs/'.$tabs[$current_tab][1]); ?>
-
-</div>
-</form>
+	<?php 
+	//	if ($current_tab != 5){
+				include(AT_INCLUDE_PATH.'html/editor_tabs/'.$tabs[$current_tab][1]);
+				echo '</div></form>';
+	//	}
+	//	else 
+	//	{
+	//		echo '</div></form>';
+	//		include(AT_INCLUDE_PATH.'html/editor_tabs/'.$tabs[$current_tab][1]);
+			
+	//	}
+			
+?>
 
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>
