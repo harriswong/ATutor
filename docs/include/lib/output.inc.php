@@ -952,6 +952,7 @@ function print_paginator($current_page, $num_rows, $request_args, $rows_per_page
 	}
 }
 
+
 /**
 * According to user's preferences, it provides appropriated resources in the content page.
 * @access	public
@@ -963,145 +964,190 @@ function print_paginator($current_page, $num_rows, $request_args, $rows_per_page
 */
 function provide_alternatives($cid, $content_page){
 	global $db;
-	
-		$content = $content_page;
-		if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==0)) {
-			//No user's preferences related to content format are declared
-			return $content;
-		}
-		else 
-			if ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==1){
-				$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." and resource=$content_page";
-				$result		 = mysql_query($sql_primary, $db);
-				if (mysql_num_rows($result) > 0) {
-					while ($row = mysql_fetch_assoc($result)) {
-				        $sql_type 	 = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id=$row[primary_resource_id]";	
-				        $result_type = mysql_query($sql_type, $db);
-						if (mysql_num_rows($result_type) > 0) {
-				       		while ($row_type = mysql_fetch_assoc($result_type)){
-				       			if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TEXT']==1) && ($row_type[type_id]==3)){
-						   			$sql_text	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_TEXT_PREFER_LANG']."'";	
-				    			    $result_text = mysql_query($sql_text, $db);
-				    			 	if (mysql_num_rows($result_text) > 0) {
-				    			 		while ($row_text = mysql_fetch_assoc($result_text)){
-				       						$sql_text_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_text[secondary_resource_id]";	
-				        					$result_text_alt = mysql_query($sql_text_alt, $db);
-				        					if (mysql_num_rows($result_text_alt) > 0) {
-				        						while ($row_text_alt = mysql_fetch_assoc($result_text_alt)){
-													if ((($_SESSION['prefs']['PREF_ALT_TO_TEXT']==visual) && ($row_text_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==audio) && ($row_audio_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==sign_lang) && ($row_text_alt[type_id]==2))) {
-						       							if (($_SESSION['prefs']['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE']=='replace')){
-						       								$content = $row_text_alt['secondary_resource'];
-						       							}
-						       							else 
-						       								$content = $content.'<br/>'.$row_text_alt['secondary_resource'];
-						       						}
-						       					}	
-						       				}
-						       			}
-						       		}
-						       	}
-						   }
-						}
-					}
 
-				}
-						       						
-			}
-			else {
-				$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." ORDER BY primary_resource_id";
-				$result		 = mysql_query($sql_primary, $db);
-	      		if (mysql_num_rows($result) > 0) {
-					while ($row = mysql_fetch_assoc($result)) {
-				        $sql_type 	 = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id=$row[primary_resource_id]";	
-				        $result_type = mysql_query($sql_type, $db);
-				        if (mysql_num_rows($result_type) > 0) {
-				       		while ($row_type = mysql_fetch_assoc($result_type)){
-				       			if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==1) && ($row_type[type_id]==1)){
-						   			$sql_audio	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_AUDIO_PREFER_LANG']."'";	
-				    			    $result_audio = mysql_query($sql_audio, $db);
-				    			 	if (mysql_num_rows($result_audio) > 0) {
-				    			 		while ($row_audio = mysql_fetch_assoc($result_audio)){
-				       						$sql_audio_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_audio[secondary_resource_id]";	
-				        					$result_audio_alt = mysql_query($sql_audio_alt, $db);
-				        					if (mysql_num_rows($result_audio_alt) > 0) {
-				        						while ($row_audio_alt = mysql_fetch_assoc($result_audio_alt)){
-						       						if ((($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==visual) && ($row_audio_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==text) && ($row_audio_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==sign_lang) && ($row_audio_alt[type_id]==2))) {
-						       							if (($_SESSION['prefs']['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE']=='replace')){
-						       								$before  = split($row['resource'], $content);
-						       								$shift   = strripos($before[0], '<');
-						       								$len     = strlen($before[0]);
-						       								$shift   = $len-$shift;
-						       								$first   = substr($before[0], 0, -$shift);
-						       								$new 	 = '<a href="';
-						       								$content = $first.$new.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'];
-						       								$shift 	 = strpos($before[1], '</');
-						       							    $after 	 = substr($before[1], $shift);
-						       							    $content = $content.$after;
-						       							}
-						       							else {
-						       								$before    = split($row['resource'], $content);
-						       								$content   = $before[0].$row['resource'];
-						       								$shift 	   = strpos($before[1], '</');
-						       								$alt_shift = $len-$shift;
-						       								$res       = substr($before[1], 0, -$alt_shift);
-						       							    $after 	   = substr($before[1], $shift);
-						       							    $content   = $content.$res.'<p><a href="'.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'].'</a></p>'.$after;
-						       							}
-						       						}
-				       							}
-				       						}
-				       					}
-				       				}
-								}
-								if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==1) && ($row_type[type_id]==4)){
-						   			$sql_visual	   = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_VISUAL_PREFER_LANG']."'";	
-				    			    $result_visual = mysql_query($sql_visual, $db);
-						   			if (mysql_num_rows($result_visual) > 0) {
-				       					while ($row_visual = mysql_fetch_assoc($result_visual)){
-				       						$sql_visual_alt 	 = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_visual[secondary_resource_id]";	
-				        					$result_visual_alt	 = mysql_query($sql_visual_alt, $db);
-				        					if (mysql_num_rows($result_visual_alt) > 0) {
-				       							while ($row_visual_alt = mysql_fetch_assoc($result_visual_alt)){
-						       						if ((($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==audio) && ($row_visual_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==text) && ($row_visual_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==sign_lang) && ($row_visual_alt[type_id]==2))){
-						       							if ($_SESSION['prefs']['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE']=='replace'){
-						       								$before  = split($row['resource'], $content);
-						       								$shift   = strripos($before[0], '<');
-						       								$len     = strlen($before[0]);
-						       								$shift   = $len-$shift;
-						       								$first   = substr($before[0], 0, -$shift);
-						       								$new 	 = '<a href="';
-						       								$content = $first.$new.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a>';
-						       								$shift 	 = strpos($before[1], '</');
-						       							    $after 	 = substr($before[1], $shift);
-						       							    $content = $content.$after;
-						       							}
-						       							else {
-						       								$before    = split($row['resource'], $content);
-						       								$content   = $before[0].$row['resource'];
-						       								$shift 	   = strpos($before[1], '</');
-						       								$alt_shift = $len-$shift;
-						       								$res       = substr($before[1], 0, -$alt_shift);
-						       							    $after 	   = substr($before[1], $shift);
-						       							    $content   = $content.$res.'<p><a href="'.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a></p>'.$after;
-						       							}
-						       						}
-				       							}
-				       						}
-				       					}
-				       				}
+
+	$content = $content_page;
+
+	if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==0) && ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==0)) {
+		//No user's preferences related to content format are declared
+		return $content;
+	}else if ($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_TEXT']==1){
+
+		$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." and resource='$content_page'";
+
+		$result = mysql_query($sql_primary, $db);
+		if (mysql_num_rows($result) > 0) {
+			while ($row = mysql_fetch_assoc($result)) {
+			$sql_type 	 = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id=$row[primary_resource_id]";	
+			$result_type = mysql_query($sql_type, $db);
+				if (mysql_num_rows($result_type) > 0) {
+					while ($row_type = mysql_fetch_assoc($result_type)){
+						if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TEXT']==1) && ($row_type[type_id]==3)){
+								$sql_text	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_TEXT_PREFER_LANG']."'";	
+							$result_text = mysql_query($sql_text, $db);
+							if (mysql_num_rows($result_text) > 0) {
+								while ($row_text = mysql_fetch_assoc($result_text)){
+									$sql_text_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_text[secondary_resource_id]";	
+									$result_text_alt = mysql_query($sql_text_alt, $db);
+									if (mysql_num_rows($result_text_alt) > 0) {
+										while ($row_text_alt = mysql_fetch_assoc($result_text_alt)){
+											if ((($_SESSION['prefs']['PREF_ALT_TO_TEXT']==visual) && ($row_text_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==audio) && ($row_audio_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_TEXT']==sign_lang) && ($row_text_alt[type_id]==2))) {
+												if (($_SESSION['prefs']['PREF_ALT_TO_TEXT_APPEND_OR_REPLACE']=='replace'))
+													$content = $row_text_alt['secondary_resource'];
+												else 
+													$content = $content.'<br/>'.$row_text_alt['secondary_resource'];
+											}
+										}	
+									}
 								}
 							}
 						}
 					}
-					return $content;
 				}
-				else {
-					//No alternatives are declared by content authors
-					$content=$content_page;
-					return $content;
-				}
-				
 			}
+
+		}
+		return $content;								
+	}else{
+	$sql_primary = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." ORDER BY primary_resource_id";
+	$result		 = mysql_query($sql_primary, $db);
+	if (mysql_num_rows($result) > 0) {
+			while ($row = mysql_fetch_assoc($result)) {
+			$sql_type 	 = "SELECT * FROM ".TABLE_PREFIX."primary_resources_types WHERE primary_resource_id=$row[primary_resource_id]";	
+			$result_type = mysql_query($sql_type, $db);
+			if (mysql_num_rows($result_type) > 0) {
+				while ($row_type = mysql_fetch_assoc($result_type)){
+					if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_AUDIO']==1) && ($row_type[type_id]==1)){
+							$sql_audio	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_AUDIO_PREFER_LANG']."'";	
+						$result_audio = mysql_query($sql_audio, $db);
+						if (mysql_num_rows($result_audio) > 0) {
+							while ($row_audio = mysql_fetch_assoc($result_audio)){
+								$sql_audio_alt 	  = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_audio[secondary_resource_id]";	
+								$result_audio_alt = mysql_query($sql_audio_alt, $db);
+								if (mysql_num_rows($result_audio_alt) > 0) {
+									while ($row_audio_alt = mysql_fetch_assoc($result_audio_alt)){
+										if ((($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==visual) && ($row_audio_alt[type_id]==4)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==text) && ($row_audio_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_AUDIO']==sign_lang) && ($row_audio_alt[type_id]==2))) {
+											if (($_SESSION['prefs']['PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE']=='replace')){
+												$before  = split($row['resource'], $content);
+												$shift   = strripos($before[0], '<');
+												$len     = strlen($before[0]);
+												$shift   = $len-$shift;
+												$first   = substr($before[0], 0, -$shift);
+												$new 	 = '<a href="';
+												$content = $first.$new.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'];
+												$shift 	 = strpos($before[1], '</');
+												$after 	 = substr($before[1], $shift);
+												$content = $content.$after;
+											}else {
+												$before    = split($row['resource'], $content);
+												$content   = $before[0].$row['resource'];
+												$shift 	   = strpos($before[1], '</');
+												$alt_shift = $len-$shift;
+												$res       = substr($before[1], 0, -$alt_shift);
+												$after 	   = substr($before[1], $shift);
+												$content   = $content.$res.'<p><a href="'.$row_audio['secondary_resource'].'">'.$row_audio['secondary_resource'].'</a></p>'.$after;
+											}
+										}
+									}
+								}
+							}
+						}
+						}
+						if (($_SESSION['prefs']['PREF_USE_ALTERNATIVE_TO_VISUAL']==1) && ($row_type[type_id]==4)){
+							$sql_visual	   = "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=$row[primary_resource_id] and language_code='".$_SESSION['prefs']['PREF_ALT_VISUAL_PREFER_LANG']."'";	
+						$result_visual = mysql_query($sql_visual, $db);
+							if (mysql_num_rows($result_visual) > 0) {
+							while ($row_visual = mysql_fetch_assoc($result_visual)){
+								$sql_visual_alt 	 = "SELECT * FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id=$row_visual[secondary_resource_id]";	
+								$result_visual_alt	 = mysql_query($sql_visual_alt, $db);
+								if (mysql_num_rows($result_visual_alt) > 0) {
+									while ($row_visual_alt = mysql_fetch_assoc($result_visual_alt)){
+										if ((($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==audio) && ($row_visual_alt[type_id]==1)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==text) && ($row_visual_alt[type_id]==3)) || (($_SESSION['prefs']['PREF_ALT_TO_VISUAL']==sign_lang) && ($row_visual_alt[type_id]==2))){
+											if ($_SESSION['prefs']['PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE']=='replace'){
+												$before  = split($row['resource'], $content);
+												$shift   = strripos($before[0], '<');
+												$len     = strlen($before[0]);
+												$shift   = $len-$shift;
+												$first   = substr($before[0], 0, -$shift);
+												$new 	 = '<a href="';
+												$content = $first.$new.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a>';
+												$shift 	 = strpos($before[1], '</');
+												$after 	 = substr($before[1], $shift);
+												$content = $content.$after;
+											}else {
+												$before    = split($row['resource'], $content);
+												$content   = $before[0].$row['resource'];
+												$shift 	   = strpos($before[1], '</');
+												$alt_shift = $len-$shift;
+												$res       = substr($before[1], 0, -$alt_shift);
+												$after 	   = substr($before[1], $shift);
+												$content   = $content.$res.'<p><a href="'.$row_visual['secondary_resource'].'">'.$row_visual['secondary_resource'].'</a></p>'.$after;
+											}
+										}
+									}
+								}
+							}
+						}
+						}
+					}
+				}
+			}
+			return $content;
+		}else {
+			//No alternatives are declared by content authors
+			$content=$content_page;
+			return $content;
+		}
+		
+	}
 }	
+/**
+* at_timezone
+* converts a MYSQL timestamp of the form 0000-00-00 00:00:00 into a UNIX timestamp, 
+* adds the user's timezone offset, then converts back to a MYSQL timestamp
+* Available both as a system config option, and a user preference, if both are set
+* they are added together
+* @param   date	 MYSQL timestamp.
+* @return  date  MYSQL timestamp plus user's and/or system's timezone offset.
+* @author  Greg Gay  .
+*/
+function at_timezone($timestamp){
+	global $_config;
+	if(strlen($timestamp) <12){
+		$unixtime = TRUE;
+	}
+	// If the length is less than 12 characters, assume it is a UNIX timestamp
+	// Get the system timezone offset if it has been set
+	if(strlen($timestamp) >12){
+		preg_match('/(.*)-(.*)-(.*) (.*):(.*):(.*)/', $timestamp, $matches);
+		$timestamp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+	}
+	if($_config['time_zone']){
+		$timestamp = ($timestamp + ($_config['time_zone']*3600));
+	}
+
+	if(!$unixtime){
+		$timestamp = date("Y-m-d G:i:s", $timestamp);
+	}
+
+	// Get the user's timezone offset if it has been set
+	if(!$unixtime){
+		preg_match('/(.*)-(.*)-(.*) (.*):(.*):(.*)/', $timestamp, $matches);
+		$timestamp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+	}
+
+	if(isset($_SESSION['prefs']['PREF_TIMEZONE'])){
+		$timestamp = ($timestamp + ($_SESSION['prefs']['PREF_TIMEZONE']*3600));
+	}
+
+	if(!$unixtime){
+		$timestamp = date("Y-m-d G:i:s", $timestamp);
+	}
+
+	return $timestamp;
+
+}
+
+
 
 ?>
