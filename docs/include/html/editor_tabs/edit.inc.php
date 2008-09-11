@@ -17,7 +17,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 ?>
 	<div class="row">
 		<div class="required" title="<?php echo _AT('required_field'); ?>">*</div><label for="ctitle"><?php echo _AT('title');  ?></label><br />
-		<input type="text" name="title" size="70" class="formfield" value="<?php echo ContentManager::cleanOutput($_POST['title']); ?>" id="ctitle" />
+		<input type="text" name="title" id="ctitle" size="70" class="formfield" value="<?php echo ContentManager::cleanOutput($_POST['title']); ?>" id="ctitle" />
 	</div>
 	
 	<?php
@@ -28,7 +28,7 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 	<div class="row">
 		<label for="head"><?php echo _AT('customized_head');  ?></label>
-		<input type="button" name="edithead" value="<?php echo _AT('edit'); ?>" onClick="switch_head_editor()" /><br />
+		<input type="button" name="edithead" value="<?php echo _AT('edit'); ?>" onClick="switch_head_editor()" class="button"/><br />
 		<small>&middot; <?php echo _AT('customized_head_note'); ?></small>
 	</div>
 
@@ -52,16 +52,16 @@ if ($do_check) {
 	<div class="row">
 		<?php echo _AT('formatting'); ?><br />
 
-		<input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] == 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton.disabled=true;" />
+		<input type="radio" name="formatting" value="0" id="text" <?php if ($_POST['formatting'] == 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.contentForm.setvisualbutton.disabled=true;" />
 		<label for="text"><?php echo _AT('plain_text'); ?></label>
-
 		<input type="radio" name="formatting" value="1" id="html" <?php if ($_POST['formatting'] == 1 || $_POST['setvisual']) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton.disabled=false;"/>
+
 		<label for="html"><?php echo _AT('html'); ?></label>
 
 		<input type="hidden" name="displayhead" value="<?php if ($_POST['displayhead']==1 || $_REQUEST['displayhead']==1 || $_GET['displayhead']==1) echo '1'; else echo '0'; ?>" />
 		<input type="hidden" name="setvisual" value="<?php if ($_POST['setvisual']==1 || $_REQUEST['setvisual']==1 || $_GET['setvisual']==1) echo '1'; else echo '0'; ?>" />
 		<input type="hidden" name="settext" value="<?php if ($_POST['settext']==1 || $_REQUEST['settext']==1 || $_GET['settext']==1) echo '1'; else echo '0'; ?>" />
-		<input type="button" name="setvisualbutton" value="<?php echo _AT('switch_visual'); ?>" onClick="switch_body_editor()" />
+		<input type="button" name="setvisualbutton" value="<?php echo _AT('switch_visual'); ?>" onClick="switch_body_editor()" class="button" />
 
 		<script type="text/javascript" language="javascript">
 		//<!--
@@ -95,7 +95,7 @@ if ($do_check) {
 
 	<div class="row">
 		<strong><?php echo _AT('or'); ?></strong> <?php echo _AT('paste_file'); ?><br />
-		<input type="file" name="uploadedfile" class="formfield" size="20" /> <input type="submit" name="submit_file" value="<?php echo _AT('upload'); ?>" /><br />
+		<input type="file" name="uploadedfile" class="formfield" size="20" /> <input type="submit" name="submit_file" value="<?php echo _AT('upload'); ?>"  class="button" /><br />
 		<small class="spacer">&middot;<?php echo _AT('html_only'); ?><br />
 		&middot;<?php echo _AT('edit_after_upload'); ?></small>
 	</div>
@@ -105,61 +105,61 @@ if ($do_check) {
 	function on_load()
 	{
 		if (document.getElementById("text").checked)
-			document.form.setvisualbutton.disabled = true;
+			document.contentForm.setvisualbutton.disabled = true;
 			
-		if (document.form.displayhead.value==1)
+		if (document.contentForm.displayhead.value==1)
 		{
 			document.getElementById("headDiv").style.display = '';
-			document.form.edithead.value = "<?php echo _AT('hide'); ?>"
+			document.contentForm.edithead.value = "<?php echo _AT('hide'); ?>"
 		}
 			
-		if (document.form.setvisual.value==1)
+		if (document.contentForm.setvisual.value==1)
 		{
 			tinyMCE.execCommand('mceAddControl', false, 'body_text');
-			document.form.formatting[0].disabled = "disabled";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
+			document.contentForm.formatting[0].disabled = "disabled";
+			document.contentForm.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
 		}
 		else
 		{
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+			document.contentForm.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
 		}
 	}
 	
 	// show/hide "cusomized head" editor
 	function switch_head_editor()
 	{
-		if (document.form.edithead.value=="<?php echo _AT('edit'); ?>")
+		if (document.contentForm.edithead.value=="<?php echo _AT('edit'); ?>")
 		{
-			document.form.edithead.value = "<?php echo _AT('hide'); ?>"
+			document.contentForm.edithead.value = "<?php echo _AT('hide'); ?>"
 			document.getElementById("headDiv").style.display = "";
-			document.form.displayhead.value=1;
+			document.contentForm.displayhead.value=1;
 		}
 		else
 		{
-			document.form.edithead.value = "<?php echo _AT('edit'); ?>"
+			document.contentForm.edithead.value = "<?php echo _AT('edit'); ?>"
 			document.getElementById("headDiv").style.display = "none";
-			document.form.displayhead.value=0;
+			document.contentForm.displayhead.value=0;
 		}
 	}
 	
 	// switch between text, visual editor for "body text"
 	function switch_body_editor()
 	{
-		if (document.form.setvisualbutton.value=="<?php echo _AT('switch_visual'); ?>")
+		if (document.contentForm.setvisualbutton.value=="<?php echo _AT('switch_visual'); ?>")
 		{
 			tinyMCE.execCommand('mceAddControl', false, 'body_text');
-			document.form.setvisual.value=1;
-			document.form.settext.value=0;
-			document.form.formatting[0].disabled = "disabled";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
+			document.contentForm.setvisual.value=1;
+			document.contentForm.settext.value=0;
+			document.contentForm.formatting[0].disabled = "disabled";
+			document.contentForm.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
 		}
 		else
 		{
 			tinyMCE.execCommand('mceRemoveControl', false, 'body_text');
-			document.form.setvisual.value=0;
-			document.form.settext.value=1;
-			document.form.formatting[0].disabled = "";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+			document.contentForm.setvisual.value=0;
+			document.contentForm.settext.value=1;
+			document.contentForm.formatting[0].disabled = "";
+			document.contentForm.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
 		}
 	}
 	//-->
