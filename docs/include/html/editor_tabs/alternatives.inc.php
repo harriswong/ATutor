@@ -18,10 +18,10 @@ require(AT_INCLUDE_PATH.'lib/alternatives_functions.inc.php');
 global $db;
 
 ?>
-
+<!-- <div class="input-form" style="width: 95%"> -->
 <div class="row_alternatives" id="radio_alt">
 	<input type="radio" name="alternatives" value="1" id="single_resources" checked="checked" onClick="openIt(1)" <?php if (($_POST['alternatives'] == 1) || ($_GET['alternatives'] == 1)) { echo 'checked="checked"';} ?> />
-	<label for="single_resources"><?php echo _AT('define_alternatives_to_non_textual_resources');  ?>.</label>
+	<label for="single_resources"><?php echo _AT('define_alternatives_to_non_textual_resources');  ?></label>
 	<br/>
 	<input type="radio" name="alternatives" value="2" id="whole_page" onClick="openIt(2)" <?php if (($_POST['alternatives'] == 2) || ($_GET['alternatives'] == 2)) { echo 'checked="checked"'; } ?> />
 	<label for="whole_page"><?php echo _AT('define_alternatives_to_textual_resources');  ?></label>
@@ -38,7 +38,7 @@ global $db;
 		if ($n==0){
 			echo '<p>';
 			echo _AT('No_non_textual_resources');
-			echo '!</p>';
+			echo '</p>';
 			}
 		else {
 			$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." order by primary_resource_id";
@@ -92,8 +92,8 @@ global $db;
 								<?php checkbox_types($row[primary_resource_id], 'primary', 'non_textual');
 								
 							$languages = $languageManager->getAvailableLanguages();
-							echo '<label for="lang_'.$row[primary_resource_id].'">'._AT('resource_language').'</label><br />';
-							echo '<select name="lang_'.$row[primary_resource_id].'" id="lang_'.$row[primary_resource_id].'">';
+							echo '<label for="lang_'.$row[primary_resource_id].'_primary">'._AT('resource_language').'</label><br />';
+							echo '<select name="lang_'.$row[primary_resource_id].'_primary" id="lang_'.$row[primary_resource_id].'_primary">';
 							foreach ($languages as $codes)
 							{
 								$language = current($codes);
@@ -292,32 +292,33 @@ if ($do_check) {
 			while ($alternative = mysql_fetch_assoc($result_alt)){
 				$savant->assign('body', format_content($alternative['secondary_resource'], $content_row['formatting'], $glossary));
 			    checkbox_types($alternative['secondary_resource_id'], 'secondary', 'non_textual');
-			     						$languages = $languageManager->getAvailableLanguages();
-										echo '<label for="lang_'.$alternative['secondary_resource_id'].'">Resource language</label><br />';
-										echo '<select name="lang_'.$alternative['secondary_resource_id'].'" id="lang_'.$alternative['secondary_resource_id'].'">';
-										foreach ($languages as $codes){
-											$language = current($codes);
-											$lang_code = $language->getCode();
-											$lang_native_name = $language->getNativeName();
-											$lang_english_name = $language->getEnglishName();
-											echo '<option value="'.$lang_code.'"';
-											if ($lang_code == $alternative['language_code']) 
-												echo 'selected';
-											echo '>';
-											echo $lang_english_name . ' - '. $lang_native_name; 
-											echo '</option>';
-											}
-										?>
-										</select>
-										<p><?php delete_alternative($alternative, $cid, $current_tab); ?></p>
-									</div>
-									<?php
-									}
-								}
-							?>
+			  	$languages = $languageManager->getAvailableLanguages();
+				echo '<label for="lang_'.$alternative['secondary_resource_id'].'">Resource language</label><br />';
+				echo '<select name="lang_'.$alternative['secondary_resource_id'].'" id="lang_'.$alternative['secondary_resource_id'].'">';
+				foreach ($languages as $codes){
+					$language = current($codes);
+					$lang_code = $language->getCode();
+					$lang_native_name = $language->getNativeName();
+					$lang_english_name = $language->getEnglishName();
+					echo '<option value="'.$lang_code.'"';
+					if ($lang_code == $alternative['language_code']) 
+						echo 'selected';
+					echo '>';
+					echo $lang_english_name . ' - '. $lang_native_name; 
+					echo '</option>';
+					}
+				?>
+				</select>
+				<p><?php delete_alternative($alternative, $cid, $current_tab); ?></p>
+			</div>
+			<?php
+				}
+			}
+	?>
 	</div>
 </div>	
-
+<!--  </form>
+</div> -->	
 	<script type="text/javascript" language="javascript">
 	//<!--
 	function on_load()
