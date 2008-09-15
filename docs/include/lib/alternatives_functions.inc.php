@@ -45,7 +45,7 @@ function checkbox_types($resource_id, $alt, $kind){
 
 	$sql_set_types	= "SELECT type_id FROM ".TABLE_PREFIX.$alt."_resources_types where ".$alt."_resource_id=".$resource_id;
 	$set_types		= mysql_query($sql_set_types, $db);
-	//echo $sql_set_types;
+//	echo $sql_set_types;
 	
 	$resource_types	= false;
 	$j 				= 0;

@@ -79,7 +79,9 @@ function save_changes($redir) {
 
 	$_POST['pid']	= intval($_POST['pid']);
 	$_POST['cid']	= intval($_POST['cid']);
-
+	
+//	$_POST['alternatives'] = intval($_POST['alternatives']);
+	
 	$_POST['title'] = trim($_POST['title']);
 	$_POST['head']	= trim($_POST['head']);
 	$_POST['use_customized_head']	= isset($_POST['use_customized_head'])?$_POST['use_customized_head']:0;
@@ -167,7 +169,7 @@ function save_changes($redir) {
 
 	//Added by Silvia 
 	if ($current_tab=='5') {
-		if($_POST['alternatives']==1){
+		if($_POST['radio_alternatives']==1){
 			$sql	= "SELECT primary_resource_id FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid'";
 	    	$result = mysql_query($sql, $db);
 
@@ -467,20 +469,20 @@ function check_for_changes($row) {
 
 function paste_from_file() {
 	global $msg;
-	if ($_FILES['uploadedfile']['name'] == '')	{
+	if ($_FILES['uploadedfile_paste']['name'] == '')	{
 		$msg->addError('FILE_NOT_SELECTED');
 		return;
 	}
-	if ($_FILES['uploadedfile']['name']
-		&& (($_FILES['uploadedfile']['type'] == 'text/plain')
-			|| ($_FILES['uploadedfile']['type'] == 'text/html')) )
+	if ($_FILES['uploadedfile_paste']['name']
+		&& (($_FILES['uploadedfile_paste']['type'] == 'text/plain')
+			|| ($_FILES['uploadedfile_paste']['type'] == 'text/html')) )
 		{
 
-		$path_parts = pathinfo($_FILES['uploadedfile']['name']);
+		$path_parts = pathinfo($_FILES['uploadedfile_paste']['name']);
 		$ext = strtolower($path_parts['extension']);
 
 		if (in_array($ext, array('html', 'htm'))) {
-			$_POST['body_text'] = file_get_contents($_FILES['uploadedfile']['tmp_name']);
+			$_POST['body_text'] = file_get_contents($_FILES['uploadedfile_paste']['tmp_name']);
 
 			/* get the <title></title> of this page				*/
 
@@ -504,7 +506,7 @@ function paste_from_file() {
 
 			$msg->addFeedback('FILE_PASTED');
 		} else if ($ext == 'txt') {
-			$_POST['body_text'] = file_get_contents($_FILES['uploadedfile']['tmp_name']);
+			$_POST['body_text'] = file_get_contents($_FILES['uploadedfile_paste']['tmp_name']);
 			$msg->addFeedback('FILE_PASTED');
 
 		}

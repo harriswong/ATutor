@@ -13,13 +13,13 @@
 // $Id$
 
 define('AT_INCLUDE_PATH', '../include/');
-require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
 global $db;
 
 $get_related_glossary = true;
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 require(AT_INCLUDE_PATH.'lib/tinymce.inc.php');
+require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
 $cid = intval($_REQUEST['cid']);
 
@@ -127,85 +127,20 @@ if ($current_tab == 4) {
 }
 
 //Added by Silvia
-if ($current_tab == 5){
-	if ($_POST['alternatives']==1){
-		if (isset($_POST['add'])){
-			if (isset($_POST['resources'])){
-				if (isset($_POST['radio_alt'])){
-				
-					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='$_POST[resources]'";
-		    		$result = mysql_query($sql, $db);
-	    		
-		    		if (mysql_num_rows($result) > 0) {
-	    	 	 		while ($row = mysql_fetch_assoc($result)) {
-	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
-	     	 				$contr 	 	= mysql_query($sql_contr, $db);
-	     	 				if (mysql_num_rows($contr) > 0) {
-	     	 					$msg->addFeedback('ALTERNATIVE_ALREADY_DECLARED');
-		     	 			}
-		     	 			else {
-	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
-								$ins     = mysql_query($sql_ins, $db);
-								$msg->addFeedback('ALTERNATIVE_ADDED');
-							}
-						}
-					}
-	    		}
-				else 
-					$msg->addError('ALTERNATIVE_NOT_DEFINED');
-			}
-			else 
-				$msg->addError('RESOURCE_NOT_DEFINED');
-			}
-		}
-		else {
-			if (isset($_POST['resources'])){
-				if (isset($_POST['radio_alt'])){
-					if ($changes_made)
-						$body_ins = $_POST['body_text'];
-					else {
-						$sql = "SELECT * FROM AT_content WHERE content_id='$cid'";
-						$result = mysql_query($sql, $db);
-						 //echo $sql;
-						while ($row = mysql_fetch_assoc($result)) {
-							$body_ins = addslashes($row['text']);
-						}
-					}
-					
-					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource=$body_ins";
-		    		$result = mysql_query($sql, $db);
-	    		
-		    		if (mysql_num_rows($result) > 0) {
-	    	 	 		while ($row = mysql_fetch_assoc($result)) {
-	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[body_text_alt]'";
-	     	 				$contr 	 	= mysql_query($sql_contr, $db);
-	     	 				if (mysql_num_rows($contr) > 0) {
-	     	 					$msg->addError('ALTERNATIVE_ALREADY_DECLARED');
-		     	 			}
-		     	 			else {
-	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[body_text_alt]', 'en')";
-								$ins     = mysql_query($sql_ins, $db);
-								$msg->addFeedback('ALTERNATIVE_ADDED');
-							}
-						}
-					}
-	    		}
-		//		else 
-		//			$msg->addError('ALTERNATIVE_NOT_DEFINED');
-			}
-		//	else 
-		//		$msg->addError('RESOURCE_NOT_DEFINED');
-		}
-		
-		
-	if ($_REQUEST[act]=='delete')	{
-		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources WHERE secondary_resource_id='$_REQUEST[id_alt]'";
-		$result = mysql_query($sql,$db);
-		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id='$_REQUEST[id_alt]'";
-		$result = mysql_query($sql,$db);
-		
-		$msg->addFeedback('ALTERNATIVE_DELETED');
-	}
+
+echo 'alternatives: ';
+echo $_POST['radio_alternatives'];
+echo 'uffa';
+debug($_POST);
+debug($_GET);
+
+
+if (isset($_POST['radio_alternatives']))
+	echo ' settato';
+else 
+	echo 'NON settato';
+	
+
 // tools/filemanager/top.php
 //require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
@@ -463,6 +398,89 @@ if (isset($_POST['upload'])) {
 
 // end upload.php	
 
+
+if ($current_tab == 5){
+	if ($_POST['alternatives']==1){
+		echo 'non entra più qu!';
+		if (isset($_POST['add'])){
+			if (isset($_POST['resources'])){
+				if (isset($_POST['radio_alt'])){
+				
+					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='$_POST[resources]'";
+		    		$result = mysql_query($sql, $db);
+	    		
+		    		if (mysql_num_rows($result) > 0) {
+	    	 	 		while ($row = mysql_fetch_assoc($result)) {
+	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[radio_alt]'";
+	     	 				$contr 	 	= mysql_query($sql_contr, $db);
+	     	 				if (mysql_num_rows($contr) > 0) {
+	     	 					$msg->addError('ALTERNATIVE_ALREADY_DECLARED');
+		     	 			}
+		     	 			else {
+	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[radio_alt]', 'en')";
+								$ins     = mysql_query($sql_ins, $db);
+								$msg->addFeedback('ALTERNATIVE_ADDED');
+							}
+						}
+					}
+	    		}
+				else 
+					$msg->addError('ALTERNATIVE_NOT_DEFINED');
+			}
+			else 
+				$msg->addError('RESOURCE_NOT_DEFINED');
+			}
+		}
+		else {
+			echo 'cosa ci faccio qui?';
+			if (isset($_POST['resources'])){
+				if (isset($_POST['radio_alt'])){
+					if ($changes_made)
+						$body_ins = $_POST['body_text'];
+					else {
+						$sql = "SELECT * FROM AT_content WHERE content_id='$cid'";
+						$result = mysql_query($sql, $db);
+						 //echo $sql;
+						while ($row = mysql_fetch_assoc($result)) {
+							$body_ins = addslashes($row['text']);
+						}
+					}
+					
+					$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource=$body_ins";
+		    		$result = mysql_query($sql, $db);
+	    		
+		    		if (mysql_num_rows($result) > 0) {
+	    	 	 		while ($row = mysql_fetch_assoc($result)) {
+	     		 			$sql_contr 	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id='$row[primary_resource_id]' and secondary_resource='$_POST[body_text_alt]'";
+	     	 				$contr 	 	= mysql_query($sql_contr, $db);
+	     	 				if (mysql_num_rows($contr) > 0) {
+	     	 					$msg->addError('ALTERNATIVE_ALREADY_DECLARED');
+		     	 			}
+		     	 			else {
+	    	 	 				$sql_ins = "INSERT INTO ".TABLE_PREFIX."secondary_resources VALUES (NULL, '$row[primary_resource_id]', '$_POST[body_text_alt]', 'en')";
+								$ins     = mysql_query($sql_ins, $db);
+								$msg->addFeedback('ALTERNATIVE_ADDED');
+							}
+						}
+					}
+	    		}
+		//		else 
+		//			$msg->addError('ALTERNATIVE_NOT_DEFINED');
+			}
+		//	else 
+		//		$msg->addError('RESOURCE_NOT_DEFINED');
+		}
+		
+		
+	if ($_REQUEST[act]=='delete')	{
+		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources WHERE secondary_resource_id='$_REQUEST[id_alt]'";
+		$result = mysql_query($sql,$db);
+		$sql = "DELETE FROM ".TABLE_PREFIX."secondary_resources_types WHERE secondary_resource_id='$_REQUEST[id_alt]'";
+		$result = mysql_query($sql,$db);
+		
+		$msg->addFeedback('ALTERNATIVE_DELETED');
+	}
+
 }
 
 
@@ -489,7 +507,7 @@ if ($current_tab == 0) {
 		}
 	}
 	if ((!$_POST['setvisual'] && $_POST['settext']) || !$_GET['setvisual']){
-		$onload = ' document.contentForm.ctitle.focus(); ';
+		$onload = ' document.form.ctitle.focus(); ';
 	}
 }
 
@@ -520,7 +538,7 @@ $cid = intval($_REQUEST['cid']);
 $pid = intval($_REQUEST['pid']);
 
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?cid=<?php echo $cid; ?>" method="post" name="contentForm" enctype="multipart/form-data">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?cid=<?php echo $cid; ?>" method="post" name="form" enctype="multipart/form-data">
 <?php
 
 	if ($cid) {
@@ -573,8 +591,8 @@ $pid = intval($_REQUEST['pid']);
 		}
 		//$changes_made = check_for_changes($content_row);
 	}
-
-
+//	echo $alternatives;
+//	echo '<input type="hidden" name="alternatives" value="$alternatives" />';
 	echo '<input type="hidden" name="cid" value="'.$cid.'" />';
 	echo '<input type="hidden" name="title" value="'.htmlspecialchars($stripslashes($_POST['title'])).'" />';
 	if ($current_tab != 0) {

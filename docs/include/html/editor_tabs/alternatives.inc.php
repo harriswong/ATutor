@@ -18,19 +18,19 @@ require(AT_INCLUDE_PATH.'lib/alternatives_functions.inc.php');
 global $db;
 
 ?>
-<!-- <div class="input-form" style="width: 95%"> -->
+
 <div class="row_alternatives" id="radio_alt">
-	<input type="radio" name="alternatives" value="1" id="single_resources" checked="checked" onClick="openIt(1)" <?php if (($_POST['alternatives'] == 1) || ($_GET['alternatives'] == 1)) { echo 'checked="checked"';} ?> />
-	<label for="single_resources"><?php echo _AT('define_alternatives_to_non_textual_resources');  ?></label>
+	<input type="radio" name="alternatives" value="1" id="single_resources" onClick="openIt(1)" <?php if (($_POST['alternatives'] == 1) || ($_GET['alternatives'] == 1)) { echo 'checked="checked"';} ?> />
+	<label for="single_resources"><?php echo _AT('define_alternatives_to_non_textual_resources');  ?>.</label>
 	<br/>
 	<input type="radio" name="alternatives" value="2" id="whole_page" onClick="openIt(2)" <?php if (($_POST['alternatives'] == 2) || ($_GET['alternatives'] == 2)) { echo 'checked="checked"'; } ?> />
 	<label for="whole_page"><?php echo _AT('define_alternatives_to_textual_resources');  ?></label>
 </div>
 
-<div class="row_alternatives" id="1" style="display:'none';">
+<div class="row_alternatives" id="1" style="display: block">
 	<div class="column_primary">
+		
 		<?php 
-	//	$alternatives=1;		
 		require(AT_INCLUDE_PATH.'html/resources_parser.inc.php');
 
 		$n=count($resources);
@@ -39,8 +39,7 @@ global $db;
 			echo '<p>';
 			echo _AT('No_non_textual_resources');
 			echo '</p>';
-			}
-		else {
+		} else {
 			$sql	= "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id=".$cid." order by primary_resource_id";
 	      	$result	= mysql_query($sql, $db);
 	      	if (mysql_num_rows($result) > 0) {
@@ -175,7 +174,7 @@ global $db;
 	<div class="row_alternatives" id="2" style="display: none;">
 		<div class="row">
 			<?php
-				
+				$alternatives=2;
 				if ($changes_made)
 					$body_ins = $_POST['body_text'];
 				else {
@@ -197,12 +196,14 @@ global $db;
 						if (trim($whole_resource) == trim($body))
 							$content_id = $row[primary_resource_id];
 					}
-				}
-				else {
+				} else {
 					$sql_ins = "INSERT INTO ".TABLE_PREFIX."primary_resources VALUES (NULL, $cid, '$body_ins', 'en')";
 					$r 		 = mysql_query($sql_ins, $db);
+				//	debug($body_ins);
 					$sql_sel = "SELECT * FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid' and resource='$body_ins'";
 	      			$result	 = mysql_query($sql_sel, $db);
+	      		//	echo $sql_sel;
+	      		//	exit;
 	      			while ($row = mysql_fetch_assoc($result)) {
 						$whole_resource = $stripslashes(htmlspecialchars($row['resource']));
 						$body = $stripslashes(htmlspecialchars($_POST['body_text']));
@@ -210,6 +211,7 @@ global $db;
 							$content_id = $row[primary_resource_id];
 						}
 	     			}
+	     		//	debug($content_id);
 	    		checkbox_types($content_id, 'primary', 'textual');
 	    		
 	    		$languages = $languageManager->getAvailableLanguages();
@@ -278,17 +280,17 @@ if ($do_check) {
 
 	<div class="row">
 		<strong><?php echo _AT('or'); ?></strong> <?php echo _AT('paste_file'); ?><br />
-		<input type="file" name="uploadedfile" class="formfield" size="20" /> <input type="submit" name="submit_file" value="<?php echo _AT('upload'); ?>" /><br />
+		<input type="file" name="uploadedfile_paste" class="formfield" size="20" /> <input type="submit" name="submit_file" value="<?php echo _AT('upload'); ?>" /><br />
 		<small class="spacer">&middot;<?php echo _AT('html_only'); ?><br />
 		&middot;<?php echo _AT('edit_after_upload'); ?></small>
 	</div>
-	
+	 
 	<div class="row">
 	<?php  
 		$sql_alt	= "SELECT * FROM ".TABLE_PREFIX."secondary_resources WHERE primary_resource_id=".$content_id." order by secondary_resource_id";
 	    $result_alt	= mysql_query($sql_alt, $db);
 		if (mysql_num_rows($result_alt) > 0) {
-			echo '<p class="alternatives_to">'. _AT('alternatives').'</p>';
+			echo '<p class="alternatives_to">'. _AT('alternatives_to').'</p>';
 			while ($alternative = mysql_fetch_assoc($result_alt)){
 				$savant->assign('body', format_content($alternative['secondary_resource'], $content_row['formatting'], $glossary));
 			    checkbox_types($alternative['secondary_resource_id'], 'secondary', 'non_textual');
