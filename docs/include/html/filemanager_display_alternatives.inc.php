@@ -172,7 +172,7 @@ if( $MakeDirOn ) {
 			echo '<input type="text" name="dirname" size="20" /> ';
 			echo '<input type="hidden" name="mkdir_value" value="true" /> ';
 			echo '<input type="submit" name="mkdir" value="'._AT('create_folder').'" class="button" />';
-			echo '&nbsp;<small class="spacer">'._AT('keep_it_short').'';
+			echo '&nbsp;<small class="spacer">'._AT('keep_it_short').'</small>';
 		} else {
 			echo _AT('depth_reached');
 		}
@@ -236,7 +236,8 @@ echo '<input type="hidden" name="pathext" value ="'.$pathext.'" />';
 <tfoot>
 <tr>
 	<td colspan="3" align="right">
-		<input class="button" type="submit" name="add" value="Add"/>
+		<?php echo '<input class="button" type="submit" name="add" value="'._AT('add').'" class="button"/>';?>
+		
 	</td>
 </tr>
 </tfoot>
@@ -274,7 +275,7 @@ while (false !== ($file = readdir($dir)) ) {
 	if(is_dir($current_path.$pathext.$file)) {
 		$size = dirsize($current_path.$pathext.$file.'/');
 		$totalBytes += $size;
-		$filename = '<a href="'.$_SERVER['PHP_SELF'].'?cid='.$cid. SEP .'pathext='.urlencode($pathext.$file.'/'). SEP . 'popup=' . $popup . SEP . 'framed='. $framed . SEP.'cp='.$_GET['cp']. SEP. 'tab='.$current_tab. SEP. 'alternatives='.$_POST['alternatives'].'">'.$file.'</a>';
+		$filename = '<a href="'.$_SERVER['PHP_SELF'].'?cid='.$cid.SEP.'pathext='.urlencode($pathext.$file.'/').SEP.'popup='.$popup.SEP.'framed='.$framed.SEP.'cp='.$_GET['cp'].SEP.'tab='.$current_tab.SEP.'alternatives='.$_POST['alternatives'].'">'.$file.'</a>';
 		$fileicon = '&nbsp;';
 		$fileicon .= '<img src="'.$_base_href.'images/folder.gif" alt="'._AT('folder').':'.$file.'" height="18" width="20" class="img-size-fm1" />'."\n";
 		$fileicon .= '&nbsp;';
@@ -298,18 +299,18 @@ while (false !== ($file = readdir($dir)) ) {
 	// create listing for dirctor or file
 	if ($is_dir) {
 		
-		$dirs[$file1] .= '<tr><td>&nbsp;</td>';
-		$dirs[$file1] .= '<td>'.$fileicon.'</td>';
+		$dirs[$file1] .= '<tr><td>&nbsp;</td>'."\n";
+		$dirs[$file1] .= '<td>'.$fileicon.'</td>'."\n";
 		$dirs[$file1] .= '&nbsp;';
-		$dirs[$file1] .= '<td>'.$filename.'</td>';
+		$dirs[$file1] .= '<td>'.$filename.'</td>'."\n";
 		$dirs[$file1] .= '</tr>'."\n";
 	
 	} else {
 		
-		$files[$file1] .= '<tr>';
+	//	$files[$file1] .= '<tr>';
 		$files[$file1] .= '<tr> <td  align="center">';
-		$files[$file1] .= '<input type="radio" id="'.$file.'" value="'.$file.'" name="radio_alt"/> </td>';
-		$files[$file1] .= '<td align="center">'.$fileicon.'</td>';
+		$files[$file1] .= '<input type="radio" id="'.$file.'" value="'.$file.'" name="radio_alt"/> </td>'."\n";
+		$files[$file1] .= '<td align="center">'.$fileicon.'</td>'."\n";
 
 		$files[$file1] .= '<td ><label for="'.$file.'">&nbsp;';
 
@@ -351,82 +352,6 @@ if (is_array($files)) {
 
 echo '</table>'."\n";
 //echo '</form>';
-
-
-
-?>
-
-<script type="text/javascript">
-//<!--
-function insertFile(fileName, pathTo, ext) { 
-
-	// pathTo + fileName should be relative to current path (specified by the Content Package Path)
-
-	if (ext == "gif" || ext == "jpg" || ext == "jpeg" || ext == "png") {
-		var info = "<?php echo _AT('alternate_text'); ?>";
-		var html = '<img src="' + pathTo+fileName + '" border="0" alt="' + info + '" />';
-
-		if (window.opener.document.form.setvisual.value == 1) {
-			if (window.parent.tinyMCE)
-				window.parent.tinyMCE.execCommand('mceInsertContent', false, html);
-
-			if (window.opener.tinyMCE)
-				window.opener.tinyMCE.execCommand('mceInsertContent', false, html);
-		} else {
-			insertAtCursor(window.opener.document.form.body_text, html);
-		}
-	} else if (ext == "mpg" || ext == "avi" || ext == "wmv" || ext == "mov" || ext == "swf" || ext == "mp3" || ext == "wav" || ext == "ogg" || ext == "mid") {
-		var html = '[media]'+ pathTo + fileName + '[/media]';
-		if (window.opener.document.form.setvisual.value == 1) {
-			if (window.parent.tinyMCE)
-				window.parent.tinyMCE.execCommand('mceInsertContent', false, html);
-
-			if (window.opener.tinyMCE)
-				window.opener.tinyMCE.execCommand('mceInsertContent', false, html);
-		} else {
-			insertAtCursor(window.opener.document.form.body_text, html);
-		}
-	} else {
-		var info = "<?php echo _AT('put_link'); ?>";
-		var html = '<a href="' + pathTo+fileName + '">' + info + '</a>';
-
-		if (window.opener.document.form.setvisual.value == 1) {
-			if (window.parent.tinyMCE)
-				window.parent.tinyMCE.execCommand('mceInsertContent', false, html);
-
-			if (window.opener.tinyMCE)
-				window.opener.tinyMCE.execCommand('mceInsertContent', false, html);
-		} else {
-			insertAtCursor(window.opener.document.form.body_text, html);
-		}
-	}
-}
-function insertAtCursor(myField, myValue) {
-	//IE support
-	if (window.opener.document.selection) {
-		myField.focus();
-		sel = window.opener.document.selection.createRange();
-		sel.text = myValue;
-	}
-	//MOZILLA/NETSCAPE support
-	else if (myField.selectionStart || myField.selectionStart == '0') {
-		var startPos = myField.selectionStart;
-		var endPos = myField.selectionEnd;
-		myField.value = myField.value.substring(0, startPos)
-		+ myValue
-		+ myField.value.substring(endPos, myField.value.length);
-		myField.focus();
-	} else {
-		myField.value += myValue;
-		myField.focus();
-	}
-}
-//-->
-</script>
-		
-
-<?php
-
 
 closedir($dir);
 

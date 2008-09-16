@@ -74,13 +74,13 @@ function output_tabs($current_tab, $changes) {
 <?php }
 
 // save all changes to the DB
-function save_changes($redir) {
+function save_changes($redir, $current_tab) {
 	global $contentManager, $db, $addslashes, $msg;
-
+	
 	$_POST['pid']	= intval($_POST['pid']);
 	$_POST['cid']	= intval($_POST['cid']);
 	
-//	$_POST['alternatives'] = intval($_POST['alternatives']);
+	$_POST['alternatives'] = intval($_POST['alternatives']);
 	
 	$_POST['title'] = trim($_POST['title']);
 	$_POST['head']	= trim($_POST['head']);
@@ -167,9 +167,10 @@ function save_changes($redir) {
 		$current_tab = intval($_POST['current_tab']);
 	}
 
-	//Added by Silvia 
-	if ($current_tab=='5') {
-		if($_POST['radio_alternatives']==1){
+	/*Added by Silvia 
+	if ($current_tab == 5) {
+		echo 'ci sono';
+		if(($_POST['alternatives']==1) || ($_GET['alternatives']==1)){
 			$sql	= "SELECT primary_resource_id FROM ".TABLE_PREFIX."primary_resources WHERE content_id='$cid'";
 	    	$result = mysql_query($sql, $db);
 
@@ -237,6 +238,7 @@ function save_changes($redir) {
 	    	}
 		}
 		else {
+			echo 'sono quaqua';
 			if ($changes_made)
 				$body_ins = $_POST['body_text'];
 			else {
@@ -314,12 +316,14 @@ function save_changes($redir) {
 		}
 	}
 
+	*/
 	//End Added by Silvia 
+	
 	if (!$msg->containsErrors() && $redir) {
 		$_SESSION['save_n_close'] = $_POST['save_n_close'];
 		
 		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
-		header('Location: '.basename($_SERVER['PHP_SELF']).'?cid='.$cid.SEP.'close='.$addslashes($_POST['save_n_close']).SEP.'tab='.$addslashes($_POST['current_tab']).SEP.'setvisual='.$addslashes($_POST['setvisual']).SEP.'displayhead='.$addslashes($_POST['displayhead']));
+		header('Location: '.basename($_SERVER['PHP_SELF']).'?cid='.$cid.SEP.'close='.$addslashes($_POST['save_n_close']).SEP.'tab='.$addslashes($_POST['current_tab']).SEP.'setvisual='.$addslashes($_POST['setvisual']).SEP.'displayhead='.$addslashes($_POST['displayhead']).SEP.'alternatives='.$addslashes($_POST['alternatives']));
 		exit;
 	} else {
 		return;

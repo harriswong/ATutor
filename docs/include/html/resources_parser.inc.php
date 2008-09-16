@@ -104,7 +104,7 @@ global $course_id;
 $my_files 		= array();
 $content_files 	= "\n";
 
-//aggiunto or ora
+//in order to control if some [media] is in the body_text
 $body = embed_media($body_t);
 
 $parser->parse($body);

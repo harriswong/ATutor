@@ -37,15 +37,15 @@ function link_name_resource($resource){
 function checkbox_types($resource_id, $alt, $kind){
 	global $db;
 	
+	$legend = $alt.'_resource_type';
 	echo '<fieldset>';
-	echo '<legend>'. _AT('resource_type').'</legend>';
+	echo '<legend>'. _AT($legend).'</legend>';
 
 	$sql_types		= "SELECT * FROM ".TABLE_PREFIX."resource_types";
 	$types			= mysql_query($sql_types, $db);
 
 	$sql_set_types	= "SELECT type_id FROM ".TABLE_PREFIX.$alt."_resources_types where ".$alt."_resource_id=".$resource_id;
 	$set_types		= mysql_query($sql_set_types, $db);
-//	echo $sql_set_types;
 	
 	$resource_types	= false;
 	$j 				= 0;
@@ -99,6 +99,10 @@ function checkbox_types($resource_id, $alt, $kind){
 */
 function delete_alternative($resource, $cid, $current_tab){
 	echo '<a href="'.$_SERVER['PHP_SELF'].'?cid='.$cid. SEP .'tab='.$current_tab . SEP . 'act=delete'. SEP .'id_alt='.$resource[secondary_resource_id].' ">'. _AT('delete').' <strong>'. $resource[secondary_resource].'</strong></a>';
+	
+	
+	//	header('Location: '.basename($_SERVER['PHP_SELF']).'?cid='.$cid.SEP.'close='.$addslashes($_POST['save_n_close']).SEP.'tab='.$addslashes($_POST['current_tab']).SEP.'setvisual='.$addslashes($_POST['setvisual']).SEP.'displayhead='.$addslashes($_POST['displayhead']).SEP.'alternatives='.$addslashes($_POST['alternatives']));
+	
 }						
 						
 						
