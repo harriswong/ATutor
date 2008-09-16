@@ -299,14 +299,7 @@ $my_MaxFileSize	= $row['max_file_size'];
 $path = AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$_POST['pathext'];
 
 if (isset($_POST['upload'])) {
-//	print_r($_FILES);
-//	exit();
-	debug($_FILES);
-	debug($_POST);
-	
-	//$_FILES['uploadedfile']['name'];
-	echo 'uffa';
-//	echo $_FILES['uploadedfile']['size'];
+
 	if($_FILES['uploadedfile']['name'])	{
 //		echo 'il file esiste';
 		$_FILES['uploadedfile']['name'] = trim($_FILES['uploadedfile']['name']);
