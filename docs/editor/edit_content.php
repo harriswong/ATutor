@@ -79,7 +79,6 @@ if (isset($_POST['submit_file'])) {
 
 if (isset($_POST['submit'])) {
 	/* we're saving. redirects if successful. */
-	echo 'uffa';
 	save_changes(true, $current_tab);
 }
 
