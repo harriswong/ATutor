@@ -229,14 +229,13 @@ global $db;
 	
 		<?php echo _AT('formatting'); ?><br />
 
-		<input type="radio" name="formatting_alt" value="0" id="text_alt_radio" <?php if ($_POST['formatting'] == 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton.disabled=true;" />
+		<input type="radio" name="formatting_alt" value="0" id="text_alt_radio" <?php if ($_POST['formatting_alt'] == 0) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton_alt.disabled=true;" />
 		<label for="text_alt_radio"><?php echo _AT('plain_text'); ?></label>
-		<input type="radio" name="formatting_alt" value="1" id="html_alt_radio" <?php if ($_POST['formatting'] == 1 || $_POST['setvisual']) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton.disabled=false;"/>
+		<input type="radio" name="formatting_alt" value="1" id="html_alt_radio" <?php if ($_POST['formatting_alt'] == 1 || $_POST['setvisual_alt']) { echo 'checked="checked"'; } ?> onclick="javascript: document.form.setvisualbutton_alt.disabled=false;"/>
 		<label for="html_alt_radio"><?php echo _AT('html'); ?></label>
-		<input type="hidden" name="displayhead" value="<?php if ($_POST['displayhead']==1 || $_REQUEST['displayhead']==1 || $_GET['displayhead']==1) echo '1'; else echo '0'; ?>" />
-		<input type="hidden" name="setvisual" value="<?php if ($_POST['setvisual']==1 || $_REQUEST['setvisual']==1 || $_GET['setvisual']==1) echo '1'; else echo '0'; ?>" />
-		<input type="hidden" name="settext" value="<?php if ($_POST['settext']==1 || $_REQUEST['settext']==1 || $_GET['settext']==1) echo '1'; else echo '0'; ?>" />
-		<input type="button" name="setvisualbutton" value="<?php echo _AT('switch_visual'); ?>" onclick="switch_body_editor()" class="button" />
+		<input type="hidden" name="setvisual_alt" value="<?php if ($_POST['setvisual_alt']==1 || $_REQUEST['setvisual_alt']==1 || $_GET['setvisual_alt']==1) echo '1'; else echo '0'; ?>" />
+		<input type="hidden" name="settext_alt" value="<?php if ($_POST['settext_alt']==1 || $_REQUEST['settext_alt']==1 || $_GET['settext_alt']==1) echo '1'; else echo '0'; ?>" />
+		<input type="button" name="setvisualbutton_alt" value="<?php echo _AT('switch_visual'); ?>" onclick="switch_body_editor()" class="button" />
 
 		<script type="text/javascript" language="javascript">
 		//<!--
@@ -311,44 +310,38 @@ if (mysql_num_rows($result_alt) > 0) {
 	function on_load()
 	{
 		if (document.getElementById("text_alt_radio").checked)
-			document.form.setvisualbutton.disabled = true;
+			document.form.setvisualbutton_alt.disabled = true;
 			
-		if (document.form.displayhead.value==1)
-		{
-			document.getElementById("headDiv").style.display = '';
-			document.form.edithead.value = "<?php echo _AT('hide'); ?>"
-		}
-			
-		if (document.form.setvisual.value==1)
+		if (document.form.setvisual_alt.value==1)
 		{
 			tinyMCE.execCommand('mceAddControl', false, 'body_text_alt');
 			document.form.formatting_alt[0].disabled = "disabled";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
+			document.form.setvisualbutton_alt.value = "<?php echo _AT('switch_text'); ?>";
 		}
 		else
 		{
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+			document.form.setvisualbutton_alt.value = "<?php echo _AT('switch_visual'); ?>";
 		}
 	}
 		
 	// switch between text, visual editor for "body text"
 	function switch_body_editor()
 	{
-		if (document.form.setvisualbutton.value=="<?php echo _AT('switch_visual'); ?>")
+		if (document.form.setvisualbutton_alt.value=="<?php echo _AT('switch_visual'); ?>")
 		{
 			tinyMCE.execCommand('mceAddControl', false, 'body_text_alt');
-			document.form.setvisual.value=1;
-			document.form.settext.value=0;
+			document.form.setvisual_alt.value=1;
+			document.form.settext_alt.value=0;
 			document.form.formatting_alt[0].disabled = "disabled";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_text'); ?>";
+			document.form.setvisualbutton_alt.value = "<?php echo _AT('switch_text'); ?>";
 		}
 		else
 		{
 			tinyMCE.execCommand('mceRemoveControl', false, 'body_text_alt');
-			document.form.setvisual.value=0;
-			document.form.settext.value=1;
+			document.form.setvisual_alt.value=0;
+			document.form.settext_alt.value=1;
 			document.form.formatting_alt[0].disabled = "";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+			document.form.setvisualbutton_alt.value = "<?php echo _AT('switch_visual'); ?>";
 		}
 	}
 	
