@@ -44,7 +44,7 @@ function get_import_files($text)
 	
 	return $files;
 }
-	
+
 function print_organizations($parent_id,
 							 &$_menu, 
 							 $depth, 
@@ -57,7 +57,7 @@ function print_organizations($parent_id,
 	static $paths, $zipped_files;
 	global $glossary;
 	global $test_zipped_files, $test_files, $test_xml_items, $use_a4a;
-
+	
 	$space  = '    ';
 	$prefix = '                    ';
 
@@ -147,9 +147,10 @@ function print_organizations($parent_id,
 			$parser->parse($content['text']);
 
 			/* generate the IMS QTI resource and files */
+			
 			global $contentManager;
 			//check if test export is allowed.
-			if ($contentManager->allowTestExport($content['content_id'])){
+			if ($contentManager->allowTestExport($content['content_id'])) {
 				$content_test_rs = $contentManager->getContentTestsAssoc($content['content_id']);	
 				$test_ids = array();		//reset test ids
 				//$my_files = array();		//reset myfiles.
@@ -274,7 +275,6 @@ function print_organizations($parent_id,
 										array($content['content_id'], $content['content_path'], $content_files),
 										$ims_template_xml['resource']); 
 
-
 			for ($i=0; $i<$depth; $i++) {
 				$link .= $space;
 			}
@@ -349,6 +349,76 @@ function print_organizations($parent_id,
 	}
 }
 
+
+/* Export Forum */
+function print_resources_forum(){
+
+	global $forum, $zipfile, $course_id, $resources;
+	global $contentManager;
+	
+	$ims_template_xml['resource_forum'] = 
+	
+	'	<resource identifier="Forum{FORUMID}" type="imsdt_xmlv1p0">
+			<metadata/>
+			<file href="Forum{FORUMID}/FileDescriptorForum{FORUMID}.xml"/>
+		</resource>
+	'."\n";
+			
+	$forums_array = $contentManager->forumCourse($course_id); 
+	
+	if($forums_array != false){
+						
+		$forum = array();	
+			
+		while ($forum_row = mysql_fetch_assoc($forums_array)){
+				
+			// per ogni forum associato al corso viene aggiunto un elemento resource in imsmanifest.xml
+			$resources .= str_replace("{FORUMID}", $forum_row['forum_id'], $ims_template_xml['resource_forum']); 
+				
+			//viene generato il file descrittore
+			//file Descrittore con la descrzione del forum
+			$fileDesDT_D = '<?xml version="1.0" encoding="UTF-8"?>
+	
+				<dt:topic
+		
+		 			xmlns:dt="http://www.imsglobal.org/xsd/imsdt_v1p0"
+		
+		  			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		
+					<title>{TitleDiscussionTopic}</title>
+		
+	  				<text texttype="text/plan">{DescriptionDiscussionTopic}</text>
+		
+				</dt:topic>';
+				
+				//file Descrittore senza la descrizione del forum
+				$fileDesDT = '<?xml version="1.0" encoding="UTF-8"?>
+		
+					<dt:topic
+		
+		 				xmlns:dt="http://www.imsglobal.org/xsd/imsdt_v1p0"
+		
+		  				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		
+		 				<title>{TitleDiscussionTopic}</title>
+		
+		  				<text/>
+		
+				</dt:topic>';
+				
+				if (empty($forum_row['description']))
+					$text_file_des_xml = str_replace (array('{TitleDiscussionTopic}', '{DescriptionDiscussionTopic}'), array($forum_row['title'], $forum_row['description']), $fileDesDT); 
+				else
+					$text_file_des_xml = str_replace (array('{TitleDiscussionTopic}', '{DescriptionDiscussionTopic}'), array($forum_row['title'], $forum_row['description']), $fileDesDT_D); 
+				
+				array_push($forum, array("forum_id" => $forum_row['forum_id'], "file_des" => $text_file_des_xml));
+			}
+				
+		}										
+}
+
+
+
 $ims_template_xml['header'] = '<?xml version="1.0" encoding="{COURSE_PRIMARY_LANGUAGE_CHARSET}"?>
 <!--This is an ATutor 1.0 Common Cartridge document-->
 <!--Created from the ATutor Content Package Generator - http://www.atutor.ca-->
@@ -387,6 +457,16 @@ $ims_template_xml['resource_glossary'] = '		<resource identifier="MANIFEST01_RES
 			<file href="GlossaryItem/glossary.xml"/>
 		</resource>
 '."\n";
+
+/* Export Forum */
+$ims_template_xml['resource_forum'] = '		<resource identifier="Forum{FORUMID}" type="imsdt_xmlv1p0">
+			<metadata/>
+			<file href="Forum{FORUMID}/FileDescriptorForum{FORUMID}.xml"/>
+		</resource>
+'."\n";
+
+
+
 $ims_template_xml['resource_test'] = '		<resource identifier="MANIFEST01_RESOURCE_QTI{TEST_ID}" type="imsqti_xmlv1p2/imscc_xmlv1p0/assessment" href="QTI/{PATH}">
 			<metadata/>
 			<file href="QTI/{PATH}"/>{FILES}
@@ -532,5 +612,20 @@ $glossary_body_html = '<h2>Glossary</h2>
 
 $glossary_term_html = '	<li><a name="{ENCODED_TERM}"></a><strong>{TERM}</strong><br />
 		{DEFINITION}<br /><br /></li>';
+
+/* Export Forum */
+$fileDesDT = '<?xml version="1.0" encoding="UTF-8"?>
+
+<dt:topic
+
+  xmlns:dt="http://www.imsglobal.org/xsd/imsdt_v1p0"
+
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <title>{TitleDiscussionTopic}</title>
+
+  <text texttype="text/html">{DescriptionDiscussionTopic}</text>
+
+</dt:topic>';
 
 ?>

@@ -12,6 +12,18 @@
 /****************************************************************/
 // $Id: ims_export.php 8211 2008-11-11 22:55:40Z hwong $
 define('AT_INCLUDE_PATH', '../../include/');
+
+/* Export Wiki */
+define('AT_CONTENT_DIRECTORY', '../../content/');
+define('AT_WIKI_EXPORT', '../../mods/wiki/');
+define('AT_DIR', '../../');
+
+require(AT_WIKI_EXPORT.'ewiki.php');
+require(AT_WIKI_EXPORT.'plugins/page/wikidump.php');
+
+/* Import/Export Wiki */
+require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
+
 require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
 require(AT_INCLUDE_PATH.'classes/A4a/A4aExport.class.php');
 
@@ -87,10 +99,28 @@ if (isset($_POST['cancel'])) {
 	exit;
 }
 
-
 $zipfile = new zipfile(); 
 $zipfile->create_dir('resources/');
 $zipfile->create_dir('GlossaryItem/');
+
+
+/* Export WIKI */
+
+/* non viene effettuato il controllo per verificare se c'è un Wiki associato al corso poichè 
+tale controllo viene efettuato già nel file ../ims/index.php */
+if (isset($_REQUEST['to_wiki'])){
+	
+	ewiki_page_wiki_export_send();
+
+    $zipfile->create_dir('Wiki/');
+	$zipfile->create_dir('Wiki/wiki_html/');
+	$zipfile->create_dir('Wiki/wiki/');
+
+	$zipfile->add_dir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki_html/", 'Wiki/wiki_html/');
+	$zipfile->add_dir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki/", 'Wiki/wiki/');
+	clr_dir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki_html/");
+}
+
 
 /*
 	the following resources are to be identified:
@@ -169,6 +199,9 @@ if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
 } else {
 	$sql = "SELECT *, UNIX_TIMESTAMP(last_modified) AS u_ts FROM ".TABLE_PREFIX."content WHERE course_id=$course_id ORDER BY content_parent_id, ordering";
 }
+/* $contentManager->isReleased */
+/* returns the timestamp of release if this page has not yet been released, or is under a page that has not been released, true otherwise */
+/* finds the max(timestamp) of all parents and returns that, true if less than now */
 $result = mysql_query($sql, $db);
 while ($row = mysql_fetch_assoc($result)) {
 	if (authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) || $contentManager->isReleased($row['content_id']) === TRUE) {
@@ -196,6 +229,7 @@ if ($cid) {
 	$ims_course_title = $course_title;
 }
 
+//viene creato l'header del file imsmsanifest (vengono settati tutti i metadati con i valori attuali)
 $imsmanifest_xml = str_replace(array('{COURSE_TITLE}', '{COURSE_DESCRIPTION}', '{COURSE_PRIMARY_LANGUAGE_CHARSET}', '{COURSE_PRIMARY_LANGUAGE_CODE}'), 
 							  array($ims_course_title, $course_desc, $course_language_charset, $course_language_code),
 							  $ims_template_xml['header']);
@@ -207,12 +241,31 @@ $first = $content[$top_content_parent_id][0];
 
 $test_ids = array();	//global array to store all the test ids
 
+/* Exoprt Forum */
+global  $forum;
+
 /* generate the resources and save the HTML files */
 $used_glossary_terms = array();
 ob_start();
 print_organizations($top_content_parent_id, $content, 0, '', array(), $toc_html);
+
+/* Exoprt Forum */
+print_resources_forum();
+
 $organizations_str = ob_get_contents();
 ob_end_clean();
+
+
+/* Export Forum */
+
+/* le directory e i file descrittori relativi ai Forum sono inseriti nell'archivio */
+if (count($forum)) {
+	foreach ($forum as $forum_row) {
+		$zipfile->add_file($forum_row['file_des'],  'Forum'.$forum_row['forum_id'].'/FileDescriptorForum'.$forum_row['forum_id'].'.xml');
+	}
+}
+
+
 
 if (count($used_glossary_terms)) {
 	$used_glossary_terms = array_unique($used_glossary_terms);
@@ -264,6 +317,7 @@ $zipfile->add_file($imsmanifest_xml, 'imsmanifest.xml');
 if ($glossary_xml) {
 	$zipfile->add_file($glossary_xml,  'GlossaryItem/glossary.xml');
 }
+
 $zipfile->close(); // this is optional, since send_file() closes it anyway
 
 $ims_course_title = str_replace(array(' ', ':'), '_', $ims_course_title);

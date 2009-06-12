@@ -401,4 +401,65 @@ function course_realpath_NEW_VERSION($file) {
 	}
 }
 
+
+/* Import/Export Wiki */
+/**
+* Returns TRUE if wiki exists, FALSE else
+* @access public
+* @param  string $dir the path to the directory
+* @return  boolean TRUE if wiki exists, FALSE if it does not exist 
+*/
+function exist_wiki($dir) {
+	if (is_dir($dir)){
+		if (dirsize($dir) > 0 )
+			return TRUE;
+	}
+	return FALSE;
+}
+
+/* Import/Export Wiki */
+/**
+* Allows the copying all files of a directory.
+* @access  public
+* @param   string $source		the source directory
+* @param   string $dest			the destination directory
+* @return  boolean				whether the copy was successful 
+*/
+function copys_file_dir($dir_source, $dir_dest){
+				
+	$ris = TRUE;
+	$dir = opendir($dir_source);
+	if($dir){
+		while ($file=readdir($dir)) {
+			if($file){
+				if(file_exists($dir_dest."/".$file)){
+			
+						$lungh = strlen($_SESSION['course_id']);
+						$cod = substr ($file, 0, $lungh);						
+						if (strcmp($cod, $_SESSION['course_id']) == 0){
+							$pos = stripos ($file, '-');
+							if( $pos > 0){
+								$file = substr ( $file, $pos+1);
+							}
+						}
+						$num = 0;
+						while(file_exists($dir_dest."/".$_SESSION['course_id'].$num."-".$file)){
+							$num++;
+						}
+						copy($dir_source."/".$file, $dir_dest."/".$_SESSION['course_id'].$num."-".$file);
+			
+				}
+				else
+					copy($dir_source."/".$file, $dir_dest."/".$file);
+			} 
+			else $ris = FALSE;
+		} 
+	} 
+	else $ris = FALSE;
+	
+	return $ris;
+}
+
+
+
 ?>

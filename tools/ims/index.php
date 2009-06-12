@@ -13,9 +13,16 @@
 // $Id$
 
 define('AT_INCLUDE_PATH', '../../include/');
+
+//IMPORT/EXPORT WIKI
+define('AT_CONTENT_DIRECTORY_1', '../../content');
+
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 require(AT_INCLUDE_PATH.'header.inc.php');
+
+//IMPORT/EXPORT WIKI
+require(AT_INCLUDE_PATH.'lib/filemanager.inc.php');
 
 if (!isset($_main_menu)) {
 	$_main_menu = $contentManager->getContent();
@@ -93,7 +100,16 @@ if (!authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) && ($_SESSION['packaging'] ==
 				<input type="checkbox" name="to_tile" id="to_tile" value="1" />
 				<label for="to_tile"><?php echo _AT('tile_export'); ?></label> <br />
 				<input type="checkbox" name="to_a4a" id="to_a4a" value="1" />
-				<label for="to_a4a"><?php echo _AT('a4a_export'); ?></label>
+				<label for="to_a4a"><?php echo _AT('a4a_export'); ?></label><br />
+				
+				<!-- Export Wiki -->
+				<?php
+				if(exist_wiki(AT_CONTENT_DIRECTORY_1.'/'.$_SESSION['course_id'].'/wiki/')):
+				?>
+					<input type="checkbox" name="to_wiki" id="to_wiki" value="1" />
+					<label for="to_wiki"><?php echo _AT('wiki_export'); ?></label>
+				<?php endif; ?>
+				
 			</div>
 	<?php endif; ?>
 	
@@ -142,7 +158,20 @@ if (!authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN) && ($_SESSION['packaging'] ==
 		<input type="checkbox" name="allow_test_import" id="allow_test_import" checked="checked" />
 		<label for="allow_test_import"><?php echo _AT('test_import_package'); ?></label> <br />
 		<input type="checkbox" name="allow_a4a_import" id="allow_a4a_import" checked="checked" />
-		<label for="allow_a4a_import"><?php echo _AT('a4a_import_package'); ?></label>		
+		<label for="allow_a4a_import"><?php echo _AT('a4a_import_package'); ?></label><br />
+		
+		<!-- Import Forum -->
+		<input type="checkbox" name="allow_forum_import" id="allow_forum_import" checked="checked" />
+		<label for="allow_forum_import"><?php echo _AT('forum_import_package'); ?></label> <br />	
+		
+		<!-- Import Wiki -->
+		<?php
+			if(exist_wiki(AT_CONTENT_DIRECTORY_1 .'/'.$_SESSION['course_id'].'/wiki/')):
+		?>
+			<input type="checkbox" name="wiki_import" id="wiki_import" checked="checked" />
+			<label for="wiki_import"><?php echo _AT('wiki_import_package'); ?></label>	
+		<?php endif; ?>
+		
 	</div>
 	
 	<div class="row">
