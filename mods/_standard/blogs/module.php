@@ -14,7 +14,8 @@ define('BLOGS_AUTH_RW',    3); // to save time
 $_group_tool = $_student_tool = 'blogs/index.php';
 
 $_pages['blogs/index.php']['title_var'] = 'blogs';
-$_pages['blogs/index.php']['img']       = 'images/home-blogs.gif';
+$_pages['blogs/index.php']['img']       = 'images/home-blogs.png';
+$_pages['blogs/index.php']['text']       = _AT('blog_text');
 
 if (isset($_REQUEST['oid'])) {
 	$_pages['blogs/edit_post.php?ot='.BLOGS_GROUP.SEP.'oid='.$_REQUEST['oid'].SEP.'id='.$_REQUEST['id']]['title_var'] = 'edit';

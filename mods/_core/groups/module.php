@@ -38,6 +38,7 @@ $this->_pages['tools/groups/index.php']['guide']  = 'instructor/?p=groups.php';
 
 // student stuff
 $this->_pages['groups.php']['title_var'] = 'groups';
-$this->_pages['groups.php']['img']       = 'images/home-acollab.gif';
+$this->_pages['groups.php']['img']       = 'images/home-acollab.png';
+$this->_pages['groups.php']['text']       = _AT('groups_text');
 
 ?>

@@ -25,6 +25,6 @@ $this->_pages['tools/glossary/index.php']['children']  = array('tools/glossary/a
 
 //student pages
 $this->_pages['glossary/index.php']['title_var'] = 'glossary';
-$this->_pages['glossary/index.php']['img']       = 'images/home-glossary.gif';
-
+$this->_pages['glossary/index.php']['img']       = 'images/home-glossary.png';
+$this->_pages['glossary/index.php']['text']		  = _AT('glossary_text');		//inserimento text 		
 ?>

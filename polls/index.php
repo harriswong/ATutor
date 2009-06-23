@@ -46,7 +46,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		echo '<form method="post" action="'.htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES).'">';
 		echo '<table width="70%" border="0" cellspacing="0" cellpadding="0" summary="" class="dropdown" align="center">';
 		echo '<tr>';
-		echo '<td valign="top" class="dropdown-heading" nowrap="nowrap" align="left"><strong>' . AT_print($row['question'], 'polls.question') . '</strong>';
+		echo '<a name='.$row['poll_id'].'> <td valign="top" class="dropdown-heading" nowrap="nowrap" align="left"><strong>' . AT_print($row['question'], 'polls.question') . '</strong></a>';
 		echo '<input type="hidden" name="poll_id" value="'.$row['poll_id'].'" /></td></tr>';
 
 

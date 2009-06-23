@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<module version="0.1"> 
+    <name lang="en">Tracking</name> 
+    <description lang="en">Module for statistics and tracking.</description> 
+    <maintainers>
+        <maintainer> 
+            <name>ATutor Team</name> 
+            <email>info@atutor.ca</email> 
+        </maintainer>
+            </maintainers> 
+    <release> 
+        <version>0.1</version> 
+        <date>2009-09-06</date> 
+        <state>stable</state> 
+    </release> 
+</module>

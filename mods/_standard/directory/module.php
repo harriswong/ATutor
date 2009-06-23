@@ -6,6 +6,7 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
 $_student_tool = 'directory.php';
 
 $this->_pages['directory.php']['title_var'] = 'directory';
-$this->_pages['directory.php']['img']       = 'images/home-directory.gif';
+$this->_pages['directory.php']['img']       = 'images/home-directory.png';
+$this->_pages['directory.php']['text']       = _AT('directory_text');
 
 ?>

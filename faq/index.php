@@ -33,7 +33,7 @@ $result  = mysql_query($sql, $db);
 
 					<?php do { ?>
 						<li style="font-weight: normal">
-							<h3><?php echo $entry_row['question']; ?></h3>
+							<a name="<?php echo $entry_row['entry_id']; ?>"> <h3><?php echo $entry_row['question']; ?></h3> </a>
 							<p><?php echo $entry_row['answer'];?></p>
 						</li>
 						<?php $counter++; ?>

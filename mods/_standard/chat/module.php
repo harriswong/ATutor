@@ -22,7 +22,8 @@ $this->_pages['tools/chat/index.php']['guide']     = 'instructor/?p=chat.php';
 	$this->_pages['tools/chat/view_transcript.php']['parent'] = 'tools/chat/index.php';
 
 $this->_pages['chat/index.php']['title_var'] = 'chat';
-$this->_pages['chat/index.php']['img']       = 'images/home-chat.gif';
+$this->_pages['chat/index.php']['img']       = 'images/home-chat.png';
+$this->_pages['chat/index.php']['text']       = _AT('chat_text');
 
 	$this->_pages['chat/chat_frame.php']['title_var'] = 'chat';
 	$this->_pages['chat/chat_frame.php']['parent']    = 'chat/index.php';

@@ -6,7 +6,8 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
 $_student_tool = 'my_stats.php';
 
 $_pages['my_stats.php']['title_var'] = 'my_tracker';
-$_pages['my_stats.php']['img']       = 'images/home-tracker.gif';
+$_pages['my_stats.php']['img']       = 'images/home-tracker.png';
+$_pages['my_stats.php']['text']       = _AT('tracker_text');
 
 $_pages['tools/content/index.php']['children'][]  = 'tools/tracker/index.php';
 

@@ -412,20 +412,76 @@ function get_path($current_page) {
 }
 
 function get_home_navigation() {
-	global $_pages, $_base_path;
-
+	global $_pages, $_list, $_base_path;
+		
 	$home_links = array();
-	foreach ($_pages[AT_NAV_HOME] as $child) {
+	foreach ($_pages[AT_NAV_HOME] as $child) {					//esecuzione del ciclo fin quando non saranno terminati i moduli presenti nella home-page del corso
 		if (isset($_pages[$child])) {
-			if (isset($_pages[$child]['title'])) {
-				$title = $_pages[$child]['title'];
+			if (isset($_pages[$child]['title'])) {				//viene prelevato il titolo che dovrà poi essere utilizzato nella visualizzazione
+				$title = $_pages[$child]['title'];	
 			} else {
-				$title = _AT($_pages[$child]['title_var']);
+				$title = _AT($_pages[$child]['title_var']);	
 			}
-			$home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $_base_path.$_pages[$child]['img']);
+			if(isset($_pages[$child]['icon'])){					//si controlla se è presente l'icona inserita nel modulo di rifrimento. si ricorda che l'icona è inserita solo per i moduli che prevedono possibili sottocontenuti.
+				$icon = $_base_path.$_pages[$child]['icon'];	//in caso positivo viene prelevata e inserita in una variabile di appoggio che poi sarà a sua volta inserita all'interno dell'array finale home_links[]
+			} else if(isset($_pages[$child]['text'])){			//nel caso in cui non sia presente un' icona associata si controlla se è stato settata il testo (per moduli privi di sottocontenuti).
+				$text = $_pages[$child]['text'];				//il testo viene inserito in una variabile d'appoggio e successivamente nell'array.
+			}
+			
+			if (isset($_list[$_pages[$child]['title_var']])) 	//viene prelevato il path del file che dovrà poi essere richiamato nella visualizzazione dei sottocontenuti. solo i moduli che prevedono sottocontenuti avranno un file di riferimento.
+				$sub_file = $_list[$_pages[$child]['title_var']]['file'];
+				
+			//inserimento di tutti i dati necessari per la visualizzazione dei moduli nella home-page. Impostato per default il check a visible in quanto i moduli caricati saranno tutti visibili nella home.
+			$home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $_base_path.$_pages[$child]['img'], 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'check'=> 'visible');
+			$icon="";											//azzeramento in modo che per i moduli che non prevedono mini-icons non verrà inserito nulla
+			$text="";
 		}
 	}
-
 	return $home_links;
+}
+
+
+/** La funzione consente di caricare le informazioni necessarie per tutti i moduli disponibili per la home page dei corsi. richiamata in ATutot/index.php
+ * paramentri:
+ $_current_modules: contiene l'elenco di tutti i moduli disponibili per il corso
+ $_home_links_in: contiene i moduli che sono già presenti nella home precedentemente individuati e caricati tramite la funzione get_home_navigation()
+*/
+function get_all_modules($_current_modules, $home_links_in){
+	global $_pages, $_list, $_base_path;		
+	
+	$all_home_links = array();									//definizione array finale che sarà composto dal merge tra i moduli presenti e non nella home page
+	$home_links_out = array();									//definizione array che conterrà i moduli non visualizzati (per gli studenti) nella home del corso .
+	
+	foreach ($_current_modules as $module){						//in $module sono contenute tutte le stringhe che dovranno essere inserite nel DB per creare la sequenza necessaria alla visualizzazione dei moduli nella home page. vedi $_modules caricato in Module.class.php
+		if(isset($_pages[$module])){
+			if (!in_array($module, $_pages[AT_NAV_HOME])){		//si controlla se il modulo non è visualizzato attualmente nella home.
+				$home_check = 'invisible';						//se non risulter?ssere presente il flag viene impostato 'invisible' per poi essere scritto nell'array.
+
+				if (isset($_pages[$module]['title']))				//lettura del titolo
+					$title = $_pages[$module]['title'];
+				else
+					$title = _AT($_pages[$module]['title_var']);	
+			
+				if(isset($_pages[$module]['icon'])){				//si controlla se è presente l'icona inserita nel modulo di rifrimento. si ricorda che l'icona è inserita solo per i moduli che prevedono possibili sottocontenuti.
+					$icon = $_base_path.$_pages[$module]['icon'];	//in caso positivo viene prelevata e inserita in una variabile di appoggio che poi sarà sua volta inserita all'interno dell'array
+				} else if(isset($_pages[$module]['text'])){			//nel caso in cui non sia presente una icona associata si controlla se è stato settata il testo (per moduli privi di sottocontenuti)
+					$text = $_pages[$module]['text'];				//il testo viene inserito in una variabile d'appoggio e successivamente nell'array
+				}
+
+				if (isset($_list[$_pages[$module]['title_var']])) 	//viene prelevato il path del file che dovr?oi essere richiamato nella visualizzazione dei sottocontenuti. solo i moduli che prevedono sottocontenuti avranno un file di riferimento.
+					$sub_file = $_list[$_pages[$module]['title_var']]['file'];	
+			
+				//nel caso in cui il modulo non sia presente nella home, esso dovrà essere inserito nel contenitore dei moduli 'invisible'
+				$home_links_out[] = array('url' => $_base_path . url_rewrite($module), 'title' => $title, 'img' => $_base_path.$_pages[$module]['img'], 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'check' => $home_check, 'home_url' =>$module);
+			
+				$icon="";											//azzeramento in modo che per i moduli che non prevedono mini-icons non verrà inserito nulla
+				$text="";
+			}
+		}
+	}	//chiusura foreach
+	
+	$all_home_links = array_merge($home_links_in,$home_links_out);	//merge dei moduli tra i presenti e non nella home
+	
+	return $all_home_links;
 }
 ?>

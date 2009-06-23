@@ -30,6 +30,17 @@ require(AT_INCLUDE_PATH . 'header.inc.php');
 
 /* the "home" links: */
 $home_links = get_home_navigation();
+
+/*lettura di tutti i moduli visualizzabili nella home per l'istruttore. l'operazione non sarà eseguita per gli studenti in quanto per quest'ultimi dovranno essere visualizzati solo i moduli presenti nella home*/
+if(authenticate(AT_PRIV_ADMIN,AT_PRIV_RETURN)){
+	$_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); 	// removes index.php and tools/index.php
+	$_current_modules = array_merge( (array) $_current_modules, array_diff($_pages[AT_NAV_HOME],$_pages[AT_NAV_COURSE]) );
+	$_current_modules = array_merge( (array) $_current_modules, array_diff($_modules, $_current_modules));	//modules è definito in module.class.php
+
+	$all_home_links = get_all_modules($_current_modules, $home_links);				//chiamata  una funzione per il caricamento di tutti i moduli da me inplementata sempre in menu_pages.php
+	$savant->assign('all_home_links', $all_home_links);
+}
+
 $savant->assign('home_links', $home_links);
 
 

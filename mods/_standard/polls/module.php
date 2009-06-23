@@ -7,11 +7,15 @@ define('AT_PRIV_POLLS', $this->getPrivilege());
 //side dropdown
 $this->_stacks['poll'] = array('title_var'=>'poll','file'=>AT_INCLUDE_PATH.'html/dropdowns/poll.inc.php');
 
+//modules sub-content
+$this->_list['polls'] = array('title_var'=>'polls','file'=>AT_INCLUDE_PATH.'html/submodules/polls.inc.php');
+
 // if this module is to be made available to students on the Home or Main Navigation
 $_student_tool = 'polls/index.php';
 
 $this->_pages['polls/index.php']['title_var'] = 'polls';
-$this->_pages['polls/index.php']['img']       = 'images/home-polls.gif';
+$this->_pages['polls/index.php']['img']       = 'images/home-polls.png';
+$this->_pages['polls/index.php']['icon']       = 'images/home-polls_icon.png';
 
 $this->_pages['tools/polls/index.php']['title_var'] = 'polls';
 $this->_pages['tools/polls/index.php']['parent']    = 'tools/index.php';
