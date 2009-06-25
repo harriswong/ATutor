@@ -1029,6 +1029,20 @@ class ContentManager
 		}
 		return false;
 	}
+	
+	/* Export Forum (Discussion Topic) */
+	/** 
+	 * Return  l'elenco dei forum associati al corso se ci sono, false altrimenti.
+	 * @param	int	course_id
+	 * @return	riusltato della query sql con l'elenco dei forum associati al corso
+	 */
+	function & forumCourse($course_id){	
+		$sql = "SELECT DISTINCT f.forum_id, title, description FROM ".TABLE_PREFIX."forums_courses AS fc JOIN ".TABLE_PREFIX."forums AS f ON fc.forum_id=f.forum_id WHERE course_id=$course_id";
+		$result = mysql_query($sql, $this->db);
+		return $result;
+	}
+	
+	
 }
 
 ?>
