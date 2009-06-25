@@ -20,6 +20,8 @@ define('AT_ADMIN_PRIV_EWIKI', $this->getAdminPrivilege());
  */
 $_student_tool = 'mods/wiki/index.php';
 
+//tool manager
+$this->_tool['wiki'] = array('title_var'=>'wiki','file'=>'wiki_tool.php');
 
 /*******
  * instructor Manage section:

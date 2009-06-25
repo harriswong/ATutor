@@ -14,6 +14,8 @@ $this->_stacks['posts'] = array('title_var'=>'posts','file'=>AT_INCLUDE_PATH.'ht
 //modules sub-content
 $this->_list['forums'] = array('title_var'=>'forums','file'=>AT_INCLUDE_PATH.'html/submodules/forums.inc.php');
 
+//tool manager
+$this->_tool['forums'] = array('title_var'=>'forums','file'=>'forums_tool.php');
 
 //instructor pages
 $this->_pages['tools/forums/index.php']['title_var'] = 'forums';

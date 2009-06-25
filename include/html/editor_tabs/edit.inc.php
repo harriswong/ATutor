@@ -73,9 +73,61 @@ if ($do_check) {
 			<a href="<?php echo AT_BASE_HREF; ?>tools/filemanager/index.php?framed=1"><?php echo _AT('open_file_manager'); ?></a>
 		</noscript>			
 	</div>
+	
+	
 	<div class="row">
-		<label for="body_text"><?php echo _AT('body');  ?></label><br />
+	<br><?php echo _AT('ToolManager');?><br><br><?php
+	
+	$home_links = get_home_navigation();				//vengono lette le caratteristiche di ogni modulo attivato nella home page.
+	$all_home_main = get_main_navigation($current_page);//vengono lette le caratteristiche di ogni modulo attivo nel main navigation
+	
+	$num = count($all_home_main);						//necessario elminare il primo e l'utlimo elemento poichè sono rispettivamente "Home" e "Manage"
+	unset($all_home_main[0]);
+	unset($all_home_main[$num-1]);
+	
+	
+	$all_tool = $home_links;							//mantengo una copia definitiva per gli strumenti finali che sarà compost dagli home_link + home_main (UNICI)
+	$check=false;
+	foreach($all_home_main as $main){
+		foreach($home_links as $link){
+			if($link['title'] == $main['title']){
+				$check=true;
+				break;
+			}
+		}
+		if(!$check)
+			$all_tool[]=$main;
+		$check=false;
+	}
+	
+	$i=0;										//contatore per scorrere i vari strumenti ottenuti dalla lettura tra quelli attivi nella home page del corso?>
+		<table class="data" style="width: 10%" rules="cols" border="1" align="left">
+			<tbody>
+				<tr><?php
+				foreach($all_tool as $tool){ 
+					if($tool['tool_file'] != null){ ?>
+						<td>
+							<script type="text/javascript" language="javascript">
+								document.write(" <a href=\"#\" onclick=\"window.open('<?php echo AT_BASE_HREF; ?>tools/toolmanager/index.php?framed=1<?php echo SEP; ?>popup=1<?php echo SEP; ?>tool_file=<?php echo $tool['tool_file'];?>','newWin2','menubar=0,scrollbars=1,resizable=1,width=600,height=400'); return false;\"><img src='<?php echo $tool['img']; ?>' alt='' height='30' hspace='2' border='0' title='<?php echo $tool['title']; ?>'/></a>");
+							</script>
+							<noscript>
+								<a href="<?php echo AT_BASE_HREF; ?>tools/toolmanager/index.php?framed=1"></a>
+							</noscript>
+						</td>
+				<?php }
+					$i++;
+				} ?>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br>
+	<br>
+	<br>
 
+	
+	<div class="row">
+		<label for="body_text"><?php echo _AT('body');  ?></label><br /> 
 <?php 
 
 // kludge #1548

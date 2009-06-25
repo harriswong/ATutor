@@ -10,6 +10,9 @@ $_group_tool = $_student_tool = 'links/index.php';
 //modules sub-content
 $this->_list['links'] = array('title_var'=>'links','file'=>AT_INCLUDE_PATH.'html/submodules/links.inc.php');
 
+//tool manager
+$this->_tool['links'] = array('title_var'=>'links','file'=>'links_tool.php');
+
 /*$this->_pages['tools/links/index.php']['title_var'] = 'links';
 $this->_pages['tools/links/index.php']['parent']    = 'tools/index.php';
 $this->_pages['tools/links/index.php']['children'] = array('tools/links/add.php', 'tools/links/categories.php', 'tools/links/categories_create.php');

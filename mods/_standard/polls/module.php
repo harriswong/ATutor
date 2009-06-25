@@ -10,6 +10,9 @@ $this->_stacks['poll'] = array('title_var'=>'poll','file'=>AT_INCLUDE_PATH.'html
 //modules sub-content
 $this->_list['polls'] = array('title_var'=>'polls','file'=>AT_INCLUDE_PATH.'html/submodules/polls.inc.php');
 
+//tool manager
+$this->_tool['polls'] = array('title_var'=>'polls','file'=>'polls_tool.php');
+
 // if this module is to be made available to students on the Home or Main Navigation
 $_student_tool = 'polls/index.php';
 

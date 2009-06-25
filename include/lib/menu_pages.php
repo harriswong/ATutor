@@ -305,7 +305,7 @@ function get_num_new_messages() {
 }
 
 function get_main_navigation($current_page) {
-	global $_pages, $_base_path;
+	global $_pages, $_base_path, $_tool;
 
 	$parent_page = $_pages[$current_page]['parent'];
 	$_top_level_pages = array();
@@ -319,7 +319,12 @@ function get_main_navigation($current_page) {
 					$_page_title = _AT($_pages[$page]['title_var']);
 				}
 				
-				$_top_level_pages[] = array('url' => $_base_path . url_rewrite($page), 'title' => $_page_title);
+				if(isset($_tool[$_pages[$page]['title_var']]))					//viene prelevato il file nel caso in cui lo strumento sia valodo per essere inserito nella toolbar in fase di editing dei conenuti del corso
+					$tool_file = $_tool[$_pages[$page]['title_var']]['file'];
+				else
+					$tool_file = null;
+				
+				$_top_level_pages[] = array('url' => $_base_path . url_rewrite($page), 'title' => $_page_title, 'img' => $_base_path.$_pages[$page]['img'], 'tool_file' => $tool_file);
 			}
 		}
 	} else if (isset($parent_page)) {
@@ -412,7 +417,7 @@ function get_path($current_page) {
 }
 
 function get_home_navigation() {
-	global $_pages, $_list, $_base_path;
+	global $_pages, $_list, $_tool, $_base_path;
 		
 	$home_links = array();
 	foreach ($_pages[AT_NAV_HOME] as $child) {					//esecuzione del ciclo fin quando non saranno terminati i moduli presenti nella home-page del corso
@@ -430,9 +435,14 @@ function get_home_navigation() {
 			
 			if (isset($_list[$_pages[$child]['title_var']])) 	//viene prelevato il path del file che dovrà poi essere richiamato nella visualizzazione dei sottocontenuti. solo i moduli che prevedono sottocontenuti avranno un file di riferimento.
 				$sub_file = $_list[$_pages[$child]['title_var']]['file'];
+			
+			if(isset($_tool[$_pages[$child]['title_var']]))		//viene prelevato il file nel caso in cui lo strumento sia valodo per essere inserito nella toolbar in fase di editing dei conenuti del corso
+				$tool_file = $_tool[$_pages[$child]['title_var']]['file'];
+			else
+				$tool_file = null;
 				
 			//inserimento di tutti i dati necessari per la visualizzazione dei moduli nella home-page. Impostato per default il check a visible in quanto i moduli caricati saranno tutti visibili nella home.
-			$home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $_base_path.$_pages[$child]['img'], 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'check'=> 'visible');
+			$home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $_base_path.$_pages[$child]['img'], 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'tool_file' => $tool_file, 'check'=> 'visible');
 			$icon="";											//azzeramento in modo che per i moduli che non prevedono mini-icons non verrà inserito nulla
 			$text="";
 		}
