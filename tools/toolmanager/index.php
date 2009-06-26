@@ -46,7 +46,7 @@ if(isset($content_list[0])){?>
 		$i=0;
 		foreach($content_list as $content){?>
 			<tr>
-				<td valign="top"><?php $files = '<input class="button" type="button" name="insert" value="' ._AT('insert') . '" onclick="javascript:insertFile(\'' .$content['title']. '\', \'' .AT_BASE_HREF. '\',\'' .$content[$i]['path']. '\',\'' . $tab . '\',\'' .$content['image']. '\');" />&nbsp;'; echo $files; ?></td>
+				<td valign="top"><?php $files = '<input class="button" type="button" name="insert" value="' ._AT('insert') . '" onclick="javascript:insertFile(\'' .$content['title']. '\', \'' .AT_BASE_HREF. '\',\'' .$content['path']. '\',\'' . $tab . '\',\'' .$content['image']. '\');" />&nbsp;'; echo $files; ?></td>
 				<td valign="top"><?php echo $content['title']; ?></td>
 				
 			</tr> <?php 
