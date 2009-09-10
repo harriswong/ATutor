@@ -23,11 +23,14 @@ require(AT_INCLUDE_PATH . 'lib/mime.inc.php');
 $id = intval($_GET['id']);
 if (isset($_GET['size']) && $_GET['size'] == 'o') {
 	$size = 'originals'; //t (thumbnail) or o (original)
+} elseif (isset($_GET['size']) && $_GET['size'] == 'p') {
+	$size = 'profile'; //p (profile) 
 } else {
 	$size = 'thumbs';
 }
 
 $file = AT_CONTENT_DIR . 'profile_pictures/' . $size .'/'. $id .'.';
+
 
 $extensions = array('gif', 'jpg', 'png');
 
@@ -36,6 +39,11 @@ foreach ($extensions as $extension) {
 		$file .= $extension;
 	}
 }
+
+//if file does not exist, quit.
+if (!file_exists($file)){
+	return;
+} 
 
 $pathinfo = pathinfo($file);
 $ext = $pathinfo['extension'];

@@ -9,7 +9,7 @@ $result = mysql_query($sql, $db);
 if(mysql_num_rows($result) != 0){
 	while ($row = mysql_fetch_assoc($result)) {
 		$path =  "forum/index.php?fid=".$row['forum_id']; 					// memorizzo i dati necessari per comporre i link di ogni elemento
-		$content_list[] = array('title' => $row['title'], 'path' => $path, 'image' => AT_BASE_HREF.'images/home-forums_icon.png' );
+		$content_list[] = array('start'=>'[forum]','title' => $row['title'], 'path' => $path, 'image' => AT_BASE_HREF.'images/home-forums_sm.png','end'=>'[/forum]');
 	}	
 	return $content_list; 	
 } else {

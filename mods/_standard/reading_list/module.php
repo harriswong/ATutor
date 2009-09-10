@@ -21,7 +21,7 @@ define('AT_PRIV_READING_LIST',       $this->getPrivilege());
 $_student_tool = 'reading_list/index.php';
 
 //modules sub-content
-$this->_list['reading_list'] = array('title_var'=>'reading_list','file'=>AT_INCLUDE_PATH.'html/submodules/reading_list.inc.php');
+$this->_list['reading_list'] = array('title_var'=>'reading_list','file'=>'mods/_standard/reading_list/sublinks.php');
 
 /*******
  * instructor Manage section:
@@ -95,7 +95,7 @@ $this->_pages['reading_list/index_instructor.php']['guide'] = 'instructor/?p=rea
  */
 $this->_pages['reading_list/index.php']['title_var'] = 'reading_list';
 $this->_pages['reading_list/index.php']['img']       = 'images/home-reading_list.png';
-$this->_pages['reading_list/index.php']['icon']       = 'images/home-reading_list_icon.png';
+$this->_pages['reading_list/index.php']['icon']       = 'images/home-reading_list_sm.png';
 
 $this->_pages['reading_list/index.php']['children'] = array('reading_list/reading_details.php');
 

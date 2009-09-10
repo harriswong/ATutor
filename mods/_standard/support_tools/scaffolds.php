@@ -20,7 +20,7 @@ admin_authenticate(AT_ADMIN_PRIV_ADMIN);
 
 if (isset($_POST['cancel'])) {
 	$msg->addFeedback('CANCELLED');
-	header('Location: ../courses.php');
+	header('Location: '.$_base_href.'admin/courses.php');
 	exit;
 }
 
@@ -62,7 +62,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 		<label for="atlas"><?php echo _AT('atlas'); ?></label><br /><input type="text" id="atlas"  name="atlas" value="<?php echo $_config['atlas']; ?>"  size="60"/><br />
 		<label for="calculator"><?php echo _AT('calculator'); ?></label><br /><input type="text" id="calculator"  name="calculator" value="<?php echo $_config['calculator']; ?>"  size="60"/><br />
 		<label for=""><?php echo _AT('note_taking'); ?></label><br /><input type="text" id="note_taking"  name="note_taking" value="<?php echo $_config['note_taking']; ?>"  size="60"/>	<br />
-		<label for="abacas"><?php echo _AT('abacas'); ?></label><br /><input type="text" id="abacas"  name="abacas" value="<?php echo $_config['abacas']; ?>"  size="60"/><br />
+		<label for="abacas"><?php echo _AT('abacus'); ?></label><br /><input type="text" id="abacas"  name="abacas" value="<?php echo $_config['abacas']; ?>"  size="60"/><br />
 	</div>
 	<div class="buttons">
 		<input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />

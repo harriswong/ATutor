@@ -67,21 +67,41 @@ global $system_courses, $_custom_css,$db;
 	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
 	<![endif]-->
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->base_path; ?>infusion/framework/fss/css/fss-layout.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->base_path; ?>infusion/components/reorderer/Reorderer.css" />
 	<?php echo $this->rtl_css; ?>
 	<?php if ($system_courses[$_SESSION['course_id']]['rss']): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
 	<?php endif; ?>
+	<script type="text/javascript" src="<?php echo $this->base_path; ?>jscripts/infusion/InfusionAll.js"></script>
 	<?php echo $this->custom_css; ?>
+</head>
 
-	<script type="text/javascript" src="<?php echo $this->base_path; ?>jscripts/fluid-components/js/Fluid-all.js"></script>
+<body onload="<?php echo $this->onload; ?>">
 
-
-	<script type="text/javascript">jQuery.noConflict();</script> 
-	
-	<script type="text/javascript" src="<?php echo $this->base_path; ?>jscripts/fluid-atutor.js"></script>
-	<script language="javascript" type="text/javascript">
+<script language="javascript" type="text/javascript">
 //<!--
+jQuery(document).ready(function () {
+	// only specific list items are sortable
+	var reorder_example_list = fluid.reorderList('#contentwrapper', {
+		selectors : {
+			movables : '.orderable',
+			selectables: '.orderable',
+			dropTargets: '.orderable',
+			grabHandle: '.grab'
+		},
+		orientation: fluid.orientation.HORIZONTAL,
+	    listeners: {
+			afterMove: function (item, requestedPosition, movables) {
+				//save the state to the db
+				var myDivs = jQuery ("div[class^=orderable]", "#contentwrapper");
+				jQuery.post("<?php echo AT_BASE_HREF; ?>themes/fluid/save_state.php", { 'left':myDivs[0].id }, function(data) {});     
+	        }
+	    }
+	});
+});
+
 var newwindow;
 function poptastic(url) {
 	newwindow=window.open(url,'popup','height=600,width=600,scrollbars=yes,resizable=yes');
@@ -182,15 +202,7 @@ function toggleToc(objId) {
 	}
 	setcookie(objId, toc.style.display, 1);
 }
-//-->
-</script>
-	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/at_fluid.css" type="text/css" />	
-</head>
 
-<body onload="<?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script>
-<script language="javascript" type="text/javascript">
-//<!--
 	function getcookie(cookiename) {
 		var cookiestring=""+document.cookie;
 		var index1=cookiestring.indexOf(cookiename);
@@ -201,45 +213,45 @@ function toggleToc(objId) {
 	}
 //-->
 </script>
+
 <div id="top-links"> <!-- top help/search/login links -->
 	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#content" accesskey="c">
 	<img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" /></a>		
 
 	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#menu"  accesskey="m"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_menu'); ?> ALT+m" /></a>
-		<?php if (isset($_SESSION['member_id']) && $_SESSION['member_id']): ?>
-			<!-- start the jump menu -->
-			<?php if (empty($_GET)): ?>
-				<form method="post" action="<?php echo $this->base_path; ?>bounce.php?p=<?php echo urlencode($this->rel_url); ?>" target="_top">
-			<?php else: ?>
-				<form method="post" action="<?php echo $this->base_path; ?>bounce.php" target="_top">
-			<?php endif; ?>
-			<label for="jumpmenu" accesskey="j"></label>
-				<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  Alt-j">							
-					<option value="0"><?php echo _AT('my_start_page'); ?></option>
-					<optgroup label="<?php echo _AT('courses_below'); ?>">
-						<?php foreach ($this->nav_courses as $this_course_id => $this_course_title): ?>
-							<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
-						<?php endforeach; ?>
-					</optgroup>
-				</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" class="button" /> </form>
-			<!-- /end the jump menu -->
-			<?php if ($_SESSION['is_super_admin']): ?>
-				<a href="<?php echo $this->base_path; ?>bounce.php?admin"><?php echo _AT('return_to_admin_area'); ?></a> | 
-			<?php endif; ?>
+	<?php if (isset($_SESSION['member_id']) && $_SESSION['member_id']): ?>
+		<!-- start the jump menu -->
+		<?php if (empty($_GET)): ?>
+		<form method="post" action="<?php echo $this->base_path; ?>bounce.php?p=<?php echo urlencode($this->rel_url); ?>" target="_top">
+		<?php else: ?>
+			<form method="post" action="<?php echo $this->base_path; ?>bounce.php" target="_top">
+		<?php endif; ?>
+		<label for="jumpmenu" accesskey="j"></label>
+			<select name="course" id="jumpmenu" title="<?php echo _AT('jump'); ?>:  Alt-j">							
+				<option value="0"><?php echo _AT('my_start_page'); ?></option>
+				<optgroup label="<?php echo _AT('courses_below'); ?>">
+					<?php foreach ($this->nav_courses as $this_course_id => $this_course_title): ?>
+						<option value="<?php echo $this_course_id; ?>"><?php echo $this_course_title; ?></option>
+					<?php endforeach; ?>
+				</optgroup>
+			</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" class="button" /> </form>
+		<!-- /end the jump menu -->
+		<?php if ($_SESSION['is_super_admin']): ?>
+			<a href="<?php echo $this->base_path; ?>bounce.php?admin"><?php echo _AT('return_to_admin_area'); ?></a> | 
+		<?php endif; ?>
 
-			<?php if ($_SESSION['course_id'] > -1): ?>
-				<?php if (get_num_new_messages()): ?>
-					<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?> (<?php echo get_num_new_messages(); ?>)</a> 
-				<?php else: ?>
-					<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?></a>
-				<?php endif; ?>
+		<?php if ($_SESSION['course_id'] > -1): ?>
+			<?php if (get_num_new_messages()): ?>
+				<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?> (<?php echo get_num_new_messages(); ?>)</a> 
+			<?php else: ?>
+				<a href="<?php echo $this->base_path; ?>inbox/index.php"><?php echo _AT('inbox'); ?></a>
 			<?php endif; ?>
 		<?php endif; ?>
-		<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> <a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
-	</div>
+	<?php endif; ?>
+	<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> <a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
+</div>
+
 <div id="header">
-
-
 	<?php
 	// If there is a custom course banner in the file manager called banner.html, display it here
 	@readfile(AT_CONTENT_DIR . $_SESSION['course_id'].'/banner.txt'); 
@@ -318,30 +330,29 @@ function toggleToc(objId) {
 	<?php endif; ?>
 </div>
 
-<div id="contentwrapper">
-	
+<div id="contentwrapper" class="fluid-horizontal-order">
 	<?php if (($_SESSION['course_id'] > 0) && $system_courses[$_SESSION['course_id']]['side_menu'] && ($_SESSION['prefs']['PREF_MENU']!="right")): ?>
-		<div id="atutor.menu" class="side-menu">
-			<div id="toolbar.menu" class="grabmenu grab"><img src="<?php echo $this->img; ?>layers.png" alt="<?php echo _AT('drag'); ?>" /></div>
-			<?php require(AT_INCLUDE_PATH.'side_menu.inc.php'); ?>
-		</div>
+	<div id="side-menu" class="orderable" style="display:inline; float:left">
+		<div class="grab"><img src="<?php echo $this->img; ?>layers.png" alt="<?php echo _AT('drag'); ?>" /></div>
+		<?php require(AT_INCLUDE_PATH.'side_menu.inc.php'); ?>
+	</div>
 	<?php endif; ?>
 
-	<div id="atutor.content" style="
-		<?php if (($_SESSION['course_id'] <= 0) && !$this->side_menu) { ?> width:99%; <?php } else { ?> width:76.5%; <?php } ?>
-	">
+	<div class="orderable" style="display:inline; float:left; margin-left: 10px; margin-right: 10px; <?php if (($_SESSION['course_id'] <= 0) && !$this->side_menu) { ?> width:99%; <?php } else { ?> width:76.5%; <?php } ?>">
 	
-	<div id="toolbar.content" class="grab" style="padding-top:4px; float:left"><img src="<?php echo $this->img; ?>layers.png" style="float:left;" alt="<?php echo _AT('drag'); ?>" /></div>
+		<div class="grab">
+			<div><img src="<?php echo $this->img; ?>layers.png" style="float:left;margin:3px;" alt="<?php echo _AT('drag'); ?>" /></div>
 	<?php if ($this->guide && ($_SESSION["prefs"]["PREF_SHOW_GUIDE"] || $_SESSION["course_id"] == "-1")): ?>
-			<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
+				<a href="<?php echo $this->guide; ?>" id="guide" onclick="poptastic('<?php echo $this->guide; ?>'); return false;" target="_new"><em><?php echo $this->page_title; ?></em></a>
 	<?php endif; ?>
 	<?php if ($_SESSION["prefs"]["PREF_SHOW_BREAD_CRUMBS"]) { ?>
-		<div id="breadcrumbs">
-			<?php foreach ($this->path as $page): ?>
-				<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> > 
-			<?php endforeach; ?> <?php echo $this->page_title; ?>
-		</div>
+			<div id="breadcrumbs">
+				<?php foreach ($this->path as $page): ?>
+					<a href="<?php echo $page['url']; ?>"><?php echo htmlspecialchars($page['title'], ENT_COMPAT, "UTF-8"); ?></a> > 
+				<?php endforeach; ?> <?php echo $this->page_title; ?>
+			</div>
 	<?php } ?>
+		</div>
 		
 		<?php if ($_SESSION['course_id'] > 0): ?>
 		<a href=""></a>

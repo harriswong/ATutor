@@ -43,10 +43,25 @@ function fs_authenticate($owner_type, $owner_id) {
 
 		return WORKSPACE_AUTH_RW;
 
-	} else if ($owner_type == WORKSPACE_ASSIGNMENT && authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
-		// instructors have read only access to assignments
-
-		return WORKSPACE_AUTH_READ;
+	} else if ($owner_type == WORKSPACE_ASSIGNMENT) {
+		if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN))
+		{ 
+			// instructors have read only access to assignments
+			return WORKSPACE_AUTH_READ;
+		}
+		else
+		{ 
+			// students have read access to their own assignments
+			global $db;
+			$sql = "SELECT COUNT(*) cnt FROM ".TABLE_PREFIX."files
+			         WHERE owner_id =".$owner_id."
+	                   AND owner_type= ".WORKSPACE_ASSIGNMENT."
+	                   AND member_id = ".$_SESSION['member_id'];
+			$result = mysql_query($sql, $db);
+			$row = mysql_fetch_assoc($result);
+			
+			if ($row['cnt'] > 0) RETURN WORKSPACE_AUTH_READ;
+		}
 	
 	} else if ($owner_type == WORKSPACE_GROUP) {
 		if (isset($_SESSION['groups'][$owner_id])) {
@@ -177,7 +192,7 @@ function fs_get_folder_by_pid($parent_folder_id, $owner_type, $owner_id) {
 	if ($owner_type == WORKSPACE_ASSIGNMENT) {
 		// get the folder row from the assignments table
 		// does not currently support sub-folders for assignments
-		if ($parent_folder_id == 0) {
+		if ($parent_folder_id == 0 && authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 			$sql = "SELECT assign_to FROM ".TABLE_PREFIX."assignments WHERE assignment_id=$owner_id AND course_id=$_SESSION[course_id]";
 			$result = mysql_query($sql, $db);
 			$row  = mysql_fetch_assoc($result);

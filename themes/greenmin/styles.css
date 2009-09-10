@@ -1406,3 +1406,79 @@ ul#topnavlist li a.selected {    /* The selected tab. There's only one of this *
 #toc .h4		{ padding:0 0 0 40px; }
 #toc .h5		{ padding:0 0 0 50px; }
 #toc .h6		{ padding:0 0 0 60px; }
+
+/* jQuery tooltip styles */
+#tooltip{
+	position:absolute;
+	z-index:3000;
+	border:3px solid #111;
+	background-color:#eeeeee;
+	padding:5px;
+
+}
+#tooltip h3,#tooltip div{
+	margin:0;
+}
+/* style for home page sublinks view */
+div.home_box {
+	width: 30em;
+	height: 150px;	
+	padding-top: 15px;
+	margin-left:1em;
+	float:left;
+}
+
+.outside_box{
+	margin-left:.4em;
+	background:#e0e0e0;
+	width:28em;
+	height:9.8em;
+}
+
+.inside_box{
+	width:100%;
+	margin:auto;
+	height:52%;
+	margin-bottom:.2em;
+	background:#eeeeee;
+}
+.details_or{
+	width:28.8em;
+	height:9.8em;
+	margin:0;
+	background-image:url(../../images/details_r.png);
+	background-position: top right;
+	background-repeat:no-repeat;
+}
+.details_ol{
+	height:9.8em;
+	margin:0px;
+	width:.45em;
+	background-image:url(../../images/details_l.png);
+	background-position: top left;
+	background-repeat:no-repeat;
+}
+.details_ir{
+	width:.5em;
+	height:100%;
+	float:right;
+	background-image:url(../../images/details_ir.png);
+	background-position: top right;
+	background-repeat:no-repeat;
+}
+.details_il{
+	height:100%;
+	float:left;
+	background-image:url(../../images/details_il.png);
+	background-position: top left;
+	background-repeat:no-repeat;
+}
+.home-title{
+	font-size:12pt;
+}
+.buttonbox{
+	float:right;
+}
+.details_text{
+	margin-left:1em;
+}

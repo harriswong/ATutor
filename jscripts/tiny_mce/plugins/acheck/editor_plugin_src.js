@@ -24,10 +24,9 @@
 
 					var theCode = '<html><body onLoad="document.accessform.submit();"> \n';
 					theCode += '<h1>Submitting Code for Accessibility Checking.....</h1>\n';
-					theCode += '<form action="http://checker.atrc.utoronto.ca/servlet/Checkacc" name="accessform" method="post"> \n';
-					theCode += '<input type="hidden" name="guide" value="wcag-2-0-aaa.xml" /> \n';
-					theCode += '<input type="hidden" name="type" value="form" /> \n';
-					theCode += '<textarea name="edittext">' + tinyMCE.activeEditor.getContent({format : 'raw'}) + '</textarea>\n';
+					theCode += '<form action="http://achecker.ca/checker/index.php" name="accessform" method="post"> \n';
+					theCode += '<input type="hidden" name="gid[]" value="8" /> \n';
+					theCode += '<textarea name="validate_content">' + tinyMCE.activeEditor.getContent({format : 'raw'}) + '</textarea>\n';
 					theCode += '<input type="submit" /></form> \n';  
 					theCode += '</body></html> \n';
 					accessWin = window.open('', 'accessWin',  '');

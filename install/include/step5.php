@@ -73,6 +73,7 @@ if (isset($_POST['submit'])) {
 			} else {
 				mkdir($_POST['content_dir'].'/profile_pictures/originals');
 				mkdir($_POST['content_dir'].'/profile_pictures/thumbs');
+				mkdir($_POST['content_dir'].'/profile_pictures/profile');
 			}
 		} else if (!is_writable($_POST['content_dir'].'/profile_pictures')){
 			$errors[] = '<strong>'.$_POST['content_dir'].'/profile_pictures</strong> directory is not writable.';
@@ -83,6 +84,13 @@ if (isset($_POST['submit'])) {
 			}
 		} else if (!is_writable($_POST['content_dir'].'/patcher')){
 			$errors[] = '<strong>'.$_POST['content_dir'].'/patcher</strong> directory is not writable.';
+		}
+		if (!is_dir($_POST['content_dir'].'/social')) {
+			if (!@mkdir($_POST['content_dir'].'/social')) {
+				$errors[] = '<strong>'.$_POST['content_dir'].'/social</strong> directory does not exist and cannot be created.';  
+			}
+		} else if (!is_writable($_POST['content_dir'].'/social')){
+			$errors[] = '<strong>'.$_POST['content_dir'].'/social</strong> directory is not writable.';
 		}
 		if (!is_dir($_POST['content_dir'].'/module')) {
 			if (!@mkdir($_POST['content_dir'].'/module')) {

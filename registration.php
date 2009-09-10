@@ -15,6 +15,7 @@ $_user_location	= 'public';
 
 define('AT_INCLUDE_PATH', 'include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
+include(AT_INCLUDE_PATH."securimage/securimage.php");
 
 if($_config['allow_registration'] != 1){
 		$msg->addInfo('REG_DISABLED');
@@ -23,16 +24,31 @@ if($_config['allow_registration'] != 1){
 		exit;
 }
 
-
 if (isset($_POST['cancel'])) {
 	header('Location: ./login.php');
 	exit;
 } else if (isset($_POST['submit'])) {
 	$missing_fields = array();
 
+	/* registration token validation */
+	if (sha1($_SESSION['token']) != $_POST['registration_token']){
+		//Prevent registration from any other pages other than the ATutor pages.
+		//SHA1(SESSION[token]) so that no one knows what the actual token is, thus cannot recreate it on another page.
+		header('Location: ./login.php');
+		exit;
+	}
+
 	/* email check */
 	$chk_email = $addslashes($_POST['email']);
 	$chk_login = $addslashes($_POST['login']);
+
+	//CAPTCHA
+	if (isset($_config['use_captcha']) && $_config['use_captcha']==1){
+		$img = new Securimage();
+		$valid = $img->check($_POST['secret']);
+		if (!$valid)
+			$msg->addError('SECRET_ERROR');
+	}
 
 	$_POST['password'] = $_POST['form_password_hidden'];
 	$_POST['first_name'] = trim($_POST['first_name']);
@@ -85,6 +101,8 @@ if (isset($_POST['cancel'])) {
 	$result = mysql_query("SELECT * FROM ".TABLE_PREFIX."members WHERE email='$chk_email'",$db);
 	if (mysql_num_rows($result) != 0) {
 		$msg->addError('EMAIL_EXISTS');
+	} else if ($_POST['email'] != $_POST['email2']) {
+		$msg->addError('EMAIL_MISMATCH');
 	}
 
 	if (!$_POST['first_name']) { 
@@ -96,6 +114,9 @@ if (isset($_POST['cancel'])) {
 	}
 
 	// check if first+last is unique
+	/**
+	 * http://www.atutor.ca/atutor/mantis/view.php?id=3727
+	 * Taking out the first and last name uniqueness check
 	if ($_POST['first_name'] && $_POST['last_name']) {
 		$first_name_sql  = $addslashes($_POST['first_name']);
 		$last_name_sql   = $addslashes($_POST['last_name']);
@@ -107,6 +128,7 @@ if (isset($_POST['cancel'])) {
 			$msg->addError('FIRST_LAST_NAME_UNIQUE');
 		}
 	}
+	 */
 
 	$_POST['login'] = strtolower($_POST['login']);
 
@@ -254,6 +276,12 @@ if (isset($_POST['cancel'])) {
 			mysql_query($master_list_sql, $db);
 		}
 
+		//reset login attempts
+			if ($result){
+				$sql = "DELETE FROM ".TABLE_PREFIX."member_login_attempt WHERE login='$_POST[login]'";
+				mysql_query($sql, $db);
+			}
+
 		if (defined('AT_EMAIL_CONFIRMATION') && AT_EMAIL_CONFIRMATION) {
 			$msg->addFeedback('REG_THANKS_CONFIRM');
 
@@ -303,7 +331,6 @@ if (isset($_POST['cancel'])) {
 } else {
 	$_POST = array();
 }
-
 unset($_SESSION['member_id']);
 unset($_SESSION['valid_user']);
 unset($_SESSION['login']);

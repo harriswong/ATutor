@@ -1135,7 +1135,7 @@ div.insidecol {
 
 
 /* index page */
-ul#home-links {
+ul#home-links, ul#home-detail-links {
 	list-style: none;
 }
 ul#home-links li {
@@ -1229,14 +1229,15 @@ dl#public-profile dd {
 
 /* floating layout */
 #contentwrapper{
-	float: left;
 	width: 99%;
 	min-width:53em;
 	padding:0px;
 	margin-left:5px;
 	margin-right:5px;
+	float: left;
 }
 
+*/
 /*#contentcolumn {
 	margin-left: 0.5em;
 	padding-right: 5px;
@@ -1439,18 +1440,15 @@ dl.browse-course dd {
 
 }
 
-.side-menu {
-
-width: 19%;
-/*	min-width:15em;*/
-/*	max-width:18em;*/
+#side-menu {
+	width: 19%;
 	background-color:#efefef;
 	border:1px solid #8b8b8b;
 	padding:0px 5px 0px 5px;
 	overflow: hidden;
 }
 
-.side-menu h3 {
+#side-menu h3 {
 	color:black; 
 	font-size:smaller; 
 	padding:3px;
@@ -1459,7 +1457,7 @@ width: 19%;
 
 }
 
-.side-menu h2 {
+#side-menu h2 {
 	font-size:95%;
 	border-bottom:1px solid #838383;	
 	
@@ -1527,4 +1525,85 @@ fieldset#toc {
 	background-color: #FEFDEF;
 	border: 1pt solid #B8AE9C;
 	width:50%;
+}
+
+/* style for home page sublinks view */
+div.home_box {
+	width: 30em;
+	height: 150px;	
+	margin:0;
+	padding-top: 15px;
+	margin-left:1em;
+	float:left;
+}
+
+.outside_box{
+	margin-left:.4em;
+	background:#e0e0e0;
+	width:28em;
+	height:8.9em;
+}
+
+.inside_box{
+	width:100%;
+	margin:auto;
+	height:52%;
+	margin-bottom:.2em;
+	background:#eeeeee;
+}
+.details_or{
+	width:28.8em;
+	height:9.8em;
+	margin:0;
+	background-image:url(../../images/details_r.png);
+	background-position: top right;
+	background-repeat:no-repeat;
+}
+.details_ol{
+	height:9.8em;
+	margin:0px;
+	width:.45em;
+	background-image:url(../../images/details_l.png);
+	background-position: top left;
+	background-repeat:no-repeat;
+}
+.details_ir{
+	width:.5em;
+	height:100%;
+	float:right;
+	background-image:url(../../images/details_ir.png);
+	background-position: top right;
+	background-repeat:no-repeat;
+}
+.details_il{
+	height:100%;
+	float:left;
+	background-image:url(../../images/details_il.png);
+	background-position: top left;
+	background-repeat:no-repeat;
+}
+.home-title{
+	font-size:12pt;
+}
+.buttonbox{
+	float:right;
+}
+.details_text{
+	margin-left:1em;
+}
+/* jQuery tooltip styles */
+#tooltip{
+	position:absolute;
+	z-index:3000;
+	border:3px solid #111;
+	background-color:#eeeeee;
+	padding:5px;
+}
+#tooltip h3,#tooltip div{
+	margin:0;
+}
+
+/* fluid reorderer */
+.grab{
+	background-color: #F2F7FE;
 }

@@ -35,6 +35,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['max_course_float']   = intval($_POST['max_course_float']);
 	$_POST['max_course_float']   = max(0, $_POST['max_course_float']);
 	$_POST['allow_registration']   = intval($_POST['allow_registration']);
+	$_POST['allow_browse']   = intval($_POST['allow_browse']);
 	$_POST['allow_instructor_registration']   = intval($_POST['allow_instructor_registration']);
 	$_POST['allow_unenroll']   = intval($_POST['allow_unenroll']);
 	$_POST['master_list']        = intval($_POST['master_list']);
@@ -47,6 +48,7 @@ if (isset($_POST['cancel'])) {
 	$_POST['user_notes']                = intval($_POST['user_notes']);
 	$_POST['illegal_extentions']        = str_replace(array('  ', ' '), array(' ','|'), $_POST['illegal_extentions']);
 	$_POST['cache_dir']                 = trim($_POST['cache_dir']);
+	$_POST['latex_server']				= (trim($_POST['latex_server'])==''?$_config['latex_server']:trim($_POST['latex_server']));
 	$_POST['course_backups']            = intval($_POST['course_backups']);
 	$_POST['course_backups']            = max(0, $_POST['course_backups']);
 	$_POST['check_version']             = $_POST['check_version'] ? 1 : 0;
@@ -55,6 +57,8 @@ if (isset($_POST['cancel'])) {
 	$_POST['display_name_format']       = intval($_POST['display_name_format']);
 	$_POST['pretty_url']				= intval($_POST['pretty_url']);
 	$_POST['course_dir_name']			= intval($_POST['course_dir_name']);
+	$_POST['max_login']					= intval($_POST['max_login']);		//max login attempt
+	$_POST['use_captcha']				= $_POST['use_captcha'] ? 1 : 0;
 
 	//apache_mod_rewrite can only be enabled if pretty_url is.
 	if ($_POST['pretty_url']==1){
@@ -220,6 +224,11 @@ echo AT_date(_AT('server_date_format'), '', AT_DATE_MYSQL_DATETIME);
 	</div>
 
 	<div class="row">
+		<label for="maximum_login_attempt"><?php echo _AT('maximum_login_attempt'); ?></label> (<?php echo _AT('default'); ?>: <?php echo $_config_defaults['max_login']; ?>)<br />
+		<input type="text" size="10" name="max_login" id="maximum_login_attempt" value="<?php if (!empty($_POST['max_login'])) { echo $stripslashes(htmlspecialchars($_POST['max_login'])); } else { echo $_config['max_login']; } ?>"  /> <?php echo _AT('times'); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo _AT('display_name_format'); ?> (<?php echo _AT('default'); ?>: <em><?php echo _AT($display_name_formats[$_config_defaults['display_name_format']], _AT('login_name'), _AT('first_name'), _AT('second_name'), _AT('last_name')); ?></em>)<br />
 		<?php foreach ($display_name_formats as $key => $value): ?>
 			<input type="radio" name="display_name_format" value="<?php echo $key; ?>" id="dnf<?php echo $key; ?>" <?php if ($_config['display_name_format'] == $key) { echo 'checked="checked"'; }?> /><label for="dnf<?php echo $key; ?>"><em><?php echo _AT($value, _AT('login_name'), _AT('first_name'), _AT('second_name'), _AT('last_name')); ?></em></label><br />
@@ -237,8 +246,21 @@ echo AT_date(_AT('server_date_format'), '', AT_DATE_MYSQL_DATETIME);
 		<input type="radio" name="allow_registration" value="1" id="reg_y" <?php if($_config['allow_registration']) { echo 'checked="checked"'; }?>  /><label for="reg_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="allow_registration" value="0" id="reg_n" <?php if(!$_config['allow_registration']) { echo 'checked="checked"'; }?>  /><label for="reg_n"><?php echo _AT('disable'); ?></label>
 	</div>
 	<div class="row">
+		<?php echo _AT('allow_browse'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['allow_browse'] ? _AT('enable') : _AT('disable')); ?>)<br />
+		<input type="radio" name="allow_browse" value="1" id="browse_y" <?php if($_config['allow_browse']) { echo 'checked="checked"'; }?>  /><label for="browse_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="allow_browse" value="0" id="browse_n" <?php if(!$_config['allow_browse']) { echo 'checked="checked"'; }?>  /><label for="browse_n"><?php echo _AT('disable'); ?></label>
+	</div>
+
+	<div class="row">
 		<?php echo _AT('allow_instructor_registration'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['allow_instructor_registration'] ? _AT('enable') : _AT('disable')); ?>)<br />
 		<input type="radio" name="allow_instructor_registration" value="1" id="enrollreg_y" <?php if($_config['allow_instructor_registration']) { echo 'checked="checked"'; }?>  /><label for="enrollreg_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="allow_instructor_registration" value="0" id="enrollreg_n" <?php if(!$_config['allow_instructor_registration']) { echo 'checked="checked"'; }?>  /><label for="enrollreg_n"><?php echo _AT('disable'); ?></label>
+	</div>
+	<div class="row">		
+		<?php echo _AT('use_captcha'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['use_captcha'] ? _AT('enable') : _AT('disable')); ?>)<br />
+		<?php if (extension_loaded('gd')): ?>
+		<input type="radio" name="use_captcha" value="1" id="use_captcha_y" <?php if($_config['use_captcha']) { echo 'checked="checked"'; }?>  /><label for="use_captcha_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="use_captcha" value="0" id="use_captcha_n" <?php if(!$_config['use_captcha']) { echo 'checked="checked"'; }?>  /><label for="use_captcha_n"><?php echo _AT('disable'); ?></label>
+		<?php else: ?>
+		<input type="radio" name="use_captcha" value="1" id="use_captcha_y" disabled="disabled" /><label for="use_captcha_y"><?php echo _AT('enable'); ?></label> <input type="radio" name="use_captcha" value="0" id="use_captcha_n" checked="checked" /><label for="use_captcha_n"><?php echo _AT('disable'); ?></label>
+		<?php endif; ?>
 	</div>
 	<div class="row">
 		<?php echo _AT('allow_unenroll'); ?> (<?php echo _AT('default'); ?>: <?php echo ($_config_defaults['allow_unenroll'] ? _AT('enable') : _AT('disable')); ?>)<br />
@@ -283,6 +305,11 @@ echo AT_date(_AT('server_date_format'), '', AT_DATE_MYSQL_DATETIME);
 	<div class="row">
 		<label for="cache"><?php echo _AT('cache_directory'); ?></label><br />
 		<input type="text" name="cache_dir" id="cache" size="40" value="<?php if (!empty($_POST['cache_dir'])) { echo $stripslashes(htmlspecialchars($_POST['cache_dir'])); } else { echo $_config['cache_dir']; } ?>"  />
+	</div>
+
+	<div class="row">
+		<label for="cache"><?php echo _AT('latex_server'); ?></label><br />
+		<input type="text" name="latex_server" id="latex_server" size="40" value="<?php if (!empty($_POST['latex_server'])) { echo $stripslashes(htmlspecialchars($_POST['latex_server'])); } else { echo $_config['latex_server']; } ?>"  />
 	</div>
 
 	<div class="row">
@@ -379,8 +406,5 @@ echo AT_date(_AT('server_date_format'), '', AT_DATE_MYSQL_DATETIME);
 
 
 <?php 
-global $_config;
-debug($_config);
-
 require(AT_INCLUDE_PATH.'footer.inc.php'); 
 ?>

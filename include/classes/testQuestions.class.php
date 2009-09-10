@@ -338,7 +338,7 @@ function test_qti_export($tid, $test_title='', $zipfile = null){
 
 	//TODO: wrap around xml now
 	$savant->assign('xml_content', $xml);
-	$savant->assign('title', htmlentities($row['title'], ENT_QUOTES, 'UTF-8'));
+	$savant->assign('title', htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8'));
 	$xml = $savant->fetch('test_questions/wrapper.tmpl.php');
 
 	$xml_filename = 'tests_'.$tid.'.xml';
@@ -502,7 +502,7 @@ function TestQuestionCounter($increment = FALSE) {
 	*/
 	/*final public */function displayResult($row, $answer_row, $editable = FALSE) {
 		// print the generic question header
-		$this->displayHeader($row['weight'], (int) $answer_row['score'], $editable ? $row['question_id'] : FALSE);
+		$this->displayHeader($row['weight'], $answer_row['score'], $editable ? $row['question_id'] : FALSE);
 
 		// print the question specific template
 		$this->assignDisplayResultVariables($row, $answer_row);
@@ -518,7 +518,6 @@ function TestQuestionCounter($increment = FALSE) {
 	*/
 	/*final public */function displayResultStatistics($row, $answers) {
 		TestQuestionCounter(TRUE);
-
 		$this->assignDisplayStatisticsVariables($row, $answers);
 		$this->savant->display('test_questions/' . $this->sPrefix . '_stats.tmpl.php');
 	}
@@ -527,7 +526,7 @@ function TestQuestionCounter($increment = FALSE) {
 		$this->savant->assign('encoding', $encoding);
 		//Convert all row values to html entities
 		foreach ($row as $k=>$v){
-			$row[$k] = htmlentities($v, ENT_QUOTES, 'UTF-8');
+			$row[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');	//not using htmlentities cause it changes some languages falsely.
 		}
 		$this->assignQTIVariables($row);
 		if ($version=='2.1') {
@@ -543,7 +542,8 @@ function TestQuestionCounter($increment = FALSE) {
 	*/
 	/*final private */function displayHeader($weight, $score = FALSE, $question_id = FALSE) {
 		TestQuestionCounter(TRUE);
-
+		
+		if ($score) $score = intval($score);
 		$this->savant->assign('question_id', $question_id);
 		$this->savant->assign('score', $score);
 		$this->savant->assign('weight', $weight);
@@ -1030,7 +1030,7 @@ class LongQuestion extends AbstracttestQuestion {
 	/*public */function mark($row) { 
 		global $addslashes;
 		$_POST['answers'][$row['question_id']] = $addslashes($_POST['answers'][$row['question_id']]);
-		return 0;
+		return NULL;
 	}
 
 	//QTI Import Open end/long Question
@@ -1342,6 +1342,7 @@ class MultichoiceQuestion extends AbstracttestQuestion {
 	}
 
 	/*public */function mark($row) { 
+		$score = 0;
 		$_POST['answers'][$row['question_id']] = intval($_POST['answers'][$row['question_id']]);
 		if ($row['answer_' . $_POST['answers'][$row['question_id']]]) {
 			$score = $row['weight'];

@@ -27,12 +27,16 @@ $_config_defaults['auto_approve_instructors']  = 0; // disabled
 $_config_defaults['max_file_size']             = 1048576;  // 1MB
 $_config_defaults['max_course_size']           = 10485760; // 10 MB
 $_config_defaults['max_course_float']          = 2097152;  // 2MB
+$_config_defaults['max_login']				   = 5; //maximum login attempt 
 $_config_defaults['illegal_extentions']        = 'exe|asp|php|php3|bat|cgi|pl|com|vbs|reg|pcd|pif|scr|bas|inf|vb|vbe|wsc|wsf|wsh';
 $_config_defaults['site_name']                 = '';
 $_config_defaults['home_url']                  = ''; // empty means disabled
 $_config_defaults['default_language']          = 'en';
 $_config_defaults['allow_registration']        = 1;
+$_config_defaults['allow_browse']              = 1;
+$_config_defaults['just_social']              = 0;
 $_config_defaults['allow_instructor_registration']        = 1;
+$_config_defaults['use_captcha']			   = 0;	//use captcha?
 $_config_defaults['allow_unenroll']            = 1;
 $_config_defaults['cache_dir']                 = ''; // empty means disabled
 $_config_defaults['enable_category_themes']    = 0; // disabled
@@ -41,9 +45,9 @@ $_config_defaults['email_confirmation']        = 0; // disabled
 $_config_defaults['master_list']               = 0; // disabled
 $_config_defaults['user_notes']                = 0; // disabled - whether to enable the user contributed handbook notes
 $_config_defaults['theme_categories']          = 0; // disabled
-$_config_defaults['main_defaults']	           = 'forum/list.php|glossary/index.php|file_storage/index.php';
-$_config_defaults['home_defaults']             = 'forum/list.php|file_storage/index.php|glossary/index.php|chat/index.php|tile.php|faq/index.php|links/index.php|tools/my_tests.php|sitemap.php|export.php|my_stats.php|polls/index.php|directory.php|groups.php|reading_list/index.php|blogs/index.php';
-$_config_defaults['side_defaults']             = 'menu_menu|related_topics|users_online|glossary|search|poll|posts';
+$_config_defaults['main_defaults']	           = 'forum/list.php|glossary/index.php|file_storage/index.php|mods/_standard/social/index.php';
+$_config_defaults['home_defaults']             = 'forum/list.php|file_storage/index.php|glossary/index.php|chat/index.php|tile.php|faq/index.php|links/index.php|tools/my_tests.php|sitemap.php|export.php|my_stats.php|polls/index.php|directory.php|groups.php|reading_list/index.php|blogs/index.php|mods/_standard/social/index.php';
+$_config_defaults['side_defaults']             = 'social|menu_menu|related_topics|users_online|glossary|search|poll|posts';
 $_config_defaults['pref_defaults']			   = 'a:34:{s:14:"PREF_NUMBERING";i:1;s:10:"PREF_THEME";s:7:"default";s:13:"PREF_TIMEZONE";s:0:"";s:18:"PREF_JUMP_REDIRECT";i:1;s:15:"PREF_FORM_FOCUS";i:1;s:19:"PREF_CONTENT_EDITOR";i:0;s:15:"PREF_SHOW_GUIDE";i:1;s:14:"PREF_FONT_FACE";s:0:"";s:15:"PREF_FONT_TIMES";s:1:"1";s:14:"PREF_FG_COLOUR";s:0:"";s:14:"PREF_BG_COLOUR";s:0:"";s:14:"PREF_HL_COLOUR";s:0:"";s:28:"PREF_USE_ALTERNATIVE_TO_TEXT";i:0;s:16:"PREF_ALT_TO_TEXT";s:5:"audio";s:34:"PREF_ALT_TO_TEXT_APPEND_OR_REPLACE";s:6:"append";s:25:"PREF_ALT_TEXT_PREFER_LANG";s:2:"en";s:29:"PREF_USE_ALTERNATIVE_TO_AUDIO";i:0;s:17:"PREF_ALT_TO_AUDIO";s:4:"text";s:35:"PREF_ALT_TO_AUDIO_APPEND_OR_REPLACE";s:6:"append";s:26:"PREF_ALT_AUDIO_PREFER_LANG";s:2:"en";s:30:"PREF_USE_ALTERNATIVE_TO_VISUAL";i:0;s:18:"PREF_ALT_TO_VISUAL";s:4:"text";s:36:"PREF_ALT_TO_VISUAL_APPEND_OR_REPLACE";s:6:"append";s:27:"PREF_ALT_VISUAL_PREFER_LANG";s:2:"en";s:15:"PREF_DICTIONARY";i:1;s:14:"PREF_THESAURUS";i:1;s:16:"PREF_NOTE_TAKING";i:1;s:15:"PREF_CALCULATOR";i:1;s:11:"PREF_ABACUS";i:1;s:10:"PREF_ATLAS";i:1;s:17:"PREF_ENCYCLOPEDIA";i:1;s:18:"PREF_SHOW_CONTENTS";i:1;s:31:"PREF_SHOW_NEXT_PREVIOUS_BUTTONS";s:1:"1";s:22:"PREF_SHOW_BREAD_CRUMBS";s:1:"1";}';
 $_config_defaults['pref_inbox_notify']		   = 0; // disabled
 $_config_defaults['pref_is_auto_login']		   = "disable"; // disabled
@@ -57,7 +61,7 @@ $_config_defaults['time_zone']                 = ''; // empty means disabled or 
 $_config_defaults['prof_pic_max_file_size']	   = 819200; // max size of an uploaded profile pic, in bytes. default 800 KB
 $_config_defaults['sent_msgs_ttl']             = 120; // number of days till saved sent inbox msgs are deleted
 $_config_defaults['mysql_group_concat_max_len'] = null; // null = check, 0 = disabled/unsupported, (non-zero is the actual mysql value)
-$_config_defaults['latex_server']              = 'http://www.forkosh.dreamhost.com/mimetex.cgi?'; // the full URL to an external LaTeX parser
+$_config_defaults['latex_server']              = 'http://www.atutor.ca/cgi/mimetex.cgi?'; // the full URL to an external LaTeX parse
 $_config_defaults['gtype']					   = 0;	//Defaulted to be original google search, @author Harris
 $_config_defaults['pretty_url']				   = 0;	//pretty url, disabled
 $_config_defaults['course_dir_name']		   = 0;	//course dir name (course slug), disabled
@@ -159,7 +163,9 @@ if (strpos(@ini_get('arg_separator.input'), ';') !== false) {
 }
 
 /* the URL to the AChecker server of choice. must include trailing slash. */
-define('AT_ACHECKER_URL', 'http://checker.atrc.utoronto.ca/servlet/');
+//define('AT_ACHECKER_URL', 'http://checker.atrc.utoronto.ca/servlet/');
+define('AT_ACHECKER_URL', 'http://www.achecker.ca');
+define('AT_ACHECKER_WEB_SERVICE_ID', '2f4149673d93b7f37eb27506905f19d63fbdfe2d');
 
 if (!isset($_SERVER['REQUEST_URI'])) {
 	$REQUEST_URI = $_SERVER['SCRIPT_NAME'];
@@ -205,7 +211,7 @@ define('AT_GUIDES_PATH', $_base_path . 'documentation/');
 
 define('AT_BACKUP_DIR', AT_CONTENT_DIR . 'backups/'); // where the backups get stored
 
-define('VERSION',		'1.6.2');
+define('VERSION',		'1.6.3');
 define('ONLINE_UPDATE', 3); /* update the user expiry every 3 min */
 
 /* valid date format_types:						*/
@@ -349,4 +355,10 @@ define('GOOGLE_TYPE_AJAX',		1);		//The new AJAX search by google
 
 /* flags for validate_length in vitals. - @author Harris*/
 define('VALIDATE_LENGTH_FOR_DISPLAY',	1);	
+
+/* the length of sublink text display in the course index page, detail view */
+define('SUBLINK_TEXT_LEN', 38);
+
+/* The lock out time for max login attempts */
+define('LOGIN_ATTEMPT_LOCKED_TIME', 60);	//in minutes, default an hour, 60 minutes
 ?>

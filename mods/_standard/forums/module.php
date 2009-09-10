@@ -12,10 +12,10 @@ $_group_tool = $_student_tool = 'forum/list.php';
 $this->_stacks['posts'] = array('title_var'=>'posts','file'=>AT_INCLUDE_PATH.'html/dropdowns/posts.inc.php');
 
 //modules sub-content
-$this->_list['forums'] = array('title_var'=>'forums','file'=>AT_INCLUDE_PATH.'html/submodules/forums.inc.php');
+$this->_list['forums'] = array('title_var'=>'forums','file'=>'mods/_standard/forums/sublinks.php');
 
 //tool manager
-$this->_tool['forums'] = array('title_var'=>'forums','file'=>'forums_tool.php');
+$this->_tool['forums'] = array('title_var'=>'forums','file'=>'tools/toolmanager/forums_tool.php');
 
 //instructor pages
 $this->_pages['tools/forums/index.php']['title_var'] = 'forums';
@@ -35,7 +35,7 @@ $this->_pages['tools/forums/index.php']['children']  = array('editor/add_forum.p
 //student pages
 $this->_pages['forum/list.php']['title_var']  = 'forums';
 $this->_pages['forum/list.php']['img']        = 'images/home-forums.png';
-$this->_pages['forum/list.php']['icon']		  = 'images/home-forums_icon.png';						//added favicon
+$this->_pages['forum/list.php']['icon']		  = 'images/home-forums_sm.png';						//added favicon
 $this->_pages['forum/list.php']['text']		  = 'Sezione Forum';									//added text
 $this->_pages['forum/list.php']['children']        = array('search.php?search_within[]=forums');
 	//list.php's children

@@ -196,12 +196,12 @@ class LanguageManager {
 
 		// else pick one at random:
 		reset($this->availableLanguages);
-		$uknown_language = current($this->availableLanguages);
+		$unknown_language = current($this->availableLanguages);
 		if ($unknown_language) {
 			return FALSE;
 		}
 
-		return current($uknown_language);
+		return current($unknown_language);
 	}
 
 	function getAvailableLanguages() {
@@ -316,6 +316,9 @@ class LanguageManager {
 		global $db;
 
 		$tmp_lang_db = mysql_connect(AT_LANG_DB_HOST, AT_LANG_DB_USER, AT_LANG_DB_PASS);
+		// set database connection using utf8
+		mysql_query("SET NAMES 'utf8'", $tmp_lang_db);
+		
 		if (!$tmp_lang_db) {
 			/* AT_ERROR_NO_DB_CONNECT */
 			echo 'Unable to connect to db.';

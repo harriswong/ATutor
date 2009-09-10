@@ -71,10 +71,10 @@ global $system_courses, $_custom_css;
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
 	<?php endif; ?>
+	<script src="<?php echo $this->base_path; ?>jscripts/infusion/InfusionAll.js" type="text/javascript"></script>
 	<?php echo $this->custom_css; ?>
 </head>
-<body onload="<?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script>
+<body onload="<?php echo $this->onload; ?>">
 <script language="javascript" type="text/javascript">
 //<!--
 var newwindow;
@@ -274,7 +274,7 @@ function toggleToc(objId) {
 <!-- the bread crumbs -->
 <div id="breadcrumbs">
 	<?php foreach ($this->path as $page): ?>
-		<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> » 
+		<a href="<?php echo $page['url']; ?>"><?php echo htmlspecialchars($page['title'], ENT_COMPAT, "UTF-8"); ?></a> > 
 	<?php endforeach; ?> <?php echo $this->page_title; ?>
 </div>
 <?php } ?>

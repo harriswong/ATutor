@@ -10,7 +10,7 @@
 /* modify it under the terms of the GNU General Public License  */
 /* as published by the Free Software Foundation.				*/
 /****************************************************************/
-// $Id: ims_import.php 8260 2008-12-03 15:56:00Z hwong $
+// $Id: ims_import.php 8210 2008-11-11 22:29:13Z hwong $
 define('AT_INCLUDE_PATH', '../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 
@@ -20,10 +20,6 @@ require(AT_INCLUDE_PATH.'lib/qti.inc.php');
 //require(AT_INCLUDE_PATH.'classes/QTI/QTIParser.class.php');	
 require(AT_INCLUDE_PATH.'classes/QTI/QTIImport.class.php');
 require(AT_INCLUDE_PATH.'classes/A4a/A4aImport.class.php');
-
-/* Import Wiki */
-define('AT_CONTENT_DIRECTORY', '../../content/');
-require(AT_INCLUDE_PATH.'classes/zipfile.class.php');
 
 /* make sure we own this course that we're exporting */
 authenticate(AT_PRIV_CONTENT);
@@ -42,17 +38,10 @@ $test_attributes = array();
 $character_data = '';
 $test_message = '';
 
-/* Import Forum */
-global $forum_array;
-$forum_array = array();
-$forum_title_des = array();
-global $id;
-$id = 0;
-
 	/* called at the start of en element */
 	/* builds the $path array which is the path from the root to the current element */
 	function startElement($parser, $name, $attrs) {
-		global $items, $path, $package_base_path, $forum_array;
+		global $items, $path, $package_base_path;
 		global $element_path;
 		global $xml_base_path, $test_message;
 		global $current_identifier;
@@ -83,15 +72,7 @@ $id = 0;
 //				}
 
 				$items[$current_identifier]['new_path'] = implode('/', $temp_path);
-			}
-			
-            /* Import Forum */			 
-			if (isset($items[$current_identifier]) && ($items[$current_identifier]['type'] == 'imsdt_xmlv1p0')){
-				
-				array_push($forum_array, $items[$current_identifier]['href']);
-
-			}
-			
+			} 
 
 			if (	isset($_POST['allow_test_import']) && isset($items[$current_identifier]) 
 						&& preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $attrs['href'])) {
@@ -104,18 +85,7 @@ $id = 0;
 			$path[] = $attrs['identifierref'];
 		} else if (($name == 'item') && ($attrs['identifier'])) {
 			$path[] = $attrs['identifier'];
-			
-			
-        /* Import Forum */				
-		} else if (($name == 'resource') && isset($attrs['type']) && ($attrs['type'] == 'imsdt_xmlv1p0')) {
-		
-			$current_identifier = $attrs['identifier'];
-			$items[$attrs['identifier']]['type'] = $attrs['type'];
-			
-		}
-		
-		 else if (($name == 'resource') && is_array($items[$attrs['identifier']]) )  {
-			
+		} else if (($name == 'resource') && is_array($items[$attrs['identifier']]))  {
 			$current_identifier = $attrs['identifier'];
 
 			if ($attrs['href']) {
@@ -153,7 +123,7 @@ $id = 0;
 				$items[$current_identifier]['file'][] = $attrs['href'];
 			}
 		}
-		 array_push($element_path, $name);
+	array_push($element_path, $name);
 }
 
 	/* called when an element ends */
@@ -287,45 +257,6 @@ $id = 0;
 
 		$my_data .= $data;
 	}
-
-	
-/* Import Forum */
-
-// Forum parser
-
-	/* chiamata all'inzio di un elemento */	
-	function forumStartElement($parser, $name, $attrs) {
-		
-		global $element_path;
-
-		array_push($element_path, $name);
-	}
-
-	/* chiamata alla fine di un elemento */
-	function forumEndElement($parser, $name) {
-		global $element_path, $my_data, $forum_title_des, $id;
-		static $current_term;
-
-		if ($element_path === array('dt:topic', 'title')) {
-			$current_term = $my_data;
-
-		} else if ($element_path === array('dt:topic', 'text')) {
-			$forum_title_des[$id++."-".trim($current_term)] = trim($my_data);
-		}
-
-		array_pop($element_path);
-		$my_data = '';
-	}
-
-	/* chiamata quando ci sono dei dati all'interno dell'elemento*/
-	function forumCharacterData($parser, $data){
-		global $my_data;
-
-		$my_data .= $data;
-	}
-
-
-	
 
 if (!isset($_POST['submit']) && !isset($_POST['cancel'])) {
 	/* just a catch all */
@@ -504,12 +435,13 @@ xml_set_element_handler($xml_parser, 'startElement', 'endElement');
 xml_set_character_data_handler($xml_parser, 'characterData');
 
 if (!xml_parse($xml_parser, $ims_manifest_xml, true)) {
-	die(sprintf("XML error - 1: %s at line %d",
+	die(sprintf("XML error: %s at line %d",
 				xml_error_string(xml_get_error_code($xml_parser)),
 				xml_get_current_line_number($xml_parser)));
 }
 
 xml_parser_free($xml_parser);
+
 
 /* check if the glossary terms exist */
 if (file_exists($import_path . 'glossary.xml')){
@@ -525,7 +457,7 @@ if (file_exists($import_path . 'glossary.xml')){
 	xml_set_character_data_handler($xml_parser, 'glossaryCharacterData');
 
 	if (!xml_parse($xml_parser, $glossary_xml, true)) {
-		die(sprintf("XML error - 2: %s at line %d",
+		die(sprintf("XML error: %s at line %d",
 					xml_error_string(xml_get_error_code($xml_parser)),
 					xml_get_current_line_number($xml_parser)));
 	}
@@ -549,80 +481,6 @@ if ($msg->containsErrors()) {
 	exit;
 }
 
-
-/* Import Forum */
-
-/* controlla se è stata settata l'opzione per l'importazione di eventuali Forum */
-if (isset($_REQUEST['allow_forum_import'])){
-	
-	/* controlla se esiste almeno un Forum  */
-	if (count($forum_array)) {
-		
-		global $forum_title_des;
-	
-		foreach ($forum_array as $forum_array_row) {
-			
-			$fileDes_xml = @file_get_contents($import_path.$forum_array_row);
-			$element_path = array();
-			
-			$xml_parser = xml_parser_create();	
-			
-			/* inserisce i Forum nel database */
-			/* fa il parser del file ForumId/FileDescrittoreId.xml e inserisce titolo e descrizione del forum nel db */
-			xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, false); 
-			xml_set_element_handler($xml_parser, 'forumStartElement', 'forumEndElement');
-			xml_set_character_data_handler($xml_parser, 'forumCharacterData');
-		
-			if (!xml_parse($xml_parser, $fileDes_xml, true)) {
-				die(sprintf("XML error: %s at line %d",
-							xml_error_string(xml_get_error_code($xml_parser)),
-							xml_get_current_line_number($xml_parser)));
-			}
-	
-			xml_parser_free($xml_parser);
-			
-		}
-		foreach ($forum_title_des as $title => $des) {
-				
-				$posi = stripos($title, "-") + 1;
-				$title = substr($title, $posi);
-				
-				$sql = "INSERT INTO ".TABLE_PREFIX."forums VALUES (NULL, '$title', '$des', 0, 0, NOW(), 0)";
-				mysql_query($sql, $db);	
-					
-				$sql	= "INSERT INTO ".TABLE_PREFIX."forums_courses VALUES (LAST_INSERT_ID(),  $_SESSION[course_id])";
-				mysql_query($sql, $db);	
-				
-			}
-	}
-	
-	/* controlla se c'è stato qualche errore durante il parsing */
-	if ($msg->containsErrors()) {
-		if (isset($_GET['tile'])) {
-			header('Location: '.$_base_path.'tools/tile/index.php');
-		} else {
-			header('Location: index.php');
-		}
-		exit;
-	}
-}
-
-
-
-
-/* Import Wiki */
-
-// controlla se è stata settata l'opzione per l'importazione di eventuali Wiki
-if (isset($_REQUEST['wiki_import'])){
-	
-	//controlla se nell'archivio importato c'è la cartella Wiki 
-	if (is_dir($import_path."Wiki")) { 
-		copys_file_dir($import_path."Wiki/wiki", AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki/");
-	}
-}
-
-
-
 /* generate a unique new package base path based on the package file name and date as needed. */
 /* the package name will be the dir where the content for this package will be put, as a result */
 /* the 'content_path' field in the content table will be set to this path. */
@@ -643,8 +501,6 @@ if (is_dir(AT_CONTENT_DIR . $_SESSION['course_id'].'/'.$package_base_name)) {
 
 if ($package_base_path) {
 	$package_base_path = implode('/', $package_base_path);
-} elseif (empty($package_base_path)){
-	$package_base_path = '';
 }
 
 if ($xml_base_path) {
@@ -663,222 +519,212 @@ $order_offset = intval($row['ordering']); /* it's nice to have a real number to 
 
 foreach ($items as $item_id => $content_info) 
 {
-	/* Import Forum */
-	if ($content_info['type'] != 'imsdt_xmlv1p0'){
-		
-		// remote href
-		if (preg_match('/^http.*:\/\//', trim($content_info['href'])) )
-		{
-			$content = '<a href="'.$content_info['href'].'" target="_blank">'.$content_info['title'].'</a>';
+	// remote href
+	if (preg_match('/^http.*:\/\//', trim($content_info['href'])) )
+	{
+		$content = '<a href="'.$content_info['href'].'" target="_blank">'.$content_info['title'].'</a>';
+	}
+	else
+	{
+		if (isset($content_info['href'], $xml_base_path)) {
+			$content_info['href'] = $xml_base_path . $content_info['href'];
 		}
-		else
-		{
-			if (isset($content_info['href'], $xml_base_path)) {
-				$content_info['href'] = $xml_base_path . $content_info['href'];
-			}
-			if (!isset($content_info['href'])) {
-				// this item doesn't have an identifierref. so create an empty page.
-				$content = '';
-				$ext = '';
-				$last_modified = date('Y-m-d H:i:s');
-			} else {
-				$file_info = @stat(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-				if ($file_info === false) {
-					continue;
-				}
-			
-				$path_parts = pathinfo(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-				$ext = strtolower($path_parts['extension']);
-	
-				$last_modified = date('Y-m-d H:i:s', $file_info['mtime']);
-			}
-			if (in_array($ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg'))) {
-				/* this is an image */
-				$content = '<img src="'.$content_info['href'].'" alt="'.$content_info['title'].'" />';
-			} else if ($ext == 'swf') {
-				/* this is flash */
-	            /* Using default size of 550 x 400 */
-	
-				$content = '<object type="application/x-shockwave-flash" data="' . $content_info['href'] . '" width="550" height="400"><param name="movie" value="'. $content_info['href'] .'" /></object>';
-	
-			} else if ($ext == 'mov') {
-				/* this is a quicktime movie  */
-	            /* Using default size of 550 x 400 */
-	
-				$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="550" height="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="true" /><param name="controller" value="true" /><embed src="' . $content_info['href'] .'" width="550" height="400" controller="true" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
-			} else if ($ext == 'mp3') {
-				$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="200" height="15" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="false" /><embed src="' . $content_info['href'] .'" width="200" height="15" autoplay="false" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
-			} else if (in_array($ext, array('wav', 'au'))) {
-				$content = '<embed SRC="'.$content_info['href'].'" autostart="false" width="145" height="60"><noembed><bgsound src="'.$content_info['href'].'"></noembed></embed>';
-	
-			} else if (in_array($ext, array('txt', 'css', 'html', 'htm', 'csv', 'asc', 'tsv', 'xml', 'xsl'))) {
-				/* this is a plain text file */
-				$content = file_get_contents(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-				if ($content === false) {
-					/* if we can't stat() it then we're unlikely to be able to read it */
-					/* so we'll never get here. */
-					continue;
-				}
-	
-				// get the contents of the 'head' element
-				$head = get_html_head_by_tag($content, $html_head_tags);
-				
-				// Specifically handle eXe package
-				// NOTE: THIS NEEDS WORK! TO FIND A WAY APPLY EXE .CSS FILES ONLY ON COURSE CONTENT PART.
-				// NOW USE OUR OWN .CSS CREATED SOLELY FOR EXE
-				$isExeContent = false;
-	
-				// check xml file in eXe package
-				if (preg_match("/<organization[ ]*identifier=\"eXe*>*/", $ims_manifest_xml))
-				{
-					$isExeContent = true;
-				}
-	
-				// use ATutor's eXe style sheet as the ones from eXe conflicts with ATutor's style sheets
-				if ($isExeContent)
-				{
-					$head = preg_replace ('/(<style.*>)(.*)(<\/style>)/ms', '\\1@import url(/docs/exestyles.css);\\3', $head);
-				}
-	
-				// end of specifically handle eXe package
-	
-				$content = get_html_body($content);
-				if ($contains_glossary_terms) 
-				{
-					// replace glossary content package links to real glossary mark-up using [?] [/?]
-					// refer to bug 3641, edited by Harris
-					$content = preg_replace('/<a href="([.\w\d\s]+[^"]+)" target="body" class="at-term">([.\w\d\s&;"]+|.*)<\/a>/i', '[?]\\2[/?]', $content);
-				}
-	
-				/* potential security risk? */
-				if ( strpos($content_info['href'], '..') === false && !preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $content_info['href'])) {
-					@unlink(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
-				}
-			} else if ($ext) {
-				/* non text file, and can't embed (example: PDF files) */
-				$content = '<a href="'.$content_info['href'].'">'.$content_info['title'].'</a>';
-			}
-		}
-	
-		$content_parent_id = $cid;
-		if ($content_info['parent_content_id'] !== 0) {
-			$content_parent_id = $items[$content_info['parent_content_id']]['real_content_id'];
-		}
-	
-		$my_offset = 0;
-		if ($content_parent_id == $cid) {
-			$my_offset = $order_offset;
-		}
-	
-		/* replace the old path greatest common denomiator with the new package path. */
-		/* we don't use str_replace, b/c there's no knowing what the paths may be	  */
-		/* we only want to replace the first part of the path.						  */
-		if ($package_base_path != '') {
-			$content_info['new_path']	= $package_base_name . substr($content_info['new_path'], strlen($package_base_path));
-		} else {
-			$content_info['new_path'] = $package_base_name;
-		}
-		
-		$head = addslashes($head);
-		$content_info['title'] = addslashes($content_info['title']);
-		$content_info['test_message'] = addslashes($content_info['test_message']);
-	
-		//if this file is a test_xml, create a blank page instead, for imscc.
-		if (preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $content_info['href'])){
+		if (!isset($content_info['href'])) {
+			// this item doesn't have an identifierref. so create an empty page.
 			$content = '';
+			$ext = '';
+			$last_modified = date('Y-m-d H:i:s');
 		} else {
-			$content = addslashes($content);
+			$file_info = @stat(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			if ($file_info === false) {
+				continue;
+			}
+		
+			$path_parts = pathinfo(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			$ext = strtolower($path_parts['extension']);
+
+			$last_modified = date('Y-m-d H:i:s', $file_info['mtime']);
 		}
-	
-		$sql= 'INSERT INTO '.TABLE_PREFIX.'content'
-		      . '(course_id, 
-		          content_parent_id, 
-		          ordering,
-		          last_modified, 
-		          revision, 
-		          formatting, 
-		          release_date,
-		          head,
-		          use_customized_head,
-		          keywords, 
-		          content_path, 
-		          title, 
-		          text,
-				  test_message) 
-		       VALUES 
-				     ('.$_SESSION['course_id'].','															
-				     .intval($content_parent_id).','		
-				     .($content_info['ordering'] + $my_offset + 1).','
-				     .'"'.$last_modified.'",													
-				      0,
-				      1,
-				      NOW(),"'
-				     . $head .'",
-				     1,
-				      "",'
-				     .'"'.$content_info['new_path'].'",'
-				     .'"'.$content_info['title'].'",'
-				     .'"'.$content.'",'
-					 .'"'.$content_info['test_message'].'")';
-	
-		$result = mysql_query($sql, $db) or die(mysql_error());
-	
-		/* get the content id and update $items */
-		$items[$item_id]['real_content_id'] = mysql_insert_id($db);
-	
-		/* get the tests associated with this content */
-		if (!empty($items[$item_id]['tests'])){
-			$qti_import =& new QTIImport($import_path);
-	
-			foreach ($items[$item_id]['tests'] as $array_id => $test_xml_file){
-				$tests_xml = $import_path.$test_xml_file;
-				
-				//Mimic the array for now.
-				$test_attributes['resource']['href'] = $test_xml_file;
-				$test_attributes['resource']['type'] = 'imsqti_xmlv1p1';
-				$test_attributes['resource']['file'] = $items[$item_id]['file'];
-	//			$test_attributes['resource']['file'] = array($test_xml_file);
-	
-	
-				//Get the XML file out and start importing them into our database.
-				//TODO: See question_import.php 287-289.
-				$qids = $qti_import->importQuestions($test_attributes);
-	
-				//import test
-				$tid = $qti_import->importTest();
-	
-				//associate question and tests
-				foreach ($qids as $order=>$qid){
-					if (isset($qti_import->weights[$order])){
-						$weight = round($qti_import->weights[$order]);
-					} else {
-						$weight = 0;
-					}
-					$new_order = $order + 1;
-					$sql = "INSERT INTO " . TABLE_PREFIX . "tests_questions_assoc" . 
-							"(test_id, question_id, weight, ordering, required) " .
-							"VALUES ($tid, $qid, $weight, $new_order, 0)";
-					$result = mysql_query($sql, $db);
-				}
-	
-				//associate content and test
-				$sql =	'INSERT INTO ' . TABLE_PREFIX . 'content_tests_assoc' . 
-						'(content_id, test_id) ' .
-						'VALUES (' . $items[$item_id]['real_content_id'] . ", $tid)";
-				$result = mysql_query($sql, $db);
+		if (in_array($ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg'))) {
+			/* this is an image */
+			$content = '<img src="'.$content_info['href'].'" alt="'.$content_info['title'].'" />';
+		} else if ($ext == 'swf') {
+			/* this is flash */
+            /* Using default size of 550 x 400 */
+
+			$content = '<object type="application/x-shockwave-flash" data="' . $content_info['href'] . '" width="550" height="400"><param name="movie" value="'. $content_info['href'] .'" /></object>';
+
+		} else if ($ext == 'mov') {
+			/* this is a quicktime movie  */
+            /* Using default size of 550 x 400 */
+
+			$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="550" height="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="true" /><param name="controller" value="true" /><embed src="' . $content_info['href'] .'" width="550" height="400" controller="true" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
+		} else if ($ext == 'mp3') {
+			$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="200" height="15" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="false" /><embed src="' . $content_info['href'] .'" width="200" height="15" autoplay="false" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
+		} else if (in_array($ext, array('wav', 'au'))) {
+			$content = '<embed SRC="'.$content_info['href'].'" autostart="false" width="145" height="60"><noembed><bgsound src="'.$content_info['href'].'"></noembed></embed>';
+
+		} else if (in_array($ext, array('txt', 'css', 'html', 'htm', 'csv', 'asc', 'tsv', 'xml', 'xsl'))) {
+			/* this is a plain text file */
+			$content = file_get_contents(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			if ($content === false) {
+				/* if we can't stat() it then we're unlikely to be able to read it */
+				/* so we'll never get here. */
+				continue;
+			}
+
+			// get the contents of the 'head' element
+			$head = get_html_head_by_tag($content, $html_head_tags);
 			
-				if (!$msg->containsErrors()) {
-					$msg->addFeedback('IMPORT_SUCCEEDED');
+			// Specifically handle eXe package
+			// NOTE: THIS NEEDS WORK! TO FIND A WAY APPLY EXE .CSS FILES ONLY ON COURSE CONTENT PART.
+			// NOW USE OUR OWN .CSS CREATED SOLELY FOR EXE
+			$isExeContent = false;
+
+			// check xml file in eXe package
+			if (preg_match("/<organization[ ]*identifier=\"eXe*>*/", $ims_manifest_xml))
+			{
+				$isExeContent = true;
+			}
+
+			// use ATutor's eXe style sheet as the ones from eXe conflicts with ATutor's style sheets
+			if ($isExeContent)
+			{
+				$head = preg_replace ('/(<style.*>)(.*)(<\/style>)/ms', '\\1@import url(/docs/exestyles.css);\\3', $head);
+			}
+
+			// end of specifically handle eXe package
+
+			$content = get_html_body($content);
+			if ($contains_glossary_terms) 
+			{
+				// replace glossary content package links to real glossary mark-up using [?] [/?]
+				// refer to bug 3641, edited by Harris
+				$content = preg_replace('/<a href="([.\w\d\s]+[^"]+)" target="body" class="at-term">([.\w\d\s&;"]+|.*)<\/a>/i', '[?]\\2[/?]', $content);
+			}
+
+			/* potential security risk? */
+			if ( strpos($content_info['href'], '..') === false) {
+				@unlink(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
+			}
+		} else if ($ext) {
+			/* non text file, and can't embed (example: PDF files) */
+			$content = '<a href="'.$content_info['href'].'">'.$content_info['title'].'</a>';
+		}
+	}
+
+	$content_parent_id = $cid;
+	if ($content_info['parent_content_id'] !== 0) {
+		$content_parent_id = $items[$content_info['parent_content_id']]['real_content_id'];
+	}
+
+	$my_offset = 0;
+	if ($content_parent_id == $cid) {
+		$my_offset = $order_offset;
+	}
+
+	/* replace the old path greatest common denomiator with the new package path. */
+	/* we don't use str_replace, b/c there's no knowing what the paths may be	  */
+	/* we only want to replace the first part of the path.						  */
+	if ($package_base_path != '') {
+		$content_info['new_path']	= $package_base_name . substr($content_info['new_path'], strlen($package_base_path));
+	} else {
+		$content_info['new_path'] = $package_base_name;
+	}
+	
+	$head = addslashes($head);
+	$content_info['title'] = addslashes($content_info['title']);
+	$content_info['test_message'] = addslashes($content_info['test_message']);
+	$content = addslashes($content);
+
+	$sql= 'INSERT INTO '.TABLE_PREFIX.'content'
+	      . '(course_id, 
+	          content_parent_id, 
+	          ordering,
+	          last_modified, 
+	          revision, 
+	          formatting, 
+	          release_date,
+	          head,
+	          use_customized_head,
+	          keywords, 
+	          content_path, 
+	          title, 
+	          text,
+			  test_message) 
+	       VALUES 
+			     ('.$_SESSION['course_id'].','															
+			     .intval($content_parent_id).','		
+			     .($content_info['ordering'] + $my_offset + 1).','
+			     .'"'.$last_modified.'",													
+			      0,
+			      1,
+			      NOW(),"'
+			     . $head .'",
+			     1,
+			      "",'
+			     .'"'.$content_info['new_path'].'",'
+			     .'"'.$content_info['title'].'",'
+			     .'"'.$content.'",'
+				 .'"'.$content_info['test_message'].'")';
+
+	$result = mysql_query($sql, $db) or die(mysql_error());
+
+	/* get the content id and update $items */
+	$items[$item_id]['real_content_id'] = mysql_insert_id($db);
+
+	/* get the tests associated with this content */
+	if (!empty($items[$item_id]['tests'])){
+		$qti_import =& new QTIImport($import_path);
+
+		foreach ($items[$item_id]['tests'] as $array_id => $test_xml_file){
+			$tests_xml = $import_path.$test_xml_file;
+			
+			//Mimic the array for now.
+			$test_attributes['resource']['href'] = $test_xml_file;
+			$test_attributes['resource']['type'] = 'imsqti_xmlv1p1';
+			$test_attributes['resource']['file'] = $items[$item_id]['file'];
+//			$test_attributes['resource']['file'] = array($test_xml_file);
+
+
+			//Get the XML file out and start importing them into our database.
+			//TODO: See question_import.php 287-289.
+			$qids = $qti_import->importQuestions($test_attributes);
+
+			//import test
+			$tid = $qti_import->importTest();
+
+			//associate question and tests
+			foreach ($qids as $order=>$qid){
+				if (isset($qti_import->weights[$order])){
+					$weight = round($qti_import->weights[$order]);
+				} else {
+					$weight = 0;
 				}
+				$new_order = $order + 1;
+				$sql = "INSERT INTO " . TABLE_PREFIX . "tests_questions_assoc" . 
+						"(test_id, question_id, weight, ordering, required) " .
+						"VALUES ($tid, $qid, $weight, $new_order, 0)";
+				$result = mysql_query($sql, $db);
+			}
+
+			//associate content and test
+			$sql =	'INSERT INTO ' . TABLE_PREFIX . 'content_tests_assoc' . 
+					'(content_id, test_id) ' .
+					'VALUES (' . $items[$item_id]['real_content_id'] . ", $tid)";
+			$result = mysql_query($sql, $db);
+		
+			if (!$msg->containsErrors()) {
+				$msg->addFeedback('IMPORT_SUCCEEDED');
 			}
 		}
-	
-		/* get the a4a related xml */
-		if (isset($items[$item_id]['a4a_import_enabled']) && isset($items[$item_id]['a4a']) && !empty($items[$item_id]['a4a'])) {
-			$a4a_import = new A4aImport($items[$item_id]['real_content_id']);
-			$a4a_import->setRelativePath($items[$item_id]['new_path']);
-			$a4a_import->importA4a($items[$item_id]['a4a']);
-		}
+	}
+
+	/* get the a4a related xml */
+	if (isset($items[$item_id]['a4a_import_enabled']) && isset($items[$item_id]['a4a']) && !empty($items[$item_id]['a4a'])) {
+		$a4a_import = new A4aImport($items[$item_id]['real_content_id']);
+		$a4a_import->setRelativePath($items[$item_id]['new_path']);
+		$a4a_import->importA4a($items[$item_id]['a4a']);
 	}
 }
 
@@ -900,7 +746,7 @@ if (isset($_POST['url'])) {
 
 if ($_POST['s_cid']){
 	if (!$msg->containsErrors()) {
-		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY'.count($forum_array));
+		$msg->addFeedback('ACTION_COMPLETED_SUCCESSFULLY');
 	}
 	header('Location: ../../editor/edit_content.php?cid='.intval($_POST['cid']));
 	exit;

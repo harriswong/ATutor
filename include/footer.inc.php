@@ -74,6 +74,9 @@ function rowselectbox(obj, checked, handler) {
 <?php
 
 if ($framed || $popup) {
+    if(isset($tool_flag) && ($toolflag))                //verifico se è stato richiesta la visualizzazione tramite tool manager
+        $savant->display('include/tm_footer.tmpl.php');
+    else
 	$savant->display('include/fm_footer.tmpl.php');
 } else {
 	$savant->display('include/footer.tmpl.php');

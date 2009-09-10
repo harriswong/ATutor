@@ -44,11 +44,6 @@ define("EWIKI_DBFF_ACCURATE", 0);
 #-- plugin registration
 $ewiki_plugins["database"][0] = "ewiki_database_files";
 
-/* Export Wiki */
-if (isset($_REQUEST['to_wiki'])){
-		@define("EWIKI_DBFILES_DIRECTORY", AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki");
-}
-
 
 #-- backend
 class ewiki_database_files {
@@ -200,7 +195,7 @@ class ewiki_database_files {
    function INIT() {
       if (!is_writeable(EWIKI_DBFILES_DIRECTORY) || !is_dir(EWIKI_DBFILES_DIRECTORY)) {
          mkdir(EWIKI_DBFILES_DIRECTORY)
-         or die("db_flat_files: ï¿½databaseï¿½ directory '".EWIKI_DBFILES_DIRECTORY."' is not writeable!\n");
+         or die("db_flat_files: »database« directory '".EWIKI_DBFILES_DIRECTORY."' is not writeable!\n");
       }
    }
 

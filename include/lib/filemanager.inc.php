@@ -401,13 +401,33 @@ function course_realpath_NEW_VERSION($file) {
 	}
 }
 
+/**
+* Returns the name of the readme file in the given directory
+* @access public
+* @param  string $dir_name the name of the directory
+* @return  string	the name of the readme file
+*/
+function get_readme($dir)
+{
+	if (!is_dir($dir)) return '';
+	
+	$dh = opendir($dir);
+	
+	while (($file = readdir($dh)) !== false) {
+		if (stristr($file, 'readme') && substr($file, -4) <> '.php')
+			return $file;
+	}
+	
+	closedir($dh);
+	return '';
+}
 
 /* Import/Export Wiki */
 /**
 * Returns TRUE if wiki exists, FALSE else
 * @access public
 * @param  string $dir the path to the directory
-* @return  boolean TRUE if wiki exists, FALSE if it does not exist 
+* @return  boolean TRUE if wiki exists, FALSE if it does not exist
 */
 function exist_wiki($dir) {
 	if (is_dir($dir)){
@@ -423,19 +443,19 @@ function exist_wiki($dir) {
 * @access  public
 * @param   string $source		the source directory
 * @param   string $dest			the destination directory
-* @return  boolean				whether the copy was successful 
+* @return  boolean				whether the copy was successful
 */
 function copys_file_dir($dir_source, $dir_dest){
-				
+
 	$ris = TRUE;
 	$dir = opendir($dir_source);
 	if($dir){
 		while ($file=readdir($dir)) {
 			if($file){
 				if(file_exists($dir_dest."/".$file)){
-			
+
 						$lungh = strlen($_SESSION['course_id']);
-						$cod = substr ($file, 0, $lungh);						
+						$cod = substr ($file, 0, $lungh);
 						if (strcmp($cod, $_SESSION['course_id']) == 0){
 							$pos = stripos ($file, '-');
 							if( $pos > 0){
@@ -447,19 +467,16 @@ function copys_file_dir($dir_source, $dir_dest){
 							$num++;
 						}
 						copy($dir_source."/".$file, $dir_dest."/".$_SESSION['course_id'].$num."-".$file);
-			
+
 				}
 				else
 					copy($dir_source."/".$file, $dir_dest."/".$file);
-			} 
+			}
 			else $ris = FALSE;
-		} 
-	} 
+		}
+	}
 	else $ris = FALSE;
-	
+
 	return $ris;
 }
-
-
-
 ?>

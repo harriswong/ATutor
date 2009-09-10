@@ -23,7 +23,7 @@ function score_cmp($a, $b) {
 
 
 function get_search_result($words, $predicate, $course_id, &$num_found, &$total_score){
-	global $_pages; 
+	global $_pages, $moduleFactory; 
 
 	$search_results			= array();
 	$content_search_results = array();
@@ -32,19 +32,21 @@ function get_search_result($words, $predicate, $course_id, &$num_found, &$total_
 
 	if (isset($_GET['search_within'])){
 		if ($_GET['search_within'] == 'content'){
-			$content_search_results = get_content_search_result($words, $predicate, $course_id, &$total_score, &$course_score);
+			$content_search_results = get_content_search_result($words, $predicate, $course_id, $total_score, $course_score);
 			$search_results = $content_search_results;
 		} elseif ($_GET['search_within'] == 'forums'){
-			$forums_search_results = get_forums_search_result($words, $predicate, $course_id, &$total_score, &$course_score);
-			// if course_id is not being set, then the search doesn't have to check if the forum has been disabled
+			$forums_search_results = get_forums_search_result($words, $predicate, $course_id, $total_score, $course_score);
+			// get all enabled modules
+			$modules = $moduleFactory->getModules(AT_MODULE_STATUS_ENABLED, 0, TRUE);
+			// if forum has been disabled, don't search in it. 
 			if (isset($_SESSION['course_id']) && $_SESSION['course_id']==0){
 				$search_results = $forums_search_results;
-			} elseif (in_array('forum/list.php', $_pages[AT_NAV_HOME])){
+			} elseif (isset($modules['_standard/forums'])){
 				$search_results = $forums_search_results;
 			}
 		} else {
-			$content_search_results = get_content_search_result($words, $predicate, $course_id, &$total_score, &$course_score);
-			$forums_search_results = get_forums_search_result($words, $predicate, $course_id, &$total_score, &$course_score);
+			$content_search_results = get_content_search_result($words, $predicate, $course_id, $total_score, $course_score);
+			$forums_search_results = get_forums_search_result($words, $predicate, $course_id, $total_score, $course_score);
 			$search_results = array_merge($content_search_results, $forums_search_results);
 		}		
 
@@ -188,11 +190,11 @@ function get_forums_search_result($words, $predicate, $course_id, &$total_score,
 	$sql .= '	UNION ';
 
 	//group forums 
-	$sql .= '	SELECT forum_id, course_id, title, description, num_topics, num_posts, last_post, mins_to_edit FROM at_forums_groups NATURAL JOIN ';
-	$sql .= '	(SELECT forum_id, num_topics, num_posts, last_post, mins_to_edit FROM at_forums) AS f NATURAL JOIN ';
-	$sql .= '	AT_groups_members NATURAL JOIN ';
-	$sql .= '	(SELECT g.*, gt.course_id FROM at_groups g INNER JOIN at_groups_types gt USING (type_id) WHERE course_id='.$course_id.') AS group_course WHERE		';
-	$sql .=		$is_admin_string .'member_id='.$member_id;
+	$sql .= '	SELECT forum_id, course_id, title, description, num_topics, num_posts, last_post, mins_to_edit FROM '.TABLE_PREFIX.'forums_groups NATURAL JOIN ';
+	$sql .= '	(SELECT forum_id, num_topics, num_posts, last_post, mins_to_edit FROM '.TABLE_PREFIX.'forums) AS f NATURAL JOIN ';
+	$sql .= '	'.TABLE_PREFIX.'groups_members NATURAL JOIN ';
+	$sql .= '	(SELECT g.*, gt.course_id FROM '.TABLE_PREFIX.'groups g INNER JOIN '.TABLE_PREFIX.'groups_types gt USING (type_id) WHERE ';
+	$sql .=	'	course_id='.$course_id.') AS group_course WHERE	'.$is_admin_string .'member_id='.$member_id;
 	$sql .=	') AS course_group_forums ';
 	
 	$sql .=	'USING (forum_id) ';

@@ -39,6 +39,7 @@ if (isset($_GET['files'])){
 
 if (isset($_GET['submit_workspace'])) {
 	unset($_GET['folder']);
+	unset($assignment_for);
 
 	$owner_type = abs($_GET['ot']);
 
@@ -52,8 +53,12 @@ if (isset($_GET['submit_workspace'])) {
 			unset($owner_id);
 		}
 	} else if ($owner_type == WORKSPACE_ASSIGNMENT) {
-		$parts = explode('_', $_GET['ot'], 2);
+		$parts = explode('_', $_GET['ot'], 3);
+
 		if (isset($parts[1]) && $parts[1]) {
+			if ($parts[2] == 'my') {
+				$assignment_for = 'my'; 
+			}
 			$owner_id = $parts[1];
 		} else {
 			$owner_type = WORKSPACE_ASSIGNMENT;
@@ -93,6 +98,10 @@ if (!isset($owner_id)) {
 }
 
 $owner_arg_prefix = '?ot='.$owner_type.SEP.'oid='.$owner_id. SEP;
+
+if ($assignment_for == 'my') {
+	$owner_arg_prefix .= 'folder='.$_SESSION['member_id'];	
+}
 if (!($owner_status = fs_authenticate($owner_type, $owner_id))) {
 	$msg->addError('ACCESS_DENIED');
 	header('Location: '.url_rewrite('file_storage/index.php', AT_PRETTY_URL_IS_HEADER));
@@ -224,7 +233,6 @@ else if (isset($_GET['download']) && (isset($_GET['folders']) || isset($_GET['fi
 		$zipfile->send_file($zip_file_name);
 	}
 	exit;
-
 }
 // action - Delete Files/Folders (pre-confirmation)
 else if (query_bit($owner_status, WORKSPACE_AUTH_WRITE) && isset($_GET['delete']) && (isset($_GET['folders']) || isset($_GET['files']))) {
@@ -424,11 +432,11 @@ while ($row = mysql_fetch_assoc($result)) {
 <?php if (query_bit($owner_status, WORKSPACE_AUTH_WRITE)): ?>
 	<form method="post" action="<?php echo 'file_storage/index.php'.$owner_arg_prefix; ?>" enctype="multipart/form-data" name="form0">
 	<input type="hidden" name="folder" value="<?php echo $folder_id; ?>" />
-	<div style="float:right;">
-		<div style="margin: 0px auto; width: 90%;min-width:605px;" >
-			<div class="input-form" style="width: 23em; float: right;" >
+	<div style="margin-left:auto; margin-right:auto;width: 75%;">
+		<div style="" >
+			<div class="input-form" style="width: 48%; float: right;" >
 				<div class="row">
-					<h3><a href="file_storage/index.php" onclick="javascript:toggleform('c_folder'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('create_folder'); ?></a></h3>
+					<h3><a href="file_storage/index.php" onclick="javascript:toggleform('c_folder'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'" onfocus="this.style.cursor='pointer'"><?php echo _AT('create_folder'); ?></a></h3>
 				</div>
 				<div  id="c_folder">
 					<div class="row">
@@ -442,9 +450,9 @@ while ($row = mysql_fetch_assoc($result)) {
 			</div>
 	
 	
-			<div class="input-form" style="float: left; width: 23em;">
+			<div class="input-form" style="float: left; width: 45%;">
 				<div class="row">
-					<h3><a href="file_storage/index.php" onclick="javascript:toggleform('upload'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'"><?php echo _AT('new_file'); ?></a></h3>
+					<h3><a href="file_storage/index.php" onclick="javascript:toggleform('upload'); return false;" style="font-family: Helevetica, Arial, sans-serif;" onmouseover="this.style.cursor='pointer'" onfocus="this.style.cursor='pointer'"><?php echo _AT('new_file'); ?></a></h3>
 				</div>
 				<div id="upload">
 					<div class="row">
@@ -487,8 +495,22 @@ if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 		$file_storage_assignments[] = $row;
 	}
 }
-?>
 
+if ($_SESSION['member_id'] && $_SESSION['enroll']){
+	$my_assignments = array();
+	$sql = "SELECT distinct a.title, a.assignment_id FROM ".TABLE_PREFIX."assignments a, ".TABLE_PREFIX."files f
+	         WHERE a.course_id = ".$_SESSION[course_id]."
+	           AND a.assignment_id = f.owner_id
+	           AND f.owner_type= ".WORKSPACE_ASSIGNMENT."
+	           AND f.member_id = ".$_SESSION['member_id']."
+	         ORDER BY a.title";
+	$result = mysql_query($sql, $db);
+	while ($row = mysql_fetch_assoc($result)) {
+		$my_assignments[] = $row;
+	}
+}
+?>
+<div style="float:left; clear:right; width:95%;">
 <form method="get" action="<?php echo url_rewrite('file_storage/index.php', AT_PRETTY_URL_IS_HEADER);?>" name="form">
 <input type="hidden" name="folder" value="<?php echo $folder_id; ?>" />
 <input type="hidden" name="oid" value="<?php echo $owner_id; ?>" />
@@ -523,6 +545,13 @@ if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 					<?php endforeach; ?>
 				</optgroup>
 			<?php endif; ?>
+			<?php if (count($my_assignments) != 0) : ?>
+				<optgroup label="<?php echo _AT('assignments'); ?>">
+					<?php foreach ($my_assignments as $my_assignment): ?>
+						<option value="<?php echo WORKSPACE_ASSIGNMENT; ?>_<?php echo $my_assignment['assignment_id']; ?>_my" <?php if ($owner_type == WORKSPACE_ASSIGNMENT && $owner_id == $my_assignment['assignment_id']) { echo 'selected="selected"'; } ?>><?php echo $my_assignment['title']; ?></option>
+					<?php endforeach; ?>
+				</optgroup>
+			<?php endif; ?>
 			<?php if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN) && count($file_storage_assignments) != 0) : ?>
 				<optgroup label="<?php echo _AT('assignments'); ?>">
 					<?php foreach ($file_storage_assignments as $assignment): ?>
@@ -536,7 +565,16 @@ if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 		<br />
 		<?php echo _AT('current_path'); ?>
 			<a href="<?php 
-			echo url_rewrite($_SERVER['PHP_SELF'].$owner_arg_prefix.'folder=0'); ?>"><?php echo _AT('home'); ?></a>
+			if ($owner_type == WORKSPACE_ASSIGNMENT && !authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN))
+			{ // student assignment's folder; if it's instrutor who has priviledge to view all students' assignments, folder is 0
+				$folder = $_SESSION['member_id'];
+			}
+			else
+			{
+				$folder = 0;
+			}
+				
+			echo url_rewrite($_SERVER['PHP_SELF'].$owner_arg_prefix.'folder='.$folder); ?>"><?php echo _AT('home'); ?></a>
 		<?php foreach ($folder_path as $folder_info): ?>
 			<?php if ($folder_info['folder_id'] == $folder_id): ?>
 				» <?php echo htmlspecialchars($folder_info['title']); ?>
@@ -640,7 +678,7 @@ if (authenticate(AT_PRIV_ASSIGNMENTS, AT_PRIV_RETURN)) {
 </tbody>
 </table>
 </form>
-
+</div>
 <script type="text/javascript">
 // <!--
 function checkbuttons(state) {

@@ -212,7 +212,7 @@ else
 </div>
 </form>
 
-<form name="form1" method="post" action="mods/gradebook/verify_tests.php">
+<form name="form1" method="post" action="mods/_standard/gradebook/verify_tests.php">
 <div class="input-form">
 	<fieldset class="group_form"><legend class="group_form"><?php echo _AT('combine_tests'); ?></legend>
 	<div class="row">
@@ -252,9 +252,8 @@ else
 													" WHERE g.id = t.test_id".
 													" AND g.type='ATutor Test')".
 				" AND test_id IN (SELECT test_id FROM ".TABLE_PREFIX."tests_questions_assoc ".
-								" WHERE weight > 0 ".
 								" GROUP BY test_id ".
-								" HAVING count(*) > 1) ".
+								" HAVING sum(weight) > 0) ".
 					" ORDER BY title";
 	$result_at = mysql_query($sql_at, $db) or die(mysql_error());
 	

@@ -1,21 +1,21 @@
 <?php
 /************************************************************************/
-/* ATutor																*/
+/* ATutor                                                               */
 /************************************************************************/
-/* Copyright (c) 2002-2008 by Greg Gay, Joel Kronenberg & Heidi Hazelton*/
-/* Adaptive Technology Resource Centre / University of Toronto			*/
-/* http://atutor.ca														*/
-/*																		*/
-/* This program is free software. You can redistribute it and/or		*/
-/* modify it under the terms of the GNU General Public License			*/
-/* as published by the Free Software Foundation.						*/
+/* Copyright (c) 2002 - 2009                                            */
+/* Adaptive Technology Resource Centre / University of Toronto          */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or        */
+/* modify it under the terms of the GNU General Public License          */
+/* as published by the Free Software Foundation.                        */
 /************************************************************************/
 // $Id$
+
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
-define('AT_DEVEL', 1);
+define('AT_DEVEL', 0);
 define('AT_ERROR_REPORTING', E_ALL ^ E_NOTICE); // default is E_ALL ^ E_NOTICE, use E_ALL or E_ALL + E_STRICT for developing
-define('AT_DEVEL_TRANSLATE', 1);
+define('AT_DEVEL_TRANSLATE', 0);
 
 // Emulate register_globals off. src: http://php.net/manual/en/faq.misc.php#faq.misc.registerglobals
 function unregister_GLOBALS() {
@@ -79,7 +79,6 @@ function unregister_GLOBALS() {
 	@set_time_limit(0);
 	@ini_set('session.gc_maxlifetime', '36000'); /* 10 hours */
 	@session_cache_limiter('private, must-revalidate');
-
 	session_name('ATutorID');
 	error_reporting(AT_ERROR_REPORTING);
 
@@ -107,17 +106,6 @@ function unregister_GLOBALS() {
 		exit;
 	}
 
-	if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public') && !isset($_pretty_url_course_id)) {
-		if (isset($in_get) && $in_get && (($pos = strpos($_SERVER['PHP_SELF'], 'get.php/')) !== FALSE)) {
-			$redirect = substr($_SERVER['PHP_SELF'], 0, $pos) . 'login.php';
-			header('Location: '.$redirect);
-			exit;
-		}
-
-		header('Location: '.AT_BASE_HREF.'login.php');
-		exit;
-	}
-
 
 /***** end session initilization block ****/
 
@@ -136,6 +124,24 @@ $sql    = "SELECT * FROM ".TABLE_PREFIX."config";
 $result = mysql_query($sql, $db);
 while ($row = mysql_fetch_assoc($result)) { 
 	$_config[$row['name']] = $row['value'];
+}
+
+//Check if users=valid
+if (!isset($_SESSION['course_id']) && !isset($_SESSION['valid_user']) && (!isset($_user_location) || $_user_location != 'public') && !isset($_pretty_url_course_id)) {
+	if (isset($in_get) && $in_get && (($pos = strpos($_SERVER['PHP_SELF'], 'get.php/')) !== FALSE)) {
+		$redirect = substr($_SERVER['PHP_SELF'], 0, $pos) . 'login.php';
+		header('Location: '.$redirect);
+		exit;
+	}
+
+	//hack for Terms and Conditions module.  Will need a better way to handle this module without adding this to the vitals. 
+	if($_config['enable_terms_and_conditions']==1){
+		header('Location: '.AT_BASE_HREF.'mods/terms_and_conditions/terms_and_conditions.php');
+		exit;
+	}
+
+	header('Location: '.AT_BASE_HREF.'login.php');
+	exit;
 }
 
 /* following is added as a transition period and backwards compatability: */
@@ -240,7 +246,8 @@ if ($_config['time_zone']) {
 	} else {
 		// get default
 		$default_theme = get_default_theme();
-		if (!is_dir(AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name'])) {
+		
+		if (!is_dir(AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name']) || $default_theme == '') {
 			$default_theme = array('dir_name' => 'default');
 		}
 		$savant->addPath('template', AT_INCLUDE_PATH . '../themes/' . $default_theme['dir_name'] . '/');
@@ -267,14 +274,37 @@ if ((!isset($_SESSION['course_id']) || $_SESSION['course_id'] == 0) && ($_user_l
 /* check if we are in the requested course, if not, bounce to it.
  * @author harris, for pretty url, read AT_PRETTY_URL_HANDLER
  */ 
-if (isset($_pretty_url_course_id) && $_SESSION['course_id'] != $_pretty_url_course_id){
-//	$_SESSION['course_id'] = $_pretty_url_course_id;
+if ((isset($_SESSION['course_id']) && isset($_pretty_url_course_id) && $_SESSION['course_id'] != $_pretty_url_course_id) ||
+	(isset($_pretty_url_course_id) && !isset($_SESSION['course_id']) && !isset($_REQUEST['ib']))) {
+
 	if($_config['pretty_url'] == 0){
 		header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_pretty_url_course_id.SEP.'pu='.$_SERVER['PATH_INFO'].urlencode('?'.$_SERVER['QUERY_STRING']));
 	} else {
 		header('Location: '.AT_BASE_HREF.'bounce.php?course='.$_pretty_url_course_id.SEP.'pu='.$_SERVER['PATH_INFO']);
 	}
 	exit;
+}
+
+   /**
+   * This function is used for printing variables into log file for debugging.
+   * @access  public
+   * @param   mixed $var	The variable to output
+   * @param   string $log	The location of the log file. If not provided, use the default one.
+   * @author  Cindy Qi Li
+   */
+function debug_to_log($var, $log='') {
+	if (!defined('AT_DEVEL') || !AT_DEVEL) {
+		return;
+	}
+	
+	if ($log == '') $log = AT_CONTENT_DIR. 'atutor.log';
+	$handle = fopen($log, 'a');
+	fwrite($handle, "\n\n");
+	fwrite($handle, date("F j, Y, g:i a"));
+	fwrite($handle, "\n");
+	fwrite($handle, var_export($var,1));
+	
+	fclose($handle);
 }
 
    /**
@@ -308,7 +338,6 @@ function debug($var, $title='') {
 	echo $str;
 	echo '</pre>';
 }
-
 
 /********************************************************************/
 /* the system course information									*/
@@ -521,7 +550,6 @@ function get_login($id){
 
 function get_display_name($id) {
 	static $db, $_config, $display_name_formats;
-
 	if (!$id) {
 		return $_SESSION['login'];
 	}
@@ -1011,18 +1039,22 @@ function query_bit( $bitfield, $bit ) {
 * @author  Joel Kronenberg
 */
 function authenticate($privilege, $check = false) {
-	if (!$_SESSION['valid_user']) {
-		return false;
-	}
 	if ($_SESSION['is_admin']) {
 		return true;
 	}
-	$auth = query_bit($_SESSION['privileges'], $privilege);
 
-	if (!$auth && $check) {
-		return false;
-	} else if (!$auth && !$check) {
-		exit;
+	$auth = query_bit($_SESSION['privileges'], $privilege);
+	
+	if (!$_SESSION['valid_user'] || !$auth) {
+		if (!$check){
+			global $msg;
+			$msg->addInfo('NO_PERMISSION');
+			require(AT_INCLUDE_PATH.'header.inc.php'); 
+			require(AT_INCLUDE_PATH.'footer.inc.php'); 
+			exit;
+		} else {
+			return false;
+		}
 	}
 	return true;
 }
@@ -1128,14 +1160,23 @@ function profile_image_exists($id) {
 	}
 }
 
-function print_profile_img($id) {
+/**
+ * print thumbnails or profile pic
+ * @param	int		image id
+ * @param	int		1 for thumbnail, 2 for profile
+ */
+function print_profile_img($id, $type=1) {
 	global $moduleFactory;
 	$mod = $moduleFactory->getModule('_standard/profile_pictures');
 	if ($mod->isEnabled() === FALSE) {
 		return;
 	}
 	if (profile_image_exists($id)) {
-		echo '<img src="get_profile_img.php?id='.$id.'" class="profile-picture" alt="" />';
+		if ($type==1){
+			echo '<img src="get_profile_img.php?id='.$id.'" class="profile-picture" alt="" />';
+		} elseif($type==2){
+			echo '<img src="get_profile_img.php?id='.$id.SEP.'size=p" class="profile-picture" alt="" />';
+		}
 	} else {
 		echo '<img src="images/clr.gif" height="100" width="100" class="profile-picture" alt="" />';
 	}
@@ -1148,9 +1189,12 @@ function profile_image_delete($id) {
 		if (file_exists(AT_CONTENT_DIR.'profile_pictures/originals/'. $id.'.'.$extension)) {
 			unlink(AT_CONTENT_DIR.'profile_pictures/originals/'. $id.'.'.$extension);
 		}
+		if (file_exists(AT_CONTENT_DIR.'profile_pictures/profile/'. $id.'.'.$extension)) {
+			unlink(AT_CONTENT_DIR.'profile_pictures/profile/'. $id.'.'.$extension);
+		}
 		if (file_exists(AT_CONTENT_DIR.'profile_pictures/thumbs/'. $id.'.'.$extension)) {
 			unlink(AT_CONTENT_DIR.'profile_pictures/thumbs/'. $id.'.'.$extension);
-		}
+		}		
 	}
 }
 

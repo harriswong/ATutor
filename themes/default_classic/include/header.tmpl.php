@@ -25,10 +25,11 @@ global $system_courses, $_custom_css;
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
 	<?php endif; ?>
+	<script src="<?php echo $this->base_path; ?>jscripts/infusion/InfusionAll.js" type="text/javascript"></script>
 	<?php echo $this->custom_css; ?>
 </head>
-<body onload="setstates(); <?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script><script language="javascript" type="text/javascript">
+<body onload="setstates(); <?php echo $this->onload; ?>">
+<script language="javascript" type="text/javascript">
 //<!--
 
 var newwindow;
@@ -190,8 +191,8 @@ function toggleToc(objId) {
 			<a href="<?php echo $this->sequence_links['resume']['url']; ?>" accesskey="." title="<?php echo _AT('resume').': '.$this->sequence_links['resume']['title']; ?>"><?php echo $this->sequence_links['resume']['title']; ?></a> - 
 	<?php endif; ?>
 	<?php foreach ($this->path as $page): ?>
-		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo $page['title']; ?></a> &raquo; 
-	<?php endforeach; ?> <?php echo htmlspecialchars($this->page_title, ENT_COMPAT, "UTF-8"); ?></span>
+		<a href="<?php echo $page['url']; ?>" title="<?php echo _AT('back_to').' '.$page['title']; ?>"><?php echo htmlspecialchars($page['title'], ENT_COMPAT, "UTF-8"); ?></a> &raquo; 
+	<?php endforeach; ?> <?php echo $this->page_title; ?>
 </div>
 <?php } ?>
 

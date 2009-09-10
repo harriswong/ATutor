@@ -113,7 +113,7 @@ function AT_date($format='%Y-%M-%d', $timestamp = '', $format_type=AT_DATE_MYSQL
 
 	if ($format_type == AT_DATE_INDEX_VALUE) {
 		// apply timezone offset
-		apply_timezone($timestamp);
+//		$timestamp = apply_timezone($timestamp);
 	
 		if ($format == '%D') {
 			return _AT($day_name_con[$timestamp-1]);
@@ -152,7 +152,7 @@ function AT_date($format='%Y-%M-%d', $timestamp = '', $format_type=AT_DATE_MYSQL
 	}
 
 	// apply timezone offset
-	apply_timezone($timestamp);
+	$timestamp = apply_timezone($timestamp);
 
 	/* pull out all the %X items from $format */
 	$first_token = strpos($format, '%');
@@ -354,7 +354,7 @@ function _AT() {
 	* @author	Joel Kronenberg
 	*/
 	function AT_print($input, $name, $runtime_html = true) {
-		global $_field_formatting;
+		global $_field_formatting, $_config;
 
 		if (!isset($_field_formatting[$name])) {
 			/* field not set, check if there's a global setting */
@@ -383,6 +383,10 @@ function _AT() {
 		} else {
 			$input = str_replace('<', '&lt;', $input);
 			$input = nl2br($input);
+		}
+
+		if (isset($_config['latex_server']) && $_config['latex_server']) {
+			$input = preg_replace('/\[tex\](.*?)\[\/tex\]/sie', "'<img src=\"'.\$_config['latex_server'].rawurlencode('$1').'\" align=\"middle\">'", $input);
 		}
 
 		/* this has to be here, only because AT_FORMAT_HTML is the only check that has an else-block */
@@ -582,7 +586,16 @@ function myCodes($text, $html = false) {
 
 	/* contributed by Thomas M. Duffey <tduffey at homeboyz.com> */
 	$html = !$html ? 0 : 1;
+
+	// little hack added by greg to add syntax highlighting without using <?php \?\>
+
+	$text = str_replace("[code]","[code]<?php",$text);
+	$text = str_replace("[/code]","?>[/code]",$text);
+
 	$text = preg_replace("/\[code\]\s*(.*)\s*\[\\/code\]/Usei", "highlight_code(fix_quotes('\\1'), $html)", $text);
+	// now remove the <?php added above and leave the syntax colour behind.
+	$text = str_replace("&lt;?php", "", $text);
+	$text = str_replace("?&gt;", "", $text);
 
 	return $text;
 }
@@ -769,8 +782,8 @@ function highlight($input, $var) {//$input is the string, $var is the text to be
 
 
 /* @See: ./index.php */
-function format_content($input, $html = 0, $glossary, $simple = false) {
-	global $_base_path, $_config_defaults;
+function format_content($input, $html = 0, $glossary, $simple = false, $current_forums = false) {
+	global $_base_path, $_config;
 
 	if (!$html) {
 		$input = str_replace('<', '&lt;', $input);
@@ -796,7 +809,7 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 	 		$term = '(\s*'.$term.'\s*)';
 			$term = str_replace(' ','((<br \/>)*\s*)', $term); 
 
-			$def = htmlspecialchars($v);		
+			$def = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');		
 			if ($simple) {
 				$input = preg_replace
 						("/(\[\?\])$term(\[\/\?\])/i",
@@ -805,19 +818,28 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 			} else {
 				$input = preg_replace
 						("/(\[\?\])$term(\[\/\?\])/i",
-						'\\2<sup><a href="'.$_base_path.'glossary/index.php?g_cid='.$_SESSION['s_cid'].SEP.'w='.urlencode($original_term).'#term" onmouseover="return overlib(\''.$def.'\', CAPTION, \''.addslashes($original_term).'\', AUTOSTATUS);" onmouseout="return nd();" onfocus="return overlib(\''.$def.'\', CAPTION, \''.addslashes($original_term).'\', AUTOSTATUS);" onblur="return nd();"><span style="color: blue; text-decoration: none;font-size:small; font-weight:bolder;">?</span></a></sup>',
-						$input);
+						'\\2<sup><a class="tooltip" href="'.$_base_path.'glossary/index.php?g_cid='.$_SESSION['s_cid'].SEP.'w='.urlencode($original_term).'#term" title="'.addslashes($original_term).': '.$def.'"><span style="color: blue; text-decoration: none;font-size:small; font-weight:bolder;">?</span></a></sup>',$input);
 			}
 		}
 	} else if (!$user_glossary) {
 		$input = str_replace(array('[?]','[/?]'), '', $input);
 	}
 
-	$input = str_replace('CONTENT_DIR', '', $input);
+        /*TODO **************************************************************/
+        /* do the forums search and replace: */
+        if (is_array($current_forums)) {
+            foreach ($current_forums as $forum)    
+                $input = str_replace($forum['forum_str'],'<img src="home-forums_sm.png" border="0" alt="Forum Icon"/> Forum'.$forum['id'],$input);
+        } else{
+             // add forum-tag replace
+            $input = str_replace(array('[forum]', '[/forum]'),'', $input);
+        }
 
-	if (isset($_config_defaults['latex_server']) && $_config_defaults['latex_server']) {
+        $input = str_replace('CONTENT_DIR', '', $input);
+
+	if (isset($_config['latex_server']) && $_config['latex_server']) {
 		// see: http://www.forkosh.com/mimetex.html
-		$input = preg_replace('/\[tex\](.*?)\[\/tex\]/sie', "'<img src=\"'.\$_config_defaults['latex_server'].rawurlencode('$1').'\" align=\"middle\">'", $input);
+		$input = preg_replace('/\[tex\](.*?)\[\/tex\]/sie', "'<img src=\"'.\$_config['latex_server'].rawurlencode('$1').'\" align=\"middle\">'", $input);
 	}
 
 	if ($html) {
@@ -834,7 +856,7 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 
 function get_content_table($content)
 {
-	preg_match_all("/<(h[\d]+)[^>]*>(.*)<\/\\1>/i", $content, $found_headers, PREG_SET_ORDER);
+	preg_match_all("/<(h[\d]+)[^>]*>(.*)<\/(\s*)\\1(\s*)>/i", $content, $found_headers, PREG_SET_ORDER);
 	
 	if (count($found_headers) == 0) return array("", $content);
 	else
@@ -865,6 +887,12 @@ function get_content_table($content)
 function find_terms($find_text) {
 	preg_match_all("/(\[\?\])(.[^\?]*)(\[\/\?\])/i", $find_text, $found_terms, PREG_PATTERN_ORDER);
 	return $found_terms;
+}
+
+/*TODO ******************************ricerca forum all'interno del contenuto*/
+function find_forums($find_text) {
+	preg_match_all("/\[forum\]\s*(.*)\s*\[\\/forum\]/Usei", $find_text, $found_forums, PREG_PATTERN_ORDER);
+	return $found_forums;
 }
 
 /***********************************************************************

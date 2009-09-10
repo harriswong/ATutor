@@ -9,7 +9,7 @@ $result = mysql_query($sql, $db);
 if (mysql_num_rows($result) > 0) {
 	while ($row = mysql_fetch_assoc($result)) {
 		$path = "links/index.php?view=".$row['link_id'];
-		$content_list[] = array('title' => $row['LinkName'], 'path' => $path , 'image' => AT_BASE_HREF.'images/home-links_icon.png'); 
+		$content_list[] = array('start'=>'[link]','title' => $row['LinkName'], 'path' => $path , 'image' => AT_BASE_HREF.'images/home-links_sm.png','end' => '[/link]');
 	}
 	return $content_list;	
 } else {

@@ -67,16 +67,20 @@ global $system_courses, $_custom_css,$db;
 	  <link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/ie_styles.css" type="text/css" />
 	<![endif]-->
 	<link rel="stylesheet" href="<?php echo $this->base_path.'themes/'.$this->theme; ?>/forms.css" type="text/css" />
-	<?php echo $this->rtl_css; ?>
-	<?php if (isset($_SESSION['course_id']) && $system_courses[$_SESSION['course_id']]['rss']): ?>
+<?php echo $this->rtl_css; ?>
+<?php if (isset($_SESSION['course_id']) && $system_courses[$_SESSION['course_id']]['rss']): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 2.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-2" />
 	<link rel="alternate" type="application/rss+xml" title="<?php echo SITE_NAME; ?> - RSS 1.0" href="<?php echo $this->base_href; ?>get_rss.php?<?php echo $_SESSION['course_id']; ?>-1" />
-	<?php endif; ?>
-	<?php echo $this->custom_css; ?>
+<?php endif; ?>
+	<script src="<?php echo $this->base_path; ?>jscripts/infusion/InfusionAll.js" type="text/javascript"></script>
+	<script language="javascript" type="text/javascript">
+	//<!--
+	jQuery.noConflict();
+	//-->
+	</script>
+<?php echo $this->custom_css; ?>
 </head>
-<body onload="<?php echo $this->onload; ?>"><div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-
-<script language="JavaScript" src="<?php echo $this->base_path; ?>overlib.js" type="text/javascript"></script>
+<body onload="<?php echo $this->onload; ?>">
 <script language="javascript" type="text/javascript">
 //<!--
 var newwindow;
@@ -166,29 +170,31 @@ function toggleToc(objId) {
 	}
 	var showlink=document.getElementById(objId + 'showlink');
 	var hidelink=document.getElementById(objId + 'hidelink');
+
 	if (hidelink.style.display == 'none') {
 		document.getElementById('contentcolumn').id="contentcolumn_shiftright";
-		toc.style.display = '';
+		jQuery("[id="+objId+"]").slideDown("slow");
 		hidelink.style.display='';
 		showlink.style.display='none';
 	} else {
 		document.getElementById('contentcolumn_shiftright').id="contentcolumn";
-		toc.style.display = 'none';
+		jQuery("[id="+objId+"]").slideUp("slow");
 		hidelink.style.display='none';
 		showlink.style.display='';
 	}
-	setcookie(objId, toc.style.display, 1);
+	setcookie(objId, hidelink.style.display, 1);
 }
 //-->
 </script>
-
+<div class="page_wrapper">
 <div id="header">
 	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#content" accesskey="c">
 	<img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_content'); ?> ALT+c" /></a>		
 
-	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#menu"  accesskey="m"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_menu'); ?> ALT+m" /></a>
+	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>#menu<?php echo $_REQUEST['cid']  ?>"  accesskey="m"><img src="<?php echo $this->base_path; ?>images/clr.gif" height="1" width="1" border="0" alt="<?php echo _AT('goto_menu'); ?> ALT+m" /></a>
 	<div id="top-links"> <!-- top help/search/login links -->
 		<?php if (isset($_SESSION['member_id']) && $_SESSION['member_id']): ?>
+			<?php if(!$this->just_social): ?>
 			<!-- start the jump menu -->
 			<?php if (empty($_GET)): ?>
 				<form method="post" action="<?php echo $this->base_path; ?>bounce.php?p=<?php echo urlencode($this->rel_url); ?>" target="_top">
@@ -205,6 +211,8 @@ function toggleToc(objId) {
 					</optgroup>
 				</select> <input type="submit" name="jump" value="<?php echo _AT('jump'); ?>" class="button" /> </form>
 			<!-- /end the jump menu -->
+			<?php endif; ?>
+
 			<?php if ($_SESSION['is_super_admin']): ?>
 				<a href="<?php echo $this->base_path; ?>bounce.php?admin"><?php echo _AT('return_to_admin_area'); ?></a> | 
 			<?php endif; ?>
@@ -217,7 +225,10 @@ function toggleToc(objId) {
 				<?php endif; ?>
 			<?php endif; ?>
 		<?php endif; ?>
-		<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> <a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
+		<?php if(!$this->just_social): ?>
+			<a href="<?php echo $this->base_path; ?>search.php"><?php echo _AT('search'); ?></a> 
+		<?php endif; ?>
+		<a href="<?php echo $this->base_path; ?>help/index.php"><?php echo _AT('help'); ?></a>
 	</div>
 	<?php if (!empty($this->icon)) { // if a course icon is available, display it here.  ?>
 		<a href="<?php echo $this->base_path.url_rewrite('index.php'); ?>"><img src="<?php echo $this->icon; ?>" class="headicon" alt="<?php echo  _AT('home'); ?>" /></a>	
@@ -253,8 +264,8 @@ function toggleToc(objId) {
 <div id="topnavlistcontainer">
 <!-- the main navigation. in our case, tabs -->
 	<ul id="topnavlist">
+		<?php $accesscounter = 0; //initialize ?>
 		<?php foreach ($this->top_level_pages as $page): ?>
-			<?php $accesscounter = 0; //initialize ?>
 			<?php ++$accesscounter; $accesscounter = ($accesscounter == 10 ? 0 : $accesscounter); ?>
 			<?php $accesskey_text = ($accesscounter < 10 ? 'accesskey="'.$accesscounter.'"' : ''); ?>
 			<?php $accesskey_title = ($accesscounter < 10 ? ' Alt+'.$accesscounter : ''); ?>
@@ -308,7 +319,7 @@ function toggleToc(objId) {
 	<!-- the bread crumbs -->
 	<div id="breadcrumbs">
 		<?php foreach ($this->path as $page): ?>
-			<a href="<?php echo $page['url']; ?>"><?php echo $page['title']; ?></a> > 
+			<a href="<?php echo $page['url']; ?>"><?php echo htmlspecialchars($page['title'], ENT_COMPAT, "UTF-8"); ?></a> > 
 		<?php endforeach; ?> <?php echo $this->page_title; ?>
 	</div>
 <?php } ?>
@@ -387,5 +398,5 @@ function toggleToc(objId) {
 	<!-- the page title -->
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
 
-	<a name="content"></a>
+	<a name="content" title="<?php echo _AT('content'); ?>"></a>
 	<?php global $msg; $msg->printAll(); ?>

@@ -2,7 +2,7 @@
 
 /*
   ErfurtWiki - a pretty flexible, fast and user-friendly wiki framework
-  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ¯¯¯¯¯¯¯¯¯¯
   Is PUBLIC DOMAIN (no license, no warranty); feel free to redistribute
   under any other license, if you want. (c) 2003-2005 WhoEver wants to.
 
@@ -10,8 +10,8 @@
     http://erfurtwiki.sourceforge.net/
     http://ewiki.berlios.de/
   lead by:
-    Mario Salzer <mario*erphesfurtï¿½de>
-    Andy Fundinger <andy*burgissï¿½com>
+    Mario Salzer <mario*erphesfurt·de>
+    Andy Fundinger <andy*burgiss·com>
 
   call it from within yoursite.php / layout script like this:
     <?php
@@ -99,21 +99,13 @@ if (!class_exists("ewiki_database_mysql")) { include_once("plugins/db/mysql.php"
 	define("EWIKI_AUTO_LOGIN", 1);		# [auth_query] on startup
 
 	#-- allowed WikiPageNameCharacters
-	define("EWIKI_CHARS_L", "a-z_ï¿½ï¿½ï¿½-ï¿½$");	# \337-\377
-	define("EWIKI_CHARS_U", "A-Z0-9ï¿½-ï¿½");	# \300-\336
+	define("EWIKI_CHARS_L", "a-z_µ¤ß-ÿ$");	# \337-\377
+	define("EWIKI_CHARS_U", "A-Z0-9À-Þ");	# \300-\336
 	define("EWIKI_CHARS", EWIKI_CHARS_L.EWIKI_CHARS_U);
 
         #-- database
 	@define("EWIKI_DB_TABLE_NAME", "ewiki");	# MySQL / ADOdb
-	
-	
-/* Export Wiki */	
-	//la riga 108 @define("EWIKI_DBFILES_DIRECTORY", "/tmp");	# see "db_flat_files.php"
-	if (!isset($_REQUEST['to_wiki'])){
-		@define("EWIKI_DBFILES_DIRECTORY", "/tmp");	# see "db_flat_files.php"
-	}
-	
-	
+	@define("EWIKI_DBFILES_DIRECTORY", "/tmp");	# see "db_flat_files.php"
 	define("EWIKI_DBA", "/tmp/ewiki.db3");		# see "db_dba.php"
 	define("EWIKI_DBQUERY_BUFFER", 512*1024);	# 512K
 	define("EWIKI_INIT_PAGES", "./init-pages");	# for initialization
@@ -279,7 +271,7 @@ if (!class_exists("ewiki_database_mysql")) { include_once("plugins/db/mysql.php"
  #<broken+bug>#	"//" => array("<i>", "</i>"),   # conflicts with URLs, could only be done with regex
 		"**" => array("<b>", "</b>"),
 		"##" => array("<big>", "</big>"),
-		"ï¿½ï¿½" => array("<small>", "</small>"),
+		"µµ" => array("<small>", "</small>"),
            ),
            "wm_start_end" => array(
 	#<off># array("[-", "-]", "<s>", "</s>"),
@@ -367,76 +359,76 @@ if (!class_exists("ewiki_database_mysql")) { include_once("plugins/db/mysql.php"
 	);
         #
         $ewiki_t["es"] = (array)@$ewiki_t["es"] + array(
-           "EDITTHISPAGE" => "EditarEstaPï¿½gina",
+           "EDITTHISPAGE" => "EditarEstaPágina",
            "BACKLINKS" => "EnlacesInversos",
-           "PAGESLINKINGTO" => "Pï¿½ginas enlazando \$title",
-           "PAGEHISTORY" => "InfoPï¿½gina",
-           "INFOABOUTPAGE" => "Informaciï¿½n sobre la pï¿½gina",
-           "LIKEPAGES" => "Pï¿½ginas como esta",
-           "NEWESTPAGES" => "Pï¿½ginas mï¿½s nuevas",
-           "LASTCHANGED" => "ï¿½ltima modificaciï¿½n %d/%m/%Y a las %H:%M",
-           "DOESNOTEXIST" => "Esta pï¿½gina aï¿½n no existe, por favor eliga EditarEstaPï¿½gina si desea crearla.",
-           "DISABLEDPAGE" => "Esta pï¿½gina no estï¿½ disponible en este momento.",
-           "ERRVERSIONSAVE" => "Disculpe, mientras editaba esta pï¿½gina alguiï¿½n mï¿½s
-		salvï¿½ una versiï¿½n modificada. Por favor regrese a
+           "PAGESLINKINGTO" => "Páginas enlazando \$title",
+           "PAGEHISTORY" => "InfoPágina",
+           "INFOABOUTPAGE" => "Información sobre la página",
+           "LIKEPAGES" => "Páginas como esta",
+           "NEWESTPAGES" => "Páginas más nuevas",
+           "LASTCHANGED" => "última modificación %d/%m/%Y a las %H:%M",
+           "DOESNOTEXIST" => "Esta página aún no existe, por favor eliga EditarEstaPágina si desea crearla.",
+           "DISABLEDPAGE" => "Esta página no está disponible en este momento.",
+           "ERRVERSIONSAVE" => "Disculpe, mientras editaba esta página alguién más
+		salvó una versión modificada. Por favor regrese a
 		a la pantalla anterior y copie sus cambios a su computador
-		para insertalos nuevamente despuï¿½s de que cargue
-		la pantalla de ediciï¿½n.",
-           "ERRORSAVING" => "Ocurriï¿½ un error mientras se salvavan sus cambios. Por favor intente de nuevo.",
-           "THANKSFORCONTRIBUTION" => "Gracias por su contribuciï¿½n!",
-           "CANNOTCHANGEPAGE" => "Esta pï¿½gina no puede ser modificada.",
-           "OLDVERCOMEBACK" => "Hacer que esta versiï¿½n antigua regrese a remplazar la actual",
+		para insertalos nuevamente después de que cargue
+		la pantalla de edición.",
+           "ERRORSAVING" => "Ocurrió un error mientras se salvavan sus cambios. Por favor intente de nuevo.",
+           "THANKSFORCONTRIBUTION" => "Gracias por su contribución!",
+           "CANNOTCHANGEPAGE" => "Esta página no puede ser modificada.",
+           "OLDVERCOMEBACK" => "Hacer que esta versión antigua regrese a remplazar la actual",
            "PREVIEW" => "Previsualizar",
            "SAVE" => "Salvar",
-           "CANCEL_EDIT" => "CancelarEdiciï¿½n",
-           "UPLOAD_PICTURE_BUTTON" => "subir grï¿½fica &gt;&gt;&gt;",
+           "CANCEL_EDIT" => "CancelarEdición",
+           "UPLOAD_PICTURE_BUTTON" => "subir gráfica &gt;&gt;&gt;",
            "EDIT_FORM_1" => "<a href=\"".EWIKI_SCRIPT."BuenEstilo\">BuenEstilo</a> es
 		escribir lo que viene a su mente. No se preocupe mucho
-		por la apariencia. Tambiï¿½n puede agregar <a href=\"".EWIKI_SCRIPT."ReglasDeMarcadoWiki\">ReglasDeMarcadoWiki</a>
-		mï¿½s adelante si piensa que es necesario.<br />",
+		por la apariencia. También puede agregar <a href=\"".EWIKI_SCRIPT."ReglasDeMarcadoWiki\">ReglasDeMarcadoWiki</a>
+		más adelante si piensa que es necesario.<br />",
            "EDIT_FORM_2" => "<br />Por favor no escriba cosas, que puedan
 		enfadar a otras personas. Y por favor tenga en mente que
-		usted no es del todo anï¿½nimo en Internet 
-		(encuentre mï¿½s sobre 
+		usted no es del todo anónimo en Internet 
+		(encuentre más sobre 
 		'<a href=\"http://google.com/search?q=my+computers+IP+address\">IP address</a>' de su computador con Google).",
-           "BIN_IMGTOOLARGE" => "ï¿½La grï¿½fica es demasiado grande!",
-           "BIN_NOIMG" => "ï¿½No es un archivo con una grï¿½fica (formato de archivo inaceptable)!",
-           "FORBIDDEN" => "No estï¿½ autorizado para acceder a esta pï¿½gina.",
+           "BIN_IMGTOOLARGE" => "¡La gráfica es demasiado grande!",
+           "BIN_NOIMG" => "¡No es un archivo con una gráfica (formato de archivo inaceptable)!",
+           "FORBIDDEN" => "No está autorizado para acceder a esta página.",
         );
         #
 	$ewiki_t["de"] = (array)@$ewiki_t["de"] + array(
-	   "EDITTHISPAGE" => "DieseSeiteï¿½ndern",
-           "APPENDTOPAGE" => "Ergï¿½nze",
-	   "BACKLINKS" => "Zurï¿½ckLinks",
+	   "EDITTHISPAGE" => "DieseSeiteÄndern",
+           "APPENDTOPAGE" => "Ergänze",
+	   "BACKLINKS" => "ZurückLinks",
 	   "PAGESLINKINGTO" => "Verweise zur Seite \$title",
 	   "PAGEHISTORY" => "SeitenInfo",
-	   "INFOABOUTPAGE" => "Informationen ï¿½ber Seite",
-	   "LIKEPAGES" => "ï¿½hnliche Seiten",
+	   "INFOABOUTPAGE" => "Informationen über Seite",
+	   "LIKEPAGES" => "Ähnliche Seiten",
 	   "NEWESTPAGES" => "Neueste Seiten",
-	   "LASTCHANGED" => "zuletzt geï¿½ndert am %d.%m.%Y um %H:%M",
+	   "LASTCHANGED" => "zuletzt geändert am %d.%m.%Y um %H:%M",
 	   "DISABLEDPAGE" => "Diese Seite kann momentan nicht angezeigt werden.",
-	   "ERRVERSIONSAVE" => "Entschuldige, aber wï¿½hrend Du an der Seite
-		gearbeitet hast, hat bereits jemand anders eine geï¿½nderte
+	   "ERRVERSIONSAVE" => "Entschuldige, aber während Du an der Seite
+		gearbeitet hast, hat bereits jemand anders eine geänderte
 		Fassung gespeichert. Damit nichts verloren geht, browse bitte
-		zurï¿½ck und speichere Deine ï¿½nderungen in der Zwischenablage
+		zurück und speichere Deine Änderungen in der Zwischenablage
 		(Bearbeiten->Kopieren) um sie dann wieder an der richtigen
-		Stelle einzufï¿½gen, nachdem du die EditBoxSeite nocheinmal
+		Stelle einzufügen, nachdem du die EditBoxSeite nocheinmal
 		geladen hast.<br />
-		Vielen Dank fï¿½r Deine Mï¿½he.",
+		Vielen Dank für Deine Mühe.",
 	   "ERRORSAVING" => "Beim Abspeichern ist ein Fehler aufgetreten. Bitte versuche es erneut.",
-	   "THANKSFORCONTRIBUTION" => "Vielen Dank fï¿½r Deinen Beitrag!",
-	   "CANNOTCHANGEPAGE" => "Diese Seite kann nicht geï¿½ndert werden.",
+	   "THANKSFORCONTRIBUTION" => "Vielen Dank für Deinen Beitrag!",
+	   "CANNOTCHANGEPAGE" => "Diese Seite kann nicht geändert werden.",
 	   "OLDVERCOMEBACK" => "Diese alte Version der Seite wieder zur Aktuellen machen",
 	   "PREVIEW" => "Vorschau",
 	   "SAVE" => "Speichern",
-	   "CANCEL_EDIT" => "ï¿½nderungenVerwerfen",
+	   "CANCEL_EDIT" => "ÄnderungenVerwerfen",
 	   "UPLOAD_PICTURE_BUTTON" => "Bild hochladen &gt;&gt;&gt;",
 	   "EDIT_FORM_1" => "Es ist <a href=\"".EWIKI_SCRIPT."GuterStil\">GuterStil</a>,
 		einfach drauf los zu tippen. Mit den <a href=\"".EWIKI_SCRIPT."FormatierungsRegeln\">FormatierungsRegeln</a>
-		kannst du den Text spï¿½ter noch umgestalten.<br />",
+		kannst du den Text später noch umgestalten.<br />",
 	   "EDIT_FORM_2" => "<br />Bitte schreib keine Dinge, die andere Leute
-		verï¿½rgern kï¿½nnten. Und bedenke auch, daï¿½ es schnell auf
-		dich zurï¿½ckfallen kann wenn du verschiedene andere Dinge sagst (mehr Informationen zur
+		verärgern könnten. Und bedenke auch, daß es schnell auf
+		dich zurückfallen kann wenn du verschiedene andere Dinge sagst (mehr Informationen zur
 		'<a href=\"http://google.de/search?q=computer+IP+adresse\">IP Adresse</a>'
 		deines Computers findest du bei Google).",
 	);
@@ -488,8 +480,6 @@ if (!class_exists("ewiki_database_mysql")) { include_once("plugins/db/mysql.php"
 if (!isset($ewiki_db) && ($pf = $ewiki_plugins["database"][0])) {
    if (class_exists($pf)) {
       $ewiki_db = new $pf;
-    
-      
    }
    elseif (function_exists($pf)) {
       include("plugins/db/oldapi.php"); // eeeyk! temporary workaround!
@@ -2268,7 +2258,7 @@ function ewiki_format_html(&$str, &$in, &$iii, &$s) {
 
 
 function ewiki_format_comment(&$str, &$in, &$iii, &$s, $btype) {
-   $str = "<!-- "  . str_replace("--", "ï¿½ï¿½", $str) . " -->";
+   $str = "<!-- "  . str_replace("--", "¯¯", $str) . " -->";
 }
 
 
@@ -2502,7 +2492,7 @@ function ewiki_link_regex_callback($ii, $force_noimg=0) {
    }
 
    #-- convert standard and internal:// URLs
-   $is_url = preg_match('ï¿½^('.implode('|', $ewiki_config["idf"]["url"]).')ï¿½', $href);
+   $is_url = preg_match('°^('.implode('|', $ewiki_config["idf"]["url"]).')°', $href);
    $is_internal = 0;
    //
    if (!$is_url && ($ewiki_links[$href_i]["flags"] & EWIKI_DB_F_BINARY)) {
@@ -3595,29 +3585,15 @@ class ewiki_db {
    # $fields array, e.g. array("flags","meta","lastmodified");
    #
    function GETALL($fields, $mask=0x0000, $filter=0x0000) {
-
       global $ewiki_db;
-      
- /*------------------------ EXPORT WIKI ----------------------------*/     
- 
-      if (isset($_REQUEST['to_wiki'])){
-			include(AT_WIKI_EXPORT."/plugins/db/flat_files.php");
-      		$ewiki_db = new ewiki_database_files;
-	  }
-	  
-/*------------------------ EXPORT WIKI ----------------------------*/
-      
       $fields[] = "flags";
       $fields[] = "version";
       $fields = array_flip($fields);
       unset($fields["id"]);
       $fields = array_flip($fields);
       $r = $ewiki_db->GETALL($fields);
-      
       ewiki_db::dbquery_result($r);
-      
       return($r);
-    
    }
 
 

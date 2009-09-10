@@ -47,13 +47,13 @@ if (!$test_row['display']) {
 }
 
 $out_of = $test_row['out_of'];
-if (!$test_row['random']) {
-	$sql	= "SELECT COUNT(*) AS num_questions FROM ".TABLE_PREFIX."tests_questions_assoc WHERE test_id=$tid";
-	$result = mysql_query($sql, $db);
-	if ($row = mysql_fetch_assoc($result)) {
-		$test_row['num_questions'] = $row['num_questions'];
-	} // else 0
-}	
+
+$sql	= "SELECT COUNT(*) AS num_questions FROM ".TABLE_PREFIX."tests_questions_assoc WHERE test_id=$tid";
+$result = mysql_query($sql, $db);
+$row = mysql_fetch_assoc($result);
+if (!$test_row['random'] || $test_row['num_questions'] > $row['num_questions']) {
+	$test_row['num_questions'] = $row['num_questions'];
+}
 
 $sql		= "SELECT COUNT(*) AS cnt FROM ".TABLE_PREFIX."tests_results WHERE status=1 AND test_id=".$tid." AND member_id='".$mid."'";
 $takes_result= mysql_query($sql, $db) or die(mysql_error());
@@ -82,15 +82,20 @@ if (isset($_REQUEST['gid']))
 	$result_id = 0;
 else
 	$result_id = get_test_result_id($tid, $max_pos);
-
+	
 // set position to allow users to return to a test they have partially completed, and continue from where they left of.
 if (!isset($_GET['pos']) && $result_id > 0)
 {
+	$sql = "SELECT COUNT(*) total_questions FROM ".TABLE_PREFIX."tests_answers WHERE result_id = ". $result_id;
+	$total_result = mysql_query($sql, $db) or die(mysql_error());
+	$total = mysql_fetch_assoc($total_result);
+	
 	$sql = "SELECT COUNT(*) pos FROM ".TABLE_PREFIX."tests_answers WHERE result_id = ". $result_id ." AND answer <> ''";
 	$answer_result = mysql_query($sql, $db) or die(mysql_error());
 	$answer = mysql_fetch_assoc($answer_result);
-	
-	$pos = $answer['pos'];
+
+	// if user answered all the questions without cliking last "next" button, resume test at the last question
+	$pos = ($total['total_questions'] == $answer['pos']) ? (--$answer['pos']) : $answer['pos'];
 }
 
 if ($result_id == 0) {
@@ -138,14 +143,22 @@ if ($result_id == 0) {
 
 			$sql	= "UPDATE ".TABLE_PREFIX."tests_answers SET answer='{$_POST[answers][$row[question_id]]}', score='$score' WHERE result_id=$result_id AND question_id=$row[question_id]";
 			mysql_query($sql, $db);
+			
+			if (is_null($score) && $test_row['result_release']==AT_RELEASE_MARKED)
+				$_REQUEST['efs'] = 1; // set final score to empty if there's any unmarked question and release option is "once quiz submitted and all questions are marked"
 		}
 	}
 
 	$pos++;
 
+	if ($_REQUEST['efs']) // set final score to empty if there's any unmarked question and release option is "once quiz submitted and all questions are marked"
+	{
+		$sql	= "UPDATE ".TABLE_PREFIX."tests_results SET final_score=null, date_taken=date_taken, end_time=NOW(), max_pos=$pos WHERE result_id=$result_id";
+		$result	= mysql_query($sql, $db);
+	}
 	// update the final score
 	// update status to complate to fix refresh test issue.
-	if ($pos > $max_pos) {
+	else if ($pos > $max_pos) {
 		$sql	= "UPDATE ".TABLE_PREFIX."tests_results SET final_score=final_score + $score, date_taken=date_taken, end_time=NOW(), max_pos=$pos WHERE result_id=$result_id";
 		$result	= mysql_query($sql, $db);
 	} else {
@@ -180,7 +193,7 @@ if ($result_id == 0) {
 		exit;
 	} // else:
 	
-	header('Location: '.url_rewrite('tools/take_test_q.php?tid='.$tid.SEP.'pos='.$pos, AT_PRETTY_URL_IS_HEADER));
+	header('Location: '.url_rewrite('tools/take_test_q.php?tid='.$tid.SEP.'pos='.$pos.SEP.'efs='.$_REQUEST['efs'], AT_PRETTY_URL_IS_HEADER));
 	exit;
 }
 
@@ -228,7 +241,10 @@ if (!$result || !$question_row) {
 <div class="input-form" style="width:80%">
 
 	<fieldset class="group_form"><legend class="group_form"><?php echo $title ?> (<?php echo _AT('question').' '. ($pos+1).'/'.$test_row['num_questions']; ?>)</legend>
-
+	<?php if ($_REQUEST['efs']){?>
+	<input type="hidden" name="efs" value=<?php echo $_REQUEST['efs']; ?> />
+	<?php }?>
+	
 	<?php
 	// retrieve the answer to re-populate the form (so we can edit our answer)
 	$sql = "SELECT answer FROM ".TABLE_PREFIX."tests_answers WHERE result_id=$result_id AND question_id=$question_row[question_id]";

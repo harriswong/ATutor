@@ -5,7 +5,7 @@ if (!isset($this) || (isset($this) && (strtolower(get_class($this)) != 'module')
 define('AT_PRIV_TESTS', $this->getPrivilege());
 
 //modules sub-content
-$this->_list['my_tests'] = array('title_var'=>'my_tests','file'=>AT_INCLUDE_PATH.'html/submodules/my_tests.inc.php');
+$this->_list['my_tests'] = array('title_var'=>'my_tests','file'=>'mods/_standard/tests/sublinks.php');
 
 // if this module is to be made available to students on the Home or Main Navigation
 $_student_tool = 'tools/my_tests.php';
@@ -146,5 +146,5 @@ $this->_pages['tools/test_intro.php']['parent']    = 'tools/my_tests.php';
 //student page
 $this->_pages['tools/my_tests.php']['title_var'] = 'my_tests';
 $this->_pages['tools/my_tests.php']['img']       = 'images/home-tests.png';
-$this->_pages['tools/my_tests.php']['icon']       = 'images/home-tests_icon.png';
+$this->_pages['tools/my_tests.php']['icon']       = 'images/home-tests_sm.png';
 ?>

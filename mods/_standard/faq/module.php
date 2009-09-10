@@ -8,7 +8,7 @@ define('AT_PRIV_FAQ', $this->getPrivilege());
 $_student_tool = 'faq/index.php';
 
 //modules sub-content
-$this->_list['faq'] = array('title_var'=>'faq','file'=>AT_INCLUDE_PATH.'html/submodules/faq.inc.php');
+$this->_list['faq'] = array('title_var'=>'faq','file'=>'mods/_standard/faq/sublinks.php');
 
 // instructor Manage section:
 $this->_pages['faq/index_instructor.php']['title_var'] = 'faq';
@@ -37,7 +37,7 @@ $this->_pages['faq/index_instructor.php']['guide']     = 'instructor/?p=faq.php'
 
 // student page:
 $this->_pages['faq/index.php']['title_var'] = 'faq';
-$this->_pages['faq/index.php']['img']       = 'faq/icon.png';
-$this->_pages['faq/index.php']['icon']       = 'images/home-faq_icon.png';
+$this->_pages['faq/index.php']['img']       = 'images/home-faq.png';
+$this->_pages['faq/index.php']['icon']       = 'images/home-faq_sm.png';
 
 ?>

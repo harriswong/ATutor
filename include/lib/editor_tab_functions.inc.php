@@ -287,7 +287,7 @@ function save_changes($redir, $current_tab) {
 			if ($changes_made)
 				$body_ins = $_POST['body_text'];
 			else {
-				$sql = "SELECT * FROM AT_content WHERE content_id='$cid'";
+				$sql = "SELECT * FROM ".TABLE_PREFIX."content WHERE content_id='$cid'";
 				$result = mysql_query($sql, $db);
 				 //echo $sql;
 				while ($row = mysql_fetch_assoc($result)) {
@@ -608,7 +608,9 @@ function write_temp_file() {
 			<title>{TITLE}</title>
 			<meta name="Generator" content="ATutor accessibility checker file - can be deleted">
 		</head>
-		<body>{CONTENT}</body>
+		<body>
+		{CONTENT}
+		</body>
 		</html>';
 
 		$page_html = str_replace(	array('{BASE_HREF}', '{TITLE}', '{CONTENT}'),

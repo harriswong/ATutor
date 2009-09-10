@@ -1,9 +1,9 @@
 <?php
 /************************************************************************/
-/* ATutor                                                             */
+/* ATutor                                                               */
 /************************************************************************/
-/* Copyright (c) 2008 by Greg Gay, Cindy Li                             */
-/* Adaptive Technology Resource Centre / University of Toronto			    */
+/* Copyright (c) 2002 - 2009                                            */
+/* Adaptive Technology Resource Centre / University of Toronto          */
 /*                                                                      */
 /* This program is free software. You can redistribute it and/or        */
 /* modify it under the terms of the GNU General Public License          */
@@ -26,21 +26,68 @@ if (defined('AT_FORCE_GET_FILE') && AT_FORCE_GET_FILE) {
 	$course_base_href = 'content/' . $_SESSION['course_id'] . '/';
 }
 
+//query reading the type of home viewable. 0: icon view   1: detail view
+$sql = "SELECT home_view FROM ".TABLE_PREFIX."courses WHERE course_id = $_SESSION[course_id]";
+$result = mysql_query($sql,$db);
+$row= mysql_fetch_assoc($result);
+$home_view = $row['home_view'];
+
+// Enable drag and drop to reorder displayed modules when the module view mode is 
+// set to "detail view" and user role is instructor
+if ($home_view == 1 && authenticate(AT_PRIV_ADMIN,AT_PRIV_RETURN))
+{
+	$_custom_head = '
+<link rel="stylesheet" type="text/css" href="'.AT_BASE_HREF.'jscripts/infusion/framework/fss/css/fss-layout.css" />
+<link rel="stylesheet" type="text/css" href="'.AT_BASE_HREF.'jscripts/infusion/framework/fss/css/fss-text.css" />
+<link rel="stylesheet" type="text/css" href="'.AT_BASE_HREF.'jscripts/infusion/framework/fss/css/fss-theme-mist.css" />
+<link rel="stylesheet" type="text/css" href="'.AT_BASE_HREF.'jscripts/infusion/framework/fss/css/fss-theme-hc.css" />
+<link rel="stylesheet" type="text/css" href="'.AT_BASE_HREF.'jscripts/infusion/components/reorderer/css/Reorderer.css" />
+
+<script type="text/javascript">
+jQuery(document).ready(function () {
+	var reorder_example_grid = fluid.reorderGrid("#details_view",  {
+		selectors : {
+			movables : ".home_box"
+		},
+	    listeners: {
+			afterMove: function (item, requestedPosition, movables) {
+				//save the state to the db
+				var myDivs = jQuery ("div[class^=home_box]", "#details_view");
+				var moved_modules = "";
+				
+				if (myDivs.constructor.toString().indexOf("Array"))   // myDivs is an array
+				{
+					for (i=0; i<myDivs.length; i++)
+						moved_modules += myDivs[i].id+"|";
+				}
+				moved_modules = moved_modules.substring(0, moved_modules.length-1); // remove the last "|"
+				
+				if (moved_modules != "")
+					jQuery.post("'.AT_BASE_HREF.'move_module.php", { "moved_modules":moved_modules, "from":"course_index" }, function(data) {});     
+	        }
+	    },
+		styles: {
+		    selected: "draggable_selected",
+		    hover: "draggable_selected"
+		}
+	});
+	
+});
+
+function remove_module(module)
+{
+	jQuery.post("'.AT_BASE_HREF.'move_module.php", { "remove":module, "from":"course_index" }, function(data) {});
+	$("div[id="+module+"]").slideUp("slow");
+}
+</script>
+	
+';
+}
+
 require(AT_INCLUDE_PATH . 'header.inc.php');
 
 /* the "home" links: */
 $home_links = get_home_navigation();
-
-/*lettura di tutti i moduli visualizzabili nella home per l'istruttore. l'operazione non sarà eseguita per gli studenti in quanto per quest'ultimi dovranno essere visualizzati solo i moduli presenti nella home*/
-if(authenticate(AT_PRIV_ADMIN,AT_PRIV_RETURN)){
-	$_current_modules = array_slice($_pages[AT_NAV_COURSE], 1, -1); 	// removes index.php and tools/index.php
-	$_current_modules = array_merge( (array) $_current_modules, array_diff($_pages[AT_NAV_HOME],$_pages[AT_NAV_COURSE]) );
-	$_current_modules = array_merge( (array) $_current_modules, array_diff($_modules, $_current_modules));	//modules è definito in module.class.php
-
-	$all_home_links = get_all_modules($_current_modules, $home_links);				//chiamata  una funzione per il caricamento di tutti i moduli da me inplementata sempre in menu_pages.php
-	$savant->assign('all_home_links', $all_home_links);
-}
-
 $savant->assign('home_links', $home_links);
 
 
@@ -99,6 +146,7 @@ if ($row = mysql_fetch_assoc($result)) {
 	$savant->assign('banner', '');
 }
 
+$savant->assign('view_mode', $home_view);
 $savant->assign('announcements', $news);
 $savant->assign('num_pages', $num_pages);
 $savant->assign('current_page', $page);

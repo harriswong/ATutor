@@ -5,6 +5,7 @@
    currently are in the database.
 */
 
+
 #-- text
 $ewiki_t["en"]["WIKIDUMP"] = "Here you can download all pages of this Wiki in HTML format at once. They'll get packed into a an archive of the UNIX .tar format.";
 $ewiki_t["en"]["download tarball"] = "Download Tarball";
@@ -15,11 +16,13 @@ $ewiki_t["en"]["include virtual pages"] = "Include virtual pages";
 $ewiki_t["de"]["WIKIDUMP"] = "Du kannst dir hier alle Seiten des Wikis im HTML-Format herunterladen. Das Archiv wird im UNIX .tar Format erstellt.";
 $ewiki_t["de"]["download tarball"] = "tarball herunterladen";
 $ewiki_t["de"]["with images"] = "mit Graphiken";
-$ewiki_t["de"]["complete .html files"] = "vollstï¿½ndige .html Dateien";
+$ewiki_t["de"]["complete .html files"] = "vollständige .html Dateien";
 $ewiki_t["de"]["include virtual pages"] = "auch virtuelle Seiten";
 
 #-- glue
 $ewiki_plugins["page"]["WikiDump"] = "ewiki_page_wiki_dump_tarball";
+
+
 
 #-- template (if $fullhtml)
 function ewiki_dump_template($id, $content, $linksto=0, $html_ext=".html") {
@@ -45,6 +48,7 @@ $content
 </html>
 EOT;
 }
+
 
 
 function ewiki_page_wiki_dump_tarball($id, $data, $action) {
@@ -99,6 +103,7 @@ function ewiki_page_wiki_dump_send($imgs=1, $fullhtml=0, $virtual=0, $linksto=0)
    } else {
       $virtual = array();
    }
+
 
    #-- get all pages / binary files
    $result = ewiki_db::GETALL(array("id", "version", "flags"));
@@ -211,175 +216,6 @@ function ewiki_page_wiki_dump_send($imgs=1, $fullhtml=0, $virtual=0, $linksto=0)
 
    #-- fin 
    die();
-}
-
-
-/* EXPORT WIKI */
-
-  function ewiki_page_wiki_export_send() {
-
-   global $ewiki_config, $ewiki_plugins;
-   $imgs=1;
-   $fullhtml=1;
-//   $virtual=0;
-   $linksto=0;
-   
-   if(is_dir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki_html/")){
-   		clr_dir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki_html/");
-   }
-   $ris=mkdir(AT_CONTENT_DIRECTORY.$_SESSION['course_id']."/wiki_html/");
-   
-   if($ris){
-   
-	   #-- riconfigura ewiki_format() per generare le pagine e i file off-line
-	   $html_ext = ".htm";
-	   if ($fullhtml) {
-	      $html_ext = ".html";
-	   }
-	   $ewiki_config["script"] = "%s$html_ext";
-	   $ewiki_config["script_binary"] = "%s";
-	   $ewiki_config["print_title"] = 0;
-	
-	   #-- pagine dinamiche
-/*
-	   if ($virtual) {
-	      $virtual = array_keys($ewiki_plugins["page"]);
-	   } else {
-	      $virtual = array();
-	   }
-*/  
-	   #-- restituisce tutte le pagine / file binary
-	   $result = ewiki_db::GETALL(array("id", "version", "flags"));
-	 
-	   if ($result) {
- 
-	   	  ob_start();
-	
-	      $tarball = new ewiki_virtual_export();
-
-	      $tarball->open(0);
-	
-	      #-- converte tutte la pagine
-//	      while (($row=$result->get()) || count($virtual)) {
-          while (($row=$result->get())){
-	
-	         $content = "";
-	
-	         #-- recupera le pagine dal database
-	         if ($id = $row["id"]) {
-	            $row = ewiki_db::GET($id);
-	         }
-/*
-	         #-- virtual page plugins
-	         elseif ($id = array_pop($virtual)) {
-	            $pf = $ewiki_plugins["page"][$id];
-	            $content = $pf($id, $content, "view");
-	            $row = array(
-	               "flags" => EWIKI_DB_F_TEXT|EWIKI_DB_F_HTML,
-	               "lastmodified" => time(),
-	            );
-	         }
-*/	 
-	         else {
-	            break;
-	         }
-	
-	         #-- nome del file
-	         $fn = $id;
-	         $fn = urlencode($fn);
-	
-	         if (empty($content))
-	         switch ($row["flags"] & EWIKI_DB_F_TYPE) {
-	
-	            case (EWIKI_DB_F_TEXT):
-	               $content = ewiki_format($row["content"]);
-	               break;
-	
-	            case (EWIKI_DB_F_BINARY):
-	               if (($row["meta"]["class"]=="image") && ($imgs)) {
-	                  $content = &$row["content"];
-	               }
-	               else {
-	                  return;
-	               }
-	               break;
-	
-	            default:
-	               
-	               continue;
-	         }
-	
-	         if (empty($content)) {
-	            continue;
-	         }
-
-	         #-- for tarball
-	         $perms = array(
-	            "mtime" => $row["lastmodified"],
-	            "uname" => "ewiki",
-	            "mode" => 0664 | (($row["flags"]&EWIKI_DB_F_WRITEABLE)?0002:0000),
-	         );
-	
-	         #-- html post process
-	         if (!($row["flags"] & EWIKI_DB_F_BINARY)) {
-	
-	            #-- use page template
-	            if ($fullhtml) {
-	               $content = ewiki_dump_template($id, $content, $linksto);
-	            }
-	
-	            #-- add links/ page
-	            if ($linksto) {
-	               $tarball->add(
-	                  "$fn.links$html_ext",
-	                  ewiki_dump_template(
-	                     $id,
-	                     ewiki_page_links($id, $row, "links"),
-	                     $lto=-1
-	                  ),
-	                  $perms
-	               );
-	            }
-	
-	            $fn .= $html_ext;
-	         }
-	          
-			/* controlla se ci sono altri file con lo stesso nome */
-			 if(file_exists(AT_CONTENT_DIR.$_SESSION['course_id']."/wiki_html/".$fn)){
-								
-					$num = 0;
-					while(file_exists(AT_CONTENT_DIR.$_SESSION['course_id']."/wiki_html/".$_SESSION['course_id'].$num."-".$fn)){
-						$num++;
-					}
-					$fn = $_SESSION['course_id'].$num."-".$fn;
-		
-			}	
-	         
-			// Apre il file con opzione "wb"
-			$identif = fopen(AT_CONTENT_DIR.$_SESSION['course_id']."/wiki_html/".$fn, "wb");
-	
-			// Scrive i dati nel file
-			fwrite($identif, $content);
-			
-			// Chiude il file
-			fclose($identif);
-         
-	         #-- agginge il file
-	         $tarball->add(
-	            $fn,
-	            $content,
-	            $perms
-	         );
-
-	      }
-
-	      $tarball->close();
-		  ob_end_clean();
-	   }
-
-    ob_end_clean();
-   
-	}
 }
 
 
@@ -501,118 +337,6 @@ class ewiki_virtual_tarball {
 
 }
 
-
-/* Export Wiki */
-
-class ewiki_virtual_export {
-
-   var $f = 0;
-
-  function open($fn="/dev/stdout") {
-
-      #-- init;
-      $this->f = 0;
-
-      
-      if ($fn && ($fn != "-")) {
-         $this->f = fopen("$fn", "wr");
-      }
-      else {
-      	
-    	ob_start();
-    
-      }
-
-   }
-
-
-   function close() {
-
-      #-- fill up file
-      $this->write(str_repeat("\000", 9*1024));
-
-      #-- close file handle
-      if ($this->f) {
-         fclose($this->f);
-
-      }
-   }
-
-
-   function write($str) {
-      if ($this->f) {
-         fwrite($this->f, $str);
-         fflush($this->f);
-      }
-      else {
-         echo $str;
-         ob_flush();
-      }
-   }
-
-
-   function oct($int, $len) {
-      $o = "\000";
-      while (--$len) {
-         $o = ($int & 0x07) . $o;
-         $int = $int >> 3;
-      }
-      return($o);
-   }
-
-
-   #-- add virtual file
-   function add($filename, $content, $args=array()) {
-
-      $args = array_merge($args, array(
-         "mode" => 000664,
-         "mtime" => time(),
-         "ctime" => time(),
-         "uid" => 65534,       #-- common for user "nobody"
-         "gid" => 65534,
-         "uname" => "nobody",
-         "gname" => "nobody",
-         "type" => "0",
-      ));
-      $args["mode"] |= 0100000;
-      $args["size"] = strlen($content);
-      $checksum = "        ";
-      $magic = "ustar  \000";
-      $filename = substr($filename, 0, 99);
-
-      #-- header record
-      $header  = str_pad($filename, 100, "\000")            # 0x0000
-               . $this->oct($args["mode"], 8)               # 0x0064
-               . $this->oct($args["uid"], 8)                # 0x006C
-               . $this->oct($args["gid"], 8)                # 0x0074
-               . $this->oct($args["size"], 12)              # 0x007C
-               . $this->oct($args["mtime"], 12)             # 0x0088
-               . ($checksum)                                # 0x0094
-               . ($args["type"])                            # 0x009C
-               . str_repeat("\000", 100)                    # 0x009D
-               . ($magic)                                   # 0x0101
-               . str_pad($args["uname"], 32, "\000")        # 0x0109
-               . str_pad($args["gname"], 32, "\000")        # 0x0129
-               ;                                            # 0x0149
-      $header = str_pad($header, 512, "\000");
-
-      #-- calculate and add header checksum
-      $cksum = 0;
-      for ($n=0; $n<512; $n++) {
-         $cksum += ord($header[$n]);
-      }
-      $header = substr($header, 0, 0x0094)
-              . $this->oct($cksum, 7) . " "
-              . substr($header, 0x009C);
-
-      #-- output
-      if ($fill = (512 - (strlen($content) % 512))) {
-         $content .= str_repeat("\000", $fill);
-      }
-      $this->write($header . $content);
-   }
-
-}
 
 
 ?>

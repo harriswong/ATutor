@@ -29,7 +29,6 @@ $this->_pages['tools/tile/index.php']['guide'] = 'instructor/?p=tile_repository.
 //student pages
 $this->_pages['tile.php']['title_var'] = 'tile_search';
 $this->_pages['tile.php']['img']       = 'images/home-tile_search.png';
-$this->_pages['tile.php']['text']       = _AT('tile_text');
-
+$this->_pages['tile.php']['text']      = _AT('tile_search_text');
 
 ?>

@@ -41,7 +41,7 @@ if (isset($_POST['cancel'])) {
 		}else{
 			$reply_name = $row['login'];
 		}
-		$tmp_message  = _AT(array('password_request2',$reply_name, $_base_href, AT_PASSWORD_REMINDER_EXPIRY, $change_link));
+		$tmp_message  = _AT(array('password_request2',$reply_name, $row['login'], AT_PASSWORD_REMINDER_EXPIRY, $change_link));
 
 		//send email
 		require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');
@@ -129,6 +129,15 @@ if (isset($_POST['cancel'])) {
 
 			$sql	= "UPDATE ".TABLE_PREFIX."members SET password='".$password."', last_login=last_login, creation_date=creation_date WHERE member_id=".intval($_REQUEST['id']);
 			$result = mysql_query($sql,$db);
+
+			//reset login attempts
+			if ($result){
+				$sql = "SELECT login FROM ".TABLE_PREFIX."members WHERE member_id=".intval($_REQUEST['id']);
+				$result = mysql_query($sql, $db);
+				$row = mysql_fetch_array($result);
+				$sql = "DELETE FROM ".TABLE_PREFIX."member_login_attempt WHERE login='$row[login]'";
+				mysql_query($sql, $db);
+			}
 
 			//send confirmation email
 			require(AT_INCLUDE_PATH . 'classes/phpmailer/atutormailer.class.php');

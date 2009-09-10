@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 div.input-form {
 	width: 90%; 
 	margin-left:auto; 
@@ -24,6 +16,11 @@ div.input-form div.row h3 {
 div.input-form div.row {
 	background-color: #F8F8F8;
 	padding:8px;
+}
+
+/*<img> and <a> tags: on mouse hover the color of the background will keep the same!*/
+div.input-form div.row img,a:hover{
+    background-color:#F8F8F8;
 }
 
 div.input-form .footer {

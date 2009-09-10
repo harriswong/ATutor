@@ -14,7 +14,7 @@
 define('AT_INCLUDE_PATH', '../../include/');
 
 /* Export Wiki */
-define('AT_CONTENT_DIRECTORY', '../../content/');
+//define('AT_CONTENT_DIRECTORY', '../../content/');
 define('AT_WIKI_EXPORT', '../../mods/wiki/');
 define('AT_DIR', '../../');
 
@@ -240,32 +240,20 @@ $imsmanifest_xml = str_replace(array('{COURSE_TITLE}', '{COURSE_DESCRIPTION}', '
 $first = $content[$top_content_parent_id][0];
 
 $test_ids = array();	//global array to store all the test ids
-
-/* Exoprt Forum */
-global  $forum;
+/*  Exoprt Forum: */
+global $forum_list;
+$forum_list = array();
 
 /* generate the resources and save the HTML files */
 $used_glossary_terms = array();
 ob_start();
 print_organizations($top_content_parent_id, $content, 0, '', array(), $toc_html);
 
-/* Exoprt Forum */
+ /*  Exoprt Forum: */
 print_resources_forum();
 
 $organizations_str = ob_get_contents();
 ob_end_clean();
-
-
-/* Export Forum */
-
-/* le directory e i file descrittori relativi ai Forum sono inseriti nell'archivio */
-if (count($forum)) {
-	foreach ($forum as $forum_row) {
-		$zipfile->add_file($forum_row['file_des'],  'Forum'.$forum_row['forum_id'].'/FileDescriptorForum'.$forum_row['forum_id'].'.xml');
-	}
-}
-
-
 
 if (count($used_glossary_terms)) {
 	$used_glossary_terms = array_unique($used_glossary_terms);
