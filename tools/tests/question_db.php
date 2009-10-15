@@ -89,7 +89,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
 
-<div class="input-form" style="width:42em;">
+<div class="input-form" style="width:45em;">
 	<fieldset class="group_form" style="width:16em;float:right;height:18em;"><legend class="group_form"><?php echo _AT('import_question'); ?></legend>
 		<form method="post" action="<?php echo 'tools/tests/question_import.php'; ?>" enctype="multipart/form-data" >	<label for="to_file"><?php echo _AT('upload_question'); ?></label><br />
 			<input type="file" name="file" id="to_file" />
