@@ -117,7 +117,7 @@ if ($_POST['create'] || $_POST['save'])
 
 		require_once("classes/PatchCreator.class.php");
 		
-		$patch_creator =& new PatchCreator($patch_info, $patch_id);
+		$patch_creator = new PatchCreator($patch_info, $patch_id);
 		
 		if ($_POST['create'])
 			$patch_creator->create_patch();

@@ -46,7 +46,7 @@ class ModuleFactory {
 		$result = mysql_query($sql, $db);
 		$row = mysql_fetch_assoc($result);
 		require(AT_MODULE_PATH . $row['dir_name'].'/module.php');
-		$module =& new PropertiesModule($row);
+		$module = new PropertiesModule($row);
 		***/
 
 		$this->_modules = array();

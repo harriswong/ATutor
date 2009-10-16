@@ -58,7 +58,7 @@ else
 	
 	if ($module_list_xml) 
 	{
-		$moduleListParser =& new ModuleListParser();
+		$moduleListParser = new ModuleListParser();
 		$moduleListParser->parse($module_list_xml);
 		$module_list_array = $moduleListParser->getParsedArray();
 	}

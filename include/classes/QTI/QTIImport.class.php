@@ -87,7 +87,7 @@ class QTIImport {
 		foreach($attributes as $resource=>$attrs){
 			if (preg_match('/imsqti\_(.*)/', $attrs['type'])){
 				//Instantiate class obj
-				$xml =& new QTIParser($attrs['type']);
+				$xml = new QTIParser($attrs['type']);
 				$xml_content = @file_get_contents($this->import_path . $attrs['href']);
 				$xml->setRelativePath($package_base_name);
 

@@ -259,7 +259,7 @@ if (isset($_SESSION['course_id']) && $_SESSION['course_id'] > -1) {
 
 /* Register our Errorhandler on everypage */
 //require_once(AT_INCLUDE_PATH . 'classes/ErrorHandler/ErrorHandler.class.php');
-//$err =& new ErrorHandler();
+//$err = new ErrorHandler();
 
 
 

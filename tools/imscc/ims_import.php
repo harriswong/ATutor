@@ -675,7 +675,7 @@ foreach ($items as $item_id => $content_info)
 
 	/* get the tests associated with this content */
 	if (!empty($items[$item_id]['tests'])){
-		$qti_import =& new QTIImport($import_path);
+		$qti_import = new QTIImport($import_path);
 
 		foreach ($items[$item_id]['tests'] as $array_id => $test_xml_file){
 			$tests_xml = $import_path.$test_xml_file;
