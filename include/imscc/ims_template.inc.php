@@ -56,6 +56,8 @@ function print_organizations($parent_id,
 	static $paths, $zipped_files;
 	global $glossary;
 	global $test_zipped_files, $test_files, $test_xml_items, $use_a4a;
+        /* added by bologna*///TODO******************************************/
+        global $db,$forum_list;//forum_list contiene tutti i forum distinti associati ai contenuti. poichè la funzione in questione è ricorsiva deve essere globale in modo che in fase di creazione dell'archivio zip i file descrittori dei forum non vengano ripetuti
 
 	$space  = '    ';
 	$prefix = '                    ';
@@ -74,6 +76,9 @@ function print_organizations($parent_id,
 		
 		$counter = 1;
 		$num_items = count($top_level);
+                 //TODO**************BOLOGNA****************REMOVE ME************/
+                $f_count = count($forum_list); //count all distinct forum_id associated to a content page
+                                                //la funzione è ricorsiva quindi lo devo ricavare attraverso la variabile globale forum_list
 
 		foreach ($top_level as $garbage => $content) {
 			$link = '';
@@ -119,6 +124,65 @@ function print_organizations($parent_id,
 				}
 			}
 
+
+                     /* TODO *************BOLOGNA*************REMOVE ME*********
+                     * ricerca forum all'interno del testo del contenuto.*/
+                    /* get all the forums used */
+                    $forums = find_forums($content['text']);
+                    $used_forums = array();
+                    if (is_array($forums)) {
+                        foreach ($forums[0] as $forum) {
+                            $used_forums[] = $forum;
+                        }
+                    }
+
+                    $i=0;
+                    foreach ($used_forums as $forum) {
+                        preg_match_all('/fid=\s*(.)\s*\">/', $forum, $fid, PREG_PATTERN_ORDER);     //viene prelevato il "primo" fid= incontrato all'interno della sequenza contenuta tra marcatori [forum][/forum]
+
+                        if(isset($fid)) {                                                            //verifico che la sequenza sia stata effettivamente trovata all'intenro del testo
+                            $fid = str_replace(array('fid=','">'),'',$fid[0][0]);                   //viene ripulito il pattern ricercato in modo da estrapolarne il valore dell'id
+                            //una volta ottenuto l'id del forum devo verificare se il forum è già stato processato poichè
+                            //non dovranno comparire file .xml ripetuti all'interno del CC package.
+
+                            //mmm le immagini dei forum sono tutte uguali...valuta se necessario o se poszionarla direttamente nel doc offline.
+                            //if(preg_match_all('/<img src="(.*)\/\>/U', $forum, $image, PREG_PATTERN_ORDER))
+                            //if(preg_match_all('|<img src(.*)[^\/>]+\/>|U', $forum, $image, PREG_PATTERN_ORDER))
+                            $sql = "SELECT * FROM ".TABLE_PREFIX."forums_courses WHERE forum_id=".$fid." AND course_id=".$_SESSION['course_id'];
+                            $result_fcid = mysql_query($sql, $db);
+
+                            if(mysql_num_rows($result_fcid)) {
+                                $sql = "SELECT * FROM ".TABLE_PREFIX."forums WHERE forum_id=".$fid;
+                                $result_fid = mysql_query($sql, $db);
+                                $row= mysql_fetch_assoc($result_fid);   //row contiente tutte le informazioni necessarie per la creazione del documento xml!
+                                //inserisco le informazioni necessarie in un array che passerò alla funzione format_content() - output.inc.php
+                                $check=false;
+                                for($j=0;$j<count($forum_list);$j++){
+                                   if($fid == $forum_list[$j]['id']){
+                                        $current_forum[$i]['id']=$fid;
+                                        $current_forum[$i]['title']=$row['title'];
+                                        $current_forum[$i]['description']=$row['description'];
+                                        $current_forum[$i]['forum_str']=$forum;
+                                        $check=true;
+                                        break;
+                                    }
+                                }
+                                if(!$check){    //false solo se il forum attualmente processato non è ancora presente nella variabile globale $forum_list
+                                    $forum_list[$f_count]['id']=$fid;
+                                    //$forum_list[$f_count]['image']=$image[0][0];  //l'immagine viene cmq recuperata ma attualmente non viene utilizzata. controlla in format_content() se inserire l'img direttamente uguale per tutti i forum.
+                                    $forum_list[$f_count]['title']=$row['title'];
+                                    $forum_list[$f_count]['description']=$row['description'];
+                                    $forum_list[$f_count]['forum_str']=$forum;
+                                    //echo $forum_list[$i]['id'].''.$forum_list[$i]['title'].''.$forum_list[$i]['description'].$forum_list[$i]['forum_str'];
+                                    $current_forum[$i] = $forum_list[$f_count];
+                                    $f_count++;
+                                }
+                                $i++;       //l'incremento deve essere eseguito in ogni caso!
+                            }
+                        }
+                    }
+
+                    
 			/* calculate how deep this page is: */
 			$path = '../';
 			if ($content['content_path']) {
@@ -127,7 +191,7 @@ function print_organizations($parent_id,
 				$path .= str_repeat('../', $depth);
 			}
 			
-			$content['text'] = format_content($content['text'], $content['formatting'], $glossary, $path);
+			$content['text'] = format_content($content['text'], $content['formatting'], $glossary, $path, $current_forum); //TODO***********BOLOGNA****************REMOVE ME**********/
 
 			/* add HTML header and footers to the files */
 			
@@ -378,6 +442,67 @@ function print_organizations($parent_id,
 
 	}
 }
+
+
+//TODO***************BOLOGNA******************REMOVE ME***************/
+/* Export Forum */
+function print_resources_forum() {
+
+    global $forum_list, $zipfile, $resources;           //$forum_list contiene tutti i forum DISTINTI associati ai contenuti. caricato in print_organizations()
+
+    $ims_template_xml['resource_forum'] =
+
+        '<resource identifier="Forum{FORUMID}" type="imsdt_xmlv1p0">
+            <metadata/>
+            <file href="Forum{FORUMID}/FileDescriptorForum{FORUMID}.xml"/>
+        </resource>
+	'."\n";
+
+    foreach ($forum_list as $f){
+    // per ogni forum associato ad uno o più contenuti del corso viene aggiunto un elemento resource in imsmanifest.xml
+        $resources .= str_replace("{FORUMID}", $f['id'], $ims_template_xml['resource_forum']);
+
+        //viene generato il file descrittore
+        //file Descrittore con la descrzione del forum
+        $fileDesDT_D = '<?xml version="1.0" encoding="UTF-8"?>
+
+                    <dt:topic
+
+                        xmlns:dt="http://www.imsglobal.org/xsd/imsdt_v1p0"
+
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+                        <title>{TitleDiscussionTopic}</title>
+
+                        <text texttype="text/plan">{DescriptionDiscussionTopic}</text>
+
+                    </dt:topic>';
+
+        //file Descrittore senza la descrizione del forum
+        $fileDesDT = '<?xml version="1.0" encoding="UTF-8"?>
+
+                    <dt:topic
+
+                        xmlns:dt="http://www.imsglobal.org/xsd/imsdt_v1p0"
+
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+                        <title>{TitleDiscussionTopic}</title>
+
+                        <text/>
+
+                    </dt:topic>';
+
+        if (empty($f['description']))
+            $text_file_des_xml = str_replace (array('{TitleDiscussionTopic}', '{DescriptionDiscussionTopic}'), array($f['title'], $f['description']), $fileDesDT);
+        else
+            $text_file_des_xml = str_replace (array('{TitleDiscussionTopic}', '{DescriptionDiscussionTopic}'), array($f['title'], $f['description']), $fileDesDT_D);
+
+        $zipfile->add_file($text_file_des_xml,  'Forum'.$f['id'].'/'.'FileDescriptorForum'.$f['id'].'.xml');
+    }
+    $zipfile->add_file(file_get_contents('../../images/home-forums_sm.png'),  'resources/home-forums_sm.png');
+}
+
 
 $ims_template_xml['header'] = '<?xml version="1.0" encoding="{COURSE_PRIMARY_LANGUAGE_CHARSET}"?>
 <!--This is an ATutor 1.0 Common Cartridge document-->

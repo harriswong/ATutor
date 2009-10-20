@@ -669,6 +669,10 @@ INSERT INTO `modules` VALUES ('_standard/blogs',         2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_standard/profile_pictures', 2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_standard/patcher', 2, 0, 1024, 0, 0);
 INSERT INTO `modules` VALUES ('_standard/support_tools', 2, 0, 2048, 0, 0);
+#added by Bologna CC. Please check if it's the right position to insert it!
+INSERT INTO `modules` VALUES ('_core/tool_manager', 2, 0, 0, 0, 0);
+
+
 
 # --------------------------------------------------------
 # Table structure for table `news`

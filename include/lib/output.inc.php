@@ -817,10 +817,10 @@ function highlight($input, $var) {//$input is the string, $var is the text to be
 
 
 /* @See: ./index.php */
-function format_content($input, $html = 0, $glossary, $simple = false) {
+function format_content($input, $html = 0, $glossary, $simple = false, $current_forums=false) {
 	global $_base_path, $_config;
 
-	if (!$html) {
+      	if (!$html) {
 		$input = str_replace('<', '&lt;', $input);
 		$input = str_replace('&lt;?php', '<?php', $input); // for bug #2087
 	} elseif ($html==2) {
@@ -876,6 +876,12 @@ function format_content($input, $html = 0, $glossary, $simple = false) {
 		$input = str_replace(array('[?]','[/?]'), '', $input);
 	}
 
+        //TODO*************BOLOGNA************REMOVE ME******************/
+        /* do the forums search and replace: */
+        if (is_array($current_forums)) 
+            foreach ($current_forums as $forum)
+                $input = str_replace($forum['forum_str'],'<img src="home-forums_sm.png" border="0" alt="Forum Icon"/> Forum'.$forum['id'],$input);
+
 	$input = str_replace('CONTENT_DIR', '', $input);
 
 	if (isset($_config['latex_server']) && $_config['latex_server']) {
@@ -929,6 +935,13 @@ function find_terms($find_text) {
 	preg_match_all("/(\[\?\])(.[^\?]*)(\[\/\?\])/i", $find_text, $found_terms, PREG_PATTERN_ORDER);
 	return $found_terms;
 }
+
+/*TODO ********BOLOGNA*******REMOVE ME*********ricerca forum all'interno del contenuto*/
+function find_forums($find_text) {
+	preg_match_all("/\[forum\]\s*(.*)\s*\[\\/forum\]/Usei", $find_text, $found_forums, PREG_PATTERN_ORDER);
+	return $found_forums;
+}
+
 
 /***********************************************************************
 	@See /include/Classes/Message/Message.class.php

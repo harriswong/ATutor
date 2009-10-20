@@ -207,10 +207,19 @@ $first = $content[$top_content_parent_id][0];
 
 $test_ids = array();	//global array to store all the test ids
 
+//TODO*************************************************************************/
+//Exoprt Forum:
+global $forum_list;
+$forum_list = array();
+
 /* generate the resources and save the HTML files */
 $used_glossary_terms = array();
 ob_start();
 print_organizations($top_content_parent_id, $content, 0, '', array(), $toc_html);
+
+ //Exoprt Forum:
+print_resources_forum();
+
 $organizations_str = ob_get_contents();
 ob_end_clean();
 if (count($used_glossary_terms)) {

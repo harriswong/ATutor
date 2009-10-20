@@ -77,6 +77,28 @@ if ($do_check) {
 			<a href="<?php echo AT_BASE_HREF; ?>tools/filemanager/index.php?framed=1"><?php echo _AT('open_file_manager'); ?></a>
 		</noscript>			
 	</div>
+
+<!-- ******** Tool Manager ******* -->
+<div class="row">
+    <?php //TODO**************************************************************/
+    echo _AT('tools_manager').'<br/>';
+    $count = 0;
+    foreach($all_tools as $tool) {
+        if($tool['tool_file'] != '') {
+            $count++; ?>
+            <script type="text/javascript" language="javascript">
+                document.write(" <a href=\"#\" onclick=\"window.open('<?php echo AT_BASE_HREF; ?>tools/toolmanager/index.php?framed=1<?php echo SEP; ?>popup=1<?php echo SEP; ?>tool_file=<?php echo $tool['tool_file'];?>','newWin2','menubar=0,scrollbars=1,resizable=1,width=600,height=400'); return false;\"><img src='<?php echo $tool['img']; ?>' alt='<?php echo $tool['title'];?>' title='<?php echo $tool['title'];?>' height='30' hspace='2' border='0'/></a>");
+            </script>
+        <?php }
+    }
+    if($count == 0){
+        echo '<em>'._AT('none_found').'</em>';
+    } ?>
+</div>
+<br/>
+<!-- ****** end Tool Manager ***** -->
+
+
 	<div class="row">
 		<label for="body_text"><?php echo _AT('body');  ?></label><br />
 
