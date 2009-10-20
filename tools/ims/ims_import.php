@@ -36,15 +36,13 @@ $package_base_path = '';
 $xml_base_path = '';
 $element_path = array();
 $imported_glossary = array();
-$test_attributes = array();
 $character_data = '';
 $test_message = '';
 $content_type = '';
 
 
 /**
- * function to get all the files out from the package.
- * main purpose is to check if all the files are listed in the manifest.
+ * Validate all the XML in the package, including checking XSDs, missing data.
  * @param	string		the path of the directory that contains all the package files
  * @return	boolean		true if every file exists in the manifest, false if any is missing.
  */
@@ -207,6 +205,33 @@ function rehash($items){
 }
 
 
+/** 
+ * This function will take the test accessment XML and add these to the database.
+ * @param	string	The path of the XML, without the import_path.
+ * @param	mixed	An item singleton.  Contains the info of this item, namely, the accessment details.
+ *					The item must be an object created by the ims class.
+ * @param	string	the import path
+ * @return	mixed	An Array that contains all the question IDs that have been imported.
+ */
+ function addQuestions($xml, $item, $import_path){
+	$qti_import = new QTIImport($import_path);
+
+	$tests_xml = $import_path.$xml;
+	
+	//Mimic the array for now.
+	$test_attributes['resource']['href'] = $item['href'];
+	$test_attributes['resource']['type'] = preg_match('/imsqti_xmlv1p2/', $item['type'])==1?'imsqti_xmlv1p2':'imsqti_xmlv1p1';
+	$test_attributes['resource']['file'] = $item['file'];
+
+	//Get the XML file out and start importing them into our database.
+	//TODO: See question_import.php 287-289.
+	$qids = $qti_import->importQuestions($test_attributes);
+
+	return $qids;
+ }
+
+
+
 	/* called at the start of en element */
 	/* builds the $path array which is the path from the root to the current element */
 	function startElement($parser, $name, $attrs) {
@@ -289,8 +314,7 @@ function rehash($items){
 				$package_base_path = array_intersect($package_base_path, $temp_path);
 				$temp_path = $package_base_path;
 			}
-			$items[$current_identifier]['new_path'] = implode('/', $temp_path);
-			
+			$items[$current_identifier]['new_path'] = implode('/', $temp_path);	
 			if (	isset($_POST['allow_test_import']) && isset($items[$current_identifier]) 
 						&& preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $attrs['href'])) {
 				$items[$current_identifier]['tests'][] = $attrs['href'];
@@ -672,7 +696,6 @@ if (!xml_parse($xml_parser, $ims_manifest_xml, true)) {
 }
 
 xml_parser_free($xml_parser);
-
 /* check if the glossary terms exist */
 $glossary_path = '';
 if ($content_type == 'IMS Common Cartridge'){
@@ -766,6 +789,7 @@ foreach ($items as $item_id => $content_info)
 	$content_formatting = 1;	//CONTENT_TYPE_CONTENT
 
 	//if this is any of the LTI tools, skip it. (ie. Discussion Tools, Weblinks, etc)
+	//take this condition out once the LTI tool kit is implemented.
 	if ($content_info['type']=='imsdt_xmlv1p0'){
 		$lti_offset[$content_info['parent_content_id']]++;
 		continue;
@@ -774,6 +798,15 @@ foreach ($items as $item_id => $content_info)
 	//don't want to display glossary as a page
 	if ($content_info['href']== $glossary_path . 'glossary.xml'){
 		continue;
+	}
+
+	//handle the special case of cc import, where there is no content association. The resource should
+	//still be imported.
+	if(!isset($content_info['parent_content_id'])){
+		//if this is a question bank 
+		if ($content_info['type']=="imsqti_xmlv1p2/imscc_xmlv1p0/question-bank"){
+			addQuestions($content_info['href'], $content_info, $import_path);
+		}
 	}
 
 	//if it has no title, most likely it is not a page but just a normal item, skip it
@@ -791,7 +824,7 @@ foreach ($items as $item_id => $content_info)
 			}
 		}
 	}
-
+	
 	// remote href
 	if (preg_match('/^http.*:\/\//', trim($content_info['href'])) )
 	{
@@ -834,6 +867,23 @@ foreach ($items as $item_id => $content_info)
             /* Using default size of 550 x 400 */
 
 			$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="550" height="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="true" /><param name="controller" value="true" /><embed src="' . $content_info['href'] .'" width="550" height="400" controller="true" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
+
+		/* Oct 19, 2009
+		 * commenting this whole chunk out.  It's part of my test import codes, not sure why it's here, 
+		 * and I don't think it should be here.  Remove this whole comment after further testing and confirmation.
+		 * @harris
+		 *
+			//Mimic the array for now.
+			$test_attributes['resource']['href'] = $test_xml_file;
+			$test_attributes['resource']['type'] = isset($items[$item_id]['type'])?'imsqti_xmlv1p2':'imsqti_xmlv1p1';
+			$test_attributes['resource']['file'] = $items[$item_id]['file'];
+//			$test_attributes['resource']['file'] = array($test_xml_file);
+
+			//Get the XML file out and start importing them into our database.
+			//TODO: See question_import.php 287-289.
+			$qids = $qti_import->importQuestions($test_attributes);
+		
+		 */
 		} else if ($ext == 'mp3') {
 			$content = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="200" height="15" codebase="http://www.apple.com/qtactivex/qtplugin.cab"><param name="src" value="'. $content_info['href'] . '" /><param name="autoplay" value="false" /><embed src="' . $content_info['href'] .'" width="200" height="15" autoplay="false" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>';
 		} else if (in_array($ext, array('wav', 'au'))) {
@@ -887,7 +937,6 @@ foreach ($items as $item_id => $content_info)
 			$content = '<a href="'.$content_info['href'].'">'.$content_info['title'].'</a>';
 		}	
 	}
-
 	$content_parent_id = $cid;
 	if ($content_info['parent_content_id'] !== 0) {
 		$content_parent_id = $items[$content_info['parent_content_id']]['real_content_id'];
@@ -904,11 +953,12 @@ foreach ($items as $item_id => $content_info)
 
 	/* replace the old path greatest common denomiator with the new package path. */
 	/* we don't use str_replace, b/c there's no knowing what the paths may be	  */
-	/* we only want to replace the first part of the path.						  */
+	/* we only want to replace the first part of the path.	
+	*/
 	if ($package_base_path != '') {
-		$content_info['new_path']	= $package_base_name . substr($content_info['new_path'], strlen($package_base_path));
+		$content_info['new_path'] = $package_base_name . substr($content_info['new_path'], strlen($package_base_path));
 	} else {
-		$content_info['new_path'] = $package_base_name;
+		$content_info['new_path'] = $package_base_name . '/' . $content_info['new_path'];
 	}
 
 	//handles weblinks
@@ -921,8 +971,6 @@ foreach ($items as $item_id => $content_info)
 		$content_folder_type = CONTENT_TYPE_WEBLINK;
 		$content_formatting = 2;
 	}
-	
-	
 	$head = addslashes($head);
 	$content_info['title'] = addslashes($content_info['title']);
 	$content_info['test_message'] = addslashes($content_info['test_message']);
@@ -939,6 +987,7 @@ foreach ($items as $item_id => $content_info)
 	if ($content_formatting!=CONTENT_TYPE_WEBLINK){
 		$content_folder_type = ($content==''?CONTENT_TYPE_FOLDER:CONTENT_TYPE_CONTENT);
 	}
+
 	$sql= 'INSERT INTO '.TABLE_PREFIX.'content'
 	      . '(course_id, 
 	          content_parent_id, 
@@ -971,6 +1020,7 @@ foreach ($items as $item_id => $content_info)
 			     .'"'.$content.'",'
 				 .'"'.$content_info['test_message'].'",'
 				 .$content_folder_type.')';
+
 	$result = mysql_query($sql, $db) or die(mysql_error());
 
 	/* get the content id and update $items */
@@ -987,19 +1037,9 @@ foreach ($items as $item_id => $content_info)
 		}
 
 		foreach ($loop_var as $array_id => $test_xml_file){
-			$tests_xml = $import_path.$test_xml_file;
+			//call subrountine to add the questions.
+			$qids = addQuestions($test_xml_file, $items[$item_id], $import_path);
 			
-			//Mimic the array for now.
-			$test_attributes['resource']['href'] = $test_xml_file;
-			$test_attributes['resource']['type'] = isset($items[$item_id]['type'])?'imsqti_xmlv1p2':'imsqti_xmlv1p1';
-			$test_attributes['resource']['file'] = $items[$item_id]['file'];
-//			$test_attributes['resource']['file'] = array($test_xml_file);
-
-
-			//Get the XML file out and start importing them into our database.
-			//TODO: See question_import.php 287-289.
-			$qids = $qti_import->importQuestions($test_attributes);
-
 			//import test
 			$tid = $qti_import->importTest($content_info['title']);
 
