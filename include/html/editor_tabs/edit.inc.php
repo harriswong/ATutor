@@ -192,17 +192,18 @@ if ($_POST['formatting']==CONTENT_TYPE_WEBLINK) {
 		}
 		else
 		{
-			tinyMCE.execCommand('mceRemoveControl', false, 'body_text');
-			document.form.setvisual.value=0;
-			document.form.settext.value=1;
-			document.form.formatting[0].disabled = "";
-			document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+			disable_visual_txt();
 		}
 	}
 
 	//switch between weblinks.
 	function switch_body_weblink(formatting){
 		if (formatting==2){
+			if (document.form.setvisualbutton.value=="<?php echo _AT('switch_text'); ?>"){
+				//take out the visual editor
+				disable_visual_txt();
+			}
+
 			document.form.body_text.style.display = "none";
 			document.form.weblink_text.style.display = "inline";
 		} else {
@@ -210,5 +211,15 @@ if ($_POST['formatting']==CONTENT_TYPE_WEBLINK) {
 			document.form.weblink_text.style.display = "none";
 		}
 	}
+
+	//disabling the text box.
+	function disable_visual_txt(){
+		tinyMCE.execCommand('mceRemoveControl', false, 'body_text');
+		document.form.setvisual.value=0;
+		document.form.settext.value=1;
+		document.form.formatting[0].disabled = "";
+		document.form.setvisualbutton.value = "<?php echo _AT('switch_visual'); ?>";
+	}
+
 	//-->
 	</script>
