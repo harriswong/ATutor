@@ -259,7 +259,7 @@ class QTIImport {
 
 		$day_end	= $day_start;
 		$month_end	= $month_start;
-		$year_end	= $year_start + 1;
+		$year_end	= $year_start;	//as of Oct 21,09. Check http://www.atutor.ca/atutor/mantis/view.php?id=3961
 		$hour_end	= $hour_start;
 		$min_end	= $min_start;
 
