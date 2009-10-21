@@ -39,6 +39,7 @@ $imported_glossary = array();
 $character_data = '';
 $test_message = '';
 $content_type = '';
+$skip_ims_validation = false;
 
 
 /**
@@ -47,10 +48,16 @@ $content_type = '';
  * @return	boolean		true if every file exists in the manifest, false if any is missing.
  */
 function checkResources($import_path){
-	global $items, $msg;
+	global $items, $msg, $skip_ims_validation;
 
 	if (!is_dir($import_path)){
 		return;
+	}
+
+	//if the package has access for all content, skip validation for now. 
+	//todo: import the XSD into our validator
+	if ($skip_ims_validation){
+		return true;
 	}
 
 	//generate a file tree
@@ -77,6 +84,7 @@ function checkResources($import_path){
 		$flag = false;
 		$file_exists_in_manifest = false;
 
+		//check if every file in manifest indeed exists
 		foreach($items as $name=>$fileinfo){
 			if (is_array($fileinfo['file'])){
 				if(in_array($filepath, $fileinfo['file'])){
@@ -384,8 +392,8 @@ function rehash($items){
 	/* removed the current element from the $path */
 	function endElement($parser, $name) {
 		global $path, $element_path, $my_data, $items;
-		global $current_identifier;
-		global $msg, $content_type;
+		global $current_identifier, $skip_ims_validation;
+		global $msg, $content_type;		
 		static $resource_num = 0;
 		
 		if ($name == 'item') {
@@ -405,7 +413,7 @@ function rehash($items){
 			$my_data = trim($my_data);
 			$last_file_name = $items[$current_identifier]['file'][(sizeof($items[$current_identifier]['file']))-1];
 
-			if ($name=='originalAccessMode'){
+			if ($name=='originalAccessMode'){				
 				if (in_array('accessModeStatement', $element_path)){
 					$items[$current_identifier]['a4a'][$last_file_name][$resource_num]['access_stmt_originalAccessMode'][] = $my_data;
 				} elseif (in_array('adaptationStatement', $element_path)){
@@ -418,6 +426,13 @@ function rehash($items){
 			} elseif ($name=='isAdaptationOf'){
 				$items[$current_identifier]['a4a'][$last_file_name][$resource_num]['isAdaptationOf'][] = $my_data;
 			} elseif ($name=='accessForAllResource'){
+				/* the head node of accessForAll Metadata, if this exists in the manifest. Skip XSD validation,
+				 * because A4a doesn't have a xsd yet.  Our access for all is based on ISO which will not pass 
+				 * the current IMS validation.  
+				 * Also, since ATutor is the only one (as of Oct 21, 2009) that exports IMS with access for all
+				 * content, we can almost assume that any ims access for all content is by us, and is valid. 
+				 */
+				$skip_ims_validation = true;
 				$resource_num++;
 			} elseif($name=='file'){
 				$resource_num = 0;	//reset resournce number to 0 when the file tags ends
@@ -820,7 +835,9 @@ foreach ($items as $item_id => $content_info)
 		foreach($content_info['dependency'] as $dependency_ref){
 			//handle styles	
 			if (preg_match('/(.*)\.css$/', $items[$dependency_ref]['href'])){
-				$head = '<link rel="stylesheet" type="text/css" href="'.$items[$dependency_ref]['href'].'" />';
+				//calculate where this is based on our current base_href. 
+				//assuming the dependency folders are siblings of the item
+				$head = '<link rel="stylesheet" type="text/css" href="../'.$items[$dependency_ref]['href'].'" />';
 			}
 		}
 	}
