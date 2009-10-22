@@ -487,7 +487,6 @@ div#sub-navigation {
 
 ul#subnavlist {
 	padding-top: 5px;
-	white-space: nowrap;
 	margin-top: 0px;
 	margin-left:5px;
 
@@ -496,6 +495,7 @@ ul#subnavlist {
 ul#subnavlist li {
 
 	list-style: none;
+	white-space: nowrap;
 	display: inline;
 	margin: 0px;
 	border-top:thin #cccccc solid;
@@ -1427,13 +1427,14 @@ div#topnavlistcontainer {
 }
 ul#topnavlist {
 	padding-top: 5px;
-	white-space: nowrap;
+
 	margin-top: 0px;
 	margin-left:5px;
 	margin-left:5px;
 }
 
 ul#topnavlist li {
+	white-space: nowrap;
 	list-style: none;
 	display: inline;
 	margin: 0px;
@@ -1552,10 +1553,11 @@ dl.browse-course dd {
 /*  form fields grouping for WCAG 2.0 conformance*/
 
 fieldset.group_form{
-	margin:2em;
+	width:90%;
+	margin:.5em;
 	border:thin #6D7B8D solid;
    	min-height: 170px;
-	padding:.5em;
+	padding:.em;
 }
 
 legend.group_form{

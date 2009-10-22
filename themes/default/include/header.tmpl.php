@@ -438,13 +438,13 @@ function elementToggle(elem, title)
 	<!-- the page title -->
 	<a name="content" title="<?php echo _AT('content'); ?>"></a>
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
-	<?php global $msg; $msg->printAll(); ?>
+	<?php global $msg; $msg->printAll(); $_base_href;?>
 	<?php if (count($this->sub_level_pages) > 0): ?>
 		<div id="sub-navigation">
 			<ul id="subnavlist">
 			<?php if (isset($this->back_to_page)): ?>
 				<a href="<?php echo $this->back_to_page['url']; ?>">
-<img border="0" width="10" height="11" alt="<?php echo _AT('back_to').' '.$this->back_to_page['title']; ?>" src="images/arrowicon.gif" style="float:left;"/></a>&nbsp;&nbsp;
+<img border="0" width="10" height="11" alt="<?php echo _AT('back_to').' '.$this->back_to_page['title']; ?>" src="<?php echo $this->base_href; ?>images/arrowicon.gif" style="float:left;"/></a>&nbsp;&nbsp;
 
 
 <!-- <a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to').' '.$this->back_to_page['title']; ?></a> &nbsp; -->
