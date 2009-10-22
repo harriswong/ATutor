@@ -43,6 +43,7 @@ if (isset($_POST['cancel'])) {
 
 	if (!$msg->containsErrors()) {
 		$_POST['question'] = $addslashes($_POST['question']);
+		$_POST['feedback'] = $addslashes($_POST['feedback']);
 
 		for ($i=0; $i<10; $i++) {
 			$_POST['choice'][$i] = trim($_POST['choice'][$i]);
