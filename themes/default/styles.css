@@ -477,14 +477,70 @@ h1 {
 }
 
 div#sub-navigation {
-	padding: 3px;
-	color: #555;
-	float:left;
+	width:90%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:-1px;
+	/* float:left; */
 }
 
-div#sub-navigation strong {
-	color: black;
+ul#subnavlist {
+	padding-top: 5px;
+	white-space: nowrap;
+	margin-top: 0px;
+	margin-left:5px;
+
 }
+
+ul#subnavlist li {
+
+	list-style: none;
+	display: inline;
+	margin: 0px;
+	border-top:thin #cccccc solid;
+	border-left:thin #cccccc solid;
+	border-right:thin #cccccc solid;
+	font-size:0.8em;
+
+}
+
+ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active, ul#subnavlist strong {
+ 	background-color: #eeeeee;
+
+	text-decoration:none;
+ 	padding: 0em 2em 0em;
+	margin-left:0px;
+
+}
+
+ul#subnavlist li a {
+    /* The normal, unselected tabs. They are all links */
+
+	font-weight:bold;
+  	height: 1.5em;
+  	padding: 0em 2em 0em;
+   	text-decoration:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 div#help {
 	border-left: 1px solid black;

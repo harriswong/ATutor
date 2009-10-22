@@ -330,7 +330,7 @@ function elementToggle(elem, title)
 	</div>
 
 	<?php if ($this->sub_level_pages): ?>
-		<div id="sub-navigation">
+	<!--	<div id="sub-navigation">
 			<?php if (isset($this->back_to_page)): ?>
 				<a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to').' '.$this->back_to_page['title']; ?></a> | 
 			<?php endif; ?>
@@ -346,11 +346,11 @@ function elementToggle(elem, title)
 					|
 				<?php endif; ?>
 			<?php endfor; ?>
-		</div>
+		</div> -->
 	<?php else: ?>
-		<div id="sub-navigation">
+		<!-- <div id="sub-navigation">
 			&nbsp;
-		</div>
+		</div> -->
 	<?php endif; ?>
 </div>
 
@@ -436,7 +436,33 @@ function elementToggle(elem, title)
 		<?php endif; ?>
 
 	<!-- the page title -->
-	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
-
 	<a name="content" title="<?php echo _AT('content'); ?>"></a>
+	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
 	<?php global $msg; $msg->printAll(); ?>
+	<?php if (count($this->sub_level_pages) > 0): ?>
+		<div id="sub-navigation">
+			<ul id="subnavlist">
+			<?php if (isset($this->back_to_page)): ?>
+				<a href="<?php echo $this->back_to_page['url']; ?>">
+<img border="0" width="10" height="11" alt="<?php echo _AT('back_to').' '.$this->back_to_page['title']; ?>" src="images/arrowicon.gif" style="float:left;"/></a>&nbsp;&nbsp;
+
+
+<!-- <a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to').' '.$this->back_to_page['title']; ?></a> &nbsp; -->
+			<?php endif; ?>
+
+			<?php $num_pages = count($this->sub_level_pages); ?>
+			<?php for ($i=0; $i<$num_pages; $i++): ?>
+				
+				<?php if ($this->sub_level_pages[$i]['url'] == $this->current_sub_level_page): ?>
+				<li><strong><?php echo $this->sub_level_pages[$i]['title']; ?></strong></li>
+				<?php else: ?>
+					<li><a href="<?php echo $this->sub_level_pages[$i]['url']; ?>"><?php echo $this->sub_level_pages[$i]['title']; ?></a></li>
+				<?php endif; ?>
+				<?php if ($i < $num_pages-1): ?>
+					&nbsp;
+				<?php endif; ?>
+			<?php endfor; ?>
+			</ul>
+		</div>
+
+	<?php endif; ?>
