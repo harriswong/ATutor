@@ -45,16 +45,6 @@ if (isset($_POST['cancel'])) {
 		$_POST['question'] = $addslashes($_POST['question']);
 		$_POST['feedback'] = $addslashes($_POST['feedback']);
 
-		for ($i=0; $i<10; $i++) {
-			$_POST['choice'][$i] = trim($_POST['choice'][$i]);
-			$_POST['answer'][$i] = intval($_POST['answer'][$i]);
-
-			if ($_POST['choice'][$i] == '') {
-				/* an empty option can't be correct */
-				$_POST['answer'][$i] = 0;
-			}
-		}
-
 		$sql = "UPDATE ".TABLE_PREFIX."tests_questions SET	category_id=$_POST[category_id],
 			feedback='$_POST[feedback]',
 			question='$_POST[question]',
