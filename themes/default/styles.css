@@ -478,6 +478,7 @@ h1 {
 
 div#sub-navigation {
 	width:90%;
+	border-bottom:thin solid #eeeeee;
 	margin-left:auto;
 	margin-right:auto;
 	margin-bottom:-1px;
