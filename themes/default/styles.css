@@ -1523,14 +1523,22 @@ li.child-tool {
 }
 
 /* browse courses */
-dl.browse-course {
-	width: 100%;
-	padding-bottom: 25px;
+div.browse-course {
+	width: 28em;
+	padding-bottom: 10px;
 	background-color: #fffaf0;
 	border:1px #6F7172 solid;
-	width:75%;
 	margin:auto;
-	margin-left:15em;
+	margin-left:1em;
+}
+
+dl.browse-course {
+	width: 90%;
+	padding-bottom: 10px;
+	background-color: #fffaf0;
+
+	margin:auto;
+	margin-left:1em;
 }
 dl.browse-course dt {
 	float: left;
@@ -1540,6 +1548,7 @@ dl.browse-course dt {
 	clear: left;
 	padding: 5px 10px 5px 0px;
 	vertical-align: middle;
+
 }
 dl.browse-course dd {
 	margin-bottom: 5px;
