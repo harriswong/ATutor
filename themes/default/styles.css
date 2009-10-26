@@ -502,15 +502,16 @@ ul#subnavlist li {
 	border-left:thin #cccccc solid;
 	border-right:thin #cccccc solid;
 	font-size:0.8em;
+ 	padding: 0em 0em 0em;
 
 }
 
 ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active, ul#subnavlist strong {
  	background-color: #eeeeee;
-
+	padding:0em 2em 0em;
 	text-decoration:none;
- 	padding: 0em 2em 0em;
-	margin-left:0px;
+ 	/*padding: 0em 2em 0em 2em;*/
+
 
 }
 
@@ -519,29 +520,9 @@ ul#subnavlist li a {
 
 	font-weight:bold;
   	height: 1.5em;
-  	padding: 0em 2em 0em;
+	padding:0em 2em 0em;
    	text-decoration:none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 div#help {
 	border-left: 1px solid black;
@@ -1110,7 +1091,7 @@ div.box .odd {
 
 div.course {
 	position: relative;
-	width: 30em;
+	width: 25em;
 	height: 10.5em;
 	border: rgb(204, 204, 204) 1px solid;
 	background-color: #F7F7F7;
@@ -1417,19 +1398,22 @@ span.forum-paginator-active{font-weight:700;text-decoration:underline; height:2e
 /** inbox stuff - reuses some of the forum layout **/
 #inbox-msg li {border:1px solid #eee; border-bottom: 1px solid #F7F3ED; width: 95%; list-style: none; min-height: 11em;}
 
+div.toolcontainer{
+	width:90%; 
+	margin:auto; 
+	border:thin solid #e8e8e8;
+} 
 
 
 div#topnavlistcontainer {
-    background-color: #1D2326;
+ 	background-color: #1D2326;
 	background-image: url(images/pencil_bottom.gif);
 	background-position:  top right;
 	background-repeat: no-repeat;
 }
 ul#topnavlist {
 	padding-top: 5px;
-
 	margin-top: 0px;
-	margin-left:5px;
 	margin-left:5px;
 }
 
@@ -1528,8 +1512,10 @@ div.browse-course {
 	padding-bottom: 10px;
 	background-color: #fffaf0;
 	border:1px #6F7172 solid;
+	font-size:9pt;
 	margin:auto;
 	margin-left:1em;
+	margin-top:1em;
 }
 
 dl.browse-course {

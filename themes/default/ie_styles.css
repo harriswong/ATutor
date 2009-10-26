@@ -38,3 +38,10 @@ div#top-links a:active{
 .outside_box{
 	height:9.6em;
 }
+ul#subnavlist li a {
+	margin-right:-1em;
+}
+ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active, ul#subnavlist strong {
+	margin-right:-1em;
+
+}

@@ -325,7 +325,7 @@ $msg->printFeedbacks();
 
 if (count($selected_tests)==0)
 {
-	echo _AT('empty_gradebook');
+	echo '<div class="toolcontainer">'._AT('empty_gradebook').'</div>';
 	require(AT_INCLUDE_PATH.'footer.inc.php');
 	exit;
 }

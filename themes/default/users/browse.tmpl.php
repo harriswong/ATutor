@@ -73,23 +73,21 @@
 				<dd><h3><a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id'], true); ?>"><?php echo htmlentities($row['title'], ENT_QUOTES, 'UTF-8'); ?></a></h3></dd>
 				<dt><?php //echo _AT('description'); ?>&nbsp;</dt>
 			<?php if ($row['description']): ?>
-				<dd style="height:auto;" title="<?php echo htmlentities($row['description']);?>"><?php echo substr(nl2br(htmlentities($row['description'], ENT_QUOTES, 'UTF-8')),0,200); 
-				if(strlen($row['description']) > 200){
+				<dd style="height:6em;" title="<?php echo htmlentities($row['description']);?>"><?php echo substr(nl2br(htmlentities($row['description'], ENT_QUOTES, 'UTF-8')),0,150); 
+				if(strlen($row['description']) > 150){
 				echo "...";
 				}
 				?>&nbsp;</dd>
 			<?php else: ?>
-				<dd style="height:97px;"><?php echo _AT('na'); ?>&nbsp;</dd>
+				<dd style="height:6em;"><?php // echo _AT('na'); ?>&nbsp;</dd>
 			<?php endif; ?>
 
 			<?php if ($has_categories): ?>
 				<dt><?php echo _AT('category'); ?></dt>
 				<dd><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$page_string.SEP; ?>category=<?php echo $row['cat_id']; ?>"><?php echo $cats[$row['cat_id']]; ?></a>&nbsp;</dd>
 			<?php endif; ?>
-				<div>
 				<dt><?php echo _AT('instructor'); ?></dt>
 				<dd><a href="<?php echo AT_BASE_HREF; ?>contact_instructor.php?id=<?php echo $row['course_id']; ?>"><?php echo get_display_name($row['member_id']); ?></a></dd>
-				</div>
 				<dt><?php echo _AT('access'); ?></dt>
 				<dd><?php echo _AT($row['access']); ?></dd>
 			</dl>
