@@ -551,7 +551,8 @@ function get_login($id){
 function get_display_name($id) {
 	static $db, $_config, $display_name_formats;
 	if (!$id) {
-		return $_SESSION['login'];
+		//only when $id is not set or is 0.  
+		return _AT('guest');
 	}
 
 	if (!isset($db, $_config)) {
