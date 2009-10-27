@@ -40,8 +40,18 @@ div#top-links a:active{
 }
 ul#subnavlist li a {
 	margin-right:-1em;
+	font-size:8pt;
+	border-left:none;
+	border-right:none;
 }
 ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active, ul#subnavlist strong {
 	margin-right:-1em;
+	font-size:8pt;
+	border-left:none;
+	border-right:none;
 
+}
+ul#subnavlist li {
+	zoom:100%;
+border-bottom:none;
 }

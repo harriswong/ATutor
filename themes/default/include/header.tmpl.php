@@ -439,22 +439,43 @@ function elementToggle(elem, title)
 	<a name="content" title="<?php echo _AT('content'); ?>"></a>
 	<h2 class="page-title"><?php echo $this->page_title; ?></h2>
 	<?php global $msg; $msg->printAll(); $_base_href;?>
+
 	<?php if (count($this->sub_level_pages) > 0): ?>
-		<div id="sub-navigation">
+
+
+<!-- <div id="topnavlistcontainer">
+	<ul id="topnavlist">
+		<?php $accesscounter = 0; //initialize ?>
+		<?php foreach ($this->top_level_pages as $page): ?>
+			<?php ++$accesscounter; $accesscounter = ($accesscounter == 10 ? 0 : $accesscounter); ?>
+			<?php $accesskey_text = ($accesscounter < 10 ? 'accesskey="'.$accesscounter.'"' : ''); ?>
+			<?php $accesskey_title = ($accesscounter < 10 ? ' Alt+'.$accesscounter : ''); ?>
+			<?php if ($page['url'] == $this->current_top_level_page): ?>
+				<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>" class="active"><?php echo $page['title']; ?></a></li>
+			<?php else: ?>
+				<li><a href="<?php echo $page['url']; ?>" <?php echo $accesskey_text; ?> title="<?php echo $page['title'] . $accesskey_title; ?>"><?php echo $page['title']; ?></a></li>
+			<?php endif; ?>
+			<?php $accesscounter = ($accesscounter == 0 ? 11 : $accesscounter); ?>
+		<?php endforeach; ?>
+	</ul>
+</div> -->
+
+
+
+
+
+		<div id="subnavlistcontainer">
 			<ul id="subnavlist">
 			<?php if (isset($this->back_to_page)): ?>
 				<a href="<?php echo $this->back_to_page['url']; ?>">
-<img border="0" width="10" height="11" alt="<?php echo _AT('back_to').' '.$this->back_to_page['title']; ?>" src="<?php echo $this->base_href; ?>images/arrowicon.gif" style="float:left;"/></a>&nbsp;&nbsp;
-
-
-<!-- <a href="<?php echo $this->back_to_page['url']; ?>" id="back-to"><?php echo _AT('back_to').' '.$this->back_to_page['title']; ?></a> &nbsp; -->
+				<img border="0" width="10" height="11" alt="<?php echo _AT('back_to').' '.$this->back_to_page['title']; ?>" src="<?php echo $this->base_href; ?>images/arrowicon.gif" style="float:left;"/></a>&nbsp;&nbsp;
 			<?php endif; ?>
 
 			<?php $num_pages = count($this->sub_level_pages); ?>
 			<?php for ($i=0; $i<$num_pages; $i++): ?>
 				
 				<?php if ($this->sub_level_pages[$i]['url'] == $this->current_sub_level_page): ?>
-				<li><strong><?php echo $this->sub_level_pages[$i]['title']; ?></strong></li>
+				<li><?php echo $this->sub_level_pages[$i]['title']; ?></li>
 				<?php else: ?>
 					<li><a href="<?php echo $this->sub_level_pages[$i]['url']; ?>"><?php echo $this->sub_level_pages[$i]['title']; ?></a></li>
 				<?php endif; ?>
@@ -466,3 +487,6 @@ function elementToggle(elem, title)
 		</div>
 
 	<?php endif; ?>
+
+
+<!-- the main navigation. in our case, tabs -->

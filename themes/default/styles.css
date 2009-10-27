@@ -475,14 +475,14 @@ h2.page-title {
 h1 {
 	margin-bottom: 5px;
 }
-
+/*
 div#sub-navigation {
 	width:90%;
 	border-bottom:thin solid #eeeeee;
 	margin-left:auto;
 	margin-right:auto;
 	margin-bottom:-1px;
-	/* float:left; */
+
 }
 
 ul#subnavlist {
@@ -510,19 +510,20 @@ ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active, u
  	background-color: #eeeeee;
 	padding:0em 2em 0em;
 	text-decoration:none;
- 	/*padding: 0em 2em 0em 2em;*/
 
 
 }
 
 ul#subnavlist li a {
-    /* The normal, unselected tabs. They are all links */
-
 	font-weight:bold;
   	height: 1.5em;
 	padding:0em 2em 0em;
    	text-decoration:none;
 }
+*/
+
+
+
 
 div#help {
 	border-left: 1px solid black;
@@ -1397,20 +1398,22 @@ span.forum-paginator-active{font-weight:700;text-decoration:underline; height:2e
 
 /** inbox stuff - reuses some of the forum layout **/
 #inbox-msg li {border:1px solid #eee; border-bottom: 1px solid #F7F3ED; width: 95%; list-style: none; min-height: 11em;}
-
+/*
 div.toolcontainer{
 	width:90%; 
 	margin:auto; 
 	border:thin solid #e8e8e8;
 } 
-
-
+*/
+	
 div#topnavlistcontainer {
- 	background-color: #1D2326;
+ 	background-color: #000000;
 	background-image: url(images/pencil_bottom.gif);
 	background-position:  top right;
 	background-repeat: no-repeat;
 }
+font-weight: normal;
+
 ul#topnavlist {
 	padding-top: 5px;
 	margin-top: 0px;
@@ -1787,4 +1790,64 @@ div.home_box {
 .draggable_selected {
 	background-color: transparent;
 	cursor: move;
+}
+
+/**********************************/
+
+
+/*****************************/
+	
+div#subnavlistcontainer {
+	width:90%;
+	margin:auto;
+
+
+}
+div.toolcontainer{
+	width:90%;
+margin:auto;
+border:thin solid #e8e8e8;
+padding-top:1em;
+padding-bottom:1em;
+}
+
+ul#subnavlist {
+	padding-top: 5px;
+	margin-top: 0px;
+	margin-left:5px;
+	font-family: Verdana,Helvetica,Arial,serif;
+}
+
+ul#subnavlist li {
+	white-space: nowrap;
+  	background-color: #FFFFFF;
+	list-style: none;
+	display: inline;
+	margin: 0px;
+	font-weight:bold;
+	text-align:center;
+	border:thin solid #cccccc;
+	padding:0em 2em 0em;
+
+}
+
+ul#subnavlist li a:hover, ul#subnavlist li a:focus, ul#subnavlist li a.active{
+
+  	color: black;
+	text-decoration:none;
+}
+
+ul#subnavlist li a {
+    /* The normal, unselected tabs. They are all links */
+   	color: #555;
+    	height: 1.5em;
+   	text-decoration:none;
+	background-color:white;
+	font-weight:500;
+}
+
+ul#subnavlist li a.selected {
+    /* The selected tab. There's only one of these */
+    color: #555;
+    font-weight: normal;
 }
