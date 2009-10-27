@@ -49,8 +49,10 @@
 <div style="width:90%;margin:auto;">
 	<?php while ($row = mysql_fetch_assoc($this->courses_result)): ?>
 		<div style="float:left;" class="browse-course">
+
 			<dl class="browse-course">
-				<dt>
+
+				
 					<?php if ($row['icon']) { // if a course icon is available, display it here.  
 						$style_for_title = 'style="height: 1.5em;"'; 
 
@@ -67,21 +69,21 @@
 							$course_icon = 'images/courses/'.$row['icon'];
 						}
 					?>
-						<a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id'], true); ?>"><img src="<?php echo $course_icon; ?>" class="headicon" alt="<?php echo  htmlentities($row['title'], ENT_QUOTES, 'UTF-8'); ?>" style=""/> </a>	
+						<a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id'], true); ?>"><img src="<?php echo $course_icon; ?>" class="headicon" alt="<?php echo  htmlentities($row['title'], ENT_QUOTES, 'UTF-8'); ?>" style="float:left;margin-right:.5em;"/></a>
 					<?php } ?>
-				</dt>
-				<dd><h3><a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id'], true); ?>"><?php echo htmlentities($row['title'], ENT_QUOTES, 'UTF-8'); ?></a></h3></dd>
-				<dt><?php //echo _AT('description'); ?>&nbsp;</dt>
+				
+				<h3><a href="<?php echo url_rewrite('bounce.php?course='.$row['course_id'], true); ?>"><?php echo htmlentities($row['title'], ENT_QUOTES, 'UTF-8'); ?></a></h3>
+
 			<?php if ($row['description']): ?>
-				<dd style="height:6em;" title="<?php echo htmlentities($row['description']);?>"><?php echo substr(nl2br(htmlentities($row['description'], ENT_QUOTES, 'UTF-8')),0,150); 
+				<div style="height:6.4em;" title="<?php echo htmlentities($row['description']);?>"><?php echo substr(nl2br(htmlentities($row['description'], ENT_QUOTES, 'UTF-8')),0,150); 
 				if(strlen($row['description']) > 150){
 				echo "...";
 				}
-				?>&nbsp;</dd>
+				?>&nbsp;</div>
 			<?php else: ?>
-				<dd style="height:6em;"><?php // echo _AT('na'); ?>&nbsp;</dd>
+				<div style="height:6.4em;clear:right;" title="<?php echo htmlentities($row['description']);?>">&nbsp;</div>
 			<?php endif; ?>
-
+			<dl class="browse-course">
 			<?php if ($has_categories): ?>
 				<dt><?php echo _AT('category'); ?></dt>
 				<dd><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$page_string.SEP; ?>category=<?php echo $row['cat_id']; ?>"><?php echo $cats[$row['cat_id']]; ?></a>&nbsp;</dd>

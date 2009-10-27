@@ -1127,10 +1127,11 @@ div.course img.icon	{
 img.headicon	{
 	float:  left;
 	margin-top:1.2em;
-	margin-right:.5em;
+
 	height:6.45em;
 	width:6.45em;
 	vertical-align:top;
+	text-align: right;
 	border:1px solid white;
 }
 div.course div.shortcuts {
