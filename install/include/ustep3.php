@@ -160,6 +160,26 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		$sql = "UPDATE ".$_POST['step1']['tb_prefix']."tests_results SET status=1, date_taken=date_taken, end_time=date_taken";
 		mysql_query($sql, $db);
 	}
+	if (version_compare($_POST['step1']['old_version'], '1.6.4', '<')) {
+		/* convert all content nodes to the IMS standard. (adds null nodes for all top pages) */
+		include('ustep_content_conversion.php');
+
+		/* Convert db to a tree */
+		$sql = 'SELECT * FROM '.TABLE_PREFIX.'content';
+		$result = mysql_query($sql, $db);
+		$content_array = array(); 
+
+		while ($row = mysql_fetch_assoc($result)){
+			$content_array[$row['content_parent_id']][$row['ordering']] = $row['content_id'];
+		}
+		$tree = buildTree($content_array[0], $content_array);
+
+		/* Restructure the tree */
+		$tree = rebuild($tree);
+
+		/* Update the Db based on this new tree */
+		reconstruct($total2, '', 0);
+	}
 
 	/* deal with the extra modules: */
 	/* for each module in the modules table check if that module still exists in the mod directory. */
