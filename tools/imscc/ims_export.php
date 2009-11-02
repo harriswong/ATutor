@@ -11,10 +11,6 @@
 /************************************************************************/
 // $Id: ims_export.php 8211 2008-11-11 22:55:40Z hwong $
 define('AT_INCLUDE_PATH', '../../include/');
-require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
-require(AT_INCLUDE_PATH.'classes/A4a/A4aExport.class.php');
-require(AT_INCLUDE_PATH.'classes/Weblinks/Weblinks.class.php');
-require(AT_INCLUDE_PATH.'classes/Weblinks/WeblinksExport.class.php');
 
 /* content id of an optional chapter */
 $cid = isset($_REQUEST['cid']) ? intval($_REQUEST['cid']) : 0;
@@ -60,6 +56,11 @@ if (isset($_REQUEST['to_tile']) && !isset($_POST['cancel'])) {
 	require(AT_INCLUDE_PATH.'vitals.inc.php');
 	$course_id = $_SESSION['course_id'];
 }
+//load the following after vitals is included
+require(AT_INCLUDE_PATH.'classes/testQuestions.class.php');
+require(AT_INCLUDE_PATH.'classes/A4a/A4aExport.class.php');
+require(AT_INCLUDE_PATH.'classes/Weblinks/Weblinks.class.php');
+require(AT_INCLUDE_PATH.'classes/Weblinks/WeblinksExport.class.php');
 
 $use_cc			 = true;
 $instructor_id   = $system_courses[$course_id]['member_id'];
