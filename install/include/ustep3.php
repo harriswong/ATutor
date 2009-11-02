@@ -165,7 +165,7 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		include('ustep_content_conversion.php');
 
 		/* Convert db to a tree */
-		$sql = 'SELECT * FROM '.TABLE_PREFIX.'content';
+		$sql = 'SELECT * FROM '.$_POST['step1']['tb_prefix'].'content';
 		$result = mysql_query($sql, $db);
 		$content_array = array(); 
 
@@ -178,7 +178,7 @@ if(isset($_POST['submit']) && ($_POST['action'] == 'process')) {
 		$tree = rebuild($tree);
 
 		/* Update the Db based on this new tree */
-		reconstruct($total2, '', 0);
+		reconstruct($tree, '', 0);
 	}
 
 	/* deal with the extra modules: */

@@ -10,8 +10,6 @@
 /* as published by the Free Software Foundation.						*/
 /************************************************************************/
 // $Id$
-define('AT_INCLUDE_PATH', '../../include/');
-require (AT_INCLUDE_PATH.'vitals.inc.php');
 
 /** 
  * Construct a tree based on table entries
@@ -88,7 +86,7 @@ function reconstruct($tree, $order, $content_parent_id){
 
 	//a content page.
 	if (!is_array($tree)){
-		$sql = 'UPDATE '.TABLE_PREFIX."content SET ordering=$order, content_parent_id=$content_parent_id WHERE content_id=$tree";
+		$sql = 'UPDATE '.$_POST['step1']['tb_prefix']."content SET ordering=$order, content_parent_id=$content_parent_id WHERE content_id=$tree";
 		if (!mysql_query($sql, $db)){
 			//throw error
 			echo mysql_error();
@@ -101,10 +99,10 @@ function reconstruct($tree, $order, $content_parent_id){
 			reconstruct($v, $match[1], $content_parent_id);	//inherit the previous layer id
 		} else {
 			//content folder layer
-			$sql = 'SELECT * FROM '.TABLE_PREFIX."content WHERE content_id=$k";
+			$sql = 'SELECT * FROM '.$_POST['step1']['tb_prefix']."content WHERE content_id=$k";
 			$result = mysql_query($sql, $db);
 			$old_content_row = mysql_fetch_assoc($result);
-			$sql = 'INSERT INTO '.TABLE_PREFIX.'content (course_id, content_parent_id, ordering, last_modified, revision, formatting, release_date, keywords, content_path, title, use_customized_head, allow_test_export, content_type) VALUES ('
+			$sql = 'INSERT INTO '.$_POST['step1']['tb_prefix'].'content (course_id, content_parent_id, ordering, last_modified, revision, formatting, release_date, keywords, content_path, title, use_customized_head, allow_test_export, content_type) VALUES ('
 				.$old_content_row['course_id'] . ', '
 				.$content_parent_id . ', '
 				.$order . ', '
