@@ -64,8 +64,8 @@ require(AT_INCLUDE_PATH.'classes/Weblinks/WeblinksExport.class.php');
 
 $use_cc			 = true;
 $instructor_id   = $system_courses[$course_id]['member_id'];
-$course_desc     = $system_courses[$course_id]['description'];
-$course_title    = $system_courses[$course_id]['title'];
+$course_desc     = htmlspecialchars($system_courses[$course_id]['description'], ENT_QUOTES, 'UTF-8');
+$course_title    = htmlspecialchars($system_courses[$course_id]['title'], ENT_QUOTES, 'UTF-8');
 $course_language = $system_courses[$course_id]['primary_language'];
 
 $courseLanguage =& $languageManager->getLanguage($course_language);
