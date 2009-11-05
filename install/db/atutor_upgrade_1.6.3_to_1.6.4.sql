@@ -111,3 +111,5 @@ ALTER TABLE `social_groups_board` MODIFY `body` TEXT;
 
 ALTER TABLE `social_user_settings` MODIFY `app_settings` TEXT;
 
+# added by Bologna CC. 
+INSERT INTO `modules` VALUES ('_core/tool_manager', 2, 0, 0, 0, 0);
