@@ -94,7 +94,7 @@ $this->_pages[AT_SOCIAL_BASENAME.'profile_picture.php']['parent'] = AT_SOCIAL_BA
 $this->_pages[AT_SOCIAL_BASENAME.'basic_profile.php']['title_var'] = 'profile';
 $this->_pages[AT_SOCIAL_BASENAME.'basic_profile.php']['parent'] = AT_SOCIAL_BASENAME.'edit_profile.php';
 
-$this->_pages[AT_SOCIAL_BASENAME.'applications.php']['title_var'] = 'gadgets';
+$this->_pages[AT_SOCIAL_BASENAME.'applications.php']['title_var'] = 'applications';
 $this->_pages[AT_SOCIAL_BASENAME.'applications.php']['parent'] = AT_SOCIAL_BASENAME.AT_SOCIAL_INDEX;
 $this->_pages[AT_SOCIAL_BASENAME.'applications.php']['guide']     = 'general/?p=my_gadgets.php';
 
