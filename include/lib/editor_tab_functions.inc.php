@@ -451,32 +451,32 @@ function write_temp_file() {
 	$file_name = $_POST['cid'].'.html';
 
 	if ($handle = fopen(AT_CONTENT_DIR . $file_name, 'wb+')) {
-		$temp_content = '<h2>'.AT_print(stripslashes($_POST['title']), 'content.title').'</h2>';
-
-		if ($_POST['body_text'] != '') {
-			$temp_content .= format_content(stripslashes($_POST['body_text']), $_POST['formatting'], $_POST['glossary_defs']);
-		}
-		$temp_title = $_POST['title'];
-
-		$html_template = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-			"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-		<head>
-			<base href="{BASE_HREF}" />
-			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-			<title>{TITLE}</title>
-			<meta name="Generator" content="ATutor accessibility checker file - can be deleted">
-		</head>
-		<body>
-		{CONTENT}
-		</body>
-		</html>';
-
-		$page_html = str_replace(	array('{BASE_HREF}', '{TITLE}', '{CONTENT}'),
-									array($content_base, $temp_title, $temp_content),
-									$html_template);
+//		$temp_content = '<h2>'.AT_print(stripslashes($_POST['title']), 'content.title').'</h2>';
+//
+//		if ($_POST['body_text'] != '') {
+//			$temp_content .= format_content(stripslashes($_POST['body_text']), $_POST['formatting'], $_POST['glossary_defs']);
+//		}
+//		$temp_title = $_POST['title'];
+//
+//		$html_template = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+//			"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+//		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+//		<head>
+//			<base href="{BASE_HREF}" />
+//			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+//			<title>{TITLE}</title>
+//			<meta name="Generator" content="ATutor accessibility checker file - can be deleted">
+//		</head>
+//		<body>
+//		{CONTENT}
+//		</body>
+//		</html>';
+//
+//		$page_html = str_replace(	array('{BASE_HREF}', '{TITLE}', '{CONTENT}'),
+//									array($content_base, $temp_title, $temp_content),
+//									$html_template);
 		
-		if (!@fwrite($handle, $page_html)) {
+		if (!@fwrite($handle, stripslashes($_POST['body_text']))) {
 			$msg->addError('FILE_NOT_SAVED');       
 	   }
 	} else {
