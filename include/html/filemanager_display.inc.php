@@ -134,7 +134,7 @@ if (TRUE || $framed != TRUE) {
 	echo '		<form name="form1" method="post" action="'.$_SERVER['PHP_SELF'].'?'.(($pathext != '') ? 'pathext='.urlencode($pathext).SEP : ''). 'popup='.$popup.'">'."\n";
 	if( $MakeDirOn ) {
 		if ($depth < $MaxDirDepth) {
-			echo '		<label for="dirname">To create a folder, enter name here:</label><br />'."\n";
+			echo '		<label for="dirname">'._AT('create_folder_here').'</label><br />'."\n";
 			echo '		&nbsp;<small class="spacer">'._AT('keep_it_short').'</small><br />'."\n";
 			echo '		<input type="text" name="dirname" id="dirname" size="20" /> '."\n";
 			echo '		<input type="hidden" name="mkdir_value" value="true" /> '."\n";
