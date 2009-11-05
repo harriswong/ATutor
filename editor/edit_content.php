@@ -650,7 +650,7 @@ if ($current_tab == 5)
 //TODO*************BOLOGNA****************REMOVE ME**************/
 //loading toolbar for insert discussion topic or web link into the content
 if ($current_tab == 0){
-    if(authenticate(AT_PRIV_TOOLBAR,AT_PRIV_RETURN)){
+    if(authenticate(AT_PRIV_CONTENT,AT_PRIV_RETURN)){
         $home_links = get_home_navigation();                        //vengono lette le caratteristiche di ogni modulo attivato nella home page.
         $main_links = get_main_navigation($current_page);           //vengono lette le caratteristiche di ogni modulo attivo nel main navigation
 
