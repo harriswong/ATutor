@@ -15,15 +15,11 @@ if(isset($_POST['save'])) {
         $i=0;
         foreach ($_POST['check'] as $selected_forum) {
             $associated_forum[$i]= $selected_forum;
-//            $sql="INSERT INTO ".TABLE_PREFIX."content_forums_assoc SET content_id='$cid',forum_id='$selected_forums'";
-//            mysql_query($sql,$db) or die;
             $i++;
         }
         $msg->addFeedback(_AT('all_saved'));
         $_SESSION['associated_forum']=$associated_forum;
     }
-    print_r($_SESSION['associated_forum']);
-    exit;
     ?>
 <script type="text/javascript"> javascript:window.close();</script>
     <?php
