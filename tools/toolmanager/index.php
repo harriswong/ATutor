@@ -16,89 +16,86 @@ if ((isset($_REQUEST['popup']) && $_REQUEST['popup']) &&
     $popup = FALSE;
     $framed = FALSE;
 }
-$_REQUEST['cid'] = intval($_REQUEST['cid']);	//uses request 'cause after 'saved', the cid will become $_GET.	
+
+$_REQUEST['cid'] = intval($_REQUEST['cid']);	//uses request 'cause after 'saved', the cid will become $_GET.
+
+$cid = intval($_REQUEST['cid']);
 
 require(AT_INCLUDE_PATH.'header.inc.php');
 
 $tool_file= AT_INCLUDE_PATH.'../'.$_REQUEST['tool_file'];	// viene prelevato il path del file necessario per prelevare le informazioni relative ai sottocontenuti
-$content_list = require($tool_file);                            //si richiede la lista ei contenuti per lo strumento. i contenuti trovati potranno essere inseriti all'interno del materiale didattico come collegamento.
+$tool_list = require($tool_file);                            //si richiede la lista ei contenuti per lo strumento. i contenuti trovati potranno essere inseriti all'interno del materiale didattico come collegamento.
 ?>
 
 <br/><br/>
 <?php echo _AT('ToolManComment');?>
 <br/><br/><br/>
-<?php if(isset($content_list)) {?>
-<table class="data" summary="" style="width: 60%" rules="cols">
-    <thead>
-        <tr>
-            <th scope="col" style="width:5%">&nbsp;</th>
-            <th scope="col"><?php echo _AT('Title');  ?></th>
-        </tr>
-    </thead>
-    <tbody>
-            <?php foreach($content_list as $content) {?>
-        <tr>
-            <td valign="top"><?php $files = '<input class="button" type="button" name="insert" value="' ._AT('insert') . '" onclick="javascript:insertFile(\'' .$content['start']. '\', \'' .$content['title']. '\', \'' .AT_BASE_HREF. '\',\'' .$content['path']. '\',\'' . $tabs . '\',\'' .$content['image']. '\',\''.$content['end'].'\');" />&nbsp;'; echo $files; ?></td>
-            <td valign="top"><?php echo $content['title']; ?></td>
+<?php echo $msg->printFeedbacks();
 
-        </tr>
-            <?php }?>
-    </tbody>
-</table>
-<br><br><br>
- <?php } ?>
+$sql = "SELECT forum_id FROM ".TABLE_PREFIX."content_forums_assoc WHERE content_id='$cid'";
+if(isset($tool_list)) {?>
+<form name="datagrid" action="<?php AT_INCLUDE_PATH.'../'.$_REQUEST['tool_file'];?>" method="POST">
+    <table class="data" summary="" style="width: 60%" rules="cols">
+        <thead>
+            <tr>
+                <th scope="col" style="width:5%">&nbsp;</th>
+                <th scope="col"><?php echo _AT('Title');  ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($tool_list as $tool) {
+                $result = mysql_query($sql, $db);
+                while($row = mysql_fetch_assoc($result)){
+                    if($tool['id'] == $row['forum_id']){
+                        $checked='checked';
+                        break;
+                    } else {
+                        $checked='';
+                    }
+                }
+                
+                ?>
+            <tr>
+                <td valign="top">
+                    <!--<input name='checkAll' type='checkbox' onClick="checkAll();">-->
+                    <input name="check[]" value="<?php echo $tool['id'];?>" type="checkbox" <?php echo $checked;?> onClick="chkBoxes();" />
+                    &nbsp<?php echo $files;?>
+                </td>
+                <td valign="top"><?php echo $tool['title']; ?></td>
+            </tr>
+                <?php }?>
+        </tbody>
+    </table>
+    <br><br><br>
+    <input type="hidden" name="cid" value="<?php echo $cid;?>">
+    <input type="submit" name="save" value="<?php echo _AT('save');?>">
+    
+</form>
+<?php }
 
 
-<script type="text/javascript">
-    //<!--
-    function insertFile(start,desc, pathTo, ext, tab, image,end) {
+/*###############################*/
+/* added*/
+/*##############################*/?>
 
-        // pathTo + fileName should be relative to current path (specified by the Content Package Path)
 
-        var html = start+'<img src="'+ image +'" border="0"/>&nbsp;<a href="'+ pathTo + ext +'">' + desc + '</a>'+end;
-
-        insertLink(html, tab);
-
-    }
-
-    function insertLink(html, tab)
-    {
-        if (!window.opener || window.opener.document.form.setvisual.value == 1) {
-            if (!window.opener && window.parent.tinyMCE)
-                window.parent.tinyMCE.execCommand('mceInsertContent', false, html);
+<SCRIPT language=javascript>
+    function checkAll() {
+        check=true;
+        for (i=0;i<document.datagrid.check.length;i++) {
+            if (document.datagrid.checkall.checked==true)
+                document.datagrid.check[i].checked=true;
             else
-                if (window.opener && window.opener.tinyMCE)
-                    window.opener.tinyMCE.execCommand('mceInsertContent', false, html);
-        } else {
-            if (tab==5)
-                insertAtCursor(window.opener.document.form.body_text_alt, html);
-            else
-                insertAtCursor(window.opener.document.form.body_text, html);
+                document.datagrid.check[i].checked=false;
         }
     }
-
-    function insertAtCursor(myField, myValue) {
-        //IE support
-        if (window.opener.document.selection) {
-            myField.focus();
-            sel = window.opener.document.selection.createRange();
-            sel.text = myValue;
-        }
-        //MOZILLA/NETSCAPE support
-        else if (myField.selectionStart || myField.selectionStart == '0') {
-            var startPos = myField.selectionStart;
-            var endPos = myField.selectionEnd;
-            myField.value = myField.value.substring(0, startPos)
-                + myValue
-                + myField.value.substring(endPos, myField.value.length);
-            myField.focus();
-        } else {
-            myField.value += myValue;
-            myField.focus();
-        }
+    function chkBoxes() {
+        document.datagrid.del_selected.disabled=false;
+        var myCheckBoxes = document.datagrid.elements['check[]']; //array di checkboxes
+        for (i=0;i<myCheckBoxes.length;i++)
+            if (myCheckBoxes[i].checked==true)
+                break;
+        if (i == myCheckBoxes.length)
+            document.datagrid.del_selected.disabled=true;
     }
-    //-->
-</script>
-
-
-<?php require(AT_INCLUDE_PATH.'footer.inc.php');?>
+</SCRIPT>

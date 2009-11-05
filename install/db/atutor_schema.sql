@@ -162,6 +162,17 @@ CREATE TABLE `content_tests_assoc` (
 )
 TYPE = MyISAM;
 
+
+# --------------------------------------------------------
+# Table structure for table `content_forums_assoc`
+
+CREATE TABLE `content_forums_assoc` (
+`content_id` INTEGER UNSIGNED NOT NULL,
+`forum_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY ( `content_id` , `forum_id` )
+)
+TYPE = MyISAM;
+
 # --------------------------------------------------------
 # Table structure for table `course_enrollment`
 

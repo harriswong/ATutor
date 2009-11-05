@@ -191,7 +191,7 @@ function save_changes($redir, $current_tab) {
 		$db_test_array[] = $row['test_id'];
 	}
 
-	if (is_array($_POST['tid']) && sizeof($_POST['tid']) > 0){
+        if (is_array($_POST['tid']) && sizeof($_POST['tid']) > 0){
 		$toBeDeleted = array_diff($db_test_array, $_POST['tid']);
 		$toBeAdded = array_diff($_POST['tid'], $db_test_array);
 		//Delete entries
@@ -217,7 +217,20 @@ function save_changes($redir, $current_tab) {
 		$sql = 'DELETE FROM '. TABLE_PREFIX . "content_tests_assoc WHERE content_id=$_POST[cid]";
 		$result = mysql_query($sql, $db);
 	}
-	//End Add test
+	//End Add test       
+
+        //TODO*******************BOLOGNA****************REMOVE ME**************/
+         if(isset($_SESSION['associated_forum']) && !$msg->containsErrors()){
+            $sql = "DELETE FROM ".TABLE_PREFIX."content_forums_assoc WHERE content_id='$_POST[cid]'";
+            mysql_query($sql,$db);
+            $associated_forum = $_SESSION['associated_forum'];
+            for($i=0; $i<count($associated_forum); $i++){
+                $sql="INSERT INTO ".TABLE_PREFIX."content_forums_assoc SET content_id='$_POST[cid]',forum_id='$associated_forum[$i]'";
+                mysql_query($sql,$db);
+            }
+            unset($_SESSION['associated_forum']);
+        }
+
 
 	if (!$msg->containsErrors() && $redir) {
 		$_SESSION['save_n_close'] = $_POST['save_n_close'];

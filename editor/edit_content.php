@@ -14,7 +14,7 @@
 
 define('AT_INCLUDE_PATH', '../include/');
 
-global $db;
+global $db, $associated_forum;
 
 $get_related_glossary = true;
 require(AT_INCLUDE_PATH.'vitals.inc.php');

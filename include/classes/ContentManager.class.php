@@ -546,6 +546,12 @@ class ContentManager
 		return $result;
 	}
 
+        /*TODO***************BOLOGNA***************REMOVE ME**********/
+        function & getContentForumsAssoc($content_id){
+		$sql	= "SELECT cf.forum_id, f.title FROM (SELECT * FROM ".TABLE_PREFIX."content_forums_assoc WHERE content_id=$content_id) AS cf LEFT JOIN ".TABLE_PREFIX."forums f ON cf.forum_id=f.forum_id";
+		$result = mysql_query($sql, $this->db);
+		return $result;
+	}
 
 	function & cleanOutput($value) {
 		return stripslashes(htmlspecialchars($value));
