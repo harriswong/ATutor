@@ -26,8 +26,9 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 $tool_file= AT_INCLUDE_PATH.'../'.$_REQUEST['tool_file'];	// viene prelevato il path del file necessario per prelevare le informazioni relative ai sottocontenuti
 $tool_list = require($tool_file);                            //si richiede la lista ei contenuti per lo strumento. i contenuti trovati potranno essere inseriti all'interno del materiale didattico come collegamento.
 ?>
-
-<br/><br/>
+<div class="input-form">
+<fieldset class="group_form"><legend class="group_form"><?php echo _AT('add_tool'); ?></legend>
+<br/>
 <?php echo _AT('ToolManComment');?>
 <br/><br/><br/>
 <?php echo $msg->printFeedbacks();
@@ -35,7 +36,7 @@ $tool_list = require($tool_file);                            //si richiede la li
 $sql = "SELECT forum_id FROM ".TABLE_PREFIX."content_forums_assoc WHERE content_id='$cid'";
 if(isset($tool_list)) {?>
 <form name="datagrid" action="<?php AT_INCLUDE_PATH.'../'.$_REQUEST['tool_file'];?>" method="POST">
-    <table class="data" summary="" style="width: 60%" rules="cols">
+    <table class="data" summary="" style="width: 90%" rules="cols">
         <thead>
             <tr>
                 <th scope="col" style="width:5%">&nbsp;</th>
@@ -68,9 +69,11 @@ if(isset($tool_list)) {?>
     </table>
     <br><br><br>
     <input type="hidden" name="cid" value="<?php echo $cid;?>">
-    <input type="submit" name="save" value="<?php echo _AT('save');?>">
+    <input type="submit" name="save" value="<?php echo _AT('save');?>" class="button">
     
 </form>
+</fieldset>
+</div>
 <?php }
 
 
