@@ -3,27 +3,39 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $db;
 
-if(isset($associated_forum))
-    unset($associated_forum);
-    
-if(isset($_SESSION['associated_forum']))
-    unset($_SESSION['associated_forum']);
+
 
 if(isset($_POST['save'])) {
+    if(isset($associated_forum))
+    unset($associated_forum);
+
+    if(isset($_SESSION['associated_forum']))
+        unset($_SESSION['associated_forum']);
+        
+    
 //rimuovo dalla tabella le precedenti associazioni con il contenuto
     if(isset($_POST['check'])){
         $i=0;
+        $associated_forum = '';
         foreach ($_POST['check'] as $selected_forum) {
             $associated_forum[$i]= $selected_forum;
             $i++;
         }
-        $msg->addFeedback(_AT('all_saved'));
-        $_SESSION['associated_forum']=$associated_forum;
-    }
-    ?>
-<script type="text/javascript"> javascript:window.close();</script>
-    <?php
-} 
+        if($associated_forum != '')
+            $_SESSION['associated_forum']= $associated_forum; ?>
+        <script type="text/javascript">
+            window.opener.document.getElementById('Forums').style='border:solid; border-color: #43addb';
+        </script>
+    <?php } else {
+        $_SESSION['associated_forum'] = 'none'; ?>
+        <script type="text/javascript">
+            window.opener.document.getElementById('Forums').style='';
+        </script>
+    <?php }?>
+    <script type="text/javascript">
+        javascript:window.close();
+    </script>
+<?php }
 
 $sql = "SELECT f.* FROM ".TABLE_PREFIX."forums f INNER JOIN ".TABLE_PREFIX."forums_courses fc USING (forum_id) WHERE fc.course_id = $_SESSION[course_id]";
 $result = mysql_query($sql, $db);

@@ -83,10 +83,20 @@ if ($do_check) {
     echo _AT('tools_manager').'<br/>';
     $count = 0;
     foreach($all_tools as $tool) {
-        if($tool['tool_file'] != '') {
+        if($tool['tool_file'] != '' && $tool['table'] != '') {
+            $sql_assoc = "SELECT * FROM ".TABLE_PREFIX.$tool['table']." WHERE content_id='$cid'";
+            $result_assoc = mysql_query($sql_assoc,$db);
+            if($num_row = mysql_num_rows($result_assoc)){
+                $tool['style']='border:solid; border-color:#43addb';
+                $tool['alt'] = $tool['title'].' added';
+            } else {
+                $tool['style']='';
+                $tool['alt'] = $tool['title'].' noen';
+            }
+
             $count++; ?>
             <script type="text/javascript" language="javascript">
-                document.write(" <a href=\"#\" onclick=\"window.open('<?php echo AT_BASE_HREF; ?>tools/toolmanager/index.php?framed=1<?php echo SEP; ?>popup=1<?php echo SEP; ?>tool_file=<?php echo $tool['tool_file'].SEP;?>cid=<?php echo $cid;?>','newWin2','menubar=0,scrollbars=1,resizable=1,width=600,height=400'); return false;\"><img src='<?php echo $tool['img']; ?>' alt='<?php echo $tool['title'];?>' title='<?php echo $tool['title'];?>' height='30' hspace='2' border='0'/></a>");
+                document.write(" <a href=\"#\" onclick=\"window.open('<?php echo AT_BASE_HREF; ?>tools/toolmanager/index.php?framed=1<?php echo SEP; ?>popup=1<?php echo SEP; ?>tool_file=<?php echo $tool['tool_file'].SEP;?>cid=<?php echo $cid;?>','newWin2','menubar=0,scrollbars=1,resizable=1,width=600,height=400'); return false;\"><img id=\"<?php echo $tool['title'];?>\" style=\"<?php echo $tool['style'];?>\" src='<?php echo $tool['img']; ?>' alt='<?php echo $tool['alt'];?>' title='<?php echo $tool['title'];?>' height='30' hspace='2' border='0'/></a>");
             </script>
         <?php }
     }

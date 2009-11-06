@@ -330,6 +330,8 @@ function get_main_navigation($current_page) {
     $parent_page = $_pages[$current_page]['parent'];
     $_top_level_pages = array();
 
+    $tool_file= $table = '';
+
     if (isset($parent_page) && defined($parent_page)) {
         foreach($_pages[$parent_page] as $page) {
             if (isset($_pages[$page])) {
@@ -339,10 +341,12 @@ function get_main_navigation($current_page) {
                     $_page_title = _AT($_pages[$page]['title_var']);
                 }
 
-                if(isset($_tool[$_pages[$page]['title_var']]))                  //viene prelevato il file nel caso in cui lo strumento sia valodo per essere inserito nella toolbar in fase di editing dei conenuti del corso
+                if(isset($_tool[$_pages[$page]['title_var']])){                 //viene prelevato il file nel caso in cui lo strumento sia valodo per essere inserito nella toolbar in fase di editing dei conenuti del corso
                     $tool_file = $_tool[$_pages[$page]['title_var']]['file'];
+                    $table = $_tool[$_pages[$page]['title_var']]['table'];
+                }
 
-                $_top_level_pages[] = array('url' => $_base_path . url_rewrite($page), 'title' => $_page_title, 'img' => $_base_path.$_pages[$page]['img'], 'tool_file' => $tool_file);
+                $_top_level_pages[] = array('url' => $_base_path . url_rewrite($page), 'title' => $_page_title, 'img' => $_base_path.$_pages[$page]['img'], 'tool_file' => $tool_file, 'table' => $table);
             }
         }
     } else if (isset($parent_page)) {
@@ -442,27 +446,29 @@ function get_home_navigation($home_array='') {
     if (!is_array($home_array)) $home_array = $_pages[AT_NAV_HOME];
 
     $home_links = array();
-    foreach ($home_array as $child) {					//esecuzione del ciclo fin quando non saranno terminati i moduli presenti nella home-page del corso
+    foreach ($home_array as $child) {                                           //esecuzione del ciclo fin quando non saranno terminati i moduli presenti nella home-page del corso
         if (isset($_pages[$child])) {
         // initialization
-            $title = $icon = $sub_file = $image = $text = $tool_file = '';
+            $title = $icon = $sub_file = $image = $text = $tool_file = $table ='';
 
             if (isset($_pages[$child]['title'])) {				//viene prelevato il titolo che dovr� poi essere utilizzato nella visualizzazione
                 $title = $_pages[$child]['title'];
             } else {
                 $title = _AT($_pages[$child]['title_var']);
             }
-            if(isset($_pages[$child]['icon'])) {					//si controlla se � presente l'icona inserita nel modulo di rifrimento. si ricorda che l'icona � inserita solo per i moduli che prevedono possibili sottocontenuti.
-                $icon = $_base_path.$_pages[$child]['icon'];	//in caso positivo viene prelevata e inserita in una variabile di appoggio che poi sar� a sua volta inserita all'interno dell'array finale home_links[]
-            } else if(isset($_pages[$child]['text'])) {			//nel caso in cui non sia presente un' icona associata si controlla se � stato settata il testo (per moduli privi di sottocontenuti).
+            if(isset($_pages[$child]['icon'])) {                                //si controlla se è presente l'icona inserita nel modulo di rifrimento. si ricorda che l'icona � inserita solo per i moduli che prevedono possibili sottocontenuti.
+                $icon = $_base_path.$_pages[$child]['icon'];                    //in caso positivo viene prelevata e inserita in una variabile di appoggio che poi sar� a sua volta inserita all'interno dell'array finale home_links[]
+            } else if(isset($_pages[$child]['text'])) {                         //nel caso in cui non sia presente un' icona associata si controlla se � stato settata il testo (per moduli privi di sottocontenuti).
                     $text = $_pages[$child]['text'];				//il testo viene inserito in una variabile d'appoggio e successivamente nell'array.
                 }
 
-            if (isset($_list[$_pages[$child]['title_var']])) 	//viene prelevato il path del file che dovr� poi essere richiamato nella visualizzazione dei sottocontenuti. solo i moduli che prevedono sottocontenuti avranno un file di riferimento.
+            if (isset($_list[$_pages[$child]['title_var']]))                    //viene prelevato il path del file che dovr� poi essere richiamato nella visualizzazione dei sottocontenuti. solo i moduli che prevedono sottocontenuti avranno un file di riferimento.
                 $sub_file = $_list[$_pages[$child]['title_var']]['file'];
 
-             if(isset($_tool[$_pages[$child]['title_var']]))                     //viene prelevato il file nel caso in cui lo strumento sia valido per essere inserito nella toolbar in fase di editing dei conenuti del corso
+             if(isset($_tool[$_pages[$child]['title_var']])){                    //viene prelevato il file nel caso in cui lo strumento sia valido per essere inserito nella toolbar in fase di editing dei conenuti del corso
                 $tool_file = $_tool[$_pages[$child]['title_var']]['file'];
+                $table = $_tool[$_pages[$child]['title_var']]['table'];
+             }
 
             $real_image_in_theme = AT_INCLUDE_PATH.'../themes/'.$_SESSION['prefs']['PREF_THEME'].'/'.$_pages[$child]['img'];
             $image_in_theme = $_base_path.'themes/'.$_SESSION['prefs']['PREF_THEME'].'/'.$_pages[$child]['img'];
@@ -474,7 +480,7 @@ function get_home_navigation($home_array='') {
                 $image = $_base_path.$_pages[$child]['img'];
 
             // inclusion of all data necessary for displaying the modules on the home-page. Set by default to check the visible because the modules will be loaded all visible in the home.
-            $home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $image, 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'tool_file' => $tool_file);
+            $home_links[] = array('url' => $_base_path . url_rewrite($child), 'title' => $title, 'img' => $image, 'icon' => $icon, 'text' => $text, 'sub_file' => $sub_file, 'tool_file' => $tool_file, 'table' => $table);
         }
     }
     return $home_links;

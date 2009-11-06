@@ -45,16 +45,15 @@ if(isset($tool_list)) {?>
         </thead>
         <tbody>
             <?php foreach($tool_list as $tool) {
-                $result = mysql_query($sql, $db);
-                while($row = mysql_fetch_assoc($result)){
-                    if($tool['id'] == $row['forum_id']){
-                        $checked='checked';
-                        break;
-                    } else {
-                        $checked='';
+                    $result = mysql_query($sql, $db);
+                    while($row = mysql_fetch_assoc($result)){
+                        if($tool['id'] == $row['forum_id']){
+                            $checked='checked';
+                            break;
+                        } else {
+                            $checked='';
+                        }
                     }
-                }
-                
                 ?>
             <tr>
                 <td valign="top">
