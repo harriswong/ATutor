@@ -186,7 +186,7 @@ if ((isset($_GET["asc"]) || isset($_GET["desc"])) && $order_col <> "name")
 // end of initialization
 
 $num_students = count($selected_students);
-$results_per_page = 1;
+$results_per_page = 50;
 $num_pages = max(ceil($num_students / $results_per_page), 1);
 
 $page = intval($_GET['p']);
