@@ -463,7 +463,7 @@ class XML_HTMLSax extends Pear {
     * NullHandler for all callbacks<br />
     * <b>Example:</b>
     * <pre>
-    * $myHandler = & new MyHandler();
+    * $myHandler = new MyHandler();
     * $parser = new XML_HTMLSax();
     * $parser->set_object($myHandler);
     * $parser->set_option('XML_OPTION_CASE_FOLDING');
