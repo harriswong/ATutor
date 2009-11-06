@@ -193,6 +193,4 @@ $savant->display('editor/edit_content_folder.tmpl.php');
 
 //save last visit page.
 $_SESSION['last_visited_page'] = $server_protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-require (AT_INCLUDE_PATH.'footer.inc.php');
 ?>
