@@ -79,7 +79,7 @@ if (isset($_POST['cancel'])) {
 	/* email check */
 	if (!$_POST['contact_email']) {
 		$missing_fields[] = _AT('contact_email');
-	} else if (!eregi("^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$", $_POST['contact_email'])) {
+	} else if (!preg_match("/^[a-z0-9\._-]+@+[a-z0-9\._-]+\.+[a-z]{2,6}$/i", $_POST['contact_email'])) {
 		$msg->addError('EMAIL_INVALID');	
 	}
 
