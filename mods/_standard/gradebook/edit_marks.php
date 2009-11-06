@@ -186,7 +186,7 @@ if ((isset($_GET["asc"]) || isset($_GET["desc"])) && $order_col <> "name")
 // end of initialization
 
 $num_students = count($selected_students);
-$results_per_page = 50;
+$results_per_page = 1;
 $num_pages = max(ceil($num_students / $results_per_page), 1);
 
 $page = intval($_GET['p']);
@@ -381,7 +381,7 @@ if (count($selected_tests)==0)
 <input type="hidden" name="filter" value="<?php echo $_GET[filter]?>" />
 <input type="hidden" name="gradebook_test_id" value="<?php echo $_GET[gradebook_test_id]?>" />
 <input type="hidden" name="member_id" value="<?php echo $_GET[member_id]?>" />
-
+<input type="hidden" name="p" value="<?php echo $page; ?>" />
 
 <?php print_paginator($page, $num_students, $sql_students, $results_per_page); ?>
 
