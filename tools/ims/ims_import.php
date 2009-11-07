@@ -180,7 +180,12 @@ function rehash($items){
 			}
 			//else, make its parent page to a folder
 			$new_item['title'] = $parent_obj['title'];
-			$new_item['parent_content_id'] = $parent_obj['parent_content_id'];
+			//check if this parent has been modified, if so, chnage it
+			if (isset($parent_page_maps[$parent_obj['parent_content_id']])){
+			    $new_item['parent_content_id'] = $parent_page_maps[$parent_obj['parent_content_id']];
+			} else {
+    			$new_item['parent_content_id'] = $parent_obj['parent_content_id'];
+            }
 			$new_item['ordering'] = $parent_obj['ordering'];
 
     		//assign this new parent folder to the pending items array
