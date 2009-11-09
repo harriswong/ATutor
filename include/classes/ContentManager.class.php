@@ -452,6 +452,10 @@ class ContentManager
 		$sql	= "DELETE FROM ".TABLE_PREFIX."content_tests_assoc WHERE content_id=$content_id";
 		$result = mysql_query($sql, $this->db);
 
+		/* delete the content forum association */
+		$sql	= "DELETE FROM ".TABLE_PREFIX."content_forums_assoc WHERE content_id=$content_id";
+		$result = mysql_query($sql, $this->db);
+
 		/* Delete all AccessForAll contents */
 		require_once(AT_INCLUDE_PATH.'classes/A4a/A4a.class.php');
 		$a4a = new A4a($content_id);
@@ -498,7 +502,7 @@ class ContentManager
 		$result = mysql_query($sql, $this->db);
 	}
 
-	function & getContentPage($content_id) {
+	function getContentPage($content_id) {
 		$sql	= "SELECT *, DATE_FORMAT(release_date, '%Y-%m-%d %H:%i:00') AS release_date, release_date+0 AS r_date, NOW()+0 AS n_date FROM ".TABLE_PREFIX."content WHERE content_id=$content_id AND course_id=$this->course_id";
 		$result = mysql_query($sql, $this->db);
 

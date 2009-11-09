@@ -22,6 +22,9 @@ require(AT_INCLUDE_PATH.'classes/QTI/QTIImport.class.php');
 require(AT_INCLUDE_PATH.'classes/A4a/A4aImport.class.php');
 //require(AT_INCLUDE_PATH.'../tools/ims/ns.inc.php');	//namespace, no longer needs, delete it after it's stable.
 require(AT_INCLUDE_PATH.'classes/Weblinks/WeblinksParser.class.php');
+require(AT_INCLUDE_PATH.'classes/DiscussionTools/DiscussionToolsParser.class.php');
+require(AT_INCLUDE_PATH.'classes/DiscussionTools/DiscussionToolsImport.class.php');
+
 
 /* make sure we own this course that we're exporting */
 authenticate(AT_PRIV_CONTENT);
@@ -40,7 +43,7 @@ $character_data = '';
 $test_message = '';
 $content_type = '';
 $skip_ims_validation = false;
-
+$added_dt = array();	//the mapping of discussion tools that are added
 
 /**
  * Validate all the XML in the package, including checking XSDs, missing data.
@@ -808,13 +811,6 @@ foreach ($items as $item_id => $content_info)
 	//formatting field, default 1
 	$content_formatting = 1;	//CONTENT_TYPE_CONTENT
 
-	//if this is any of the LTI tools, skip it. (ie. Discussion Tools, Weblinks, etc)
-	//take this condition out once the LTI tool kit is implemented.
-	if ($content_info['type']=='imsdt_xmlv1p0'){
-		$lti_offset[$content_info['parent_content_id']]++;
-		continue;
-	}
-
 	//don't want to display glossary as a page
 	if ($content_info['href']== $glossary_path . 'glossary.xml'){
 		continue;
@@ -844,9 +840,13 @@ foreach ($items as $item_id => $content_info)
 				//assuming the dependency folders are siblings of the item
 				$head = '<link rel="stylesheet" type="text/css" href="../'.$items[$dependency_ref]['href'].'" />';
 			}
+			//check if this is a discussion tool dependency
+			if ($items[$dependency_ref]['type']=='imsdt_xmlv1p0'){
+				$items[$item_id]['forum'][$dependency_ref] = $items[$dependency_ref]['href'];
+			}
 		}
 	}
-	
+
 	// remote href
 	if (preg_match('/^http.*:\/\//', trim($content_info['href'])) )
 	{
@@ -1096,6 +1096,25 @@ foreach ($items as $item_id => $content_info)
 		$a4a_import = new A4aImport($items[$item_id]['real_content_id']);
 		$a4a_import->setRelativePath($items[$item_id]['new_path']);
 		$a4a_import->importA4a($items[$item_id]['a4a']);
+	}
+
+	/* get the discussion tools */
+	if (isset($items[$item_id]['forum']) && !empty($items[$item_id]['forum'])){
+		foreach($items[$item_id]['forum'] as $forum_ref => $forum_link){
+			$dt_parser = new DiscussionToolsParser();
+			$dt_import = new DiscussionToolsImport();
+
+			//if this forum has not been added, parse it and add it.
+			if (!isset($added_dt[$forum_ref])){
+				$xml_content = @file_get_contents($import_path . $forum_link);
+				$dt_parser->parse($xml_content);
+				$forum_obj = $dt_parser->getDt();
+				$dt_import->import($forum_obj, $items[$item_id]['real_content_id']);
+				$added_dt[$forum_ref] = $dt_import->getFid();				
+			}
+			//associate the fid and content id
+			$dt_import->associateForum($items[$item_id]['real_content_id'], $added_dt[$forum_ref]);
+		}
 	}
 }
 
