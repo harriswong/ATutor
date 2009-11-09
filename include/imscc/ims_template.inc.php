@@ -464,6 +464,8 @@ function print_resources_forum() {
 
                     </dt:topic>';
 
+		$f['title'] = htmlspecialchars($f['title']);
+		$f['description'] = htmlspecialchars($f['description']);
         if (empty($f['description']))
             $text_file_des_xml = str_replace (array('{TitleDiscussionTopic}', '{DescriptionDiscussionTopic}'), array($f['title'], $f['description']), $fileDesDT);
         else
