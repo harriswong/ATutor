@@ -29,11 +29,11 @@ class DiscussionTools {
 	}
 
 	function getTitle(){
-		return $this->title;
+		return htmlspecialchars(trim($this->title));
 	}
 
 	function getText(){
-		return $this->text;
+		return htmlspecialchars(trim($this->text));
 	}
 }
 ?>

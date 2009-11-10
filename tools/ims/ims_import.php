@@ -44,6 +44,7 @@ $test_message = '';
 $content_type = '';
 $skip_ims_validation = false;
 $added_dt = array();	//the mapping of discussion tools that are added
+$avail_dt = array();	//list of discussion tools that have not been handled
 
 /**
  * Validate all the XML in the package, including checking XSDs, missing data.
@@ -51,7 +52,7 @@ $added_dt = array();	//the mapping of discussion tools that are added
  * @return	boolean		true if every file exists in the manifest, false if any is missing.
  */
 function checkResources($import_path){
-	global $items, $msg, $skip_ims_validation;
+	global $items, $msg, $skip_ims_validation, $avail_dt;
 
 	if (!is_dir($import_path)){
 		return;
@@ -90,23 +91,31 @@ function checkResources($import_path){
 		//check if every file in manifest indeed exists
 		foreach($items as $name=>$fileinfo){
 			if (is_array($fileinfo['file'])){
-				if(in_array($filepath, $fileinfo['file'])){
-					$file_exists_in_manifest = true;
+				foreach($fileinfo['file'] as $fileinfo_path){
+					//solves the problem of having relative paths in $fileinfo[]
+					if (realpath($import_path.$filepath) == realpath($import_path.$fileinfo_path)){
+						$file_exists_in_manifest = true;
 
-					//validate the xml by its schema
-					if (preg_match('/imsqti\_(.*)/', $fileinfo['type'])){
-						$qti = new QTIParser($fileinfo['type']);
-						$xml_content = @file_get_contents($import_path . $fileinfo['href']);
-						$qti->parse($xml_content);
-						if ($msg->containsErrors()){
-							$flag = false;
+						//validate the xml by its schema
+						if (preg_match('/imsqti\_(.*)/', $fileinfo['type'])){
+							$qti = new QTIParser($fileinfo['type']);
+							$xml_content = @file_get_contents($import_path . $fileinfo['href']);
+							$qti->parse($xml_content);
+							if ($msg->containsErrors()){
+								$flag = false;
+							} else {
+								$flag = true;
+							}
 						} else {
 							$flag = true;
 						}
-					} else {
-						$flag = true;
 					}
 				}
+			}
+
+			//add all dependent discussion tools to a list
+			if(isset($fileinfo['dependency']) && !empty($fileinfo['dependency'])){
+				$avail_dt = array_merge($avail_dt, $fileinfo['dependency']);
 			}
 		}
 
@@ -247,7 +256,6 @@ function rehash($items){
  }
 
 
-
 	/* called at the start of en element */
 	/* builds the $path array which is the path from the root to the current element */
 	function startElement($parser, $name, $attrs) {
@@ -317,6 +325,7 @@ function rehash($items){
 
 			//for IMSCC, assume that all resources lies in the same folder, except styles.css
 			if ($items[$current_identifier]['type']=='webcontent'){
+//debug($temp_path);
 				if ($package_base_path=="") {
 					$package_base_path = $temp_path;
 				} 
@@ -330,6 +339,7 @@ function rehash($items){
 				$package_base_path = array_intersect($package_base_path, $temp_path);
 				$temp_path = $package_base_path;
 			}
+
 			$items[$current_identifier]['new_path'] = implode('/', $temp_path);	
 			if (	isset($_POST['allow_test_import']) && isset($items[$current_identifier]) 
 						&& preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $attrs['href'])) {
@@ -393,8 +403,8 @@ function rehash($items){
 			//don't have authorization setup.
 			$msg->addError('IMS_AUTHORIZATION_NOT_SUPPORT');
 		}
-	array_push($element_path, $name);
-}
+		array_push($element_path, $name);
+	}
 
 	/* called when an element ends */
 	/* removed the current element from the $path */
@@ -489,7 +499,7 @@ function rehash($items){
 	
 				} else {
 					$order[$parent_item_id] ++;
-					$item_tmpl = array(	'title'			=> $data,
+					$item_tmpl = array(	'title'				=> $data,
 										'parent_content_id' => $parent_item_id,
 										'ordering'			=> $order[$parent_item_id]-1);
 					//append other array values if it exists
@@ -816,6 +826,15 @@ foreach ($items as $item_id => $content_info)
 		continue;
 	}
 
+	//if discussion tools, add it to the list of unhandled dts
+	if ($content_info['type']=='imsdt_xmlv1p0'){
+		//if it will be taken care after (has dependency), then move along.
+		if (in_array($item_id, $avail_dt)){
+			$lti_offset[$content_info['parent_content_id']]++;
+			continue;
+		}
+	}
+
 	//handle the special case of cc import, where there is no content association. The resource should
 	//still be imported.
 	if(!isset($content_info['parent_content_id'])){
@@ -954,6 +973,20 @@ foreach ($items as $item_id => $content_info)
 			if ( strpos($content_info['href'], '..') === false && !preg_match('/((.*)\/)*tests\_[0-9]+\.xml$/', $content_info['href'])) {
 //				@unlink(AT_CONTENT_DIR . 'import/'.$_SESSION['course_id'].'/'.$content_info['href']);
 			}
+
+			/* overwrite content if this is discussion tool. */
+			if ($content_info['type']=='imsdt_xmlv1p0'){
+				$dt_parser = new DiscussionToolsParser();
+				$xml_content = @file_get_contents($import_path . $content_info['href']);
+				$dt_parser->parse($xml_content);
+				$forum_obj = $dt_parser->getDt();
+				$content = $forum_obj->getText();
+				if ($content==''){
+					$content = ' ';
+				}
+				unset($forum_obj);
+				$dt_parser->close();
+			}
 		} else if ($ext) {
 			/* non text file, and can't embed (example: PDF files) */
 			$content = '<a href="'.$content_info['href'].'">'.$content_info['title'].'</a>';
@@ -982,7 +1015,7 @@ foreach ($items as $item_id => $content_info)
 	} else {
 		$content_info['new_path'] = $package_base_name . '/' . $content_info['new_path'];
 	}
-
+//debug($content_info, $package_base_path);
 	//handles weblinks
 	if ($content_info['type']=='imswl_xmlv1p0'){
 		$weblinks_parser = new WeblinksParser();
@@ -1098,7 +1131,7 @@ foreach ($items as $item_id => $content_info)
 		$a4a_import->importA4a($items[$item_id]['a4a']);
 	}
 
-	/* get the discussion tools */
+	/* get the discussion tools (dependent to content)*/
 	if (isset($items[$item_id]['forum']) && !empty($items[$item_id]['forum'])){
 		foreach($items[$item_id]['forum'] as $forum_ref => $forum_link){
 			$dt_parser = new DiscussionToolsParser();
@@ -1115,6 +1148,18 @@ foreach ($items as $item_id => $content_info)
 			//associate the fid and content id
 			$dt_import->associateForum($items[$item_id]['real_content_id'], $added_dt[$forum_ref]);
 		}
+	} elseif ($items[$item_id]['type']=='imsdt_xmlv1p0'){
+		//otptimize this, repeated codes as above
+		$dt_parser = new DiscussionToolsParser();
+		$dt_import = new DiscussionToolsImport();
+		$xml_content = @file_get_contents($import_path . $content_info['href']);
+		$dt_parser->parse($xml_content);
+		$forum_obj = $dt_parser->getDt();
+		$dt_import->import($forum_obj, $items[$item_id]['real_content_id']);
+		$added_dt[$item_id] = $dt_import->getFid();				
+
+		//associate the fid and content id
+		$dt_import->associateForum($items[$item_id]['real_content_id'], $added_dt[$item_id]);
 	}
 }
 
