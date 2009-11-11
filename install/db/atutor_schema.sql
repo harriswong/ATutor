@@ -1445,3 +1445,16 @@ CREATE TABLE `blog_subscription` (
 ) TYPE=MyISAM;
 
 # END Adding feature of blog subsription
+
+# --------------------------------------------------------
+# Adding feature of content pre-requisites
+# Table structure for table `content_prerequisites`
+# since 1.6.3
+CREATE TABLE `content_prerequisites` (
+  `content_id` MEDIUMINT NOT NULL,
+  `prerequisite_table` varchar(50) NOT NULL DEFAULT '',
+  `id` MEDIUMINT NOT NULL,
+  PRIMARY KEY (group_id,member_id)
+) TYPE=MyISAM;
+
+# END Adding feature of content pre-requisites
