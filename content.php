@@ -135,16 +135,6 @@ while ($content_forum_row = mysql_fetch_assoc($content_forum_rs)){
 	$content_forum_ids[] = $content_forum_row;
 }
 
-// For Proxy Tools
-$content_proxy_ids = array();
-$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
-		WHERE content_id=".$cid;
-$contentresult = mysql_query($sql, $db);
-$row = mysql_fetch_assoc($contentresult);
-if ( $row ) {
-    $content_proxy_ids[] = $cid;
-}
-
 // use any styles that were part of the imported document
 // $_custom_css = $_base_href.'headstuff.php?cid='.$cid.SEP.'path='.urlEncode($_base_href.$course_base_href.$content_base_href);
 
@@ -177,7 +167,7 @@ $released_status = $contentManager->isReleased($cid);
 
 if ($released_status === TRUE || authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) {
 	//if it has test and forum associated with it, still display it even if the content is empty
-	if ($content_row['text'] == '' && (empty($content_proxy_ids) && empty($content_test_ids) && empty($content_forum_ids))){
+	if ($content_row['text'] == '' && (empty($content_test_ids) && empty($content_forum_ids))){
 		$msg->addInfo('NO_PAGE_CONTENT');
 		$savant->assign('body', '');
 	} else {
@@ -234,8 +224,6 @@ if ($released_status === TRUE || authenticate(AT_PRIV_CONTENT, AT_PRIV_RETURN)) 
 				$savant->assign('test_message', '');
 				$savant->assign('test_ids', array());
 			}
-
-			$savant->assign('proxy_ids', $content_proxy_ids);
 	
 	                /*TODO***************BOLOGNA***************REMOVE ME**********/
 	                //assign forum pages if there are forums associated with this content page

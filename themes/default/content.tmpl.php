@@ -12,7 +12,6 @@
 /****************************************************************/
 if (!defined('AT_INCLUDE_PATH')) { exit; } ?>
 
-
 <?php if ($this->has_text_alternative || $this->has_audio_alternative || $this->has_visual_alternative || $this->has_sign_lang_alternative): ?>
 <div id="alternatives_shortcuts">
 <?php if ($this->has_text_alternative) :?>
@@ -93,18 +92,6 @@ if (!empty($this->forum_ids)): ?>
             </ul>
         </li>
     </ol>
-</div>
-<?php endif; ?>
-
-<?php
-if (!empty($this->proxy_ids)): ?>
-<div id="content-proxy" class="input-form">
-        <strong><?php echo _AT('proxy') . ':' ; ?></strong>
-                <?php
-                foreach ($this->proxy_ids as $id ) {
-                    echo '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$id.'" height="1200" width="100%"></iframe>';
-                }
-                ?>
 </div>
 <?php endif; ?>
 

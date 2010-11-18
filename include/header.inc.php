@@ -100,11 +100,7 @@ if (isset($_SESSION['valid_user']) && $_SESSION['valid_user'] === true) {
 	$savant->assign('user_name', _AT('guest'));
 }
 
-
 if (!isset($_pages[$current_page])) {
-print_r($_pages);
-echo($current_page);
-exit();
 	global $msg;
 	$msg->addError('PAGE_NOT_FOUND'); // probably the wrong error
 	header('location: '.AT_BASE_HREF.'index.php');
