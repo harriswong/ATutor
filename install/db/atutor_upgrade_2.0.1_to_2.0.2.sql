@@ -1,6 +1,6 @@
 
 #--------------- BasicLTI Tables Start -------------------
-CREATE TABLE IF NOT EXISTS `basiclti_tools` (
+CREATE TABLE  `basiclti_tools` (
   `id` mediumint(10) NOT NULL AUTO_INCREMENT,
   `toolid` varchar(32) NOT NULL,
   `course_id` mediumint(10) NOT NULL DEFAULT '0',
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `basiclti_tools` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
-CREATE TABLE IF NOT EXISTS `basiclti_content` (
+CREATE TABLE  `basiclti_content` (
   `id` mediumint(10) NOT NULL AUTO_INCREMENT,
   `content_id` mediumint(10) NOT NULL DEFAULT '0',
   `course_id` mediumint(10) NOT NULL DEFAULT '0',
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `basiclti_content` (
   UNIQUE KEY `id` (`id`,`course_id`,`content_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `basiclti` (
+CREATE TABLE  `basiclti` (
   `id` mediumint(10) NOT NULL AUTO_INCREMENT,
   `course_id` mediumint(10) NOT NULL DEFAULT '0',
   `toolid` varchar(32) NOT NULL,
