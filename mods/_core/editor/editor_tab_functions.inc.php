@@ -35,6 +35,7 @@ function get_tabs() {
 	$tabs[3] = array('alternative_content', 'alternatives.inc.php',  'l');	
 	//Harris: Extended test functionality into content export
 	$tabs[4] = array('tests',				'tests.inc.php',		 't');
+	$tabs[5] = array('tools',				'tools.inc.php',		 'o');
 	
 	return $tabs;
 }
@@ -360,6 +361,29 @@ function save_changes($redir, $current_tab) {
 			           SET content_id=".$_POST[cid].", type='".CONTENT_PRE_TEST."', item_id=$tid";
 			$result = mysql_query($sql, $db);
 			
+			if ($result===false) $msg->addError('MYSQL_FAILED');
+		}
+	}
+
+	// Add/Update The Tool
+	if ( isset($_POST['toolid']) ) {
+		$toolid = $_POST['toolid'];
+		$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
+			WHERE content_id=".$_POST[cid];
+		$result = mysql_query($sql, $db);
+ 		if ( $toolid == '--none--' ) {
+			$sql = "DELETE FROM ". TABLE_PREFIX . "basiclti_content 
+			           WHERE content_id=".$_POST[cid];
+			$result = mysql_query($sql, $db);
+		} else if ( mysql_num_rows($result) == 0 ) {
+			$sql = "INSERT INTO ". TABLE_PREFIX . "basiclti_content 
+			           SET toolid='".$toolid."', content_id=".$_POST[cid];
+			$result = mysql_query($sql, $db);
+			if ($result===false) $msg->addError('MYSQL_FAILED');
+		} else { 
+			$sql = "UPDATE ". TABLE_PREFIX . "basiclti_content 
+			           SET toolid='".$toolid."' WHERE content_id=".$_POST[cid];
+			$result = mysql_query($sql, $db);
 			if ($result===false) $msg->addError('MYSQL_FAILED');
 		}
 	}
