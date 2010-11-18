@@ -95,6 +95,18 @@ if (!empty($this->forum_ids)): ?>
 </div>
 <?php endif; ?>
 
+<?php
+if (!empty($this->proxy_ids)): ?>
+<div id="content-proxy" class="input-form">
+        <strong><?php echo _AT('proxy') . ':' ; ?></strong>
+                <?php
+                foreach ($this->proxy_ids as $id ) {
+                    echo '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$id.'" height="1200" width="100%"></iframe>';
+                }
+                ?>
+</div>
+<?php endif; ?>
+
 
 <div id="content-info">
 	<?php echo $this->content_info; ?>
