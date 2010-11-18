@@ -65,4 +65,7 @@ CREATE TABLE  `basiclti` (
   UNIQUE KEY `id` (`id`,`course_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8  ;
 
+# will probably want to move this in _core before 2.0.2
+INSERT INTO `modules` VALUES ('basiclti', 2, 67108864, 16384, 35, 0);
+
 #--------------- BasicLTI Tables End -------------------

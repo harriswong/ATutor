@@ -685,7 +685,8 @@ INSERT INTO `modules` VALUES ('_standard/support_tools', 2, 0, 2048, 0, 0);
 # added by Bologna CC. Please check if it is the right position to insert it!
 INSERT INTO `modules` VALUES ('_core/tool_manager', 2, 0, 0, 0, 0);
 INSERT INTO `modules` VALUES ('_core/modules', 2, 0, 8192, 0, 0);
-
+# will probably want to move this in _core before 2.0.2
+INSERT INTO `modules` VALUES ('basiclti', 2, 67108864, 16384, 35, 0);
 
 
 
