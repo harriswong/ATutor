@@ -69,6 +69,40 @@ if ( ! $memberrow ) {
       "context_label" => $courserow['title'],
       );
 
+    // $placementsecret = $instance->placementsecret;
+    $placementsecret = $contentrow['placementsecret'];
+    if ( isset($placementsecret) ) {
+        $suffix = ':::' . $USER->id . ':::' . $contentrow['id'];
+        $plaintext = $placementsecret . $suffix;
+        $hashsig = hash('sha256', $plaintext, false);
+        $sourcedid = $hashsig . $suffix;
+    }
+
+    if ( isset($placementsecret) &&
+         ( $toolrow['acceptgrades'] == 1 ||
+         ( $toolrow['acceptgrades'] == 2 && $contentrow['acceptgrades'] == 1 ) ) ) {
+        $requestparams["lis_result_sourcedid"] = $sourcedid;
+        $requestparams["ext_ims_lis_basic_outcome_url"] = $CFG->wwwroot.'/mod/basiclti/service.php';
+    }
+
+    if ( isset($placementsecret) &&
+         ( $toolrow['allowroster'] == 1 ||
+         ( $toolrow['allowroster'] == 2 && $contentrow['allowroster'] == 1 ) ) ) {
+        $requestparams["ext_ims_lis_memberships_id"] = $sourcedid;
+        $requestparams["ext_ims_lis_memberships_url"] = $CFG->wwwroot.'/mod/basiclti/service.php';
+    }
+
+    if ( isset($placementsecret) &&
+         ( $toolrow['allowsetting'] == 1 ||
+         ( $toolrow['allowsetting'] == 2 && $contentrow['allowsetting'] == 1 ) ) ) {
+        $requestparams["ext_ims_lti_tool_setting_id"] = $sourcedid;
+        $requestparams["ext_ims_lti_tool_setting_url"] = $CFG->wwwroot.'/mod/basiclti/service.php';
+        $setting = $contentrow['setting'];
+        if ( isset($setting) ) {
+             $requestparams["ext_ims_lti_tool_setting"] = $setting;
+        }
+    }
+
 // print_r($lmsdata);echo("<hr>\n");
 
 $parms = $lmsdata;
