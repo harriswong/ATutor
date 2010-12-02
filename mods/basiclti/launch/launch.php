@@ -69,9 +69,7 @@ if ( ! $memberrow ) {
       "context_label" => $courserow['title'],
       );
 
-    // $placementsecret = $instance->placementsecret;
     $placementsecret = $instancerow['placementsecret'];
-echo($placementsecret);
     if ( isset($placementsecret) ) {
         $suffix = ':::' . $memberrow['member_id'] . ':::' . $cid;
         $plaintext = $placementsecret . $suffix;

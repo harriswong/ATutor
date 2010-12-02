@@ -87,34 +87,32 @@ function loadError($msg) {
    doError($msg);
 }
 
-echo($placement);
-
 $content_id = $placement;
 $member_id = $userid;
 require("loadrows.php");
-
-die('HOHOSHS');
-
-    // Retrieve the Basic LTI placement
-    if (! $basiclti = get_record("basiclti", "id", $placement)) doError("Bad sourcedid 5");
+// echo("instancerow<br/>\n");print_r($instancerow); echo("<hr>\n");
+// echo("toolrow<br/>\n");print_r($toolrow); echo("<hr>\n");
+// echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
+// echo("courserow<br/>\n");print_r($courserow); echo("<hr>\n");
+// echo("memberrow<br/>\n");print_r($memberrow); echo("<hr>\n");
 
     if ( $message_type == "basicoutcome" ) {
-        if ( $basiclti->acceptgrades == 1 ||
-             ( $basiclti->acceptgrades == 2 && $basiclti->instructorchoiceacceptgrades == 1 ) ) {
+        if ( $toolrow['acceptgrades'] == 1 ||
+           ( $toolrow['acceptgrades'] == 2 && $instancerow['acceptgrades'] == 1 ) ) {
             // The placement is configured to accept grades
         } else { 
             doError("Not permitted");
         }
-    } else if ( $message_type == "toolsetting" ) {
-        if ( $basiclti->allowsetting == 1 ||
-             ( $basiclti->allowsetting == 2 && $basiclti->instructorchoiceallowsetting == 1 ) ) {
+    } else if ( $message_type == "roster" ) {
+        if ( $toolrow['allowroster'] == 1 ||
+           ( $toolrow['allowroster'] == 2 && $instancerow['allowroster'] == 1 ) ) {
             // OK
         } else { 
             doError("Not permitted");
         }
-    } else if ( $message_type == "roster" ) {
-        if ( $basiclti->allowroster == 1 ||
-             ( $basiclti->allowroster == 2 && $basiclti->instructorchoiceallowroster == 1 ) ) {
+    } else if ( $message_type == "toolsetting" ) {
+        if  ( $toolrow['allowsetting'] == 1 ||
+            ( $toolrow['allowsetting'] == 2 && $instancerow['allowsetting'] == 1 ) ) {
             // OK
         } else { 
             doError("Not permitted");
@@ -122,8 +120,8 @@ die('HOHOSHS');
     }
 
     // Retrieve the secret we use to sign lis_result_sourcedid
-    $placementsecret = $basiclti->placementsecret;
-    $oldplacementsecret = $basiclti->oldplacementsecret;
+    $placementsecret = $instancerow['placementsecret'];
+    $oldplacementsecret = $instancerow['oldplacementsecret'];
     if ( ! isset($placementsecret) ) doError("Not permitted");
 
     $suffix = ':::' . $userid . ':::' . $placement;
@@ -139,8 +137,9 @@ die('HOHOSHS');
     }
 
     // Check the OAuth Signature 
-    $oauth_secret = $basiclti->password;
-    $oauth_consumer_key = $basiclti->resourcekey;
+    $oauth_consumer_key = $toolrow['resourcekey'];
+    $oauth_secret = $toolrow['password'];
+
     if ( ! isset($oauth_secret) ) doError("Not permitted");
     if ( ! isset($oauth_consumer_key) ) doError("Not permitted");
 
@@ -160,19 +159,6 @@ die('HOHOSHS');
         $server->verify_request($request);
     } catch (Exception $e) {
         doError($e->getMessage());
-    }
-
-    if (! $course = get_record("course", "id", $basiclti->course)) doError("Could not retrieve course");
-
-    // TODO: Check that user is in course
-
-    if (! $cm = get_coursemodule_from_instance("basiclti", $basiclti->id, $course->id)) {
-        doError("Course Module ID was incorrect");
-    }
-
-    // Lets store the grade
-    if (!function_exists('grade_update')) { //workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
     }
 
     // Beginning of actual grade processing
@@ -237,27 +223,30 @@ die('HOHOSHS');
 
     } else if ( $lti_message_type == "basic-lti-loadsetting" ) {
         $xml = "  <setting>\n" .
-               "     <value>".htmlspecialchars($basiclti->setting)."</value>\n" .
+               "     <value>".htmlspecialchars($instancerow['setting'])."</value>\n" .
                "  </setting>\n";
         print message_response('Success', 'Status', 'fullsuccess', 'Setting retrieved', $xml);
     } else if ( $lti_message_type == "basic-lti-savesetting" ) {
         $setting = $_REQUEST['setting'];
         if ( ! isset($setting) ) doError('Missing setting value');
-        $sql = "UPDATE {$CFG->prefix}basiclti SET setting='".
-            mysql_escape_string($setting) . "' WHERE id=" . $basiclti->id;
-        $success = execute_sql($sql,false);
+        // $sql = "UPDATE {$CFG->prefix}basiclti SET 
+               // setting='". mysql_escape_string($setting) . "' WHERE id=" . $basiclti->id;
+        $sql = "UPDATE ".TABLE_PREFIX."basiclti_content
+               SET setting='". mysql_escape_string($setting) . "' WHERE content_id=" . $placement;
+        $success = mysql_query($sql);
         if ( $success ) {
             print message_response('Success', 'Status', 'fullsuccess', 'Setting updated');
         } else {
-            doError("Error updating error");
+            doError("Error updating setting");
         }
     } else if ( $lti_message_type == "basic-lti-deletesetting" ) {
-        $sql = "UPDATE {$CFG->prefix}basiclti SET setting='' WHERE id=" . $basiclti->id;
-        $success = execute_sql($sql,false);
+        $sql = "UPDATE ".TABLE_PREFIX."basiclti_content
+               SET setting='' WHERE content_id=" . $placement;
+        $success = mysql_query($sql);
         if ( $success ) {
             print message_response('Success', 'Status', 'fullsuccess', 'Setting deleted');
         } else {
-            doError("Error updating error");
+            doError("Error updating setting");
         }
     } else if ( $message_type == "roster" ) {
         if ( ! $course = get_record("course", "id", $basiclti->course)) doError("Could not retrieve course");
