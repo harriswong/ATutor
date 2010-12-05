@@ -1,0 +1,7 @@
+
+Do a sweep for SQL injection and XSS injection.
+
+Performance tune row loading in service in particular. Make sure to think through minimizing DOS.
+
+In service - don't use SQL directly (unless it is OK with Greg).
+

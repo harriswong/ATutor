@@ -61,7 +61,7 @@ CREATE TABLE `basiclti_content` (
 	`toolid` varchar(32) NOT NULL,
 	`sendname` mediumint(1) NOT NULL DEFAULT '0',
 	`sendemailaddr` mediumint(1) NOT NULL DEFAULT '0',
-	`acceptgrades` mediumint(1) NOT NULL DEFAULT '0',
+	`gradebook_test_id` mediumint(10) NOT NULL DEFAULT '0',
 	`allowroster` mediumint(1) NOT NULL DEFAULT '0',
 	`allowsetting` mediumint(1) NOT NULL DEFAULT '0',
 	`customparameters` varchar(2048) NOT NULL,

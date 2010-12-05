@@ -11,7 +11,7 @@ $form_create_blti = array(
 	'debuglaunch:radio:label=bl_debuglaunch:choices=off,on,instructor',
 	'sendname:radio:label=bl_sendname:choices=off,on,instructor',
 	'sendemailaddr:radio:label=bl_sendemailaddr:choices=off,on,instructor',
-	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on,instructor',
+	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on',
 	'allowroster:radio:label=bl_allowroster:choices=off,on,instructor',
 	'allowsetting:radio:label=bl_allowsetting:choices=off,on,instructor',
 	'instructorcustom:radio:label=bl_instructorcustom:choices=off,on',

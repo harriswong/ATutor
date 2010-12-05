@@ -5,66 +5,31 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 
 $cid = intval($_GET['cid']);
 
-$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
-                WHERE content_id=".$cid;
-$instanceresult = mysql_query($sql, $db);
-$instancerow = mysql_fetch_assoc($instanceresult);
-if ( ! $instancerow ) {
-    echo("Not Configured\n");
-    exit;
-}
-
-$toolid = $instancerow['toolid'];
-$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools
-                WHERE toolid='".$toolid."'";
-$contentresult = mysql_query($sql, $db);
-$toolrow = mysql_fetch_assoc($contentresult);
-if ( ! $toolrow ) {
-    echo("Tool definition missing\n");
-    exit;
-}
-// print_r($toolrow); echo("<hr>\n");
-
-$sql = "SELECT * FROM ".TABLE_PREFIX."content
-                WHERE content_id=".$cid;
-$contentresult = mysql_query($sql, $db);
-$contentrow = mysql_fetch_assoc($contentresult);
-if ( ! $contentrow ) {
-    echo("Not Configured\n");
-    exit;
-}
-// print_r($contentrow); echo("<hr>\n");
-
-$sql = "SELECT * FROM ".TABLE_PREFIX."courses
-                WHERE course_id='".$_SESSION['course_id']."'";
-$courseresult = mysql_query($sql, $db);
-$courserow = mysql_fetch_assoc($courseresult);
-if ( ! $courserow ) {
-    echo("Course definition missing\n");
-    exit;
-}
-// print_r($courserow); echo("<hr>\n");
-
-$sql = "SELECT * FROM ".TABLE_PREFIX."members
-                WHERE member_id='".$_SESSION['member_id']."'";
-$memberresult = mysql_query($sql, $db);
-$memberrow = mysql_fetch_assoc($memberresult);
-if ( ! $memberrow ) {
-    echo("Course definition missing\n");
-    exit;
-}
-// print_r($memberrow); echo("<hr>\n");
+$content_id = $cid;
+$member_id = $_SESSION['member_id'];
+require("loadrows.php");
+$course_id = $contentrow['course_id'];
+// echo("instancerow<br/>\n");print_r($instancerow); echo("<hr>\n");
+// echo("toolrow<br/>\n");print_r($toolrow); echo("<hr>\n");
+// echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
+// echo("courserow<br/>\n");print_r($courserow); echo("<hr>\n");
+// echo("memberrow<br/>\n");print_r($memberrow); echo("<hr>\n");
+// echo("enrollrow<br/>\n");print_r($enrollrow); echo("<hr>\n");
 
     $lmsdata = array(
       "resource_link_id" => $cid,
       "resource_link_title" => $contentrow['title'],
       "resource_link_description" => $contentrow['text'],
       "user_id" => $memberrow['member_id'],
-      "roles" => "Instructor,urn:TODO",  // TODO: or Learner
+      "roles" => "Learner",
       "context_id" => $courserow['course_id'],
       "context_title" => $courserow['title'],
       "context_label" => $courserow['title'],
       );
+
+    if ( $enrollrow['role'] == 'Instructor' ) {
+        $lmsdata["roles"] = 'Instructor';
+    }
 
     if ( $toolrow['sendemailaddr'] == 1 ||
          ( $toolrow['sendemailaddr'] == 2 && $instancerow['sendemailaddr'] == 1 ) ) {
