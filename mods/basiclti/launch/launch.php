@@ -86,8 +86,7 @@ if ( ! $memberrow ) {
     }
 
     if ( isset($placementsecret) &&
-         ( $toolrow['acceptgrades'] == 1 ||
-         ( $toolrow['acceptgrades'] == 2 && $instancerow['acceptgrades'] == 1 ) ) ) {
+         ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] != 0 ) ) {
         $lmsdata["lis_result_sourcedid"] = $sourcedid;
         $lmsdata["ext_ims_lis_basic_outcome_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
     }

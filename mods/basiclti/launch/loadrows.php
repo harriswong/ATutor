@@ -42,6 +42,16 @@ if ( ! $courserow ) {
 }
 // echo("COURSE<br/>\n");print_r($courserow); echo("<hr>\n");
 
+$sql = "SELECT * FROM ".TABLE_PREFIX."course_enrollment
+                WHERE member_id='".$member_id."'";
+$enrollresult = mysql_query($sql, $db);
+$enrollrow = mysql_fetch_assoc($enrollresult);
+if ( ! $enrollrow ) {
+    loadError("Course enrollment missing\n");
+    exit;
+}
+// echo("enrollrow<br/>\n");print_r($enrollrow); echo("<hr>\n");
+
 $sql = "SELECT * FROM ".TABLE_PREFIX."members
                 WHERE member_id='".$member_id."'";
 $memberresult = mysql_query($sql, $db);

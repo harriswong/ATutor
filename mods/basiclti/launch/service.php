@@ -96,10 +96,10 @@ $course_id = $contentrow['course_id'];
 // echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
 // echo("courserow<br/>\n");print_r($courserow); echo("<hr>\n");
 // echo("memberrow<br/>\n");print_r($memberrow); echo("<hr>\n");
+// echo("enrollrow<br/>\n");print_r($enrollrow); echo("<hr>\n");
 
     if ( $message_type == "basicoutcome" ) {
-        if ( $toolrow['acceptgrades'] == 1 ||
-           ( $toolrow['acceptgrades'] == 2 && $instancerow['acceptgrades'] == 1 ) ) {
+        if ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] > 0 ) {
             // The placement is configured to accept grades
         } else { 
             doError("Not permitted");
@@ -164,22 +164,58 @@ $course_id = $contentrow['course_id'];
 
     // Beginning of actual grade processing
     if ( $message_type == "basicoutcome" ) {
-        $source = 'mod/basiclti';
-        $courseid = $course->id;
-        $itemtype = 'mod';
-        $itemmodule = 'basiclti';
-        $iteminstance =  $basiclti->id;
+        if ( ! isset( $instancerow['gradebook_test_id'] ) ) {
+            doError("Not permitted");
+        }
+
+        // TODO: Greg - Is this appropriate?  It would be nice to allow this.
+        if ( $enrollrow['role'] == 'Instructor' ) {
+            doError('Grades not supported for instructors');
+        }
+
+        $gradebook_test_id = $instancerow['gradebook_test_id'];
+
+        // Check to see if this grade is in this course and member is in this course
+	// And that this grade item is of the right type
+        $sql = 'SELECT role,m.member_id AS member_id,first_name,last_name,email 
+            FROM  '.TABLE_PREFIX.'gradebook_tests AS g
+            JOIN  '.TABLE_PREFIX.'course_enrollment AS e
+            JOIN  '.TABLE_PREFIX.'members AS m 
+            ON g.course_id = e.course_id AND e.member_id = m.member_id 
+            WHERE e.course_id = '.$course_id.' AND m.member_id ='.$member_id.'
+            AND g.gradebook_test_id = '.$gradebook_test_id."
+            AND g.type = 'External' and g.grade_scale_id = 0";
+        $gradebook_result = mysql_query($sql, $db);
+        $count = mysql_num_rows($gradebook_result);
+        if ( $count < 1 ) {
+            doError("Not gradable");
+        }
+
+        $read_sql = 'SELECT d.grade AS grade
+            FROM  '.TABLE_PREFIX.'gradebook_detail AS d
+            JOIN  '.TABLE_PREFIX.'gradebook_tests AS g
+            JOIN  '.TABLE_PREFIX.'course_enrollment AS e
+            JOIN  '.TABLE_PREFIX.'members AS m 
+            ON d.gradebook_test_id = g.gradebook_test_id 
+            AND g.course_id = e.course_id AND e.member_id = m.member_id 
+            WHERE e.course_id = '.$course_id.' AND d.member_id ='.$member_id.'
+            AND g.gradebook_test_id = '.$gradebook_test_id."
+            AND g.type = 'External' and g.grade_scale_id = 0";
 
         if ( $lti_message_type == "basic-lis-readresult" ) {
-            unset($grade);
-            $thegrade = grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $userid);
-            // print_r($thegrade->items[0]->grades);
-            if ( isset($thegrade) && is_array($thegrade->items[0]->grades) ) {
-                foreach($thegrade->items[0]->grades as $agrade) {
-                    $grade = $agrade->grade;
-                    break;
-                }
+            $grade_result = mysql_query($read_sql, $db);
+            $count = mysql_num_rows($gradebook_result);
+            if ( $count < 1 ) {
+                doError("Not gradable");
             }
+            unset($grade);
+            $grade_row = mysql_fetch_assoc($grade_result);
+            if ( $grade_row === false ) {
+                // Skip
+            } else if ( isset($grade_row['grade']) ) { 
+                $grade = $grade_row['grade'];
+            }
+
             if ( ! isset($grade) ) {
                 doError("Unable to read grade");
             }
@@ -187,7 +223,7 @@ $course_id = $contentrow['course_id'];
             $result = "  <result>\n" .
                 "     <resultscore>\n" .
                 "        <textstring>" .
-                htmlspecialchars($grade/100.0) .
+                htmlspecialchars($grade*1.0) .
                 "</textstring>\n" .
                 "     </resultscore>\n" .
                 "  </result>\n";
@@ -196,31 +232,39 @@ $course_id = $contentrow['course_id'];
        }
     
         if ( $lti_message_type == "basic-lis-deleteresult" ) {
-            $params = array();
-            $params['itemname'] = $basiclti->name;
-    
-            $grade = new object();
-            $grade->userid   = $userid; 
-    
-            grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, 0, $grade, array('deleted'=>1));
-        } else {
-            if ( isset($_REQUEST['result_resultscore_textstring']) ) {
-               $gradeval = floatval($_REQUEST['result_resultscore_textstring']);
-               if ( $gradeval <= 1.0 && $gradeval >= 0.0 ) $gradeval = $gradeval * 100.0;
-            } else {
-                doError('Missing Grade');
+            $delete_sql = 'DELETE FROM '.TABLE_PREFIX.'gradebook_detail 
+                WHERE member_id ='.$member_id.'
+                AND gradebook_test_id = '.$gradebook_test_id;
+
+            $gradebook_result = mysql_query($delete_sql, $db);
+            if ( $gradebook_result === false ) {
+                doError("Could not delete grade");
             }
-            $params = array();
-            $params['itemname'] = $basiclti->name;
-    
-            $grade = new object();
-            $grade->userid   = $userid; 
-            $grade->rawgrade = $gradeval;
-    
-            grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, 0, $grade, $params);
+            print message_response('Success', 'Status', 'fullsuccess', 'Grade deleted');
+
+        } else { // Replace
+            $gradeval = -1.0;
+            if ( isset($_REQUEST['result_resultscore_textstring']) && strlen($_REQUEST['result_resultscore_textstring']) > 0) {
+               $gradeval = floatval($_REQUEST['result_resultscore_textstring']);
+            } 
+            if ( $gradeval < 0.0 || $gradeval > 1.0 ) {
+                doError('Invalid Grade');
+            }
+
+            // TODO: Greg - do we do Insert or Update?
+            $replace_sql = 'INSERT INTO '.TABLE_PREFIX.'gradebook_detail 
+                (gradebook_test_id, member_id, grade) VALUES
+                ('.$gradebook_test_id.','.$member_id.','.$gradeval.')
+                ON DUPLICATE KEY UPDATE grade='.$gradeval;
+
+            $gradebook_result = mysql_query($replace_sql, $db);
+            if ( $gradebook_result === false ) {
+                // TODO: Log message would be good here
+                doError("Could not store grade");
+            }
+            print message_response('Success', 'Status', 'fullsuccess', 'Grade updated');
         }
     
-        print message_response('Success', 'Status', 'fullsuccess', 'Grade updated');
 
     } else if ( $lti_message_type == "basic-lti-loadsetting" ) {
         $xml = "  <setting>\n" .
@@ -277,8 +321,7 @@ $course_id = $contentrow['course_id'];
                 $hashsig = hash('sha256', $plaintext, false);
                 $sourcedid = $hashsig . $suffix;
             }
-            if ( $toolrow['acceptgrades'] == 1 ||
-               ( $toolrow['acceptgrades'] == 2 && $instancerow['acceptgrades'] == 1 ) ) {
+            if ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] > 0 ) {
                 if ( isset($sourcedid) ) $userxml .=  "      <lis_result_sourcedid>".htmlspecialchars($sourcedid)."</lis_result_sourcedid>\n";
             }
             $userxml .= "    </member>\n";
