@@ -90,6 +90,7 @@ function loadError($msg) {
 $content_id = $placement;
 $member_id = $userid;
 require("loadrows.php");
+$course_id = $contentrow['course_id'];
 // echo("instancerow<br/>\n");print_r($instancerow); echo("<hr>\n");
 // echo("toolrow<br/>\n");print_r($toolrow); echo("<hr>\n");
 // echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
@@ -249,39 +250,35 @@ require("loadrows.php");
             doError("Error updating setting");
         }
     } else if ( $message_type == "roster" ) {
-        if ( ! $course = get_record("course", "id", $basiclti->course)) doError("Could not retrieve course");
-        if ( ! $context = get_context_instance(CONTEXT_COURSE, $course->id) ) doError("Could not retrieve context");
-        $sql = 'SELECT u.id, u.username, u.firstname, u.lastname, u.email, ro.shortname
-            FROM  '.$CFG->prefix.'role_assignments ra
-            JOIN  '.$CFG->prefix.'user AS u ON ra.userid = u.id
-            JOIN  '.$CFG->prefix.'role ro ON ra.roleid = ro.id
-            WHERE ra.contextid = '.$context->id;
-        $userlist = get_recordset_sql($sql);
+        $sql = 'SELECT role,m.member_id AS member_id,first_name,last_name,email 
+            FROM  '.TABLE_PREFIX.'course_enrollment AS e
+            JOIN  '.TABLE_PREFIX.'members AS m ON e.member_id = m.member_id 
+            WHERE course_id = '.$course_id;
+        $roster_result = mysql_query($sql, $db);
         $xml = "  <memberships>\n";
-        while ($user = rs_fetch_next_record($userlist)) {
+        while ($row = mysql_fetch_assoc($roster_result)) {
             $role = "Learner";
-            if ( $user->shortname == 'editingteacher' || $user->shortname == 'admin' ) $role = 'Instructor';
+            if ( $row['role'] == 'Instructor' ) $role = 'Instructor';
             $userxml = "    <member>\n".
-                       "      <user_id>".htmlspecialchars($user->id)."</user_id>\n".
+                       "      <user_id>".htmlspecialchars($row['member_id'])."</user_id>\n".
                        "      <roles>$role</roles>\n";
-             if ( $basiclti->sendname == 1 ||
-                 ( $basiclti->sendname == 2 && $basiclti->instructorchoicesendname == 1 ) ) {
-                if ( isset($user->firstname) ) $userxml .=  "      <person_name_given>".htmlspecialchars($user->firstname)."</person_name_given>\n";
-                if ( isset($user->lastname) ) $userxml .=  "      <person_name_family>".htmlspecialchars($user->lastname)."</person_name_family>\n";
+            if ( $toolrow['sendname'] == 1 ||
+                 ( $toolrow['sendname'] == 2 && $instancerow['sendname'] == 1 ) ) {
+                if ( isset($row['first_name']) ) $userxml .=  "      <person_name_given>".htmlspecialchars($row['first_name'])."</person_name_given>\n";
+                if ( isset($row['last_name']) ) $userxml .=  "      <person_name_family>".htmlspecialchars($row['last_name'])."</person_name_family>\n";
             }
-             if ( $basiclti->sendemail == 1 ||
-                 ( $basiclti->sendemail == 2 && $basiclti->instructorchoicesendname == 1 ) ) {
-                if ( isset($user->email) ) $userxml .=  "      <person_contact_email_primary>".htmlspecialchars($user->lastname)."</person_contact_email_primary>\n";
+            if ( $toolrow['sendemailaddr'] == 1 ||
+                 ( $toolrow['sendemailaddr'] == 2 && $instancerow['sendemailaddr'] == 1 ) ) {
+                if ( isset($row['email']) ) $userxml .=  "      <person_contact_email_primary>".htmlspecialchars($row['email'])."</person_contact_email_primary>\n";
             }
-            $placementsecret = $basiclti->placementsecret;
             if ( isset($placementsecret) ) {
-                $suffix = ':::' . $user->id . ':::' . $basiclti->id;
+                $suffix = ':::' . $row['member_id'] . ':::' . $placement;
                 $plaintext = $placementsecret . $suffix;
                 $hashsig = hash('sha256', $plaintext, false);
                 $sourcedid = $hashsig . $suffix;
             }
-            if ( $basiclti->acceptgrades == 1 ||
-                 ( $basiclti->acceptgrades == 2 && $basiclti->instructorchoiceacceptgrades == 1 ) ) {
+            if ( $toolrow['acceptgrades'] == 1 ||
+               ( $toolrow['acceptgrades'] == 2 && $instancerow['acceptgrades'] == 1 ) ) {
                 if ( isset($sourcedid) ) $userxml .=  "      <lis_result_sourcedid>".htmlspecialchars($sourcedid)."</lis_result_sourcedid>\n";
             }
             $userxml .= "    </member>\n";

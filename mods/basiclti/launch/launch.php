@@ -60,14 +60,22 @@ if ( ! $memberrow ) {
       "resource_link_title" => $contentrow['title'],
       "resource_link_description" => $contentrow['text'],
       "user_id" => $memberrow['member_id'],
-      "roles" => "Instructor",  // or Learner
-      "lis_person_name_family" => $memberrow['last_name'],
-      "lis_person_name_given" => $memberrow['first_name'],
-      "lis_person_contact_email_primary" => $memberrow['email'],
+      "roles" => "Instructor,urn:TODO",  // TODO: or Learner
       "context_id" => $courserow['course_id'],
       "context_title" => $courserow['title'],
       "context_label" => $courserow['title'],
       );
+
+    if ( $toolrow['sendemailaddr'] == 1 ||
+         ( $toolrow['sendemailaddr'] == 2 && $instancerow['sendemailaddr'] == 1 ) ) {
+        $lmsdata["lis_person_contact_email_primary"] = $memberrow['email'];
+    }
+
+    if ( $toolrow['sendname'] == 1 ||
+         ( $toolrow['sendname'] == 2 && $instancerow['sendname'] == 1 ) ) {
+        $lmsdata["lis_person_name_family"] = $memberrow['last_name'];
+        $lmsdata["lis_person_name_given"] = $memberrow['first_name'];
+    }
 
     $placementsecret = $instancerow['placementsecret'];
     if ( isset($placementsecret) ) {
