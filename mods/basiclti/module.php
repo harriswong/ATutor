@@ -100,4 +100,13 @@ $this->_pages['mods/basiclti/index_mystart.php']['parent'] = AT_NAV_START;
 function basiclti_get_group_url($group_id) {
 	return 'mods/basiclti/index.php';
 }
+
+/* The element of content tool bar that is displayed on "Edit Content" => "Content" tab */
+$this->_content_tools[] = array("id"=>"basiclti_tool",
+                                "class"=>"fl-col clickable",
+                                "src"=>AT_BASE_HREF."mods/basiclti/images/basiclti-icon.png",
+                                "title"=>_AT('basiclti_tool'),
+                                "alt"=>_AT('basiclti_tool'),
+                                "text"=>_AT('basiclti_content_text'),
+                                "js"=>AT_BASE_HREF."mods/basiclti/content_tool_action.js");
 ?>
