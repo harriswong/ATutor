@@ -4,13 +4,13 @@ require (AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_BASICLTI);
 
 if (isset($_GET['view'], $_GET['id'])) {
-    header('Location: admin/view_tool.php?id='.$_GET['id']);
+    header('Location: tool/admin_view.php?id='.$_GET['id']);
     exit;
 } else if (isset($_GET['edit'], $_GET['id'])) {
-    header('Location: admin/edit_tool.php?id='.$_GET['id']);
+    header('Location: tool/admin_edit.php?id='.$_GET['id']);
     exit;
 } else if (isset($_GET['delete'], $_GET['id'])) {
-    header('Location: admin/delete_tool.php?id='.$_GET['id']);
+    header('Location: tool/admin_delete.php?id='.$_GET['id']);
     exit;
 }
 

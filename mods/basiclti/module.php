@@ -60,15 +60,15 @@ if (admin_authenticate(AT_ADMIN_PRIV_BASICLTI, TRUE) || admin_authenticate(AT_AD
 	$this->_pages[AT_NAV_ADMIN] = array('mods/basiclti/index_admin.php');
 	$this->_pages['mods/basiclti/index_admin.php']['title_var'] = 'basiclti';
 	$this->_pages['mods/basiclti/index_admin.php']['parent']    = AT_NAV_ADMIN;
-	$this->_pages['mods/basiclti/index_admin.php']['children']    = array('mods/basiclti/admin/create.php');
-                $this->_pages['mods/basiclti/admin/create.php']['title_var'] = 'bl_create';
-                $this->_pages['mods/basiclti/admin/create.php']['parent'] = 'mods/basiclti/index_admin.php';
-                $this->_pages['mods/basiclti/admin/view_tool.php']['title_var'] = 'bl_view';
-                $this->_pages['mods/basiclti/admin/view_tool.php']['parent'] = 'mods/basiclti/index_admin.php';
-                $this->_pages['mods/basiclti/admin/edit_tool.php']['title_var'] = 'bl_edit';
-                $this->_pages['mods/basiclti/admin/edit_tool.php']['parent'] = 'mods/basiclti/index_admin.php';
-                $this->_pages['mods/basiclti/admin/delete_tool.php']['title_var'] = 'bl_delete';
-                $this->_pages['mods/basiclti/admin/delete_tool.php']['parent'] = 'mods/basiclti/index_admin.php';
+	$this->_pages['mods/basiclti/index_admin.php']['children']    = array('mods/basiclti/tool/create.php');
+                $this->_pages['mods/basiclti/tool/create.php']['title_var'] = 'bl_create';
+                $this->_pages['mods/basiclti/tool/create.php']['parent'] = 'mods/basiclti/index_admin.php';
+                $this->_pages['mods/basiclti/tool/admin_view.php']['title_var'] = 'bl_view';
+                $this->_pages['mods/basiclti/tool/admin_view.php']['parent'] = 'mods/basiclti/index_admin.php';
+                $this->_pages['mods/basiclti/tool/admin_edit.php']['title_var'] = 'bl_edit';
+                $this->_pages['mods/basiclti/tool/admin_edit.php']['parent'] = 'mods/basiclti/index_admin.php';
+                $this->_pages['mods/basiclti/admin/admin_delete.php']['title_var'] = 'bl_delete';
+                $this->_pages['mods/basiclti/admin/admin_delete.php']['parent'] = 'mods/basiclti/index_admin.php';
 }
 
 /*******
