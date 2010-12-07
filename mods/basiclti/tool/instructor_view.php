@@ -1,24 +1,30 @@
 <?php
 define('AT_INCLUDE_PATH', '../../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
-admin_authenticate(AT_ADMIN_PRIV_BASICLTI);
+authenticate(AT_PRIV_BASICLTI);
+
+if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
+    $msg->addFeedback('NEED_COURSE_ID');
+    exit;
+}
 
 require('../lib/at_form_util.php');
-require('admin_form.php');
+require('instructor_form.php');
 
 $tool = intval($_REQUEST['id']);
 
 if (isset($_POST['done'])) {
-        header('Location: '.AT_BASE_HREF.'mods/basiclti/index_admin.php');
+        header('Location: '.AT_BASE_HREF.'mods/basiclti/index_instructor.php');
         exit;
 } 
 
-$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools WHERE id = ".$tool.";";
+$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools WHERE id = ".$tool.
+       " AND course_id = ". $_SESSION['course_id'];
 $result = mysql_query($sql, $db) or die(mysql_error());
 $toolrow = mysql_fetch_assoc($result);
 if ( $toolrow['id'] != $tool ) {
     $msg->addFeedback('COULD_NOT_LOAD_TOOL');
-    header('Location: '.AT_BASE_HREF.'mods/basiclti/index_admin.php');
+    header('Location: '.AT_BASE_HREF.'mods/basiclti/index_instructor.php');
     exit;
 }
 

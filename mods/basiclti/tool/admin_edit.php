@@ -16,7 +16,7 @@ if (isset($_POST['cancel'])) {
 
     if ( at_form_validate($form_create_blti, $msg) ) {
         $sql = "SELECT count(*) cnt FROM ".TABLE_PREFIX."basiclti_tools WHERE toolid = '".
-                mysql_real_escape_string($_POST['toolid'])." AND id = $tool';";
+                mysql_real_escape_string($_POST['toolid'])."' AND id = $tool';";
         $result = mysql_query($sql, $db) or die(mysql_error());
         $row = mysql_fetch_assoc($result);
 
@@ -36,8 +36,8 @@ if (isset($_POST['cancel'])) {
 
 $sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools WHERE id = ".$tool.";";
 $result = mysql_query($sql, $db) or die(mysql_error());
-$row = mysql_fetch_assoc($result);
-if ( $row['id'] != $tool ) {
+$toolrow = mysql_fetch_assoc($result);
+if ( $toolrow['id'] != $tool ) {
     $msg->addFeedback('COULD_NOT_LOAD_TOOL');
     header('Location: '.AT_BASE_HREF.'mods/basiclti/index_admin.php');
     exit;
@@ -53,7 +53,7 @@ $msg->printAll();
   <input type="hidden" name="id" value="<?php echo $tool; ?>" />
   <div class="input-form">
     <fieldset class="group_form"><legend class="group_form"><?php echo _AT('properties'); ?></legend>
-<?php at_form_generate($row, $form_create_blti); ?>
+<?php at_form_generate($toolrow, $form_create_blti); ?>
         <div class="buttons">
                 <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
                 <input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" />
