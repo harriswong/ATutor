@@ -1,0 +1,20 @@
+<?php
+$form_create_blti = array(
+	'title:text:required=true:size=25',
+        'toolid:id:required=true:size=16',
+	'description:textarea:required=true:rows=2:cols=25',
+	'toolurl:url:label=bl_toolurl:required=true:size=80',
+	'resourcekey:text:label=bl_resourcekey:required=true:size=80',
+	'password:text:required=true:label=bl_password:size=80',
+	'preferheight:integer:size=80',
+	'launchinpopup:radio:label=bl_launchinpopup:choices=off,on,content',
+	'debuglaunch:radio:label=bl_debuglaunch:choices=off,on,content',
+	'sendname:radio:label=bl_sendname:choices=off,on,content',
+	'sendemailaddr:radio:label=bl_sendemailaddr:choices=off,on,content',
+	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on',
+	'allowroster:radio:label=bl_allowroster:choices=off,on,content',
+	'allowsetting:radio:label=bl_allowsetting:choices=off,on,content',
+	'instructorcustom:radio:label=bl_instructorcustom:choices=off,on',
+	'customparameters:textarea:label=bl_customparameters:rows=5:cols=25',
+        );
+?>

@@ -25,7 +25,7 @@ function at_form_input($row,$fieldinfo)
     if ( isset($info['label']) ) $label = $info['label'];
     $required = isset($info['required']);
 
-    if ( $type == 'text' || $type == 'integer' ) { 
+    if ( $type == 'text' || $type == 'url' || $type == 'id' || $type == 'integer' ) { 
         $size = isset($info['size']) ? $info['size'] : 40; ?>
         <div class="row">
                 <?php if ($required) { ?><span class="required" title="<?php echo _AT('required_field'); ?>">*</span><?php } ?><label for="<?php echo $field;?>"><?php echo _AT($label); ?></label><br />
@@ -78,7 +78,7 @@ function at_form_output($row,$fieldinfo)
     $label = $field;
     if ( isset($info['label']) ) $label = $info['label'];
 
-    if ( $type == 'text' || $type == 'integer' || $type == 'textarea') { 
+    if ( $type == 'text' || $type == 'url' || $type == 'id' || $type == 'integer' || $type == 'textarea') { 
         if ( strlen($row[$field]) < 1 ) return; ?>
         <div class="row">
                 <?php  echo _AT($label); ?><br/>
@@ -114,6 +114,8 @@ function at_form_validate($form_definition, $msg ) {
     $retval = true;
     $missing_fields = array();
     $numeric_fields = array();
+    $url_fields = array();
+    $id_fields = array();
 
     foreach ( $form_definition as $forminput ) {
         $info =  parseFormString($forminput);
@@ -131,6 +133,21 @@ function at_form_validate($form_definition, $msg ) {
                 $numeric_fields[] = _AT($label);
             }
         }
+        if ( $info[1] == 'id' ) {
+            if ( preg_match("/^[0-9a-zA-Z._-]*$/", $datafield) == 1 || strlen($datafield) == 0 ) {
+                // OK
+            } else {
+                $id_fields[] = _AT($label);
+            }
+        }
+        if ( $info[1] == 'url' ) {
+	    $pattern = "'^(http://|https://)[a-z0-9][a-z0-9]*'";
+            if ( preg_match($pattern, $datafield) == 1 || strlen($datafield) == 0 ) {
+                // OK
+            } else {
+                $url_fields[] = _AT($label);
+            }
+        }
     }
     if (sizeof($missing_fields) > 0) {
         $missing_fields = implode(', ', $missing_fields);
@@ -144,11 +161,25 @@ function at_form_validate($form_definition, $msg ) {
         $msg->addError($numeric_fields);
         $retval = false;
     }
+    if (sizeof($url_fields) > 0) {
+        $url_fields = implode(', ', $url_fields);
+        $msg->addError(array('URL_FIELDS', $url_fields));
+        $retval = false;
+    }
+    if (sizeof($id_fields) > 0) {
+        $id_fields = implode(', ', $id_fields);
+        $msg->addError(array('ID_FIELDS', $id_fields));
+        $retval = false;
+    }
     return $retval;
 }
 
-function at_get_field_value($fieldvalue, $type) {
-    if ( $type == 'radio' || $type == 'integer') {
+function at_get_field_value($fieldvalue, $type = false) {
+    if ( $fieldvalue === false ) {
+       $fieldvalue = 'NULL';
+    } else if ( is_int($fieldvalue) ) {
+       $fieldvalue = $fieldvalue.'';
+    } else if ( $type == 'radio' || $type == 'integer') {
         if ( strlen($fieldvalue) < 1 ) $fieldvalue = '0';
     } else {
         $fieldvalue = "'".mysql_real_escape_string($fieldvalue)."'";
@@ -156,18 +187,32 @@ function at_get_field_value($fieldvalue, $type) {
     return $fieldvalue;
 }
 
-function at_form_insert($row, $form_definition) {
+// $overrides = array('course_id' => 12, "title" => "yo", "toolid" => false);
+// false in the array becomes NULL in the database
+function at_form_insert($row, $form_definition, $overrides=false) {
     $fieldlist = "";
     $valuelist = "";
+    $handled = array();
     foreach ( $form_definition as $forminput ) {
         $info =  parseFormString($forminput);
         $fieldname = $info[0]; 
         $type = $info[1]; 
-        $fieldvalue = $row[$fieldname];
+        $fieldvalue = null;
+        if ( is_array($overrides) && isset($overrides[$fieldname]) ) $fieldvalue = $overrides[$fieldname];
+        if ( ! isset($fieldvalue) ) $fieldvalue = $row[$fieldname];
         if ( ! isset($fieldvalue) ) continue;
         $fieldvalue = trim($fieldvalue);
         if ( strlen($fieldvalue) < 1 ) continue;
         $fieldvalue = at_get_field_value($fieldvalue, $type);
+        $handled[] = $fieldname;
+        if ( $fieldlist != "" ) $fieldlist = $fieldlist.", ";
+        if ( $valuelist != "" ) $valuelist = $valuelist.", ";
+        $fieldlist = $fieldlist.$fieldname;
+        $valuelist = $valuelist.$fieldvalue;
+      }
+      if ( is_array($overrides) ) foreach($overrides as $fieldname => $fieldvalue) {
+        if ( in_array ( $fieldname , $handled) ) continue;
+        $fieldvalue = at_get_field_value($fieldvalue);
         if ( $fieldlist != "" ) $fieldlist = $fieldlist.", ";
         if ( $valuelist != "" ) $valuelist = $valuelist.", ";
         $fieldlist = $fieldlist.$fieldname;
@@ -177,16 +222,25 @@ function at_form_insert($row, $form_definition) {
       return $sql;
 }
 
-function at_form_update($row, $form_definition) {
+function at_form_update($row, $form_definition, $overrides=false) {
     $setlist = "";
+    $handled = array();
     foreach ( $form_definition as $forminput ) {
         $info =  parseFormString($forminput);
         $fieldname = $info[0]; 
         $type = $info[1]; 
-        $fieldvalue = $row[$info[0]];
+        $fieldvalue = null;
+        if ( is_array($overrides) && isset($overrides[$fieldname]) ) $fieldvalue = $overrides[$fieldname];
+        if ( ! isset($fieldvalue) ) $fieldvalue = $row[$info[0]];
         if ( ! isset($fieldvalue) ) $fieldvalue = '';
         $fieldvalue = trim($fieldvalue);
         $fieldvalue = at_get_field_value($fieldvalue, $type);
+        if ( $setlist != "" ) $setlist = $setlist.", ";
+        $setlist = $setlist.$fieldname." = ".$fieldvalue;
+    }
+    if ( is_array($overrides) ) foreach($overrides as $fieldname => $fieldvalue) {
+        if ( in_array ( $fieldname , $handled) ) continue;
+        $fieldvalue = at_get_field_value($fieldvalue);
         if ( $setlist != "" ) $setlist = $setlist.", ";
         $setlist = $setlist.$fieldname." = ".$fieldvalue;
     }

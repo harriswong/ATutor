@@ -76,7 +76,9 @@ if (admin_authenticate(AT_ADMIN_PRIV_BASICLTI, TRUE) || admin_authenticate(AT_AD
  */
 $this->_pages['mods/basiclti/index_instructor.php']['title_var'] = 'basiclti';
 $this->_pages['mods/basiclti/index_instructor.php']['parent']   = 'tools/index.php';
-$this->_pages['mods/basiclti/index_instructor.php']['children'] = array('mods/basiclti/index_instructor.php');
+$this->_pages['mods/basiclti/index_instructor.php']['children'] = array('mods/basiclti/tool/instructor_create.php');
+                $this->_pages['mods/basiclti/tool/instructor_create.php']['title_var'] = 'bl_create';
+                $this->_pages['mods/basiclti/tool/instructor_create.php']['parent'] = 'mods/basiclti/index_instructor.php';
 // ** possible alternative: **
 // $this->pages['./index_instructor.php']['title_var'] = 'basiclti';
 // $this->pages['./index_instructor.php']['parent']    = 'tools/index.php';

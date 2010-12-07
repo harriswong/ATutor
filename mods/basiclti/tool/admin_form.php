@@ -1,7 +1,7 @@
 <?php
 $form_create_blti = array(
 	'title:text:required=true:size=25',
-	'toolid:text:required=true:size=16',
+	'toolid:id:required=true:size=16',
 	'description:textarea:required=true:rows=2:cols=25',
 	'toolurl:text:label=bl_toolurl:required=true:size=80',
 	'resourcekey:text:label=bl_resourcekey:required=true:size=80',
