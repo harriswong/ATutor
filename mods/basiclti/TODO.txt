@@ -1,5 +1,6 @@
 
-Add Gradebook Item Picker.
+Add timeplacement based on the typical patterns of time
+in ATutor.
 
-Merge custom fields as appropriate.
+Add support for custom fields inclusing the merging logic.
 
