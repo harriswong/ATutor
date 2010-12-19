@@ -41,9 +41,6 @@ $_group_tool = $_student_tool = 'mods/basiclti/index.php';
 /*******
  * add the admin pages when needed.
  */
-$this->_pages['mods/basiclti/tool/content_edit.php']['title_var'] = 'bl_content';
-$this->_pages['mods/basiclti/tool/content_edit.php']['parent'] = 'tools/index.php';
-
 if (admin_authenticate(AT_ADMIN_PRIV_BASICLTI, TRUE) || admin_authenticate(AT_ADMIN_PRIV_ADMIN, TRUE)) {
 	$this->_pages[AT_NAV_ADMIN] = array('mods/basiclti/index_admin.php');
 	$this->_pages['mods/basiclti/index_admin.php']['title_var'] = 'basiclti';
@@ -62,17 +59,23 @@ if (admin_authenticate(AT_ADMIN_PRIV_BASICLTI, TRUE) || admin_authenticate(AT_AD
 /*******
  * instructor Manage section:
  */
-$this->_pages['mods/basiclti/index_instructor.php']['title_var'] = 'basiclti';
-$this->_pages['mods/basiclti/index_instructor.php']['parent']   = 'tools/index.php';
-$this->_pages['mods/basiclti/index_instructor.php']['children'] = array('mods/basiclti/tool/instructor_create.php');
-                $this->_pages['mods/basiclti/tool/instructor_create.php']['title_var'] = 'bl_create';
-                $this->_pages['mods/basiclti/tool/instructor_create.php']['parent'] = 'mods/basiclti/index_instructor.php';
-                $this->_pages['mods/basiclti/tool/instructor_view.php']['title_var'] = 'bl_view';
-                $this->_pages['mods/basiclti/tool/instructor_view.php']['parent'] = 'mods/basiclti/index_instructor.php';
-                $this->_pages['mods/basiclti/tool/instructor_edit.php']['title_var'] = 'bl_edit';
-                $this->_pages['mods/basiclti/tool/instructor_edit.php']['parent'] = 'mods/basiclti/index_instructor.php';
-                $this->_pages['mods/basiclti/tool/instructor_delete.php']['title_var'] = 'bl_delete';
-                $this->_pages['mods/basiclti/tool/instructor_delete.php']['parent'] = 'mods/basiclti/index_instructor.php';
+if ( authenticate(AT_PRIV_BASICLTI) ) {
+	$this->_pages['mods/basiclti/tool/content_edit.php']['title_var'] = 'bl_content';
+	$this->_pages['mods/basiclti/tool/content_edit.php']['parent'] = 'index.php';
+
+
+	$this->_pages['mods/basiclti/index_instructor.php']['title_var'] = 'basiclti';
+	$this->_pages['mods/basiclti/index_instructor.php']['parent']   = 'tools/index.php';
+	$this->_pages['mods/basiclti/index_instructor.php']['children'] = array('mods/basiclti/tool/instructor_create.php');
+	$this->_pages['mods/basiclti/tool/instructor_create.php']['title_var'] = 'bl_create';
+	$this->_pages['mods/basiclti/tool/instructor_create.php']['parent'] = 'mods/basiclti/index_instructor.php';
+	$this->_pages['mods/basiclti/tool/instructor_view.php']['title_var'] = 'bl_view';
+	$this->_pages['mods/basiclti/tool/instructor_view.php']['parent'] = 'mods/basiclti/index_instructor.php';
+	$this->_pages['mods/basiclti/tool/instructor_edit.php']['title_var'] = 'bl_edit';
+	$this->_pages['mods/basiclti/tool/instructor_edit.php']['parent'] = 'mods/basiclti/index_instructor.php';
+	$this->_pages['mods/basiclti/tool/instructor_delete.php']['title_var'] = 'bl_delete';
+	$this->_pages['mods/basiclti/tool/instructor_delete.php']['parent'] = 'mods/basiclti/index_instructor.php';
+}
 
 /*******
  * student page.
