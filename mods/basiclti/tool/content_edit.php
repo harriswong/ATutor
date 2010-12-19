@@ -38,8 +38,10 @@ if ( isset($_POST['toolid']) && at_form_validate($blti_content_edit_form, $msg))
             }
 
     } else { 
+            $fields = array('toolid' => $toolid);
+            $sql = at_form_update($_POST, $blti_content_edit_form, $fields);
             $sql = "UPDATE ". TABLE_PREFIX . "basiclti_content 
-                       SET toolid='".$toolid."' WHERE content_id=".$_POST[cid]." AND 
+                       SET ".$sql." WHERE content_id=".$_POST[cid]." AND 
                            course_id=".$_SESSION[course_id];
             $result = mysql_query($sql, $db);
             if ($result===false) {
@@ -121,14 +123,14 @@ $basiclti_content_row = mysql_fetch_assoc($contentresult);
          echo '<option value="'.$tool['toolid'].'"'.$selected.'>'.$tool['title']."</option>\n";
       } ?>
    </select>
+   <input type="hidden" name="cid" value="<?php echo($cid);?>" />
 <?php
 if ( $thetoolrow !== false ) {
     $blti_content_edit_form = filterForm($thetoolrow, $blti_content_edit_form);
+    at_form_generate($basiclti_content_row, $blti_content_edit_form);
+   echo('<input type="submit" name="save" value="Save" class="button" />'."\n");
 }
 ?>
-<?php at_form_generate($basiclti_content_row, $blti_content_edit_form); ?>
-   <input type="hidden" name="cid" value="<?php echo($cid);?>" />
-   <input type="submit" name="save" value="Save" class="button" />
 </div>
 </legend>
 </form>
