@@ -86,6 +86,7 @@ INSERT INTO `language_text` VALUES ('en', '_module','basiclti_content_text','Ext
 INSERT INTO `language_text` VALUES ('en', '_module','basiclti_comment','You can choose and configure an External Tool associated with this Content Item.',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_tool','Select External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','blti_missing_tool','External Tool configuration has is missing toolid:',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_gradbook_entry','Select Gradebook Entry',NOW(),'');
 
 
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades','Accept Grades From External Tool',NOW(),'');

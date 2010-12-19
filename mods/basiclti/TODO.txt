@@ -4,3 +4,5 @@ in ATutor.
 
 Add support for custom fields inclusing the merging logic.
 
+Get patch 02 into trunk
+
