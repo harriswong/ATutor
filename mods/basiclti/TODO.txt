@@ -4,5 +4,7 @@ in ATutor.
 
 Add support for custom fields inclusing the merging logic.
 
+Advocate for a modal dialog+iframe for content selectors instead of popup.
+
 Get patch 02 into trunk
 
