@@ -16,6 +16,36 @@ function parseFormString($str) {
     return $op; 
 } 
 
+// Filter a form definition based on a controlling row.
+//
+// The controlling row has fields that are interpreted as
+// 0=force off, 1=force on, 2 = delegate setting
+// For radio buttons in our form, it simply checks for 
+// the field of the same name in the controlling row.  
+// For non-radio fields, it looks for a field in the 
+// controlling row prepended by 'allow'.
+function filterForm($control_row, $fieldinfo)
+{
+    $new_form = array();
+    foreach ($fieldinfo as $line) {
+       $fields = parseFormString($line);
+       if ( $fields[1] == 'radio' ) {
+           if ( $control_row[$fields[0]] == 0 ) continue;
+           if ( $control_row[$fields[0]] == 1 ) continue;
+           $new_form[] = $line;
+           continue;
+       }
+       // See if a non-radio field is controlled by an allow field
+       $allowfield = 'allow'.$fields[0];
+       if ( isset( $control_row[$allowfield] ) ) {
+           if ( $control_row[$allowfield] == 0 ) continue; // Force off
+           if ( $control_row[$allowfield] == 1 ) continue; // Force on
+           $new_form[] = $line;
+       }
+    }
+    return $new_form;
+}
+
 function at_form_input($row,$fieldinfo)
 {
     $info = parseFormString($fieldinfo);

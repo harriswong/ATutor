@@ -7,14 +7,15 @@ $form_create_blti = array(
 	'resourcekey:text:label=bl_resourcekey:required=true:size=80',
 	'password:text:required=true:label=bl_password:size=80',
 	'preferheight:integer:size=80',
+        'allowpreferheight:radio:label=bl_allowpreferheight:choices=off,on,content',
 	'launchinpopup:radio:label=bl_launchinpopup:choices=off,on,content',
 	'debuglaunch:radio:label=bl_debuglaunch:choices=off,on,content',
 	'sendname:radio:label=bl_sendname:choices=off,on,content',
 	'sendemailaddr:radio:label=bl_sendemailaddr:choices=off,on,content',
-	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on',
+	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on,content',
 	'allowroster:radio:label=bl_allowroster:choices=off,on,content',
 	'allowsetting:radio:label=bl_allowsetting:choices=off,on,content',
-	'instructorcustom:radio:label=bl_instructorcustom:choices=off,on',
+        'allowcustomparameters:radio:label=bl_allowcustomparameters:choices=off,on,content',
 	'customparameters:textarea:label=bl_customparameters:rows=5:cols=25',
         );
 ?>

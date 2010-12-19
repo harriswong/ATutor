@@ -4,6 +4,7 @@ require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_BASICLTI);
 
 require('../lib/at_form_util.php');
+require('content_form.php');
 
 if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
     $msg->addFeedback('NEED_COURSE_ID');
@@ -11,14 +12,15 @@ if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
 }
 
 // Add/Update The Tool
-if ( isset($_POST['toolid']) ) {
+if ( isset($_POST['toolid']) && at_form_validate($content_edit_form, $msg)) {
     $toolid = $_POST['toolid'];
     $sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
-            WHERE content_id=".$_POST[cid];
+            WHERE content_id=".$_POST[cid]." AND course_id=".$_SESSION[course_id];
     $result = mysql_query($sql, $db);
     if ( $toolid == '--none--' ) {
         $sql = "DELETE FROM ". TABLE_PREFIX . "basiclti_content 
-                       WHERE content_id=".$_POST[cid];
+                       WHERE content_id=".$_POST[cid]." AND 
+                             course_id=".$_SESSION[course_id];
             $result = mysql_query($sql, $db);
             if ($result===false) {
                 $msg->addError('MYSQL_FAILED');
@@ -27,7 +29,8 @@ if ( isset($_POST['toolid']) ) {
             }
     } else if ( mysql_num_rows($result) == 0 ) {
             $sql = "INSERT INTO ". TABLE_PREFIX . "basiclti_content 
-                       SET toolid='".$toolid."', content_id=".$_POST[cid];
+                       SET toolid='".$toolid."', content_id=".$_POST[cid].",
+                             course_id=".$_SESSION[course_id];
             $result = mysql_query($sql, $db);
             if ($result===false) {
                 $msg->addError('MYSQL_FAILED');
@@ -37,7 +40,8 @@ if ( isset($_POST['toolid']) ) {
 
     } else { 
             $sql = "UPDATE ". TABLE_PREFIX . "basiclti_content 
-                       SET toolid='".$toolid."' WHERE content_id=".$_POST[cid];
+                       SET toolid='".$toolid."' WHERE content_id=".$_POST[cid]." AND 
+                           course_id=".$_SESSION[course_id];
             $result = mysql_query($sql, $db);
             if ($result===false) {
                 $msg->addError('MYSQL_FAILED');
@@ -46,6 +50,8 @@ if ( isset($_POST['toolid']) ) {
             }
     }
 }
+
+// echo("<hr>$sql<hr>\n");
 
 $cid = intval($_REQUEST['cid']);
 
@@ -68,7 +74,7 @@ require(AT_INCLUDE_PATH.'header.inc.php');
 
 /* get a list of all the tools, we have */
 $sql    = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools WHERE course_id = 0".
-          " OR course_id=".$_SESSION[course_id]." ORDER BY title";
+          " OR course_id=".$_SESSION[course_id]." ORDER BY course_id,title";
 
 $toolresult = mysql_query($sql, $db);
 $num_tools = mysql_num_rows($toolresult);
@@ -102,20 +108,31 @@ $row = mysql_fetch_assoc($contentresult);
 
 <div class="row">
    <?php echo _AT('bl_choose_tool'); ?><br/>
-   <select id="toolid" name="toolid"> 
+   <select id="toolid" name="toolid" onchange="datagrid.submit();"> 
       <option value="--none--">&nbsp;</option><?php
+      $thetoolrow = false;
+      $found = false;  // Only the first one
       while ( $tool = mysql_fetch_assoc($toolresult) ) {
          $selected = "";
-         if ( $tool['toolid'] == $row['toolid'] ) {
+         if ( ! $found && $tool['toolid'] == $row['toolid'] ) {
            $selected = ' selected="yes"';
+           $thetoolrow = $tool;
+           $found = true;
          }
          echo '<option value="'.$tool['toolid'].'"'.$selected.'>'.$tool['title']."</option>\n";
       } ?>
    </select>
+<?php
+if ( $thetoolrow !== false ) {
+    $content_edit_form = filterForm($thetoolrow, $content_edit_form);
+}
+?>
+<?php at_form_generate($toolrow, $content_edit_form); ?>
    <input type="hidden" name="cid" value="<?php echo($cid);?>" />
    <input type="submit" name="save" value="Save" class="button" />
 </div>
 </legend>
 </form>
 </div>
+<?php echo("<hr><pre>\n");print_r($thetoolrow); echo("\n</pre>\n"); ?>
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

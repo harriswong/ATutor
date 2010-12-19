@@ -59,7 +59,7 @@ if (admin_authenticate(AT_ADMIN_PRIV_BASICLTI, TRUE) || admin_authenticate(AT_AD
 /*******
  * instructor Manage section:
  */
-if ( authenticate(AT_PRIV_BASICLTI) ) {
+if ( authenticate(AT_PRIV_BASICLTI, TRUE) ) {
 	$this->_pages['mods/basiclti/tool/content_edit.php']['title_var'] = 'bl_content';
 	$this->_pages['mods/basiclti/tool/content_edit.php']['parent'] = 'index.php';
 
