@@ -1,23 +1,5 @@
 
-Is there a log?
+Add Gradebook Item Picker.
 
-Should we protect all these files from direct execution?
-
-Making an Instructor Ability to add a tool for their course.
-  - Can I check privilige level?
-
-Make admin be able to filter between global and class tools.
-
-Add index/unique constraints to tables to make INSERT OR UPDATE
-
-Do a sweep for SQL injection and XSS injection.
-  - does $_REQUEST['cid'] expose us?
-
-Performance tune row loading in service in particular. Make sure to think through minimizing DOS.
-
-In service - don't use SQL directly (unless it is OK with Greg).
-
-Add internationalization strings.
-
-Check gradebook assumptions (External, Instructor, etc)
+Merge custom fields as appropriate.
 

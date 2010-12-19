@@ -12,7 +12,7 @@ if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
 
 // Add/Update The Tool
 if ( isset($_POST['toolid']) && at_form_validate($blti_content_edit_form, $msg)) {
-    $toolid = $_POST['toolid'];
+    $toolid = $_POST['toolid']; // Escaping is done in the at_form_util code
     $sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
             WHERE content_id=".$_POST[cid]." AND course_id=".$_SESSION[course_id];
     $result = mysql_query($sql, $db);
@@ -37,8 +37,30 @@ if ( isset($_POST['toolid']) && at_form_validate($blti_content_edit_form, $msg))
                 $msg->addFeedback('BASICLTI_SAVED');
             }
 
-    } else { 
-            $fields = array('toolid' => $toolid);
+    } else if ( $result !== false ) {
+            $gradebook_test_id = 0;
+            $basiclti_content_row = mysql_fetch_assoc($result);
+            $placementsecret = $basiclti_content_row['placementsecret'];
+            $gradebook_check = intval($_POST['gradebook_test_id']);
+            if ( isset($_POST['gradebook_test_id']) && $gradebook_check > 0 ) {
+		$gradebook_test_id = $gradebook_check;
+                $sql = "SELECT g.gradebook_test_id AS id, g.title AS title
+                        FROM  ".TABLE_PREFIX."gradebook_tests AS g
+                        WHERE g.course_id = ".$_SESSION[course_id]."
+                        AND g.type = 'External' and g.grade_scale_id = 0
+                        AND gradebook_test_id = ".$gradebook_test_id;
+                $result = mysql_query($sql, $db);
+                if ( $result === false ) {
+                    $gradebook_test_id = 0;
+                } else {
+                    if ( strlen($placementsecret) < 1 ) {
+                        $placementsecret = uniqid("bl",true);
+                    }
+                }
+            }
+	    // Override these fields (don't take from form)
+            $fields = array('toolid' => $toolid, 'gradebook_test_id' => $gradebook_test_id,
+                            'placementsecret' => $placementsecret);
             $sql = at_form_update($_POST, $blti_content_edit_form, $fields);
             $sql = "UPDATE ". TABLE_PREFIX . "basiclti_content 
                        SET ".$sql." WHERE content_id=".$_POST[cid]." AND 
@@ -106,27 +128,52 @@ $contentresult = mysql_query($sql, $db);
 $basiclti_content_row = mysql_fetch_assoc($contentresult);
 // if ( $basiclti_content_row ) echo("FOUND"); else echo("NOT");
 ?>
-
 <div class="row">
    <?php echo _AT('bl_choose_tool'); ?><br/>
    <select id="toolid" name="toolid" onchange="datagrid.submit();"> 
       <option value="--none--">&nbsp;</option><?php
-      $thetoolrow = false;
+      $basiclti_tool_row = false;
       $found = false;  // Only the first one
       while ( $tool = mysql_fetch_assoc($toolresult) ) {
          $selected = "";
          if ( ! $found && $tool['toolid'] == $basiclti_content_row['toolid'] ) {
            $selected = ' selected="yes"';
-           $thetoolrow = $tool;
+           $basiclti_tool_row = $tool;
            $found = true;
          }
          echo '<option value="'.$tool['toolid'].'"'.$selected.'>'.$tool['title']."</option>\n";
       } ?>
    </select>
+<div>
+<?php
+if ( $basiclti_tool_row != false && $basiclti_tool_row['acceptgrades'] == 1 ) {
+    $sql = "SELECT g.gradebook_test_id AS id, g.title AS title
+            FROM  ".TABLE_PREFIX."gradebook_tests AS g
+            WHERE g.course_id = ".$_SESSION[course_id]."
+            AND g.type = 'External' and g.grade_scale_id = 0";
+    $graderesult = mysql_query($sql, $db);
+    if ( $graderesult !== false ) { ?>
+<div class="row">
+   <?php echo _AT('bl_choose_gradbook_entry'); ?><br/>
+        <select id="gradebook_test_id" name="gradebook_test_id" onchange="datagrid.submit();"> 
+           <option value="--none--">&nbsp;</option><?php
+        while ( $gradeitem = mysql_fetch_assoc($graderesult) ) {
+            echo($gradeitem['title']);
+            $selected = "";
+            if ( $gradeitem['id'] == $basiclti_content_row['gradebook_test_id'] ) {
+              $selected = ' selected="yes"';
+            }
+            echo '<option value="'.$gradeitem['id'].'"'.$selected.'>'.$gradeitem['title']."</option>\n";
+        } ?>
+        </select> 
+</div> <?php
+    }
+}
+?>
    <input type="hidden" name="cid" value="<?php echo($cid);?>" />
 <?php
-if ( $thetoolrow !== false ) {
-    $blti_content_edit_form = filterForm($thetoolrow, $blti_content_edit_form);
+if ( $basiclti_tool_row !== false ) {
+    $blti_content_edit_form = filterForm($basiclti_tool_row, $blti_content_edit_form);
     at_form_generate($basiclti_content_row, $blti_content_edit_form);
    echo('<input type="submit" name="save" value="Save" class="button" />'."\n");
 }
@@ -135,5 +182,5 @@ if ( $thetoolrow !== false ) {
 </legend>
 </form>
 </div>
-<?php echo("<hr><pre>\n");print_r($thetoolrow); echo("\n</pre>\n"); ?>
+<?php echo("<hr><pre>\n");print_r($basiclti_tool_row); echo("\n</pre>\n"); ?>
 <?php require(AT_INCLUDE_PATH.'footer.inc.php'); ?>

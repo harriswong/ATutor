@@ -48,27 +48,28 @@ $course_id = $atutor_content_row['course_id'];
     }
 
     $placementsecret = $basiclti_content_row['placementsecret'];
-    if ( isset($placementsecret) ) {
+    $sourcedid = false;
+    if ( isset($placementsecret) && strlen($placementsecret) > 0 ) {
         $suffix = ':::' . $atutor_member_row['member_id'] . ':::' . $cid;
         $plaintext = $placementsecret . $suffix;
         $hashsig = hash('sha256', $plaintext, false);
         $sourcedid = $hashsig . $suffix;
     }
 
-    if ( isset($placementsecret) &&
+    if ( $sourcedid !== false  &&
          ( $basiclti_tool_row['acceptgrades'] == 1 && $basiclti_content_row['gradebook_test_id'] != 0 ) ) {
         $lmsdata["lis_result_sourcedid"] = $sourcedid;
         $lmsdata["ext_ims_lis_basic_outcome_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
     }
 
-    if ( isset($placementsecret) &&
+    if ( $sourcedid !== false  &&
          ( $basiclti_tool_row['allowroster'] == 1 ||
          ( $basiclti_tool_row['allowroster'] == 2 && $basiclti_content_row['allowroster'] == 1 ) ) ) {
         $lmsdata["ext_ims_lis_memberships_id"] = $sourcedid;
         $lmsdata["ext_ims_lis_memberships_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
     }
 
-    if ( isset($placementsecret) &&
+    if ( $sourcedid !== false  &&
          ( $basiclti_tool_row['allowsetting'] == 1 ||
          ( $basiclti_tool_row['allowsetting'] == 2 && $basiclti_content_row['allowsetting'] == 1 ) ) ) {
         $lmsdata["ext_ims_lti_tool_setting_id"] = $sourcedid;
