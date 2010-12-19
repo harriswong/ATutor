@@ -20,7 +20,7 @@ class BasicLTICallbacks {
 	 * @return: a string, plain or html, to be appended to course content page
 	 */ 
 	public static function appendContent($cid) {
-		return "Output from basiclti module cid=$cid";
+		return '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid.'" height="1200" width="100%"></iframe>'."\n";
 	}
 }
 
