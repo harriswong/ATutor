@@ -90,30 +90,31 @@ function loadError($msg) {
 $content_id = $placement;
 $member_id = $userid;
 require("loadrows.php");
-$course_id = $contentrow['course_id'];
-// echo("instancerow<br/>\n");print_r($instancerow); echo("<hr>\n");
-// echo("toolrow<br/>\n");print_r($toolrow); echo("<hr>\n");
-// echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
-// echo("courserow<br/>\n");print_r($courserow); echo("<hr>\n");
-// echo("memberrow<br/>\n");print_r($memberrow); echo("<hr>\n");
-// echo("enrollrow<br/>\n");print_r($enrollrow); echo("<hr>\n");
+$course_id = $atutor_content_row['course_id'];
+// echo("basiclti_content_row<br/>\n");print_r($basiclti_content_row); echo("<hr>\n");
+// echo("basiclti_tool_row<br/>\n");print_r($basiclti_tool_row); echo("<hr>\n");
+// echo("atutor_content_row<br/>\n");print_r($atutor_content_row); echo("<hr>\n");
+// echo("atutor_course_row<br/>\n");print_r($atutor_course_row); echo("<hr>\n");
+// These two might not be important here
+// echo("atutor_member_row<br/>\n");print_r($atutor_member_row); echo("<hr>\n");
+// echo("atutor_course_membership_row<br/>\n");print_r($atutor_course_membership_row); echo("<hr>\n");
 
     if ( $message_type == "basicoutcome" ) {
-        if ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] > 0 ) {
+        if ( $basiclti_tool_row['acceptgrades'] == 1 && $basiclti_content_row['gradebook_test_id'] > 0 ) {
             // The placement is configured to accept grades
         } else { 
             doError("Not permitted");
         }
     } else if ( $message_type == "roster" ) {
-        if ( $toolrow['allowroster'] == 1 ||
-           ( $toolrow['allowroster'] == 2 && $instancerow['allowroster'] == 1 ) ) {
+        if ( $basiclti_tool_row['allowroster'] == 1 ||
+           ( $basiclti_tool_row['allowroster'] == 2 && $basiclti_content_row['allowroster'] == 1 ) ) {
             // OK
         } else { 
             doError("Not permitted");
         }
     } else if ( $message_type == "toolsetting" ) {
-        if  ( $toolrow['allowsetting'] == 1 ||
-            ( $toolrow['allowsetting'] == 2 && $instancerow['allowsetting'] == 1 ) ) {
+        if  ( $basiclti_tool_row['allowsetting'] == 1 ||
+            ( $basiclti_tool_row['allowsetting'] == 2 && $basiclti_content_row['allowsetting'] == 1 ) ) {
             // OK
         } else { 
             doError("Not permitted");
@@ -121,8 +122,8 @@ $course_id = $contentrow['course_id'];
     }
 
     // Retrieve the secret we use to sign lis_result_sourcedid
-    $placementsecret = $instancerow['placementsecret'];
-    $oldplacementsecret = $instancerow['oldplacementsecret'];
+    $placementsecret = $basiclti_content_row['placementsecret'];
+    $oldplacementsecret = $basiclti_content_row['oldplacementsecret'];
     if ( ! isset($placementsecret) ) doError("Not permitted");
 
     $suffix = ':::' . $userid . ':::' . $placement;
@@ -138,8 +139,8 @@ $course_id = $contentrow['course_id'];
     }
 
     // Check the OAuth Signature 
-    $oauth_consumer_key = $toolrow['resourcekey'];
-    $oauth_secret = $toolrow['password'];
+    $oauth_consumer_key = $basiclti_tool_row['resourcekey'];
+    $oauth_secret = $basiclti_tool_row['password'];
 
     if ( ! isset($oauth_secret) ) doError("Not permitted");
     if ( ! isset($oauth_consumer_key) ) doError("Not permitted");
@@ -164,16 +165,16 @@ $course_id = $contentrow['course_id'];
 
     // Beginning of actual grade processing
     if ( $message_type == "basicoutcome" ) {
-        if ( ! isset( $instancerow['gradebook_test_id'] ) ) {
+        if ( ! isset( $basiclti_content_row['gradebook_test_id'] ) ) {
             doError("Not permitted");
         }
 
         // TODO: Greg - Is this appropriate?  It would be nice to allow this.
-        if ( $enrollrow['role'] == 'Instructor' ) {
+        if ( $atutor_course_membership_row['role'] == 'Instructor' ) {
             doError('Grades not supported for instructors');
         }
 
-        $gradebook_test_id = $instancerow['gradebook_test_id'];
+        $gradebook_test_id = $basiclti_content_row['gradebook_test_id'];
 
         // Check to see if this grade is in this course and member is in this course
 	// And that this grade item is of the right type
@@ -268,7 +269,7 @@ $course_id = $contentrow['course_id'];
 
     } else if ( $lti_message_type == "basic-lti-loadsetting" ) {
         $xml = "  <setting>\n" .
-               "     <value>".htmlspecialchars($instancerow['setting'])."</value>\n" .
+               "     <value>".htmlspecialchars($basiclti_content_row['setting'])."</value>\n" .
                "  </setting>\n";
         print message_response('Success', 'Status', 'fullsuccess', 'Setting retrieved', $xml);
     } else if ( $lti_message_type == "basic-lti-savesetting" ) {
@@ -306,13 +307,13 @@ $course_id = $contentrow['course_id'];
             $userxml = "    <member>\n".
                        "      <user_id>".htmlspecialchars($row['member_id'])."</user_id>\n".
                        "      <roles>$role</roles>\n";
-            if ( $toolrow['sendname'] == 1 ||
-                 ( $toolrow['sendname'] == 2 && $instancerow['sendname'] == 1 ) ) {
+            if ( $basiclti_tool_row['sendname'] == 1 ||
+                 ( $basiclti_tool_row['sendname'] == 2 && $basiclti_content_row['sendname'] == 1 ) ) {
                 if ( isset($row['first_name']) ) $userxml .=  "      <person_name_given>".htmlspecialchars($row['first_name'])."</person_name_given>\n";
                 if ( isset($row['last_name']) ) $userxml .=  "      <person_name_family>".htmlspecialchars($row['last_name'])."</person_name_family>\n";
             }
-            if ( $toolrow['sendemailaddr'] == 1 ||
-                 ( $toolrow['sendemailaddr'] == 2 && $instancerow['sendemailaddr'] == 1 ) ) {
+            if ( $basiclti_tool_row['sendemailaddr'] == 1 ||
+                 ( $basiclti_tool_row['sendemailaddr'] == 2 && $basiclti_content_row['sendemailaddr'] == 1 ) ) {
                 if ( isset($row['email']) ) $userxml .=  "      <person_contact_email_primary>".htmlspecialchars($row['email'])."</person_contact_email_primary>\n";
             }
             if ( isset($placementsecret) ) {
@@ -321,7 +322,7 @@ $course_id = $contentrow['course_id'];
                 $hashsig = hash('sha256', $plaintext, false);
                 $sourcedid = $hashsig . $suffix;
             }
-            if ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] > 0 ) {
+            if ( $basiclti_tool_row['acceptgrades'] == 1 && $basiclti_content_row['gradebook_test_id'] > 0 ) {
                 if ( isset($sourcedid) ) $userxml .=  "      <lis_result_sourcedid>".htmlspecialchars($sourcedid)."</lis_result_sourcedid>\n";
             }
             $userxml .= "    </member>\n";

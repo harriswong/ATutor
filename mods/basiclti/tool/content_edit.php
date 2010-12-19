@@ -101,8 +101,8 @@ if ($num_tools == 0){
 $sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content 
                 WHERE content_id=$cid";
 $contentresult = mysql_query($sql, $db);
-$row = mysql_fetch_assoc($contentresult);
-// if ( $row ) echo("FOUND"); else echo("NOT");
+$basiclti_content_row = mysql_fetch_assoc($contentresult);
+// if ( $basiclti_content_row ) echo("FOUND"); else echo("NOT");
 ?>
 
 <div class="row">
@@ -113,7 +113,7 @@ $row = mysql_fetch_assoc($contentresult);
       $found = false;  // Only the first one
       while ( $tool = mysql_fetch_assoc($toolresult) ) {
          $selected = "";
-         if ( ! $found && $tool['toolid'] == $row['toolid'] ) {
+         if ( ! $found && $tool['toolid'] == $basiclti_content_row['toolid'] ) {
            $selected = ' selected="yes"';
            $thetoolrow = $tool;
            $found = true;
@@ -126,7 +126,7 @@ if ( $thetoolrow !== false ) {
     $blti_content_edit_form = filterForm($thetoolrow, $blti_content_edit_form);
 }
 ?>
-<?php at_form_generate($toolrow, $blti_content_edit_form); ?>
+<?php at_form_generate($basiclti_content_row, $blti_content_edit_form); ?>
    <input type="hidden" name="cid" value="<?php echo($cid);?>" />
    <input type="submit" name="save" value="Save" class="button" />
 </div>

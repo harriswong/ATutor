@@ -32,7 +32,7 @@ function filterForm($control_row, $fieldinfo)
        if ( $fields[1] == 'radio' ) {
            if ( $control_row[$fields[0]] == 0 ) continue;
            if ( $control_row[$fields[0]] == 1 ) continue;
-	   $new_fmrm[] = $line;
+	   $new_form[] = $line;
            continue;
        }
        // See if a non-radio field is controlled by an allow field

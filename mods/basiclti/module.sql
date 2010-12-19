@@ -59,6 +59,7 @@ CREATE TABLE `basiclti_content` (
 	`content_id` mediumint(10) NOT NULL DEFAULT '0',
 	`course_id` mediumint(10) NOT NULL DEFAULT '0',
 	`toolid` varchar(32) NOT NULL,
+	`preferheight` mediumint(4) NOT NULL DEFAULT '0',
 	`sendname` mediumint(1) NOT NULL DEFAULT '0',
 	`sendemailaddr` mediumint(1) NOT NULL DEFAULT '0',
 	`gradebook_test_id` mediumint(10) NOT NULL DEFAULT '0',
@@ -84,6 +85,8 @@ INSERT INTO `language_text` VALUES ('en', '_module','basiclti_tool','External To
 INSERT INTO `language_text` VALUES ('en', '_module','basiclti_content_text','External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','basiclti_comment','You can choose and configure an External Tool associated with this Content Item.',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_tool','Select External Tool',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','blti_missing_tool','External Tool configuration has is missing toolid:',NOW(),'');
+
 
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades','Accept Grades From External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades_content','Specify in each Content Item',NOW(),'');

@@ -26,9 +26,25 @@ class BasicLTICallbacks {
 		global $db;
 		$instanceresult = mysql_query($sql, $db);
  		if ( $instanceresult == false ) return;
-		$instancerow = mysql_fetch_assoc($instanceresult);
-		if ( $instancerow === false ) return;
-		return '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid.'" height="1200" width="100%"></iframe>'."\n";
+		$basiclti_content_row = mysql_fetch_assoc($instanceresult);
+		if ( $basiclti_content_row === false ) return;
+		$toolid = $basiclti_content_row['toolid'];
+		$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_tools
+                		WHERE toolid='".$toolid."'";
+		$contentresult = mysql_query($sql, $db);
+		$basiclti_tool_row = mysql_fetch_assoc($contentresult);
+		if ( ! $basiclti_tool_row ) {
+			return _AT('blti_missing_tool').$toolid;
+		}
+		// Figure height
+		$height = 1200;
+		if ( isset($basiclti_tool_row['preferheight']) && $basiclti_tool_row['preferheight'] > 0 ) {
+			$height = $basiclti_tool_row['preferheight'];
+		}
+		if ( $basiclti_tool_row['allowpreferheight'] == 2 && isset($basiclti_content_row['preferheight']) && $basiclti_content_row['preferheight'] > 0 ) {
+			$height = $basiclti_content_row['preferheight'];
+		}
+		return '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid.'" height="'.$height.'" width="100%"></iframe>'."\n";
 	}
 
 }

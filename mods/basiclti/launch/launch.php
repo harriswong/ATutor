@@ -13,67 +13,67 @@ $cid = intval($_GET['cid']);
 $content_id = $cid;
 $member_id = $_SESSION['member_id'];
 require("loadrows.php");
-$course_id = $contentrow['course_id'];
-// echo("instancerow<br/>\n");print_r($instancerow); echo("<hr>\n");
-// echo("toolrow<br/>\n");print_r($toolrow); echo("<hr>\n");
-// echo("contentrow<br/>\n");print_r($contentrow); echo("<hr>\n");
-// echo("courserow<br/>\n");print_r($courserow); echo("<hr>\n");
-// echo("memberrow<br/>\n");print_r($memberrow); echo("<hr>\n");
-// echo("enrollrow<br/>\n");print_r($enrollrow); echo("<hr>\n");
+$course_id = $atutor_content_row['course_id'];
+// echo("basiclti_content_row<br/>\n");print_r($basiclti_content_row); echo("<hr>\n");
+// echo("basiclti_tool_row<br/>\n");print_r($basiclti_tool_row); echo("<hr>\n");
+// echo("atutor_content_row<br/>\n");print_r($atutor_content_row); echo("<hr>\n");
+// echo("atutor_course_row<br/>\n");print_r($atutor_course_row); echo("<hr>\n");
+// echo("atutor_member_row<br/>\n");print_r($atutor_member_row); echo("<hr>\n");
+// echo("atutor_course_membership_row<br/>\n");print_r($atutor_course_membership_row); echo("<hr>\n");
 
     $lmsdata = array(
       "resource_link_id" => $cid,
-      "resource_link_title" => $contentrow['title'],
-      "resource_link_description" => $contentrow['text'],
-      "user_id" => $memberrow['member_id'],
+      "resource_link_title" => $atutor_content_row['title'],
+      "resource_link_description" => $atutor_content_row['text'],
+      "user_id" => $atutor_member_row['member_id'],
       "roles" => "Learner",
-      "context_id" => $courserow['course_id'],
-      "context_title" => $courserow['title'],
-      "context_label" => $courserow['title'],
+      "context_id" => $atutor_course_row['course_id'],
+      "context_title" => $atutor_course_row['title'],
+      "context_label" => $atutor_course_row['title'],
       );
 
-    if ( $enrollrow['role'] == 'Instructor' ) {
+    if ( $atutor_course_membership_row['role'] == 'Instructor' ) {
         $lmsdata["roles"] = 'Instructor';
     }
 
-    if ( $toolrow['sendemailaddr'] == 1 ||
-         ( $toolrow['sendemailaddr'] == 2 && $instancerow['sendemailaddr'] == 1 ) ) {
-        $lmsdata["lis_person_contact_email_primary"] = $memberrow['email'];
+    if ( $basiclti_tool_row['sendemailaddr'] == 1 ||
+         ( $basiclti_tool_row['sendemailaddr'] == 2 && $basiclti_content_row['sendemailaddr'] == 1 ) ) {
+        $lmsdata["lis_person_contact_email_primary"] = $atutor_member_row['email'];
     }
 
-    if ( $toolrow['sendname'] == 1 ||
-         ( $toolrow['sendname'] == 2 && $instancerow['sendname'] == 1 ) ) {
-        $lmsdata["lis_person_name_family"] = $memberrow['last_name'];
-        $lmsdata["lis_person_name_given"] = $memberrow['first_name'];
+    if ( $basiclti_tool_row['sendname'] == 1 ||
+         ( $basiclti_tool_row['sendname'] == 2 && $basiclti_content_row['sendname'] == 1 ) ) {
+        $lmsdata["lis_person_name_family"] = $atutor_member_row['last_name'];
+        $lmsdata["lis_person_name_given"] = $atutor_member_row['first_name'];
     }
 
-    $placementsecret = $instancerow['placementsecret'];
+    $placementsecret = $basiclti_content_row['placementsecret'];
     if ( isset($placementsecret) ) {
-        $suffix = ':::' . $memberrow['member_id'] . ':::' . $cid;
+        $suffix = ':::' . $atutor_member_row['member_id'] . ':::' . $cid;
         $plaintext = $placementsecret . $suffix;
         $hashsig = hash('sha256', $plaintext, false);
         $sourcedid = $hashsig . $suffix;
     }
 
     if ( isset($placementsecret) &&
-         ( $toolrow['acceptgrades'] == 1 && $instancerow['gradebook_test_id'] != 0 ) ) {
+         ( $basiclti_tool_row['acceptgrades'] == 1 && $basiclti_content_row['gradebook_test_id'] != 0 ) ) {
         $lmsdata["lis_result_sourcedid"] = $sourcedid;
         $lmsdata["ext_ims_lis_basic_outcome_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
     }
 
     if ( isset($placementsecret) &&
-         ( $toolrow['allowroster'] == 1 ||
-         ( $toolrow['allowroster'] == 2 && $instancerow['allowroster'] == 1 ) ) ) {
+         ( $basiclti_tool_row['allowroster'] == 1 ||
+         ( $basiclti_tool_row['allowroster'] == 2 && $basiclti_content_row['allowroster'] == 1 ) ) ) {
         $lmsdata["ext_ims_lis_memberships_id"] = $sourcedid;
         $lmsdata["ext_ims_lis_memberships_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
     }
 
     if ( isset($placementsecret) &&
-         ( $toolrow['allowsetting'] == 1 ||
-         ( $toolrow['allowsetting'] == 2 && $instancerow['allowsetting'] == 1 ) ) ) {
+         ( $basiclti_tool_row['allowsetting'] == 1 ||
+         ( $basiclti_tool_row['allowsetting'] == 2 && $basiclti_content_row['allowsetting'] == 1 ) ) ) {
         $lmsdata["ext_ims_lti_tool_setting_id"] = $sourcedid;
         $lmsdata["ext_ims_lti_tool_setting_url"] = AT_BASE_HREF.'mods/basiclti/launch/service.php';
-        $setting = $instancerow['setting'];
+        $setting = $basiclti_content_row['setting'];
         if ( isset($setting) ) {
              $lmsdata["ext_ims_lti_tool_setting"] = $setting;
         }
@@ -83,17 +83,17 @@ $course_id = $contentrow['course_id'];
 
 $parms = $lmsdata;
 
-$endpoint = $toolrow['toolurl'];
-$key = $toolrow['resourcekey'];
-$secret = $toolrow['password'];
+$endpoint = $basiclti_tool_row['toolurl'];
+$key = $basiclti_tool_row['resourcekey'];
+$secret = $basiclti_tool_row['password'];
 
 require_once("ims-blti/blti_util.php");
 
   $parms = signParameters($parms, $endpoint, "POST", $key, $secret, "Press to Launch", $tool_consumer_instance_guid, $tool_consumer_instance_description);
 
   $debuglaunch = false;
-  if ( ( $toolrow['debuglaunch'] == 1 ||
-       ( $toolrow['debuglaunch'] == 2 && $instancerow['debuglaunch'] == 1 ) ) ) {
+  if ( ( $basiclti_tool_row['debuglaunch'] == 1 ||
+       ( $basiclti_tool_row['debuglaunch'] == 2 && $basiclti_content_row['debuglaunch'] == 1 ) ) ) {
     $debuglaunch = true;
   }
 
