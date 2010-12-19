@@ -8,8 +8,7 @@ if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
     exit;
 }
 
-require('../lib/at_form_util.php');
-require('instructor_form.php');
+require_once('forms.php');
 
 $tool = intval($_REQUEST['id']);
 
@@ -38,7 +37,7 @@ $msg->printAll();
   <input type="hidden" name="id" value="<?php echo $tool; ?>" />
   <div class="input-form">
     <fieldset class="group_form"><legend class="group_form"><?php echo _AT('properties'); ?></legend>
-<?php at_form_view($toolrow, $form_create_blti); ?>
+<?php at_form_view($toolrow, $blti_instructor_form); ?>
         <div class="buttons">
                 <input type="submit" name="done" value="<?php echo _AT('done');?>" />
         </div>

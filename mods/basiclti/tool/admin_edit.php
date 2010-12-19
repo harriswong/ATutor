@@ -3,8 +3,7 @@ define('AT_INCLUDE_PATH', '../../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_BASICLTI);
 
-require('../lib/at_form_util.php');
-require('admin_form.php');
+require_once('forms.php');
 
 $tool = intval($_REQUEST['id']);
 
@@ -14,7 +13,7 @@ if (isset($_POST['cancel'])) {
         exit;
 } else if (isset($_POST['form_basiclti'], $tool)) {
 
-    if ( at_form_validate($form_create_blti, $msg) ) {
+    if ( at_form_validate($blti_admin_form, $msg) ) {
         $sql = "SELECT count(*) cnt FROM ".TABLE_PREFIX."basiclti_tools WHERE toolid = '".
                 mysql_real_escape_string($_POST['toolid'])."' AND id = $tool';";
         $result = mysql_query($sql, $db) or die(mysql_error());
@@ -23,7 +22,7 @@ if (isset($_POST['cancel'])) {
         if ($row["cnt"] != 0) {
            $msg->addFeedback('NEED_UNIQUE_TOOLID');
         } else {
-            $sql = at_form_update($_POST, $form_create_blti);
+            $sql = at_form_update($_POST, $blti_admin_form);
             $sql = 'UPDATE '.TABLE_PREFIX."basiclti_tools SET ".$sql." WHERE id = $tool;";
             $result = mysql_query($sql, $db) or die(mysql_error());
             write_to_log(AT_ADMIN_LOG_INSERT, 'basiclti_create', mysql_affected_rows($db), $sql);
@@ -53,7 +52,7 @@ $msg->printAll();
   <input type="hidden" name="id" value="<?php echo $tool; ?>" />
   <div class="input-form">
     <fieldset class="group_form"><legend class="group_form"><?php echo _AT('properties'); ?></legend>
-<?php at_form_generate($toolrow, $form_create_blti); ?>
+<?php at_form_generate($toolrow, $blti_admin_form); ?>
         <div class="buttons">
                 <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
                 <input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" />

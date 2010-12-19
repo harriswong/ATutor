@@ -3,8 +3,7 @@ define('AT_INCLUDE_PATH', '../../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_BASICLTI);
 
-require('../lib/at_form_util.php');
-require('instructor_form.php');
+require_once('forms.php');
 
 if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
     $msg->addFeedback('NEED_COURSE_ID');
@@ -17,7 +16,7 @@ if (isset($_POST['cancel'])) {
         exit;
 } else if (isset($_POST['form_basiclti'])) {
 
-    if ( at_form_validate($form_create_blti, $msg) ) {
+    if ( at_form_validate($blti_instructor_form, $msg) ) {
         $sql = "SELECT count(*) cnt FROM ".TABLE_PREFIX."basiclti_tools WHERE toolid = '".
                 mysql_real_escape_string($_POST['toolid'])."' AND course_id = ". $_SESSION['course_id'];
         $result = mysql_query($sql, $db) or die(mysql_error());
@@ -27,7 +26,7 @@ if (isset($_POST['cancel'])) {
            $msg->addFeedback('NEED_UNIQUE_TOOLID');
         } else {
             $fields = array('course_id' => $_SESSION['course_id']);
-            $sql = at_form_insert($_POST, $form_create_blti, $fields);
+            $sql = at_form_insert($_POST, $blti_instructor_form, $fields);
             $sql = 'INSERT INTO '.TABLE_PREFIX."basiclti_tools ".$sql;
             $result = mysql_query($sql, $db) or die(mysql_error());
             write_to_log(AT_ADMIN_LOG_INSERT, 'basiclti_create', mysql_affected_rows($db), $sql);
@@ -47,7 +46,7 @@ $msg->printAll();
   <input type="hidden" name="form_basiclti" value="true" />
   <div class="input-form">
     <fieldset class="group_form"><legend class="group_form"><?php echo _AT('properties'); ?></legend>
-<?php at_form_generate($_POST, $form_create_blti); ?>
+<?php at_form_generate($_POST, $blti_instructor_form); ?>
         <div class="buttons">
                 <input type="submit" name="submit" value="<?php echo _AT('save'); ?>" accesskey="s" />
                 <input type="submit" name="cancel" value="<?php echo _AT('cancel');?>" />

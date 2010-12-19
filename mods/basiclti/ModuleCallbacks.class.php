@@ -20,8 +20,17 @@ class BasicLTICallbacks {
 	 * @return: a string, plain or html, to be appended to course content page
 	 */ 
 	public static function appendContent($cid) {
+		if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) return;
+		$sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
+			WHERE content_id=".$cid." AND course_id = ".$_SESSION['course_id'];
+		global $db;
+		$instanceresult = mysql_query($sql, $db);
+ 		if ( $instanceresult == false ) return;
+		$instancerow = mysql_fetch_assoc($instanceresult);
+		if ( $instancerow === false ) return;
 		return '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid.'" height="1200" width="100%"></iframe>'."\n";
 	}
+
 }
 
 ?>

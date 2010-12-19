@@ -32,7 +32,7 @@ function filterForm($control_row, $fieldinfo)
        if ( $fields[1] == 'radio' ) {
            if ( $control_row[$fields[0]] == 0 ) continue;
            if ( $control_row[$fields[0]] == 1 ) continue;
-           $new_form[] = $line;
+	   $new_fmrm[] = $line;
            continue;
        }
        // See if a non-radio field is controlled by an allow field
@@ -277,6 +277,25 @@ function at_form_update($row, $form_definition, $overrides=false) {
     return $setlist;
 }
 
+function foorm_i18n_util($fieldinfo) {
+    $strings = array();
+    foreach ($fieldinfo as $line) {
+       $info = parseFormString($line);
+       $label = $info[0];
+       if ( isset($info['label']) ) $label = $info['label'];
+       $strings[] = $label;
+       if ( $info[1] == 'radio' ) {
+          if ( isset($info['choices']) ) {
+            $choices = explode(',', $info['choices']);
+            foreach($choices as $choice) {
+               $strings[] = $label.'_'.$choice;
+            }
+          }
+       }
+    }
+    return $strings;
+}
+
 if ( ! function_exists('isCli') ) {
     function isCli() {
         $sapi_type = php_sapi_name();
@@ -303,4 +322,17 @@ if ( isCli() ) {
     at_form_input($row,'title:text:required=true:size=25');
     at_form_input($row,'description:textarea:required=true:rows=2:cols=25');
     at_form_input($row,'sendemail:radio:requred=true:label=bl_sendemail:choices=on,off,part');
+
+    $test_frm = array(
+        'title:text:size=80',
+        'preferheight:integer:label=bl_preferheight:size=80',
+        'sendname:radio:label=bl_sendname:choices=off,on,content',
+        'acceptgrades:radio:label=bl_acceptgrades:choices=off,on',
+        'customparameters:textarea:label=bl_customparameters:rows=5:cols=25',
+        );
+
+    $i18strings = foorm_i18n_util($test_frm);
+    print_r($i18strings);
+
 }
+

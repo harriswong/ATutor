@@ -3,8 +3,7 @@ define('AT_INCLUDE_PATH', '../../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_BASICLTI);
 
-require('../lib/at_form_util.php');
-require('content_form.php');
+require_once('forms.php');
 
 if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
     $msg->addFeedback('NEED_COURSE_ID');
@@ -12,7 +11,7 @@ if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
 }
 
 // Add/Update The Tool
-if ( isset($_POST['toolid']) && at_form_validate($content_edit_form, $msg)) {
+if ( isset($_POST['toolid']) && at_form_validate($blti_content_edit_form, $msg)) {
     $toolid = $_POST['toolid'];
     $sql = "SELECT * FROM ".TABLE_PREFIX."basiclti_content
             WHERE content_id=".$_POST[cid]." AND course_id=".$_SESSION[course_id];
@@ -92,7 +91,7 @@ if ($num_tools == 0){
 <form name="datagrid" action="" method="POST">
 
 <fieldset class="group_form">
-   <legend class="group_form"><?php echo _AT('about_basiclti'); ?></legend>
+   <legend class="group_form"><?php echo _AT('bl_content_title'); ?></legend>
 <br/>
 <?php echo _AT('basiclti_comment');?>
 <br/>
@@ -124,10 +123,10 @@ $row = mysql_fetch_assoc($contentresult);
    </select>
 <?php
 if ( $thetoolrow !== false ) {
-    $content_edit_form = filterForm($thetoolrow, $content_edit_form);
+    $blti_content_edit_form = filterForm($thetoolrow, $blti_content_edit_form);
 }
 ?>
-<?php at_form_generate($toolrow, $content_edit_form); ?>
+<?php at_form_generate($toolrow, $blti_content_edit_form); ?>
    <input type="hidden" name="cid" value="<?php echo($cid);?>" />
    <input type="submit" name="save" value="Save" class="button" />
 </div>

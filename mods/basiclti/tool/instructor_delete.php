@@ -3,8 +3,6 @@ define('AT_INCLUDE_PATH', '../../../include/');
 require(AT_INCLUDE_PATH.'vitals.inc.php');
 authenticate(AT_PRIV_BASICLTI);
 
-require('../lib/at_form_util.php');
-
 if ( !is_int($_SESSION['course_id']) || $_SESSION['course_id'] < 1 ) {
     $msg->addFeedback('NEED_COURSE_ID');
     exit;
