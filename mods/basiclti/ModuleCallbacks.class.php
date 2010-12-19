@@ -44,7 +44,14 @@ class BasicLTICallbacks {
 		if ( $basiclti_tool_row['allowpreferheight'] == 2 && isset($basiclti_content_row['preferheight']) && $basiclti_content_row['preferheight'] > 0 ) {
 			$height = $basiclti_content_row['preferheight'];
 		}
-		return '<iframe src="'.AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid.'" height="'.$height.'" width="100%"></iframe>'."\n";
+
+		$myurl = AT_BASE_HREF.'mods/basiclti/launch/launch.php?cid='.$cid;
+		if ( $basiclti_tool_row['launchinpopup'] == 1 ||
+		   ( $basiclti_tool_row['launchinpopup'] == 2 && $basiclti_content_row['launchinpopup'] == 1 ) ) {
+			return '<script type="text/javascript">window.open("'.$myurl.'");</script>'."\n";
+		} else {
+			return '<iframe src="'.$myurl.'" height="'.$height.'" width="100%"></iframe>'."\n";
+		}
 	}
 
 }
