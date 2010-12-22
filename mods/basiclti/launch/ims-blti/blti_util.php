@@ -62,16 +62,21 @@ require_once 'OAuth.php';
     return array("launch_url" => $launch_url, "custom" => $custom ) ;
   }
 
-function split_custom_parameters($customstr) {
-    $lines = preg_split("/[\n;]/",$customstr);
+function split_custom_parameters($custom) {
     $retval = array();
+    return merge_custom_parameters($retval, $custom);
+}
+
+function merge_custom_parameters($retval, $custom) {
+    $lines = preg_split("/[\n;]/",$custom);
     foreach ($lines as $line){
         $pos = strpos($line,"=");
         if ( $pos === false || $pos < 1 ) continue;
         $key = trim(substr($line, 0, $pos));
         $val = trim(substr($line, $pos+1));
-        $key = map_keyname($key);
-        $retval['custom_'.$key] = $val;
+        $key = 'custom_'.map_keyname($key);
+        if ( isset($retval[$key])) continue;
+        $retval[$key] = $val;
     }
     return $retval;
 }
@@ -96,6 +101,7 @@ function signParameters($oldparms, $endpoint, $method, $oauth_consumer_key, $oau
     $parms = $oldparms;
     if ( ! isset($parms["lti_version"]) ) $parms["lti_version"] = "LTI-1p0";
     if ( ! isset($parms["lti_message_type"]) ) $parms["lti_message_type"] = "basic-lti-launch-request";
+    if ( ! isset($parms["oauth_callback"]) ) $parms["oauth_callback"] = "about:blank";
     if ( $org_id ) $parms["tool_consumer_instance_guid"] = $org_id;
     if ( $org_desc ) $parms["tool_consumer_instance_description"] = $org_desc;
     if ( $submit_text ) $parms["ext_submit"] = $submit_text;

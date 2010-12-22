@@ -10,7 +10,7 @@ $blti_instructor_form = array(
 	'resourcekey:text:label=bl_resourcekey:required=true:size=80',
 	'password:text:required=true:label=bl_password:size=80',
 	'preferheight:integer:label=bl_preferheight:size=80',
-        'allowpreferheight:radio:label=bl_allowpreferheight:choices=off,on,content',
+        'allowpreferheight:radio:label=bl_allowpreferheight:choices=off,on',
 	'launchinpopup:radio:label=bl_launchinpopup:choices=off,on,content',
 	'debuglaunch:radio:label=bl_debuglaunch:choices=off,on,content',
 	'sendname:radio:label=bl_sendname:choices=off,on,content',
@@ -18,7 +18,7 @@ $blti_instructor_form = array(
 	'acceptgrades:radio:label=bl_acceptgrades:choices=off,on',
 	'allowroster:radio:label=bl_allowroster:choices=off,on,content',
 	'allowsetting:radio:label=bl_allowsetting:choices=off,on,content',
-        'allowcustomparameters:radio:label=bl_allowcustomparameters:choices=off,on,content',
+        'allowcustomparameters:radio:label=bl_allowcustomparameters:choices=off,on',
 	'customparameters:textarea:label=bl_customparameters:rows=5:cols=25',
         );
 

@@ -1,10 +1,13 @@
 
+Need an ondelete callback from the content system.
+
 Add timeplacement based on the typical patterns of time
 in ATutor.
 
-Add support for custom fields inclusing the merging logic.
+Longer term for CC 1.1 support:
 
-Advocate for a modal dialog+iframe for content selectors instead of popup.
+Add support for XML Descriptor import
 
-Get patch 02 into trunk
+Add support for global per url keys.
+
 

@@ -152,10 +152,10 @@ if ( $basiclti_tool_row != false && $basiclti_tool_row['acceptgrades'] == 1 ) {
             WHERE g.course_id = ".$_SESSION[course_id]."
             AND g.type = 'External' and g.grade_scale_id = 0";
     $graderesult = mysql_query($sql, $db);
-    if ( $graderesult !== false ) { ?>
+    if ( $graderesult !== false && mysql_num_rows($graderesult) > 0) { ?>
 <div class="row">
    <?php echo _AT('bl_choose_gradbook_entry'); ?><br/>
-        <select id="gradebook_test_id" name="gradebook_test_id" onchange="datagrid.submit();"> 
+        <select id="gradebook_test_id" name="gradebook_test_id"> 
            <option value="--none--">&nbsp;</option><?php
         while ( $gradeitem = mysql_fetch_assoc($graderesult) ) {
             echo($gradeitem['title']);

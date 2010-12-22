@@ -30,17 +30,12 @@ function filterForm($control_row, $fieldinfo)
     foreach ($fieldinfo as $line) {
        $fields = parseFormString($line);
        if ( $fields[1] == 'radio' ) {
-           if ( $control_row[$fields[0]] == 0 ) continue;
-           if ( $control_row[$fields[0]] == 1 ) continue;
-	   $new_form[] = $line;
-           continue;
+           if ( $control_row[$fields[0]] == 2 ) $new_form[] = $line;
        }
        // See if a non-radio field is controlled by an allow field
        $allowfield = 'allow'.$fields[0];
        if ( isset( $control_row[$allowfield] ) ) {
-           if ( $control_row[$allowfield] == 0 ) continue; // Force off
-           if ( $control_row[$allowfield] == 1 ) continue; // Force on
-           $new_form[] = $line;
+           if ( $control_row[$allowfield] == 1 ) $new_form[] = $line;
        }
     }
     return $new_form;

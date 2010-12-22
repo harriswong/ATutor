@@ -21,8 +21,12 @@ if (isset($_GET['view'], $_GET['id'])) {
 
 require (AT_INCLUDE_PATH.'header.inc.php');
 
-$sql = "SELECT id,title,toolid,course_id,description FROM ".TABLE_PREFIX."basiclti_tools ".
-       "WHERE course_id = ".$_SESSION['course_id']." ORDER BY TITLE";
+$sql = "SELECT t.id AS id,t.title AS title,t.toolid AS toolid,
+               t.description AS description, COUNT(c.id) AS cnt 
+        FROM ".TABLE_PREFIX."basiclti_tools AS t 
+        LEFT OUTER JOIN ".TABLE_PREFIX."basiclti_content as c
+        ON t.toolid = c.toolid
+        WHERE t.course_id = ".$_SESSION['course_id']." GROUP BY t.toolid ORDER BY t.title";
 $result = mysql_query($sql, $db) or die(mysql_error());
 ?>
 <form name="form" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -32,10 +36,11 @@ $result = mysql_query($sql, $db) or die(mysql_error());
                 <th><?php echo _AT('bl_title'); ?></th>
                 <th><?php echo _AT('bl_toolid'); ?></th>
                 <th><?php echo _AT('bl_description'); ?></th>
+                <th><?php echo _AT('bl_count'); ?></th>
         </thead>
 	<tfoot>
 		<tr>
-        	<td colspan="4"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" />
+        	<td colspan="5"><input type="submit" name="view" value="<?php echo _AT('view'); ?>" />
                     <input type="submit" name="edit" value="<?php echo _AT('edit'); ?>" />
                     <input type="submit" name="delete" value="<?php echo _AT('delete'); ?>" /></td>
 		</tr>
@@ -46,6 +51,7 @@ $result = mysql_query($sql, $db) or die(mysql_error());
                 <td><?php echo $row['title']; ?></td>
                 <td><?php echo $row['toolid']; ?></td>
                 <td><?php echo $row['description']; ?></td>
+                <td><?php echo $row['cnt']; ?></td>
                 </tr> <?php } ?>
         </tbody>
 </table>

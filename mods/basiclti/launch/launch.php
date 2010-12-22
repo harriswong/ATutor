@@ -27,12 +27,17 @@ $course_id = $atutor_content_row['course_id'];
       "resource_link_description" => $atutor_content_row['text'],
       "user_id" => $atutor_member_row['member_id'],
       "roles" => "Learner",
+      "launch_presentation_locale" => $_SESSION['lang'],
       "context_id" => $atutor_course_row['course_id'],
       "context_title" => $atutor_course_row['title'],
       "context_label" => $atutor_course_row['title'],
       );
 
     if ( $atutor_course_membership_row['role'] == 'Instructor' ) {
+        $lmsdata["roles"] = 'Instructor';
+    }
+
+    if ( $_SESSION['is_admin'] == 1 ) {
         $lmsdata["roles"] = 'Instructor';
     }
 
@@ -80,6 +85,15 @@ $course_id = $atutor_content_row['course_id'];
         }
     }
 
+require_once("ims-blti/blti_util.php");
+
+    if ( strlen($basiclti_tool_row['customparameters']) > 0 ) {
+        $lmsdata = merge_custom_parameters($lmsdata,$basiclti_tool_row['customparameters']);
+    }
+    if ( $basiclti_tool_row['customparameters'] == 1 && strlen($basiclti_content_row['customparameters']) > 0 ) {
+        $lmsdata = merge_custom_parameters($lmsdata,$basiclti_content_row['customparameters']);
+    }
+
 // print_r($lmsdata);echo("<hr>\n");
 
 $parms = $lmsdata;
@@ -87,8 +101,6 @@ $parms = $lmsdata;
 $endpoint = $basiclti_tool_row['toolurl'];
 $key = $basiclti_tool_row['resourcekey'];
 $secret = $basiclti_tool_row['password'];
-
-require_once("ims-blti/blti_util.php");
 
   $parms = signParameters($parms, $endpoint, "POST", $key, $secret, "Press to Launch", $tool_consumer_instance_guid, $tool_consumer_instance_description);
 
