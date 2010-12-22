@@ -5,7 +5,7 @@ INSERT INTO `language_text` VALUES ('en', '_module','basiclti','External Tools',
 # More Language entries at the end
 
 CREATE TABLE `basiclti_tools` (
-	`id` mediumint(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`id` mediumint(10) NOT NULL AUTO_INCREMENT,
 	`toolid` varchar(32) NOT NULL,
 	`course_id` mediumint(10) NOT NULL DEFAULT '0',
 	`title` varchar(255) NOT NULL,
@@ -29,11 +29,11 @@ CREATE TABLE `basiclti_tools` (
 	`organizationdescr` varchar(255) NOT NULL,
 	`launchinpopup` mediumint(1) NOT NULL DEFAULT '0',
 	`debuglaunch` mediumint(1) NOT NULL DEFAULT '0',
-	UNIQUE KEY (id)
+        PRIMARY KEY ( `id`, `toolid` )
 );
 
 CREATE TABLE `basiclti_content` (
-	`id` mediumint(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`id` mediumint(10) NOT NULL AUTO_INCREMENT,
 	`content_id` mediumint(10) NOT NULL DEFAULT '0',
 	`course_id` mediumint(10) NOT NULL DEFAULT '0',
 	`toolid` varchar(32) NOT NULL,
@@ -51,13 +51,13 @@ CREATE TABLE `basiclti_content` (
 	`oldplacementsecret` varchar(1023) NOT NULL,
 	`setting` text(8192) NOT NULL,
 	`xmlimport` text(16384) NOT NULL,
-	UNIQUE KEY (id, course_id, content_id)
+        PRIMARY KEY ( `id`, `course_id`, `content_id` )
 );
 
 # More Language Entries
 
 INSERT INTO `language_text` VALUES ('en', '_module','basiclti_text','Support for integrating External Tools that support IMS Basic Learning Tools Interoperability..',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_module','bl_create','New External Tool',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','bl_create','Create External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_view','External Tool Settings',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_delete','Deleting External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_edit','Deleting External Tool',NOW(),'');
