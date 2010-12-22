@@ -33,6 +33,8 @@ $course_id = $atutor_content_row['course_id'];
       "context_label" => $atutor_course_row['title'],
       );
 
+    $lmsdata['ext_lms'] = 'ATutor';
+
     if ( $atutor_course_membership_row['role'] == 'Instructor' ) {
         $lmsdata["roles"] = 'Instructor';
     }
