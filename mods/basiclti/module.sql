@@ -1,7 +1,5 @@
 # sql file for basiclti module
 
-INSERT INTO `language_text` VALUES ('en', '_module','basiclti','External Tools',NOW(),'');
-
 # More Language entries at the end
 
 CREATE TABLE `basiclti_tools` (
@@ -54,8 +52,8 @@ CREATE TABLE `basiclti_content` (
         PRIMARY KEY ( `id`, `course_id`, `content_id` )
 );
 
-# More Language Entries
-
+# Language Entries
+INSERT INTO `language_text` VALUES ('en', '_module','basiclti','External Tools',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','basiclti_text','Support for integrating External Tools that support IMS Basic Learning Tools Interoperability..',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_create','Create External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_view','External Tool Settings',NOW(),'');
@@ -70,8 +68,6 @@ INSERT INTO `language_text` VALUES ('en', '_module','basiclti_comment','You can 
 INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_tool','Select External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','blti_missing_tool','External Tool configuration has is missing toolid:',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_gradbook_entry','Select Gradebook Entry',NOW(),'');
-
-
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades','Accept Grades From External Tool',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades_off','Do not allow',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_acceptgrades_on','Allow',NOW(),'');
@@ -122,4 +118,9 @@ INSERT INTO `language_text` VALUES ('en', '_module','bl_sendname_on','Always',NO
 INSERT INTO `language_text` VALUES ('en', '_module','bl_title','Title',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_toolid','ToolId (must be unique across system)',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_module','bl_toolurl','Tool Launch URL',NOW(),'');
-
+INSERT INTO `language_text` VALUES ('en', '_module','bl_create','Create External Tool',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','bl_toolid_header','ToolId',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','bl_count','Usage Count',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','bl_choose_tool','Choose Tool',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','proxy','Learning Activity',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','about_content_tools','Select from the available external tools, one that can be associated with this content page as a learning activity. Or, though  Manage>IMS Basic LTI add your own external tools to make them available here.',NOW(),'');
